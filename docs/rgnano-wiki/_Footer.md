@@ -1,0 +1,1 @@
+On the device: **RB + Select** opens help on every screen · Screenshots are captured from the real app by `tools/capture_wiki_screens.py` · Fork of [LittleGPTracker](https://github.com/djdiskmachine/LittleGPTracker) by m-.-n and djdiskmachine

@@ -1,0 +1,37 @@
+# Screenshots for the wiki: the Neon Drive demo (loaded via AUTO_LOAD_LAST).
+wait 1500
+expect_view song
+row 04
+screenshot_app wiki-demo-song.bmp
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+goto chain
+wait 100
+screenshot_app wiki-demo-chain.bmp
+goto phrase
+wait 100
+screenshot_app wiki-demo-phrase-melody.bmp
+goto chain
+goto song
+press l 80
+press l 80
+goto chain
+goto phrase
+wait 100
+screenshot_app wiki-demo-phrase-chords.bmp
+goto chain
+goto song
+press s 80
+wait 2500
+screenshot_app wiki-demo-song-playing.bmp
+goto mixer
+wait 1500
+screenshot_app wiki-demo-mixer.bmp
+press s 80
+goto song
+expect_no_error
+quit

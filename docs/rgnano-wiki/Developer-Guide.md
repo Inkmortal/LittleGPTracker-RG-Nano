@@ -1,0 +1,96 @@
+# Developer Guide
+
+Everything runs on Windows with MSYS2 (MinGW32) for the simulator and WSL (Ubuntu) for the RG Nano cross-build. All tools are in `tools/`.
+
+## Build
+
+| Target | Command | Output |
+| --- | --- | --- |
+| Desktop simulator | `.\run.ps1 -Task dev` (or `tools\build-rgnano-sim.ps1`) | `projects/lgpt-rgnano-sim.exe` |
+| RG Nano | `cd projects; make PLATFORM=RGNANO` inside WSL with the FunKey SDK in `sdk/FunKey-sdk-DrUm78` | `projects/lgpt-rgnano.elf` |
+| RG Nano + install | `tools\install-rgnano.ps1` | builds, packages the OPK and copies app, docs and demos to a connected RG Nano |
+
+CI (`.github/workflows/build-rgnano.yml`) builds the ELF, the OPK and a zip with the demo songs and docs.
+
+## Simulator
+
+`lgpt-rgnano-sim.exe` is the real app with a 240×240 SDL surface, the RG Nano key layout and a script runner.
+
+```powershell
+.\tools\run-rgnano-sim.ps1                    # interactive, with the device skin
+.\tools\run-rgnano-sim.ps1 -Script x.rgsim    # headless: hidden window, no focus stealing
+.\tools\run-rgnano-sim.ps1 -Script x.rgsim -Mute -Visible
+.\tools\run-rgnano-sim-suite.ps1              # every regression case, muted and headless
+```
+
+Scripted runs render into a window that is never shown, so nothing appears on screen. Screenshots, screen-text checks and audio capture still work. `-Mute` sends silence to the sound card while still measuring and capturing the real output.
+
+### Script language
+
+Low level: `press a 80`, `down n` / `up n` (hold), `wait 500`, `screenshot_app x.bmp`.
+
+Goal commands — say what you want; the simulator reads the live state and presses the keys:
+
+```text
+goto instrument        # shortest RB+D-pad route
+row 0C                 # cursor row on Song/Chain/Phrase
+page FILTER            # instrument page
+focus cutoff           # field cursor to a label
+set cutoff 0x80        # focus + edit until the value matches
+set preset bell        # list values by name
+instrument 0A          # B+D-pad to an instrument slot
+```
+
+Each goal logs `=> reached in N steps` and fails with a clear message if an input changes nothing.
+
+Assertions: `expect_view`, `expect_screen_text`, `expect_selected_text`, `expect_player_running`, `expect_play_mode`, `expect_audio_activity`, `expect_song_chain`, `expect_phrase_row_count`, `expect_instrument_type/name/param`, `expect_size 240 240`, `expect_no_error`, and more — see `docs/RGNANO_SIM.md`.
+
+State setup for long scenarios: `sim_set_synth`, `sim_set_instrument_param`, `sim_set_song_chain`, `sim_set_chain_phrase`, `sim_set_phrase_note`, `sim_set_phrase_command`, `sim_set_tempo`.
+
+### When the simulator crashes
+
+It writes `rgnano-sim-crash.txt`. `python tools\symbolize_crash.py` turns it into function names and source lines.
+
+## Song composer
+
+`tools/lgpt_composer.py` writes real `lgptsav.dat` projects from Python, with helpers for note names, chord voicing (smooth inversions that fit one `CHRD`), drum pattern strings and phrase text:
+
+```python
+from pathlib import Path
+from lgpt_composer import Phrase, Project
+from _patterns import chord_bar, voice_progression
+
+p = Project("MySong", tempo=100)
+p.synth(0, "kick")
+p.synth(5, "pad", reverb=0x90)
+kick = p.chain([Phrase.drums("x...x...x...x...", 0)] * 4)
+pads = p.chain([chord_bar(v, 5) for v in voice_progression(["Am", "F", "C", "G"], "E3")])
+p.row(0, [kick, None, None, None, None, pads, None, None])
+p.save(Path("rgnano-sim-data/tracks"))
+```
+
+Demo songs live in `tools/demos/*.py`.
+
+## Listening without ears
+
+| Tool | Does |
+| --- | --- |
+| `python tools\render_demos.py [--only name] [--stems]` | builds each demo, bounces it with the app's own Stereo render, writes WAV + JSON + spectrogram PNG to `sim-artifacts-demos`; `--stems` prints per-track levels for mixing |
+| `python tools\audio_report.py file.wav --png out.png` | peak, RMS, crest, clipping, silent seconds, band energy, pitch classes |
+| `python tools\capture_wiki_screens.py` | regenerates every screenshot on this wiki |
+
+## Code map
+
+| Area | Where |
+| --- | --- |
+| Synth engine and presets | `sources/Application/Instruments/SynthInstrument.*` |
+| Shared reverb / echo | `sources/Application/Mixer/SendFX.*` |
+| Instrument bank, type switching, starter kit | `sources/Application/Instruments/InstrumentBank.cpp` |
+| Synth screen | `sources/Application/Views/InstrumentViewSynth.cpp` |
+| Helper overlay | `sources/Application/Views/BaseClasses/View.cpp` |
+| Simulator script runner | `sources/Adapters/SDL/GUI/SDLEventManager.cpp` |
+| Simulator boot / headless | `sources/Adapters/RGNANO_SIM/` |
+
+## Publishing this wiki
+
+The wiki source is `docs/rgnano-wiki/` in the main repository. `tools\publish-wiki.ps1` copies it into the GitHub wiki repository and pushes.

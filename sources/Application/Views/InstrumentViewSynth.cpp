@@ -93,7 +93,7 @@ void InstrumentView::fillSynthParameters() {
 	SynthInstrument *s=(SynthInstrument *)bank->GetInstrument(i);
 	GUIPoint position=GetAnchor();
 	position._x=1;
-	position._y=17;
+	position._y=14;
 	UIIntVarField *f;
 	Variable *v;
 
@@ -380,7 +380,7 @@ void InstrumentView::drawSynthVisuals() {
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
 	GUIColor clearColor(0x18,0x06,0x1B);
 	imp->SetColor(clearColor);
-	GUIRect clearPanel(0,34,240,134);
+	GUIRect clearPanel(0,34,240,110);
 	imp->DrawRect(clearPanel);
 
 	const int bx=8, by=36, bw=224, bh=58;
@@ -461,12 +461,13 @@ void InstrumentView::drawSynthVisuals() {
 			imp->DrawRect(marker);
 		}
 	} else if (labPage_==3) {
-		// One second of the LFO at its real rate and depth
+		// LFO shape: one second at the real rate (at least two cycles so slow
+		// LFOs still read), depth on a square-root scale so small values show
 		float rate=SynthInstrument::LfoRateFromParam(synthInt(s,SYP_LFORATE));
-		if (rate>12.0f) rate=12.0f;
-		float depth=synthInt(s,SYP_LFOAMT)/255.0f;
+		float cycles=rate<2.0f?2.0f:(rate>12.0f?12.0f:rate);
+		float depth=(float)sqrt(synthInt(s,SYP_LFOAMT)/255.0f);
 		for (int x=0;x<plotW;x++) {
-			float v=(float)sin(6.2831853f*rate*x/plotW)*depth;
+			float v=(float)sin(6.2831853f*cycles*x/plotW)*depth;
 			ys[x]=mid-(int)(v*(bottom-top)/2);
 		}
 		synthPlot(imp,ys,plotW,bx+2,top,bottom,false);
@@ -474,40 +475,36 @@ void InstrumentView::drawSynthVisuals() {
 		// Mix: level meters for the four knobs
 		const char *names[4]={"VOL","PAN","REV","DLY"};
 		FourCC ids[4]={SYP_VOLUME,SYP_PAN,SYP_REVERB,SYP_DELAY};
-		// Clear the box: four bars aligned to text rows 5,7,9,11
+		// Clear the box: four bars aligned to text rows 4,6,8,10
 		GUIColor clearColor2(0x18,0x06,0x1B);
 		imp->SetColor(clearColor2);
 		GUIRect clearBox(bx,by,bx+bw,by+bh+4);
 		imp->DrawRect(clearBox);
 		for (int k=0;k<4;k++) {
-			drawPixelLabBar(48,(5+k*2)*8,176,8,synthInt(s,ids[k]),ids[k]==SYP_PAN?254:255,ids[k]==SYP_PAN);
+			drawPixelLabBar(48,(4+k*2)*8,176,8,synthInt(s,ids[k]),ids[k]==SYP_PAN?254:255,ids[k]==SYP_PAN);
 		}
 		// Labels go on the character grid so the text layer keeps them
 		SetColor(CD_NORMAL);
 		for (int k=0;k<4;k++) {
-			DrawString(1,5+k*2,names[k],props);
+			DrawString(1,4+k*2,names[k],props);
 		}
 	}
 #endif
 
-	// Preset name and focused-knob explanation
+	// Preset name and the focused value in real units. Explanations live
+	// in the RB+Select helper so the page itself stays quiet.
 	SetColor(CD_HILITE1);
 	sprintf(line,"%s",s->GetName());
 	DrawString(1,12,line,props);
-	SetColor(CD_NORMAL);
 	UIIntVarField *focused=(UIIntVarField *)GetFocus();
 	if (focused) {
 		char l1[40],l2[40],value[40];
 		getSynthFieldHelp(focused->GetVariableID(),s,l1,l2,value);
 		if (value[0]) {
-			SetColor(CD_HILITE1);
 			DrawString(29-(int)strlen(value),12,value,props);
-			SetColor(CD_NORMAL);
 		}
-		DrawString(1,13,l1,props);
-		DrawString(1,14,l2,props);
 	}
-	DrawString(1,15,"Start: hear it",props);
+	SetColor(CD_NORMAL);
 }
 
 void InstrumentView::auditionSynth(int offset) {
@@ -525,6 +522,18 @@ void InstrumentView::customizeSynthOverlay(const char *&name, const char *&where
                                            const char *&cmd7) {
 	where="RB+Left Phrase";
 	edit="A+Dpad edit the knob";
+	// The focused knob's explanation, shown only when help is asked for
+	UIIntVarField *focused=(UIIntVarField *)GetFocus();
+	if (focused) {
+		static char help1[40],help2[40],value[40];
+		int i=viewData_->currentInstrument_;
+		I_Instrument *s=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
+		getSynthFieldHelp(focused->GetVariableID(),s,help1,help2,value);
+		if (help1[0]) {
+			where=help1;
+			edit=help2;
+		}
+	}
 	cmd1="Dpad choose a knob";
 	cmd2="A+Left/Right small step";
 	cmd3="A+Up/Down big step";

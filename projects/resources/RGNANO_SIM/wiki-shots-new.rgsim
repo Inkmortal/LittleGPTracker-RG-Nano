@@ -1,0 +1,82 @@
+# Screenshots for the wiki: a brand-new project, step by step.
+wait 500
+screenshot_app wiki-boot.bmp
+press r 80
+press a 80
+wait 200
+screenshot_app wiki-new-project.bmp
+press d 80
+press a 80
+press r 80
+press a 80
+wait 1000
+expect_view song
+screenshot_app wiki-song-empty.bmp
+down n
+press r 80
+up n
+wait 100
+screenshot_app wiki-song-empty-hint.bmp
+press a 80
+wait 100
+screenshot_app wiki-song-first-chain.bmp
+goto chain
+press a 80
+wait 100
+screenshot_app wiki-chain-first-phrase.bmp
+goto phrase
+row 00
+press a 80
+row 04
+press a 80
+row 08
+press a 80
+row 0C
+press a 80
+row 00
+wait 100
+screenshot_app wiki-phrase-kick.bmp
+down n
+press k 80
+up n
+wait 100
+screenshot_app wiki-help-1-map.bmp
+press d 80
+wait 100
+screenshot_app wiki-help-2-commands.bmp
+press d 80
+wait 100
+screenshot_app wiki-help-3-howto.bmp
+down n
+press k 80
+up n
+goto instrument
+wait 100
+screenshot_app wiki-synth-1-sound.bmp
+page SOUND
+instrument 07
+wait 100
+screenshot_app wiki-synth-pad.bmp
+page ENV
+screenshot_app wiki-synth-2-env.bmp
+page FILTER
+screenshot_app wiki-synth-3-filter.bmp
+page MOD
+screenshot_app wiki-synth-4-mod.bmp
+page MIX
+screenshot_app wiki-synth-5-mix.bmp
+page SOUND
+goto phrase
+goto table
+wait 100
+screenshot_app wiki-table.bmp
+goto phrase
+goto groove
+wait 100
+screenshot_app wiki-groove.bmp
+goto project
+wait 100
+screenshot_app wiki-project.bmp
+goto song
+expect_no_error
+quit

@@ -749,13 +749,10 @@ void InstrumentView::drawSampleLabVisuals() {
 			if (suggestedRoot>=0) {
 				sprintf(line,"suggest root %03d Sel",suggestedRoot);
 				drawLabText(2,15,line,props);
-			} else {
-				drawLabText(2,15,"RB+A: low root high stop",props);
 			}
 		} else {
 			sprintf(line,"mode %d S%05X L%05X E%05X",GetVarInt(instrument,SIP_LOOPMODE),start,loopStart,loopEnd);
 			drawLabText(2,14,line,props);
-			drawLabText(2,15,"RB+A: low root high stop",props);
 		}
 #else
 		char wave[25];

@@ -121,9 +121,9 @@ The producer persistence pair creates a multi-instrument project, saves it, rela
 
 Scripted runs never open a window and never play through your speakers:
 
-- `run-rgnano-sim.ps1 -Script ...` sets `SDL_VIDEODRIVER=dummy`, so SDL renders into memory. Screenshots, screen-text assertions and audio captures all still work. Pass `-Visible` to watch a script run in a window.
+- `run-rgnano-sim.ps1 -Script ...` passes `-RGNANOSIM_HEADLESS=YES`: the simulator hands SDL a window that is never shown, so nothing appears on screen or takes focus. Screenshots, screen-text assertions and audio captures all still work. Pass `-Visible` to watch a script run in a window. (`SDL_VIDEODRIVER=dummy` from older tools also switches on headless mode.)
 - `-Mute` (the suite passes it by default) sends silence to the sound card while still measuring and capturing the real audio. Use `run-rgnano-sim-suite.ps1 -Audible` to hear it.
-- The simulator is linked as a Windows GUI app, so it never opens a console window that could steal keyboard focus.
+- The simulator is linked as a Windows GUI app and the suite runs every case inside one PowerShell process, so no console windows pop up either.
 
 The simulator surface is exactly 240x240, the RG Nano's 1.54-inch panel resolution; `expect_size 240 240` asserts it.
 

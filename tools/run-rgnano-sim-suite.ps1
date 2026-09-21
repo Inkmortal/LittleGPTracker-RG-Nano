@@ -153,18 +153,16 @@ foreach ($case in $suite) {
   $scriptPath = Join-Path $scriptRoot $case.Script
   Write-Host "==> $($case.Name)"
 
-  $args = @(
-    "-NoProfile",
-    "-ExecutionPolicy", "Bypass",
-    "-File", $runner,
-    "-Script", $scriptPath,
-    "-ArtifactsDir", $caseArtifacts
-  ) + $case.Args
-  if (-not $Audible) {
-    $args += "-Mute"
+  # Run the case in this PowerShell process: spawning powershell.exe per case
+  # opens console windows that steal focus.
+  $caseParams = @{ Script = $scriptPath; ArtifactsDir = $caseArtifacts }
+  foreach ($flag in $case.Args) {
+    $caseParams[$flag.TrimStart("-")] = $true
   }
-
-  & powershell @args
+  if (-not $Audible) {
+    $caseParams["Mute"] = $true
+  }
+  & $runner @caseParams
   $exitCode = $LASTEXITCODE
   $caseEnded = Get-Date
   Get-ChildItem -LiteralPath $root -File -Include "*.bmp","*.wav" -ErrorAction SilentlyContinue |

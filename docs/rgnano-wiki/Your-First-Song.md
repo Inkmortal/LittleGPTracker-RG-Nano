@@ -1,0 +1,102 @@
+# Your First Song
+
+Ten minutes, device in hand. You'll make a beat, add a bassline and chords, then turn the loop into a song. Every step uses the synth kit that comes with a new project, so you don't need any samples.
+
+## 1. New project
+
+On the project list choose **New**, then **Random**, then **Ok**. You land on the **Song** screen: 8 empty tracks.
+
+<img src="images/song-empty.png" width="300" alt="Empty song">
+
+## 2. A kick drum
+
+1. The cursor is on row `00`, track 1. Press **A** → `00` appears: chain 00 now plays on track 1.
+
+   <img src="images/song-first-chain.png" width="240" alt="First chain">
+
+2. **RB + Right** opens chain 00. Press **A** → phrase `00`.
+
+   <img src="images/chain-first-phrase.png" width="240" alt="First phrase in the chain">
+
+3. **RB + Right** opens phrase 00. Press **A** on row `00`: a note `C 3` with instrument `I00` appears — that's **KICK**. Move to rows `04`, `08`, `0C` and press **A** on each.
+
+   <img src="images/phrase-kick.png" width="300" alt="Four kicks">
+
+4. Press **Start**. Four kicks on the beat, looping. **Start** again to stop.
+
+That's "four on the floor", the backbone of house, disco and synthwave.
+
+## 3. Snare and hats on their own tracks
+
+Each track plays one sound at a time, so drums get a track each.
+
+1. **RB + Left** twice → Song. Move **Right** to track 2 and press **A**. The screen says `Reused 00`: one **A** repeats the last chain, handy when you want the same part again. Press **A** once more for `New chain 01`.
+
+   > **One A = reuse. A A = new.** Same on the Chain screen with phrases.
+
+2. **RB + Right**, **A A** (`New phrase 01`), **RB + Right**.
+3. Add notes on rows `04` and `0C` — beats 2 and 4. Move **Right** to the instrument column and hold **A + Right** until it reads `I01: SNARE`. New notes now copy `01`.
+4. Track 3: same again with instrument `02` (HAT) on rows `00 02 04 06 08 0A 0C 0E`.
+5. Back on **Song**, press **Start**. All three tracks play together because they sit on the same Song row.
+
+> **Make hats breathe:** on every other hat, put `VOLM 0060` in the first command column (**Select** opens the command picker). Quieter off-beats sound human.
+
+## 4. A bassline
+
+1. Track 4, new chain, new phrase, instrument `05` (BASS).
+2. Put notes on rows `00`, `06`, `0A`. On a note, **A + Left/Right** moves a semitone, **A + Up/Down** an octave. Try `A 2`, `A 2`, `C 3`.
+3. The bass rings until the next note. Put `KILL 0000` on a row to stop it early — short notes make a bassline bounce.
+
+> **Stay in key without thinking:** Project screen → `Key: A`, `Scale: Aeolian mode (minor)`. Now **A + Left/Right** only walks through notes that fit. **LB + D-pad** escapes the scale for one note.
+
+## 5. Chords from one note
+
+Tracks are one note at a time, but the synth can play a chord from a single note.
+
+1. Track 5, new chain, new phrase, instrument `07` (PAD).
+2. On row `00` add `A 2`, move to the first command column, **Select** → `CHRD`, and set it to `0037`. That's A minor.
+3. Make three more phrases in the same chain for a four-bar progression:
+
+| Bar | Note | CHRD | Chord |
+| --- | --- | --- | --- |
+| 1 | `A 2` | `0037` | A minor |
+| 2 | `F 2` | `0047` | F major |
+| 3 | `C 3` | `0047` | C major |
+| 4 | `G 2` | `0047` | G major |
+
+`Am F C G` — one of the most-used progressions in pop and synthwave. Give the bass the same roots (`A F C G`) and it all locks together.
+
+<img src="images/demo-phrase-chords.png" width="300" alt="Chord phrase with CHRD">
+
+## 6. From loop to song
+
+A **chain** can list up to 16 bars. A **Song row** is a section. A classic map, one row each:
+
+```text
+00  intro    pad
+01  verse    drums + bass + pad
+02  verse    + melody
+03  chorus   everything, busier drums
+04  break    drums drop out
+05  chorus   again
+06  outro    pad fading out
+```
+
+- Keep every chain on a row the **same length** (for example 4 phrases) so tracks stay in sync.
+- To silence a track for a section, give it a chain of empty phrases with `KILL 0000` on the first step.
+- Copy a chain with **B + LB** then **A + LB** (clone) and change a few notes for variation.
+
+<img src="images/demo-song.png" width="300" alt="An arranged song">
+
+## 7. Make it sound finished
+
+- **Space:** on each instrument's **MIX** page, turn up `reverb` on snare and pads, `delay` on leads.
+- **Balance:** kick and bass loudest, snare just under, hats and pads quieter. Watch the [Mixer](Screens#mixer).
+- **Movement:** `FCUT 60C0` on the first note of a pluck part slowly opens its filter over 4 bars.
+- **Save:** Project screen → **Save Song**. **Export** to WAV: see [Export](Export).
+
+## Next
+
+- Open the [Demo Songs](Demo-Songs) and change things.
+- Learn the knobs in [Synth](Synth).
+- Keep the [Music Theory Cheat Sheet](Music-Theory-Cheat-Sheet) nearby.

@@ -86,9 +86,10 @@ def run_render(name: str, render_mode: int, wait_ms: int, audible: bool) -> int:
     shutil.copy(res_dir / "config.xml", PROJECTS / "config.xml")
     shutil.copy(res_dir / "mapping.xml", PROJECTS / "mapping.xml")
     env = os.environ.copy()
-    env["SDL_VIDEODRIVER"] = "dummy"  # headless: no window, no focus stealing
     env["PATH"] = "C:\\msys64\\mingw32\\bin;" + env.get("PATH", "")
-    cmd = [str(PROJECTS / "lgpt-rgnano-sim.exe"), f"-RGNANOSIM_SCRIPT={script}", f"-RGNANOSIM_LOG={LOG}"]
+    # Headless: hidden window, nothing on screen, no focus stealing
+    cmd = [str(PROJECTS / "lgpt-rgnano-sim.exe"), f"-RGNANOSIM_SCRIPT={script}", f"-RGNANOSIM_LOG={LOG}",
+           "-RGNANOSIM_HEADLESS=YES"]
     if not audible:
         cmd.append("-RGNANOSIM_MUTE=YES")
     proc = subprocess.run(cmd, creationflags=NO_WINDOW, cwd=ROOT, env=env, timeout=wait_ms / 1000 + 120)

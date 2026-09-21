@@ -17,12 +17,30 @@
 
 EventManager *RGNanoSimSystem::eventManager_ = NULL ;
 
+// Headless runs (scripts, renders): SDL draws into a window that is never
+// shown, so nothing appears on screen or takes keyboard focus. Screenshots,
+// screen-text checks and audio all keep working.
+static HWND createHiddenHostWindow() {
+	WNDCLASSA wc ;
+	memset(&wc,0,sizeof(wc)) ;
+	wc.lpfnWndProc=DefWindowProcA ;
+	wc.hInstance=GetModuleHandle(NULL) ;
+	wc.lpszClassName="RGNanoSimHeadless" ;
+	RegisterClassA(&wc) ;
+	return CreateWindowExA(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,"RGNanoSimHeadless","rgnano-sim",
+	                       WS_POPUP,0,0,1,1,NULL,NULL,wc.hInstance,NULL) ;
+}
+
 int RGNanoSimSystem::MainLoop() {
 	eventManager_->InstallMappings() ;
 	return eventManager_->MainLoop() ;
 }
 
 void RGNanoSimSystem::Boot(int argc,char **argv) {
+	// Older audit tools ask for SDL's dummy driver; this SDL build only has
+	// windib, so treat that request as headless mode instead.
+	const char *requestedDriver=getenv("SDL_VIDEODRIVER") ;
+	bool dummyRequested=(requestedDriver && !strcmp(requestedDriver,"dummy")) ;
 	putenv("SDL_VIDEODRIVER=windib") ;
 
 	System::Install(new RGNanoSimSystem()) ;
@@ -63,6 +81,15 @@ void RGNanoSimSystem::Boot(int argc,char **argv) {
 
 	MidiService::Install(new DummyMidi()) ;
 	SysProcessFactory::Install(new W32ProcessFactory()) ;
+
+	const char *headless=config->GetValue("RGNANOSIM_HEADLESS") ;
+	if (dummyRequested || (headless && !strcmp(headless,"YES"))) {
+		HWND host=createHiddenHostWindow() ;
+		static char windowId[64] ;
+		sprintf(windowId,"SDL_WINDOWID=%lu",(unsigned long)host) ;
+		putenv(windowId) ;
+		Trace::Log("RGNANO_SIM","headless: rendering into hidden window") ;
+	}
 
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK|SDL_INIT_TIMER) < 0) {
 		return;

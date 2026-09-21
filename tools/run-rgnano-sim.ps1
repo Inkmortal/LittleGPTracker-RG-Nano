@@ -232,11 +232,10 @@ if ($Skin -or -not $Script) {
   $args += "-RGNANOSIM_SKIN=YES"
 }
 
-# Scripted runs are headless: SDL's dummy video driver renders into memory
-# (screenshots still work) and never opens a window that could steal focus.
-$previousVideoDriver = $env:SDL_VIDEODRIVER
+# Scripted runs are headless: the simulator draws into a window that is never
+# shown, so nothing pops up or steals focus. Pass -Visible to watch.
 if ($Script -and -not $Visible) {
-  $env:SDL_VIDEODRIVER = "dummy"
+  $args += "-RGNANOSIM_HEADLESS=YES"
 }
 
 # The simulator is a GUI-subsystem app (no console window), so wait on the
@@ -249,7 +248,6 @@ if ($quotedArgs.Count -gt 0) {
 }
 
 $exitCode = $process.ExitCode
-$env:SDL_VIDEODRIVER = $previousVideoDriver
 
 if ($ArtifactsDir) {
   $logPath = Join-Path $exeDir "rgnano-sim.log"

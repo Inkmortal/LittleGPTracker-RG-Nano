@@ -16,7 +16,14 @@ expect_selected_text preset
 screenshot_app synth-page-1-sound.bmp
 
 focus wave
+# Knob explanations live in the RB+Select helper, not on the page
+down n
+press k 80
+up n
 expect_screen_text base tone
+down n
+press k 80
+up n
 screenshot_app synth-page-1-wave.bmp
 press s 80
 wait 300
