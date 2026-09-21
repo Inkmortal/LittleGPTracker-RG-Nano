@@ -68,7 +68,7 @@ Get-ChildItem -LiteralPath (Join-Path $projects "resources\demos") -Directory | 
 }
 
 $commit = (git -C $root rev-parse --short HEAD).Trim()
-$dirty = if ((git -C $root status --porcelain -- sources projects).Length -gt 0) { " (+uncommitted)" } else { "" }
+$dirty = if ((git -C $root status --porcelain -- sources projects/Makefile projects/resources).Length -gt 0) { " (+uncommitted)" } else { "" }
 $stamp = Get-Date -Format "o"
 @(
   "commit $commit$dirty",
