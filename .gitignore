@@ -54,3 +54,4 @@ sdk/
 
 # Demo songs are real project files that ship with the build
 !projects/resources/demos/**/lgptsav.dat
+dist/

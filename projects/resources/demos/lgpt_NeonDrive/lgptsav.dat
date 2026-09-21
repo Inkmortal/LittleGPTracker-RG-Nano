@@ -1101,11 +1101,11 @@
             <PARAM NAME="preset" VALUE="snare" />
             <PARAM NAME="decay" VALUE="160" />
             <PARAM NAME="reverb" VALUE="112" />
-            <PARAM NAME="volume" VALUE="168" />
+            <PARAM NAME="volume" VALUE="232" />
         </INSTRUMENT>
         <INSTRUMENT ID="02" TYPE="Synth">
             <PARAM NAME="preset" VALUE="hat" />
-            <PARAM NAME="volume" VALUE="144" />
+            <PARAM NAME="volume" VALUE="224" />
         </INSTRUMENT>
         <INSTRUMENT ID="03" TYPE="Synth">
             <PARAM NAME="preset" VALUE="bass" />

@@ -1105,12 +1105,12 @@
             <PARAM NAME="preset" VALUE="clap" />
             <PARAM NAME="decay" VALUE="160" />
             <PARAM NAME="reverb" VALUE="160" />
-            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="volume" VALUE="255" />
         </INSTRUMENT>
         <INSTRUMENT ID="02" TYPE="Synth">
             <PARAM NAME="preset" VALUE="hat" />
             <PARAM NAME="decay" VALUE="96" />
-            <PARAM NAME="volume" VALUE="96" />
+            <PARAM NAME="volume" VALUE="184" />
             <PARAM NAME="pan" VALUE="160" />
         </INSTRUMENT>
         <INSTRUMENT ID="03" TYPE="Synth">

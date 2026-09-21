@@ -1108,7 +1108,7 @@
             <PARAM NAME="noise" VALUE="0" />
             <PARAM NAME="decay" VALUE="136" />
             <PARAM NAME="filter" VALUE="off" />
-            <PARAM NAME="volume" VALUE="128" />
+            <PARAM NAME="volume" VALUE="200" />
         </INSTRUMENT>
         <INSTRUMENT ID="02" TYPE="Synth">
             <PARAM NAME="preset" VALUE="hat" />
@@ -1118,7 +1118,7 @@
             <PARAM NAME="decay" VALUE="88" />
             <PARAM NAME="filter" VALUE="highpass" />
             <PARAM NAME="cutoff" VALUE="160" />
-            <PARAM NAME="volume" VALUE="80" />
+            <PARAM NAME="volume" VALUE="152" />
         </INSTRUMENT>
         <INSTRUMENT ID="03" TYPE="Synth">
             <PARAM NAME="preset" VALUE="chip" />

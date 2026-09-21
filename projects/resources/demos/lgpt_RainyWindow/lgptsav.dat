@@ -1104,17 +1104,17 @@
             <PARAM NAME="cutoff" VALUE="184" />
             <PARAM NAME="decay" VALUE="152" />
             <PARAM NAME="reverb" VALUE="96" />
-            <PARAM NAME="volume" VALUE="152" />
+            <PARAM NAME="volume" VALUE="224" />
         </INSTRUMENT>
         <INSTRUMENT ID="02" TYPE="Synth">
             <PARAM NAME="preset" VALUE="hat" />
-            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="cutoff" VALUE="176" />
             <PARAM NAME="decay" VALUE="96" />
-            <PARAM NAME="volume" VALUE="104" />
+            <PARAM NAME="volume" VALUE="208" />
         </INSTRUMENT>
         <INSTRUMENT ID="03" TYPE="Synth">
             <PARAM NAME="preset" VALUE="subbass" />
-            <PARAM NAME="volume" VALUE="104" />
+            <PARAM NAME="volume" VALUE="68" />
         </INSTRUMENT>
         <INSTRUMENT ID="04" TYPE="Synth">
             <PARAM NAME="preset" VALUE="keys" />
