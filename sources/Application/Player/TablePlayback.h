@@ -25,6 +25,7 @@ public:
 	bool GetAutomation() ;
 
 	static void Reset() ;
+	static void ForgetInstrument(I_Instrument *instrument) ;
 	static TablePlayback &GetTablePlayback(int channel) ;
 private:
 	Table *table_ ;

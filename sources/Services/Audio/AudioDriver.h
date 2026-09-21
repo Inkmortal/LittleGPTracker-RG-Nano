@@ -57,6 +57,7 @@ public:
 #ifdef PLATFORM_RGNANO_SIM
 	static void ResetSimAudioStats();
 	static int GetSimAudioPeak();
+	static void SetSimAudioMuted(bool muted);
 	static unsigned long GetSimAudioNonSilentBytes();
 	static bool BeginSimAudioCapture(const char *path);
 	static void EndSimAudioCapture();

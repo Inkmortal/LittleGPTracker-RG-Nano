@@ -17,6 +17,9 @@ AudioOutDriver::AudioOutDriver(AudioDriver &driver) {
 }
 
 AudioOutDriver::~AudioOutDriver() {
+    // Stop the device before tearing down: its callback thread renders
+    // through this object and the mixer.
+    driver_->Stop();
     driver_->RemoveObserver(*this);
     delete driver_ ;
 };

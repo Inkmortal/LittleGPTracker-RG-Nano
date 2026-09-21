@@ -18,6 +18,8 @@ wait 120
 route phrase.to_instrument
 wait 120
 expect_view instrument
+# New projects start with synths: switch this slot to a sample instrument first
+route instrument.make_sample
 route instrument.open_sample_import
 screenshot basic-music-workflow.bmp
 expect_size 240 240

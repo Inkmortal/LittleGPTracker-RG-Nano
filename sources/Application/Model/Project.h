@@ -20,6 +20,10 @@
 #define VAR_SCALE 			MAKE_FOURCC('S', 'C', 'A', 'L')
 #define VAR_NOTE_NAMES 		MAKE_FOURCC('N', 'N', 'A', 'M')
 #define VAR_RENDER MAKE_FOURCC('R', 'N', 'D', 'R')
+#define VAR_REVERB_SIZE MAKE_FOURCC('R', 'V', 'S', 'Z')
+#define VAR_REVERB_DAMP MAKE_FOURCC('R', 'V', 'D', 'P')
+#define VAR_DELAY_STEPS MAKE_FOURCC('D', 'L', 'S', 'T')
+#define VAR_DELAY_FEEDBACK MAKE_FOURCC('D', 'L', 'F', 'B')
 
 #define PROJECT_NUMBER "1"
 #define PROJECT_RELEASE "6"

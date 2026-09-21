@@ -1,0 +1,64 @@
+# Synth preset tour: plays each starter-kit instrument alone for level/tone checks.
+# Phrase N plays instrument N at C3, KILL at row 12 exercises the release tail.
+route boot.new_project_random
+expect_view song
+sim_set_tempo 150
+sim_set_song_chain 0 0 0
+sim_set_chain_phrase 0 0 0 0
+sim_set_phrase_note 0 0 60 0
+sim_set_phrase_command 0 12 1 KILL 0000
+sim_set_chain_phrase 0 1 1 0
+sim_set_phrase_note 1 0 60 1
+sim_set_phrase_command 1 12 1 KILL 0000
+sim_set_chain_phrase 0 2 2 0
+sim_set_phrase_note 2 0 60 2
+sim_set_phrase_command 2 12 1 KILL 0000
+sim_set_chain_phrase 0 3 3 0
+sim_set_phrase_note 3 0 60 3
+sim_set_phrase_command 3 12 1 KILL 0000
+sim_set_chain_phrase 0 4 4 0
+sim_set_phrase_note 4 0 60 4
+sim_set_phrase_command 4 12 1 KILL 0000
+sim_set_chain_phrase 0 5 5 0
+sim_set_phrase_note 5 0 60 5
+sim_set_phrase_command 5 12 1 KILL 0000
+sim_set_chain_phrase 0 6 6 0
+sim_set_phrase_note 6 0 60 6
+sim_set_phrase_command 6 12 1 KILL 0000
+sim_set_chain_phrase 0 7 7 0
+sim_set_phrase_note 7 0 60 7
+sim_set_phrase_command 7 12 1 KILL 0000
+sim_set_chain_phrase 0 8 8 0
+sim_set_phrase_note 8 0 60 8
+sim_set_phrase_command 8 12 1 KILL 0000
+sim_set_chain_phrase 0 9 9 0
+sim_set_phrase_note 9 0 60 9
+sim_set_phrase_command 9 12 1 KILL 0000
+sim_set_chain_phrase 0 10 10 0
+sim_set_phrase_note 10 0 60 10
+sim_set_phrase_command 10 12 1 KILL 0000
+sim_set_chain_phrase 0 11 11 0
+sim_set_phrase_note 11 0 60 11
+sim_set_phrase_command 11 12 1 KILL 0000
+sim_set_chain_phrase 0 12 12 0
+sim_set_phrase_note 12 0 60 12
+sim_set_phrase_command 12 12 1 KILL 0000
+sim_set_chain_phrase 0 13 13 0
+sim_set_phrase_note 13 0 60 13
+sim_set_phrase_command 13 12 1 KILL 0000
+sim_set_chain_phrase 0 14 14 0
+sim_set_phrase_note 14 0 60 14
+sim_set_phrase_command 14 12 1 KILL 0000
+sim_set_chain_phrase 0 15 15 0
+sim_set_phrase_note 15 0 60 15
+sim_set_phrase_command 15 12 1 KILL 0000
+reset_audio_stats
+start_audio_capture synth-preset-tour.wav
+press s 80
+wait 26000
+expect_audio_activity 64
+press s 80
+wait 300
+end_audio_capture
+expect_no_error
+quit

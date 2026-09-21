@@ -21,6 +21,14 @@ void TablePlayback::Reset() {
 	}
 } ;
 
+void TablePlayback::ForgetInstrument(I_Instrument *instrument) {
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		if (playback_[i].instrument_==instrument) {
+			playback_[i].Init(i) ;
+		}
+	}
+} ;
+
 TablePlayback &TablePlayback::GetTablePlayback(int channel) {
 	NAssert((channel>=0)&&(channel<SONG_CHANNEL_COUNT)) ;
 	return playback_[channel] ;

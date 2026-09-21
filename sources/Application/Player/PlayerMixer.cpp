@@ -1,5 +1,6 @@
 #include "PlayerMixer.h"
 #include "Application/Mixer/MixerService.h"
+#include "Application/Mixer/SendFX.h"
 #include "Application/Model/Mixer.h"
 #include "Application/Utils/char.h"
 #include "Application/Utils/fixed.h"
@@ -32,6 +33,7 @@ bool PlayerMixer::Init(Project *project) {
 	mixer->Insert(fileStreamer_) ;
 
 	project_=project ;
+	SendFX::GetInstance()->SetProject(project) ;
 
 	// Init states
 
@@ -121,6 +123,18 @@ void PlayerMixer::StartInstrument(int channel,I_Instrument *instrument,unsigned 
 	lastInstrument_[channel]=instrument ;
 	notes_[channel]=note ;
 
+} ;
+
+void PlayerMixer::ForgetInstrument(I_Instrument *instrument) {
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		if (channel_[i]->GetInstrument()==instrument) {
+			notes_[i]=0xFF ;
+		}
+		channel_[i]->ForgetInstrument(instrument) ;
+		if (lastInstrument_[i]==instrument) {
+			lastInstrument_[i]=0 ;
+		}
+	}
 } ;
 
 void PlayerMixer::StopInstrument(int channel) {

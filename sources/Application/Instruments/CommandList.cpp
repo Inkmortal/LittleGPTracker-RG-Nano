@@ -4,6 +4,7 @@
 static FourCC _all[]= {
 	I_CMD_NONE,
 	I_CMD_ARPG,
+	I_CMD_CHRD,
 	I_CMD_CRSH,
 	I_CMD_DLAY,
 	I_CMD_FBMX,

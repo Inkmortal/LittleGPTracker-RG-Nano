@@ -1,0 +1,56 @@
+# Synth starter kit: a brand-new project must make sound with no samples.
+# Verifies the default synth kit, programs a 4-track beat with synth
+# instruments only, plays it, and captures audio.
+route boot.new_project_random
+expect_view song
+expect_instrument_type 0 Synth
+expect_instrument_name 0 KICK
+expect_instrument_name 1 SNARE
+expect_instrument_name 2 HAT
+expect_instrument_name 5 BASS
+expect_instrument_name 7 PAD
+expect_instrument_type 16 Sample
+
+sim_set_tempo 120
+sim_set_song_chain 0 0 0
+sim_set_song_chain 0 1 1
+sim_set_song_chain 0 2 2
+sim_set_song_chain 0 3 3
+sim_set_chain_phrase 0 0 0 0
+sim_set_chain_phrase 1 0 1 0
+sim_set_chain_phrase 2 0 2 0
+sim_set_chain_phrase 3 0 3 0
+
+sim_set_phrase_note 0 0 60 0
+sim_set_phrase_note 0 4 60 0
+sim_set_phrase_note 0 8 60 0
+sim_set_phrase_note 0 12 60 0
+sim_set_phrase_note 1 4 60 1
+sim_set_phrase_note 1 12 60 1
+sim_set_phrase_note 2 0 60 2
+sim_set_phrase_note 2 2 60 2
+sim_set_phrase_note 2 4 60 2
+sim_set_phrase_note 2 6 60 2
+sim_set_phrase_note 2 8 60 2
+sim_set_phrase_note 2 10 60 2
+sim_set_phrase_note 2 12 60 2
+sim_set_phrase_note 2 14 60 2
+sim_set_phrase_note 3 0 48 5
+sim_set_phrase_note 3 3 48 5
+sim_set_phrase_note 3 6 55 5
+sim_set_phrase_note 3 10 51 5
+sim_set_phrase_command 3 10 1 CHRD 0000
+
+reset_audio_stats
+start_audio_capture synth-starter-kit.wav
+press s 80
+wait 4200
+expect_player_running yes
+expect_play_mode song
+expect_audio_activity 64
+screenshot_app synth-starter-kit-song.bmp
+press s 80
+wait 300
+end_audio_capture
+expect_no_error
+quit

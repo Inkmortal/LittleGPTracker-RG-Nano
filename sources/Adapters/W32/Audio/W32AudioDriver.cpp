@@ -34,6 +34,12 @@ W32AudioDriver::W32AudioDriver(int index,AudioSettings &settings):AudioDriver(se
 	index_=index ;
 }
 
+W32AudioDriver::~W32AudioDriver() {
+	if (waveOut_) {
+		CloseDriver() ;
+	}
+}
+
 bool W32AudioDriver::InitDriver() {
     
 	WAVEFORMATEX fx;
@@ -65,7 +71,14 @@ bool W32AudioDriver::InitDriver() {
 
 void W32AudioDriver::CloseDriver() {
 
+	// Returned buffers must not call back into observers that are being
+	// torn down (winmm fires WOM_DONE for every queued buffer on reset).
+	isPlaying_=false ;
+	if (waveOut_) {
+		waveOutReset(waveOut_) ;
+	}
 	waveOutClose(waveOut_);
+	waveOut_=0 ;
 	for (int i=0;i<SOUND_BUFFER_COUNT;i++) {
 		W32SoundBuffer *sb=(W32SoundBuffer *)pool_[i].driverData_ ;
 		SAFE_FREE(sb) ;
@@ -114,6 +127,10 @@ double W32AudioDriver::GetStreamTime() {
 } ;
 
 void W32AudioDriver::OnChunkDone(W32SoundBuffer *sb) {
+
+	if (!isPlaying_) {
+		return ;
+	}
 
 	streamTime_+= double(sb->wavHeader_->dwBufferLength)/44100.0 ;
 	sendNextChunk() ;

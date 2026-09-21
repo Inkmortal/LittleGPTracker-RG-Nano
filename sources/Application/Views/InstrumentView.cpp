@@ -1,6 +1,7 @@
 #include "InstrumentView.h"
 #include "Application/Instruments/MidiInstrument.h"
 #include "Application/Instruments/SampleInstrument.h"
+#include "Application/Instruments/SynthInstrument.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/AppWindow.h"
 #include "Application/Model/Config.h"
@@ -20,18 +21,23 @@
 
 #define SAMPLE_LAB_PAGE_COUNT 5
 
+static char *instrumentTypeNames[2]={(char *)"sample",(char *)"synth"} ;
+
 InstrumentView::InstrumentView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 
 	project_=data->project_ ;
 	lastFocusID_=0 ;
 	current_=0 ;
+	currentSlot_=-1 ;
 	labPage_=0 ;
 	markerFocus_=SIP_START ;
 	previewLoop_=false ;
+	typeVar_=new Variable("type",INSTRUMENT_TYPE_FIELD,instrumentTypeNames,2,0) ;
 	onInstrumentChange() ;
 }
 
 InstrumentView::~InstrumentView() {
+	delete typeVar_ ;
 }
 
 InstrumentType InstrumentView::getInstrumentType() {
@@ -50,9 +56,10 @@ void InstrumentView::onInstrumentChange() {
 	int i=viewData_->currentInstrument_ ;
 	InstrumentBank *bank=viewData_->project_->GetInstrumentBank() ;
 	current_=bank->GetInstrument(i) ;
+	currentSlot_=i ;
 
-	if (current_!=old) {
-		current_->RemoveObserver(*this) ;
+	if (old && current_!=old) {
+		old->RemoveObserver(*this) ;
 	} ;
 	T_SimpleList<UIField>::Empty() ;
 
@@ -65,17 +72,34 @@ void InstrumentView::onInstrumentChange() {
 		case IT_SAMPLE:
 			fillSampleParameters() ;
 			break ;
+		case IT_SYNTH:
+			fillSynthParameters() ;
+			break ;
+		default:
+			break ;
 	} ;
 
+	// Restore the remembered field; otherwise land on what you most likely
+	// want to change: the sound preset or the sample, not the type switch.
 	SetFocus(T_SimpleList<UIField>::GetFirst()) ;
+	FourCC preferred=(it==IT_SYNTH)?SYP_PRESET:SIP_SAMPLE ;
+	UIField *remembered=0 ;
+	UIField *fallback=0 ;
 	IteratorPtr<UIField> it2(T_SimpleList<UIField>::GetIterator()) ;
 	for (it2->Begin();!it2->IsDone();it2->Next()) {
         UIIntVarField &field=(UIIntVarField &)it2->CurrentItem() ;
-        if (field.GetVariableID()==lastFocusID_) {
-            SetFocus(&field) ;
-            break ;
+        if (lastFocusID_!=0 && field.GetVariableID()==lastFocusID_) {
+            remembered=&field ;
+        }
+        if (field.GetVariableID()==preferred) {
+            fallback=&field ;
         }
     } ;
+	if (remembered) {
+		SetFocus(remembered) ;
+	} else if (fallback) {
+		SetFocus(fallback) ;
+	}
 	if (current_!=old) {
 		current_->AddObserver(*this) ;
 	}
@@ -120,6 +144,7 @@ void InstrumentView::fillSampleParameters() {
 } ;
 
 void InstrumentView::fillSampleSourcePage(SampleInstrument *instrument, GUIPoint position) {
+	addTypeField(position) ;
 	Variable *v=instrument->FindVariable(SIP_SAMPLE) ;
 	SamplePool *sp=SamplePool::GetInstance() ;
 	int sampleMax=sp->GetNameListSize()-1;
@@ -896,6 +921,51 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (!pressed) return ;
 
 	isDirty_=false ;
+	syncReplacedInstrument() ;
+
+	if (getInstrumentType()==IT_SYNTH && (mask&EPBM_L) &&
+	    !(mask&(EPBM_A|EPBM_B|EPBM_R|EPBM_START|EPBM_SELECT))) {
+		if (mask&EPBM_LEFT) {
+			switchLabPage(-1);
+			return;
+		}
+		if (mask&EPBM_RIGHT) {
+			switchLabPage(1);
+			return;
+		}
+	}
+
+	if (getInstrumentType()==IT_SYNTH && (mask&EPBM_R) && (mask&EPBM_A) &&
+	    !(mask&(EPBM_B|EPBM_L|EPBM_START|EPBM_SELECT))) {
+		if (mask&EPBM_LEFT) {
+			auditionSynth(-12);
+			return;
+		}
+		if (mask&EPBM_UP) {
+			auditionSynth(0);
+			return;
+		}
+		if (mask&EPBM_RIGHT) {
+			auditionSynth(12);
+			return;
+		}
+		if (mask&EPBM_DOWN) {
+			Player::GetInstance()->Stop();
+			isDirty_=true;
+			return;
+		}
+	}
+
+	if (getInstrumentType()==IT_SYNTH && mask==EPBM_START) {
+		Player *player=Player::GetInstance();
+		if (player && player->IsRunning() && viewData_->playMode_==PM_AUDITION) {
+			player->Stop();
+		} else {
+			auditionSynth(0);
+		}
+		isDirty_=true;
+		return;
+	}
 
 	if (getInstrumentType()==IT_SAMPLE && (mask&EPBM_L) &&
 	    !(mask&(EPBM_A|EPBM_B|EPBM_R|EPBM_START|EPBM_SELECT))) {
@@ -1089,6 +1159,12 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 
 	FieldView::ProcessButtonMask(mask) ;
 
+	// The type field swaps the whole instrument: rebuild before anything
+	// else touches the (now replaced) fields.
+	if (applyTypeChange()) {
+		return ;
+	}
+
     Player *player=Player::GetInstance() ;
 	// B Modifier
 
@@ -1099,7 +1175,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		if (mask&EPBM_UP) warpToNext(+16);
 		if (mask&EPBM_A) { // Allow cut instrument
 		   if (getInstrumentType()==IT_SAMPLE) {
-                if (GetFocus()==T_SimpleList<UIField>::GetFirst()) {
+                UIIntVarField *focusField=(UIIntVarField *)GetFocus() ;
+                if (focusField && focusField->GetVariableID()==SIP_SAMPLE) {
 	               int i=viewData_->currentInstrument_ ;
 	               InstrumentBank *bank=viewData_->project_->GetInstrumentBank() ;
 	               I_Instrument *instr=bank->GetInstrument(i) ;
@@ -1195,7 +1272,26 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 
 } ;
 
+// A slot can change engine (sample <-> synth) outside this screen, which
+// deletes the instrument our fields point at: rebuild from the new one.
+void InstrumentView::syncReplacedInstrument() {
+	int i=viewData_->currentInstrument_ ;
+	if (i!=currentSlot_) {
+		return ;
+	}
+	InstrumentBank *bank=viewData_->project_->GetInstrumentBank() ;
+	if (bank->GetInstrument(i)==current_) {
+		return ;
+	}
+	current_=0 ;
+	ClearFocus() ;
+	T_SimpleList<UIField>::Empty() ;
+	onInstrumentChange() ;
+}
+
 void InstrumentView::DrawView() {
+
+	syncReplacedInstrument() ;
 
 	Clear() ;
     View::EnableNotification();
@@ -1205,13 +1301,22 @@ void InstrumentView::DrawView() {
 
     // Draw title
 
-    char title[20];
+    char title[32];
     SetColor(CD_NORMAL);
-    sprintf(title, "Instrument %2.2X", viewData_->currentInstrument_);
+    const char *kind = "";
+    switch (getInstrumentType()) {
+        case IT_SAMPLE: kind = " SAMPLE"; break;
+        case IT_SYNTH: kind = " SYNTH"; break;
+        case IT_MIDI: kind = " MIDI"; break;
+        default: break;
+    }
+    sprintf(title, "Instrument %2.2X%s", viewData_->currentInstrument_, kind);
     DrawString(pos._x, pos._y, title, props);
 
     if (getInstrumentType()==IT_SAMPLE) {
         drawSampleLabVisuals();
+    } else if (getInstrumentType()==IT_SYNTH) {
+        drawSynthVisuals();
     }
 
     FieldView::Redraw();
@@ -1226,6 +1331,10 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
                                              const char *&cmd3, const char *&cmd4,
                                              const char *&cmd5, const char *&cmd6,
                                              const char *&cmd7) {
+	if (getInstrumentType()==IT_SYNTH) {
+		customizeSynthOverlay(name,where,edit,field,cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7);
+		return;
+	}
 	if (getInstrumentType()!=IT_SAMPLE) {
 		return;
 	}

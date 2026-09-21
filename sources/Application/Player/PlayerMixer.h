@@ -28,6 +28,8 @@ public:
 
 	void StartInstrument(int channel,I_Instrument *instrument,unsigned char note,bool newInstrument) ;
 	void StopInstrument(int channel) ;
+	// Drop every reference to an instrument that is about to be deleted
+	void ForgetInstrument(I_Instrument *instrument) ;
 
 	int GetChannelNote(int Channel) ;
 

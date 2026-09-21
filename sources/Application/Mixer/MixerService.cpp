@@ -7,6 +7,7 @@
 #include "Services/Audio/AudioDriver.h"
 #include "Services/Midi/MidiService.h"
 #include "System/Console/Trace.h"
+#include "SendFX.h"
 
 MixerService::MixerService() : out_(0), sync_(0), isRendering_(false) {
     mode_ = MSRM_PLAYBACK;
@@ -34,6 +35,8 @@ bool MixerService::Init() {
 	for (int i=0;i<MAX_BUS_COUNT;i++) {
 		master_.Insert(bus_[i]);
 	}
+	// Send effects render last so every channel has added its sends
+	master_.Insert(*SendFX::GetInstance());
 
 	bool result = false;
 	if (out_) {

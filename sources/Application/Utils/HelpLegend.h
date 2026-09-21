@@ -24,6 +24,11 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[1].assign("through relative pitches");
 			result[2].assign("from original pitch");
 			break;
+		case I_CMD_CHRD:
+			result[0].assign("CHoRD:abcd synth notes");
+			result[1].assign("added on top of the note");
+			result[2].assign("0047=maj 0037=min 047B=M7");
+			break;
 		case I_CMD_VOLM:
 			result[0].assign("VOLuMe:aabb");
 			result[1].assign("approach volume");

@@ -1,0 +1,82 @@
+# Synth instrument screen: walk all five pages, check the help text follows
+# the focused knob, audition with Start, and switch the slot type.
+route boot.new_project_random
+expect_view song
+press a 80
+route song.to_chain
+press a 80
+route chain.to_phrase
+press a 80
+expect_phrase_row_count 0 1
+route phrase.to_instrument
+expect_view instrument
+expect_screen_text Instrument 00 SYNTH
+expect_screen_text SOUND
+expect_screen_text KICK
+screenshot_app synth-page-1-sound.bmp
+expect_selected_text preset
+press d 80
+expect_selected_text wave
+screenshot_app synth-page-1-wave.bmp
+press s 80
+wait 300
+expect_player_running yes
+expect_play_mode audition
+expect_audio_activity 64
+press s 80
+down m
+press r 80
+up m
+expect_screen_text ENV
+screenshot_app synth-page-2-env.bmp
+down m
+press r 80
+up m
+expect_screen_text FILTER
+screenshot_app synth-page-3-filter.bmp
+down m
+press r 80
+up m
+expect_screen_text MOD
+screenshot_app synth-page-4-mod.bmp
+down m
+press r 80
+up m
+expect_screen_text MIX
+screenshot_app synth-page-5-mix.bmp
+down m
+press r 80
+up m
+expect_screen_text SOUND
+# B+Right: next instrument (SNARE), same page
+down b
+press r 80
+up b
+expect_screen_text SNARE
+# Type field sits one row above preset: synth -> sample -> synth
+expect_selected_text preset
+press u 80
+expect_selected_text type
+down a
+press l 80
+up a
+expect_instrument_type 1 Sample
+expect_screen_text Instrument 01 SAMPLE
+screenshot_app synth-type-sample.bmp
+down a
+press r 80
+up a
+expect_instrument_type 1 Synth
+expect_screen_text Instrument 01 SYNTH
+down n
+press k 80
+up n
+wait 100
+press d 80
+expect_screen_text SYNTH SOUND
+screenshot_app synth-helper.bmp
+down n
+press k 80
+up n
+expect_no_error
+quit

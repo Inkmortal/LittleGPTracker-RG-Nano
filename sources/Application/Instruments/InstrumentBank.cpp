@@ -3,7 +3,10 @@
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Instruments/MidiInstrument.h"
+#include "Application/Instruments/SynthInstrument.h"
+#include "Application/Player/Player.h"
 #include "System/io/Status.h"
+#include "System/Console/Trace.h"
 #include "Application/Utils/char.h"
 #include "Application/Model/Config.h"
 #include "Application/Persistency/PersistencyService.h"
@@ -11,8 +14,27 @@
 
 char *InstrumentTypeData[IT_LAST]= {
 	"Sample",
-	"Midi"
+	"Midi",
+	"Synth"
 } ;
+
+// New projects start with a playable synth kit so the first note makes sound.
+static const char *starterKit[]= {
+	"kick","snare","hat","openhat","clap","bass","lead","pad",
+	"pluck","keys","bell","acid","subbass","chip","tom","perc"
+} ;
+#define STARTER_KIT_SIZE ((int)(sizeof(starterKit)/sizeof(char *)))
+
+static I_Instrument *createInstrument(InstrumentType type) {
+	switch (type) {
+		case IT_MIDI:
+			return new MidiInstrument() ;
+		case IT_SYNTH:
+			return new SynthInstrument() ;
+		default:
+			return new SampleInstrument() ;
+	}
+}
 
 
 // Contain all instrument definition
@@ -38,15 +60,40 @@ InstrumentBank::InstrumentBank():Persistent("INSTRUMENTBANK") {
 void InstrumentBank::AssignDefaults() {
 
 	SamplePool *pool=SamplePool::GetInstance() ;
+	int sampleCount=pool->GetNameListSize() ;
    	for (int i=0;i<MAX_SAMPLEINSTRUMENT_COUNT;i++) {
+		if (sampleCount==0 && i<STARTER_KIT_SIZE) {
+			SetInstrumentType(i,IT_SYNTH) ;
+			((SynthInstrument *)instrument_[i])->LoadPreset(starterKit[i]) ;
+			continue ;
+		}
+		SetInstrumentType(i,IT_SAMPLE) ;
 		SampleInstrument *s=(SampleInstrument*)instrument_[i] ;
-		if (i<pool->GetNameListSize()) {
+		if (i<sampleCount) {
 	        s->AssignSample(i) ;
 		} else {
 			s->AssignSample(-1) ;
 		} 
     } ;
 } ;
+
+bool InstrumentBank::SetInstrumentType(int i,InstrumentType type) {
+	if (i<0 || i>=MAX_SAMPLEINSTRUMENT_COUNT) return false ;
+	if (type!=IT_SAMPLE && type!=IT_SYNTH) return false ;
+	I_Instrument *old=instrument_[i] ;
+	if (old && old->GetType()==type) return true ;
+
+	// Nothing in the player may keep pointing at the instrument we delete
+	if (old) {
+		Player::GetInstance()->ForgetInstrument(old) ;
+	}
+	I_Instrument *instr=createInstrument(type) ;
+	instr->Init() ;
+	instrument_[i]=instr ;
+	delete old ;
+	Trace::Log("INSTRUMENT","slot %02X type %s",i,InstrumentTypeData[type]) ;
+	return true ;
+}
 
 InstrumentBank::~InstrumentBank() {
 	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
@@ -125,14 +172,7 @@ void InstrumentBank::RestoreContent(TiXmlElement *element) {
         I_Instrument *instr=instrument_[id] ;
 				if (instr->GetType()!=it) {
 					delete instr ;
-					switch (it) {
-						case IT_SAMPLE:
-							instr=new SampleInstrument() ;
-							break ;
-						case IT_MIDI:
-							instr=new MidiInstrument() ;
-							break ;
-					}
+					instr=createInstrument(it) ;
 					instrument_[id]=instr ;
 				} ;
 
@@ -191,6 +231,7 @@ void InstrumentBank::Init() {
 
 unsigned short InstrumentBank::GetNext() {
 	for (int i=0;i<MAX_SAMPLEINSTRUMENT_COUNT;i++) {
+		if (instrument_[i]->GetType()!=IT_SAMPLE) continue ;
 		SampleInstrument *si=(SampleInstrument *)instrument_[i] ;
 		Variable *sample=si->FindVariable(SIP_SAMPLE) ;
 		if (sample) {
@@ -219,13 +260,10 @@ unsigned short InstrumentBank::Clone(unsigned short i) {
 		return NO_MORE_INSTRUMENT ;
 	}
 
+	Player::GetInstance()->ForgetInstrument(dst) ;
 	delete dst ;
   
-	if (src->GetType()==IT_SAMPLE) {
-		dst=new SampleInstrument() ;
-	} else {
-		dst=new MidiInstrument() ;
-	}
+	dst=createInstrument(src->GetType()) ;
 	instrument_[next]=dst ;
 	IteratorPtr<Variable> it(src->GetIterator()) ;
 	for (it->Begin();!it->IsDone();it->Next()) {

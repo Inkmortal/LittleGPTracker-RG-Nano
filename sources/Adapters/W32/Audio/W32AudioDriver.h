@@ -13,6 +13,7 @@ struct W32SoundBuffer {
 class W32AudioDriver: public AudioDriver {
 public:
 	W32AudioDriver(int index,AudioSettings &settings) ;
+	virtual ~W32AudioDriver() ;
      // Audio implementation
 	virtual bool InitDriver() ; 
 	virtual void CloseDriver();

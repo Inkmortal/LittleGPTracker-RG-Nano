@@ -10,6 +10,7 @@
 enum InstrumentType {
 	IT_SAMPLE=0,
 	IT_MIDI,
+	IT_SYNTH,
 	IT_LAST
 } ;
 
@@ -53,6 +54,9 @@ public:
 
 	  virtual void GetTableState(TableSaveState &state)=0 ;	 
 	  virtual void SetTableState(TableSaveState &state)=0 ;	 
+
+	  // True while a stopped voice is still fading out (synth release tail)
+	  virtual bool IsReleasing(int channel) { return false ; } ;
 
 };
 #endif

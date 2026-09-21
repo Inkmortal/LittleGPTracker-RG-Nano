@@ -52,6 +52,15 @@ tempoNudge_(0)
     Variable *renderMode =
         new Variable("renderMode", VAR_RENDER, renderModes, MAX_RENDER_MODE, 0);
     this->Insert(renderMode);
+    // Send effects shared by every instrument (see Mixer/SendFX)
+    Variable *reverbSize = new Variable("reverb size", VAR_REVERB_SIZE, 0x90, 0xFF);
+    this->Insert(reverbSize);
+    Variable *reverbDamp = new Variable("reverb damp", VAR_REVERB_DAMP, 0x60, 0xFF);
+    this->Insert(reverbDamp);
+    Variable *delaySteps = new Variable("delay steps", VAR_DELAY_STEPS, 3, 16);
+    this->Insert(delaySteps);
+    Variable *delayFeedback = new Variable("delay feedback", VAR_DELAY_FEEDBACK, 0x70, 0xFF);
+    this->Insert(delayFeedback);
 
 // Reload the midi device list
 

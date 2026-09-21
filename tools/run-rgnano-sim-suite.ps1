@@ -1,6 +1,9 @@
 param(
   [string]$ArtifactsRoot = ".\sim-artifacts-suite",
-  [switch]$NoBuild
+  [switch]$NoBuild,
+  [switch]$StopOnFailure,
+  [switch]$Audible,
+  [string]$Only = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -110,6 +113,21 @@ $suite = @(
     Args = @("-ResetLastProject", "-Skin")
   },
   @{
+    Name = "synth-starter-kit"
+    Script = "synth-starter-kit.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "synth-instrument-pages"
+    Script = "synth-instrument-pages.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "synth-preset-tour"
+    Script = "synth-preset-tour.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "wuxia-lofi-studio"
     Script = "wuxia-lofi-studio.rgsim"
     Args = @("-ResetLastProject", "-SeedLofiFixture", "-Skin")
@@ -118,6 +136,11 @@ $suite = @(
 
 $results = @()
 $started = Get-Date
+
+if ($Only) {
+  $wanted = $Only.Split(",")
+  $suite = $suite | Where-Object { $wanted -contains $_.Name }
+}
 
 foreach ($case in $suite) {
   $caseStarted = Get-Date
@@ -132,6 +155,9 @@ foreach ($case in $suite) {
     "-Script", $scriptPath,
     "-ArtifactsDir", $caseArtifacts
   ) + $case.Args
+  if (-not $Audible) {
+    $args += "-Mute"
+  }
 
   & powershell @args
   $exitCode = $LASTEXITCODE
@@ -149,7 +175,10 @@ foreach ($case in $suite) {
   }
 
   if ($exitCode -ne 0) {
-    break
+    Write-Host "    FAILED (exit $exitCode) - see $caseArtifacts"
+    if ($StopOnFailure) {
+      break
+    }
   }
 }
 

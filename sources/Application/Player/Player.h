@@ -57,6 +57,7 @@ public:
 	void Start(PlayMode mode,bool forceSongMode) ;
 	void Stop() ;
 	void AuditionInstrument(int instrument,int note) ;
+	void ForgetInstrument(I_Instrument *instrument) ;
 	
 //	void Toggle(PlayMode mode,bool forceSongMode=false) ;
 //	void ChangePlayMode(PlayMode mode) ;

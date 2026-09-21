@@ -249,6 +249,14 @@ void Player::AuditionInstrument(int instrument,int note) {
 	mixer_->Unlock();
 }
 
+void Player::ForgetInstrument(I_Instrument *instrument) {
+	if (!instrument) return ;
+	mixer_->Lock() ;
+	mixer_->ForgetInstrument(instrument) ;
+	TablePlayback::ForgetInstrument(instrument) ;
+	mixer_->Unlock() ;
+}
+
 void Player::Stop() {
 
 	mixer_->Lock() ;

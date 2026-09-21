@@ -19,6 +19,8 @@ public:
 	void OnStart() ;
 	unsigned short GetNext() ;
 	unsigned short Clone(unsigned short i) ;
+	// Swap a sample slot between the sample and synth engines
+	bool SetInstrumentType(int i,InstrumentType type) ;
 private:
 	I_Instrument *instrument_[MAX_INSTRUMENT_COUNT] ;
 } ;

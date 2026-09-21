@@ -18,9 +18,11 @@ public:
 	bool IsMuted() ;
 	void SetMixBus(int i) ;
 	void Reset() ;
+	void ForgetInstrument(I_Instrument *instr) ;
 private:
 	int index_ ;
 	I_Instrument *instr_ ;
+	I_Instrument *tail_ ;   // stopped instrument still playing its release
 	bool muted_ ;
 	int busIndex_ ;
 	MixBus *mixBus_ ;

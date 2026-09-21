@@ -88,6 +88,8 @@ wait 120
 expect_view instrument
 
 # Sample import/listen modal, assuming rgnano-sim-data/samples exists.
+# New projects start with synths: switch this slot to a sample instrument first
+route instrument.make_sample
 route instrument.open_sample_import
 wait 120
 dump_state audit sample import

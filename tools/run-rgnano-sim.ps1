@@ -5,6 +5,8 @@ param(
   [switch]$SeedSampleFixture,
   [switch]$SeedLofiFixture,
   [switch]$ResetLastProject,
+  [switch]$Mute,
+  [switch]$Visible,
   [string]$ArtifactsDir = ""
 )
 
@@ -222,8 +224,19 @@ if ($Script) {
   $args += "-RGNANOSIM_SCRIPT=$scriptToRun"
 }
 $args += "-RGNANOSIM_LOG=$(Join-Path $exeDir 'rgnano-sim.log')"
+if ($Mute) {
+  # Audio is still rendered, measured and captured, just not played
+  $args += "-RGNANOSIM_MUTE=YES"
+}
 if ($Skin -or -not $Script) {
   $args += "-RGNANOSIM_SKIN=YES"
+}
+
+# Scripted runs are headless: SDL's dummy video driver renders into memory
+# (screenshots still work) and never opens a window that could steal focus.
+$previousVideoDriver = $env:SDL_VIDEODRIVER
+if ($Script -and -not $Visible) {
+  $env:SDL_VIDEODRIVER = "dummy"
 }
 
 if ($args.Count -gt 0) {
@@ -233,6 +246,7 @@ if ($args.Count -gt 0) {
 }
 
 $exitCode = $LASTEXITCODE
+$env:SDL_VIDEODRIVER = $previousVideoDriver
 
 if ($ArtifactsDir) {
   $logPath = Join-Path $exeDir "rgnano-sim.log"

@@ -128,6 +128,11 @@ private:
 	bool SimSetSongChain(int row, int channel, int chain);
 	bool SimSetChainPhrase(int chain, int row, int phrase, int transpose);
 	bool SimSetPhraseNote(int phrase, int row, int note, int instrument);
+	bool SimSetSynth(int instrument, const std::string &preset);
+	bool SimSetInstrumentParam(int instrument, const std::string &name, const std::string &value);
+	bool ExpectSimInstrumentType(int instrument, const std::string &type);
+	bool ExpectSimInstrumentName(int instrument, const std::string &name);
+	bool ExpectSimInstrumentParam(int instrument, const std::string &name, const std::string &value);
 	bool SimSetPhraseCommand(int phrase, int row, int slot, const std::string &command, const std::string &param);
 	bool SimSetTableCommand(int table, int row, int slot, const std::string &command, const std::string &param);
 	bool SimSaveProject();

@@ -11,6 +11,7 @@ static int gSimAudioPeak = 0;
 static unsigned long gSimAudioNonSilentBytes = 0;
 static FILE *gSimAudioCaptureFile = 0;
 static unsigned long gSimAudioCaptureBytes = 0;
+static bool gSimAudioMuted = false;
 
 static void WriteSimWav16(unsigned short value) {
   unsigned char bytes[2];
@@ -125,6 +126,10 @@ void AudioDriver::AddBuffer(short *buffer,int samplecount) {
     fwrite(buffer, 1, len, gSimAudioCaptureFile);
     gSimAudioCaptureBytes += len;
   }
+  // Measured and captured above; muted runs just don't reach the speakers
+  if (gSimAudioMuted) {
+    SYS_MEMSET(pool_[poolQueuePosition_].buffer_, 0, len);
+  }
 #endif
   pool_[poolQueuePosition_].size_=len ;
   poolQueuePosition_=(poolQueuePosition_+1)%SOUND_BUFFER_COUNT ;
@@ -159,6 +164,8 @@ void AudioDriver::ResetSimAudioStats() {
 }
 
 int AudioDriver::GetSimAudioPeak() { return gSimAudioPeak; }
+
+void AudioDriver::SetSimAudioMuted(bool muted) { gSimAudioMuted = muted; }
 
 unsigned long AudioDriver::GetSimAudioNonSilentBytes() {
   return gSimAudioNonSilentBytes;

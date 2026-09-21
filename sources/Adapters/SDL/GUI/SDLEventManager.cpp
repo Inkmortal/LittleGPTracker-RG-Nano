@@ -5,6 +5,8 @@
 #include "Application/Instruments/InstrumentBank.h"
 #include "Application/Instruments/CommandList.h"
 #include "Application/Instruments/SampleInstrument.h"
+#include "Application/Instruments/SynthInstrument.h"
+#include "Services/Audio/AudioDriver.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Mixer/MixerService.h"
 #include "Application/Model/Groove.h"
@@ -94,6 +96,10 @@ bool SDLEventManager::Init()
 	SDL_EnableUNICODE(1);
 	SDL_ShowCursor(SDL_DISABLE);
 #ifdef PLATFORM_RGNANO_SIM
+	const char *mute=Config::GetInstance()->GetValue("RGNANOSIM_MUTE") ;
+	if (mute && !strcmp(mute,"YES")) {
+		AudioDriver::SetSimAudioMuted(true) ;
+	}
 	const char *skin=Config::GetInstance()->GetValue("RGNANOSIM_SKIN") ;
 	if ((skin)&&(!strcmp(skin,"YES"))) {
 		SDL_ShowCursor(SDL_ENABLE);
@@ -458,6 +464,14 @@ bool SDLEventManager::AppendSimRoute(const std::string &routeName, const char *s
 		lines.push_back("route combo.r.right");
 	} else if (routeName=="instrument_table.to_table") {
 		lines.push_back("route combo.r.left");
+	} else if (routeName=="instrument.make_sample") {
+		// Fresh synth slot: focus starts on preset, the type switch is one row up
+		lines.push_back("press u 80");
+		lines.push_back("down a");
+		lines.push_back("press l 80");
+		lines.push_back("up a");
+		lines.push_back("wait 120");
+		lines.push_back("press d 80");
 	} else if (routeName=="instrument.open_sample_import") {
 		lines.push_back("press k 80");
 		lines.push_back("wait 300");
@@ -569,6 +583,10 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		iss >> command.value >> command.value2 >> command.arg;
 	} else if (command.op=="sim_set_chain_phrase" || command.op=="sim_set_phrase_note") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2;
+	} else if (command.op=="sim_set_synth" || command.op=="expect_instrument_type" || command.op=="expect_instrument_name") {
+		iss >> command.value >> command.arg;
+	} else if (command.op=="sim_set_instrument_param" || command.op=="expect_instrument_param") {
+		iss >> command.value >> command.arg >> command.arg2;
 	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2 >> command.arg3;
 	}
@@ -918,6 +936,31 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="sim_set_phrase_note") {
 		if (!SimSetPhraseNote(command.value,command.value2,atoi(command.arg.c_str()),atoi(command.arg2.c_str()))) {
 			FailSimScript("phrase setup failed");
+			return;
+		}
+	} else if (command.op=="sim_set_synth") {
+		if (!SimSetSynth(command.value,command.arg)) {
+			FailSimScript("synth setup failed");
+			return;
+		}
+	} else if (command.op=="sim_set_instrument_param") {
+		if (!SimSetInstrumentParam(command.value,command.arg,command.arg2)) {
+			FailSimScript("instrument param setup failed");
+			return;
+		}
+	} else if (command.op=="expect_instrument_type") {
+		if (!ExpectSimInstrumentType(command.value,command.arg)) {
+			FailSimScript("instrument type assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_instrument_name") {
+		if (!ExpectSimInstrumentName(command.value,command.arg)) {
+			FailSimScript("instrument name assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_instrument_param") {
+		if (!ExpectSimInstrumentParam(command.value,command.arg,command.arg2)) {
+			FailSimScript("instrument param assertion failed");
 			return;
 		}
 	} else if (command.op=="sim_set_phrase_command") {
@@ -1590,6 +1633,16 @@ bool SDLEventManager::ExpectSimTempo(int bpm)
 	return matches;
 }
 
+static SampleInstrument *GetSimSampleInstrument(InstrumentBank *bank, int instrument)
+{
+	I_Instrument *instr=bank->GetInstrument(instrument);
+	if (!instr || instr->GetType()!=IT_SAMPLE) {
+		Trace::Error("RGNANO_SIM instrument %02X is not a sample instrument",instrument);
+		return 0;
+	}
+	return (SampleInstrument *)instr;
+}
+
 bool SDLEventManager::ExpectSimInstrumentSample(int instrument, const std::string &sampleName)
 {
 	ViewData *viewData=GetSimViewData();
@@ -1598,7 +1651,8 @@ bool SDLEventManager::ExpectSimInstrumentSample(int instrument, const std::strin
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
-	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
+	SampleInstrument *sampleInstrument=GetSimSampleInstrument(bank,instrument);
+	if (!sampleInstrument) return false;
 	const char *actual=sampleInstrument->GetFileName();
 	bool matches=(actual && sampleName==actual);
 	Trace::Log("RGNANO_SIM","expect_instrument_sample inst=%d actual=%s expected=%s => %s",instrument,actual?actual:"(null)",sampleName.c_str(),matches?"match":"mismatch");
@@ -1613,7 +1667,8 @@ bool SDLEventManager::ExpectSimInstrumentRoot(int instrument, int note)
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
-	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
+	SampleInstrument *sampleInstrument=GetSimSampleInstrument(bank,instrument);
+	if (!sampleInstrument) return false;
 	Variable *root=sampleInstrument->FindVariable(SIP_ROOTNOTE);
 	int actual=root?root->GetInt():-1;
 	bool matches=(actual==note);
@@ -1629,7 +1684,8 @@ bool SDLEventManager::ExpectSimInstrumentRootSuggestion(int instrument, int note
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
-	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
+	SampleInstrument *sampleInstrument=GetSimSampleInstrument(bank,instrument);
+	if (!sampleInstrument) return false;
 	int actual=sampleInstrument->GetSuggestedRootNote();
 	bool matches=(actual==note);
 	Trace::Log("RGNANO_SIM","expect_instrument_root_suggestion inst=%d actual=%d expected=%d => %s",instrument,actual,note,matches?"match":"mismatch");
@@ -1644,7 +1700,8 @@ bool SDLEventManager::ExpectSimSampleTrim(int instrument, int start, int loopSta
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
-	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
+	SampleInstrument *sampleInstrument=GetSimSampleInstrument(bank,instrument);
+	if (!sampleInstrument) return false;
 	Variable *startVar=sampleInstrument->FindVariable(SIP_START);
 	Variable *loopVar=sampleInstrument->FindVariable(SIP_LOOPSTART);
 	Variable *endVar=sampleInstrument->FindVariable(SIP_END);
@@ -1665,7 +1722,8 @@ bool SDLEventManager::ExpectSimSampleTrimOrder(int instrument)
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
-	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
+	SampleInstrument *sampleInstrument=GetSimSampleInstrument(bank,instrument);
+	if (!sampleInstrument) return false;
 	Variable *startVar=sampleInstrument->FindVariable(SIP_START);
 	Variable *loopVar=sampleInstrument->FindVariable(SIP_LOOPSTART);
 	Variable *endVar=sampleInstrument->FindVariable(SIP_END);
@@ -1825,6 +1883,8 @@ bool SDLEventManager::SimImportSampleToInstrument(int instrument, const std::str
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
+	// Importing a sample makes the slot a sample instrument (new projects start with synths)
+	bank->SetInstrumentType(instrument,IT_SAMPLE);
 	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
 	sampleInstrument->AssignSample(sampleIndex);
 	int rootNote=sampleInstrument->DetectRootNoteSuggestion();
@@ -1844,7 +1904,8 @@ bool SDLEventManager::SimSetSampleTrim(int instrument, int start, int end)
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
-	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
+	SampleInstrument *sampleInstrument=GetSimSampleInstrument(bank,instrument);
+	if (!sampleInstrument) return false;
 	if (!sampleInstrument) return false;
 	int sampleIndex=sampleInstrument->GetSampleIndex();
 	SoundSource *source=SamplePool::GetInstance()->GetSource(sampleIndex);
@@ -1874,7 +1935,8 @@ bool SDLEventManager::SimDetectTrimRoot(int instrument, int expected)
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
-	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
+	SampleInstrument *sampleInstrument=GetSimSampleInstrument(bank,instrument);
+	if (!sampleInstrument) return false;
 	if (!sampleInstrument) return false;
 	int actual=sampleInstrument->DetectRootNoteSuggestionFromTrim();
 	bool matches=(actual==expected);
@@ -1922,6 +1984,111 @@ bool SDLEventManager::SimSetPhraseNote(int phrase, int row, int note, int instru
 	viewData->song_->phrase_->SetUsed((unsigned char)phrase);
 	Trace::Log("RGNANO_SIM","sim_set_phrase_note phrase=%02X row=%d note=%d instrument=%02X",phrase,row,note,instrument);
 	return true;
+}
+
+// Script parameter names use '_' for spaces: "env_amount" -> "env amount"
+static Variable *FindSimInstrumentVariable(I_Instrument *instr, const std::string &name)
+{
+	if (!instr) return 0;
+	std::string wanted=name;
+	for (size_t i=0;i<wanted.size();i++) {
+		if (wanted[i]=='_') wanted[i]=' ';
+	}
+	IteratorPtr<Variable> it(instr->GetIterator());
+	for (it->Begin();!it->IsDone();it->Next()) {
+		Variable &v=it->CurrentItem();
+		if (wanted==v.GetName()) {
+			return &v;
+		}
+	}
+	return 0;
+}
+
+static I_Instrument *GetSimInstrument(ViewData *viewData, int instrument)
+{
+	if (!viewData || !viewData->project_ || instrument<0 || instrument>=MAX_INSTRUMENT_COUNT) {
+		return 0;
+	}
+	return viewData->project_->GetInstrumentBank()->GetInstrument(instrument);
+}
+
+bool SDLEventManager::SimSetSynth(int instrument, const std::string &preset)
+{
+	ViewData *viewData=GetSimViewData();
+	if (!viewData || !viewData->project_ || instrument<0 || instrument>=MAX_SAMPLEINSTRUMENT_COUNT) {
+		Trace::Error("RGNANO_SIM sim_set_synth invalid instrument=%d",instrument);
+		return false;
+	}
+	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
+	if (!bank->SetInstrumentType(instrument,IT_SYNTH)) {
+		return false;
+	}
+	SynthInstrument *synth=(SynthInstrument *)bank->GetInstrument(instrument);
+	synth->LoadPreset(preset.c_str());
+	bool matches=(preset==SynthInstrument::GetPresetName(synth->GetPreset()));
+	AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+	if (appWindow) {
+		appWindow->RefreshCurrentView();
+	}
+	Trace::Log("RGNANO_SIM","sim_set_synth inst=%02X preset=%s => %s",instrument,preset.c_str(),matches?"ok":"unknown preset");
+	return matches;
+}
+
+bool SDLEventManager::SimSetInstrumentParam(int instrument, const std::string &name, const std::string &value)
+{
+	I_Instrument *instr=GetSimInstrument(GetSimViewData(),instrument);
+	Variable *v=FindSimInstrumentVariable(instr,name);
+	if (!v) {
+		Trace::Error("RGNANO_SIM sim_set_instrument_param unknown inst=%d param=%s",instrument,name.c_str());
+		return false;
+	}
+	if (v->GetType()==Variable::CHAR_LIST || v->GetType()==Variable::BOOL) {
+		v->SetString(value.c_str());
+	} else {
+		v->SetInt((int)strtol(value.c_str(),0,0));
+	}
+	Trace::Log("RGNANO_SIM","sim_set_instrument_param inst=%02X %s=%s",instrument,v->GetName(),v->GetString());
+	return true;
+}
+
+bool SDLEventManager::ExpectSimInstrumentType(int instrument, const std::string &type)
+{
+	I_Instrument *instr=GetSimInstrument(GetSimViewData(),instrument);
+	if (!instr) return false;
+	const char *actual="Sample";
+	if (instr->GetType()==IT_MIDI) actual="Midi";
+	if (instr->GetType()==IT_SYNTH) actual="Synth";
+	bool matches=(type==actual);
+	Trace::Log("RGNANO_SIM","expect_instrument_type inst=%02X actual=%s expected=%s => %s",instrument,actual,type.c_str(),matches?"match":"mismatch");
+	return matches;
+}
+
+bool SDLEventManager::ExpectSimInstrumentName(int instrument, const std::string &name)
+{
+	I_Instrument *instr=GetSimInstrument(GetSimViewData(),instrument);
+	if (!instr) return false;
+	const char *actual=instr->GetName();
+	bool matches=(actual && name==actual);
+	Trace::Log("RGNANO_SIM","expect_instrument_name inst=%02X actual=%s expected=%s => %s",instrument,actual?actual:"(null)",name.c_str(),matches?"match":"mismatch");
+	return matches;
+}
+
+bool SDLEventManager::ExpectSimInstrumentParam(int instrument, const std::string &name, const std::string &value)
+{
+	I_Instrument *instr=GetSimInstrument(GetSimViewData(),instrument);
+	Variable *v=FindSimInstrumentVariable(instr,name);
+	if (!v) {
+		Trace::Error("RGNANO_SIM expect_instrument_param unknown inst=%d param=%s",instrument,name.c_str());
+		return false;
+	}
+	bool matches=false;
+	if (v->GetType()==Variable::CHAR_LIST || v->GetType()==Variable::BOOL) {
+		matches=(value==v->GetString());
+	} else {
+		matches=(v->GetInt()==(int)strtol(value.c_str(),0,0));
+	}
+	Trace::Log("RGNANO_SIM","expect_instrument_param inst=%02X %s actual=%s expected=%s => %s",instrument,v->GetName(),v->GetString(),value.c_str(),matches?"match":"mismatch");
+	return matches;
 }
 
 bool SDLEventManager::SimSetPhraseCommand(int phrase, int row, int slot, const std::string &commandName, const std::string &paramText)

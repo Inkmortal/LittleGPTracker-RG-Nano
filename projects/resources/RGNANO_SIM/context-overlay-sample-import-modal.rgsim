@@ -11,6 +11,8 @@ press a 80
 wait 100
 route phrase.to_instrument
 expect_view instrument
+# New projects start with synths: switch this slot to a sample instrument first
+route instrument.make_sample
 route instrument.open_sample_import
 wait 120
 down n

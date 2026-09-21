@@ -78,6 +78,8 @@ screenshot demo-song-programmed.bmp
 route phrase.to_instrument
 wait 120
 expect_view instrument
+# New projects start with synths: switch this slot to a sample instrument first
+route instrument.make_sample
 route instrument.open_sample_import
 route sample_import.to_first_file
 route sample_import.quick_import_selected
@@ -85,6 +87,10 @@ expect_project_sample rgnano-test-tone.wav
 route sample_import.exit
 wait 120
 expect_view instrument
+# Start on Instrument previews the sound; phrase playback starts from Phrase
+route instrument.to_phrase
+wait 120
+expect_view phrase
 reset_audio_stats
 start_audio_capture demo-song-workflow.wav
 press s 80
@@ -96,13 +102,10 @@ wait 1800
 expect_audio_activity 64
 expect_audio_capture_bytes 120000
 end_audio_capture
-route instrument.to_phrase
-wait 120
-expect_view phrase
 route phrase.to_chain
 wait 120
 expect_view chain
-expect_screen_text 1######
+expect_screen_text 1#
 screenshot demo-song-playing.bmp
 expect_size 240 240
 expect_colors 3

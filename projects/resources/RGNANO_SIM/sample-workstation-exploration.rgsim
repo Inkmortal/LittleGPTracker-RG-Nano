@@ -20,6 +20,8 @@ wait 120
 expect_view instrument
 
 # Import a real melodic fixture sample through the existing sample import UI.
+# New projects start with synths: switch this slot to a sample instrument first
+route instrument.make_sample
 route instrument.open_sample_import
 route sample_import.to_first_file
 press d 80
