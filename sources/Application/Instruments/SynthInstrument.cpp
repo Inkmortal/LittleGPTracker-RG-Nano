@@ -111,22 +111,22 @@ static const SynthPreset synthPresets[]={
 		PV(SYP_DECAY,0x98),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x70),
 		PV(SYP_PITCHENV,0x28),PV(SYP_PITCHDEC,0x68),
 		PV(SYP_CUTOFF,0xE8),PV(SYP_RESO,0),PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x30),
-		PV(SYP_VOLUME,0xA0),PEND}},
+		PV(SYP_VOLUME,0xC8),PEND}},
 	{"clap",{
 		PV(SYP_WAVE,SW_NOISE),
 		PV(SYP_DECAY,0x94),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x70),
 		PV(SYP_FILTTYPE,SFT_BANDPASS),PV(SYP_CUTOFF,0xB4),PV(SYP_RESO,0x60),
-		PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x20),PV(SYP_VOLUME,0xE0),PEND}},
+		PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x20),PV(SYP_VOLUME,0xF0),PEND}},
 	{"hat",{
 		PV(SYP_WAVE,SW_METAL),PV(SYP_SHAPE,0x40),PV(SYP_NOISE,0x70),
 		PV(SYP_DECAY,0x70),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x50),
-		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xC8),PV(SYP_RESO,0x30),
-		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xA0),PV(SYP_PAN,0x90),PEND}},
+		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xB8),PV(SYP_RESO,0x30),
+		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xD8),PV(SYP_PAN,0x90),PEND}},
 	{"openhat",{
 		PV(SYP_WAVE,SW_METAL),PV(SYP_SHAPE,0x40),PV(SYP_NOISE,0x70),
 		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x90),
-		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xC4),PV(SYP_RESO,0x30),
-		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x90),PV(SYP_PAN,0x90),PEND}},
+		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xB4),PV(SYP_RESO,0x30),
+		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xC0),PV(SYP_PAN,0x90),PEND}},
 	{"tom",{
 		PV(SYP_WAVE,SW_SINE),PV(SYP_SHAPE,0x20),PV(SYP_TUNE,-17),PV(SYP_NOISE,0x10),
 		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x70),
@@ -266,9 +266,27 @@ static inline float softSat(float x) {
 	return x*(27.0f+x2)/(27.0f+9.0f*x2) ;
 }
 
+// Sine lookup (phase in cycles). Linear interpolation over 2048 points is
+// far below audible error and much cheaper than libm sin() on the RG Nano.
+#define SYNTH_SINE_SIZE 2048
+static float synthSineTable[SYNTH_SINE_SIZE+1] ;
+static bool synthSineReady=false ;
+
+static void initSineTable() {
+	if (synthSineReady) return ;
+	for (int i=0;i<=SYNTH_SINE_SIZE;i++) {
+		synthSineTable[i]=(float)sin(SYNTH_TWO_PI*i/SYNTH_SINE_SIZE) ;
+	}
+	synthSineReady=true ;
+}
+
 static inline float fastSin(float phase) {
-	// phase in cycles
-	return (float)sin(SYNTH_TWO_PI*phase) ;
+	phase-=(float)floor(phase) ;
+	float pos=phase*SYNTH_SINE_SIZE ;
+	int i=(int)pos ;
+	if (i>=SYNTH_SINE_SIZE) i=SYNTH_SINE_SIZE-1 ;
+	float frac=pos-i ;
+	return synthSineTable[i]+(synthSineTable[i+1]-synthSineTable[i])*frac ;
 }
 
 static inline unsigned int xorshift(unsigned int &state) {
@@ -304,6 +322,7 @@ void SynthPresetVariable::onChange() {
  ***************************************************************/
 
 SynthInstrument::SynthInstrument() {
+	initSineTable() ;
 	applyingPreset_=true ;
 
 	preset_=new SynthPresetVariable(this,"preset",SYP_PRESET,getPresetNameList(),SYNTH_PRESET_COUNT,0) ;
@@ -891,7 +910,7 @@ float SynthInstrument::renderPartial(SynthVoice &v,int p,float inc,float shape,
 		case SW_SINE: {
 			// shape = feedback self-modulation, sine -> saw-like
 			float fb=shape*1.4f ;
-			float s=(float)sin(SYNTH_TWO_PI*tm+fb*v.fbLast_[p]) ;
+			float s=fastSin(tm+fb*v.fbLast_[p]/SYNTH_TWO_PI) ;
 			v.fbLast_[p]=0.5f*(v.fbLast_[p]+s) ;
 			out=s ;
 			break ;

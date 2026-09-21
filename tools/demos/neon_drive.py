@@ -23,14 +23,15 @@ def build() -> Project:
     p = Project("NeonDrive", tempo=100)
     p.key("A", "Aeolian mode (minor)")
     p.set("softclip", "Subtle")
+    p.set("pregain", 60)
     p.params["reverb size"] = "200"
     p.params["reverb damp"] = "80"
     p.params["delay steps"] = "3"
     p.params["delay feedback"] = "110"
 
     p.synth(KICK, "kick", drive=0x60, volume=0xB8)
-    p.synth(SNARE, "snare", decay=0xA0, reverb=0x70, volume=0xA8)
-    p.synth(HAT, "hat", volume=0x90)
+    p.synth(SNARE, "snare", decay=0xA0, reverb=0x70, volume=0xE8)
+    p.synth(HAT, "hat", volume=0xE0)
     p.synth(BASS, "bass", decay=0x98, sustain=0x60, cutoff=0x60, env_amount=0x70,
             drive=0x40, volume=0x7C)
     p.synth(PAD, "pad", attack=0x90, release=0xC0, glide=0x04, reverb=0x90, volume=0x40)

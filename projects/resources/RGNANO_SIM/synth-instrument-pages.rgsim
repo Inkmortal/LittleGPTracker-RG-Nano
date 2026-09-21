@@ -1,22 +1,22 @@
-# Synth instrument screen: walk all five pages, check the help text follows
-# the focused knob, audition with Start, and switch the slot type.
+# Synth instrument screen, written with goal commands: say what you want
+# (goto / page / focus / set / instrument) and the simulator presses
+# whatever keys the live screen needs.
 route boot.new_project_random
 expect_view song
 press a 80
-route song.to_chain
+goto chain
 press a 80
-route chain.to_phrase
+goto phrase
 press a 80
 expect_phrase_row_count 0 1
-route phrase.to_instrument
-expect_view instrument
+goto instrument
 expect_screen_text Instrument 00 SYNTH
-expect_screen_text SOUND
 expect_screen_text KICK
-screenshot_app synth-page-1-sound.bmp
 expect_selected_text preset
-press d 80
-expect_selected_text wave
+screenshot_app synth-page-1-sound.bmp
+
+focus wave
+expect_screen_text base tone
 screenshot_app synth-page-1-wave.bmp
 press s 80
 wait 300
@@ -24,50 +24,38 @@ expect_player_running yes
 expect_play_mode audition
 expect_audio_activity 64
 press s 80
-down m
-press r 80
-up m
-expect_screen_text ENV
+
+page ENV
+set decay 0x60
+expect_instrument_param 0 decay 0x60
+expect_screen_text 32 ms
 screenshot_app synth-page-2-env.bmp
-down m
-press r 80
-up m
-expect_screen_text FILTER
+page FILTER
+set filter lowpass
+set cutoff 0x80
+expect_instrument_param 0 filter lowpass
+expect_instrument_param 0 cutoff 0x80
 screenshot_app synth-page-3-filter.bmp
-down m
-press r 80
-up m
-expect_screen_text MOD
+page MOD
 screenshot_app synth-page-4-mod.bmp
-down m
-press r 80
-up m
-expect_screen_text MIX
+page MIX
+set reverb 0x40
+expect_instrument_param 0 reverb 0x40
 screenshot_app synth-page-5-mix.bmp
-down m
-press r 80
-up m
-expect_screen_text SOUND
-# B+Right: next instrument (SNARE), same page
-down b
-press r 80
-up b
+
+# Other instrument, then switch its engine to sample and back
+instrument 01
+page SOUND
 expect_screen_text SNARE
-# Type field sits one row above preset: synth -> sample -> synth
-expect_selected_text preset
-press u 80
-expect_selected_text type
-down a
-press l 80
-up a
+set type sample
 expect_instrument_type 1 Sample
 expect_screen_text Instrument 01 SAMPLE
 screenshot_app synth-type-sample.bmp
-down a
-press r 80
-up a
+set type synth
 expect_instrument_type 1 Synth
-expect_screen_text Instrument 01 SYNTH
+set preset bell
+expect_instrument_name 1 BELL
+
 down n
 press k 80
 up n
@@ -78,5 +66,6 @@ screenshot_app synth-helper.bmp
 down n
 press k 80
 up n
+goto song
 expect_no_error
 quit

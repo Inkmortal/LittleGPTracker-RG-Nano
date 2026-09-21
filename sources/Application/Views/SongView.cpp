@@ -132,6 +132,11 @@ void SongView::pasteLast() {
         *c = lastChain_;
         viewData_->song_->chain_->SetUsed(*c);
         isDirty_ = true;
+        // Pasting re-uses the last chain; make that visible for beginners
+        static char hint[40];
+        bool hasContent = viewData_->song_->chain_->data_[(*c) * 16] != 0xFF;
+        sprintf(hint, hasContent ? "Reused %2.2X. A again = new" : "Chain %2.2X", *c);
+        View::SetNotification(hint);
     } else {
         lastChain_ = *c;
     }
@@ -606,6 +611,9 @@ void SongView::ProcessButtonMask(unsigned short mask, bool pressed) {
             if (next != NO_MORE_CHAIN) {
                 setChain((unsigned char)next);
                 isDirty_ = true;
+                static char hint[40];
+                sprintf(hint, "New chain %2.2X", (unsigned char)next);
+                View::SetNotification(hint);
             }
             mask &= (0xFFFF - EPBM_A);
         }
@@ -734,6 +742,9 @@ void SongView::processNormalButtonMask(unsigned int mask) {
                         viewData_->currentChain_ = *data;
                         SetChanged();
                         NotifyObservers(&ve);
+                    } else {
+                        // Explain why nothing opened instead of doing nothing
+                        View::SetNotification("Empty: press A for a chain");
                     }
                 }
 
@@ -849,6 +860,9 @@ void SongView::processSelectionButtonMask(unsigned int mask) {
                         viewData_->currentChain_ = *data;
                         SetChanged();
                         NotifyObservers(&ve);
+                    } else {
+                        // Explain why nothing opened instead of doing nothing
+                        View::SetNotification("Empty: press A for a chain");
                     }
                 }
 

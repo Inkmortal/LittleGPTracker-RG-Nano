@@ -239,13 +239,16 @@ if ($Script -and -not $Visible) {
   $env:SDL_VIDEODRIVER = "dummy"
 }
 
-if ($args.Count -gt 0) {
-  & $exeFullPath @args
+# The simulator is a GUI-subsystem app (no console window), so wait on the
+# process explicitly to get its exit code.
+$quotedArgs = @($args | ForEach-Object { '"' + $_ + '"' })
+if ($quotedArgs.Count -gt 0) {
+  $process = Start-Process -FilePath $exeFullPath -ArgumentList $quotedArgs -Wait -PassThru -NoNewWindow
 } else {
-  & $exeFullPath
+  $process = Start-Process -FilePath $exeFullPath -Wait -PassThru -NoNewWindow
 }
 
-$exitCode = $LASTEXITCODE
+$exitCode = $process.ExitCode
 $env:SDL_VIDEODRIVER = $previousVideoDriver
 
 if ($ArtifactsDir) {

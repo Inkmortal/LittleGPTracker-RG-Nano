@@ -1,0 +1,83 @@
+# Follows docs/TRACKER_BASICS.md "Your first beat" with real button presses,
+# so the beginner guide stays true to what the device does.
+route boot.new_project_random
+expect_view song
+
+# Opening an empty cell explains itself instead of doing nothing
+down n
+press r 80
+up n
+expect_view song
+expect_screen_text press A for a chain
+
+# Track 1: kick on every beat
+press a 80
+expect_song_chain 0 0 00
+goto chain
+press a 80
+goto phrase
+row 00
+press a 80
+row 04
+press a 80
+row 08
+press a 80
+row 0C
+press a 80
+expect_phrase_row_count 0 4
+expect_screen_text KICK
+press s 80
+wait 600
+expect_play_mode phrase
+expect_audio_activity 64
+press s 80
+
+# Track 2: snare on beats 2 and 4, instrument 01
+goto song
+press r 80
+press a 80
+expect_screen_text Reused 00
+press a 80
+expect_screen_text New chain 01
+expect_song_chain 0 1 01
+goto chain
+press a 80
+press a 80
+expect_screen_text New phrase 01
+goto phrase
+row 04
+press a 80
+press r 80
+down a
+press r 80
+up a
+expect_screen_text I01: SNARE
+press l 80
+row 0C
+press a 80
+expect_phrase_row_count 1 2
+expect_screen_text I01
+
+# Whole song: both tracks play together
+goto song
+press s 80
+wait 800
+expect_play_mode song
+expect_playing_channel 0 00
+expect_playing_channel 1 01
+expect_audio_activity 64
+press s 80
+
+# Helper page 3 teaches the current screen
+down n
+press k 80
+up n
+press d 80
+press d 80
+expect_screen_text HOW TO
+expect_screen_text makes a chain
+down n
+press k 80
+up n
+expect_no_error
+quit

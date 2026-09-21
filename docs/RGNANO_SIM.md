@@ -117,6 +117,51 @@ The producer persistence pair creates a multi-instrument project, saves it, rela
 .\tools\run-rgnano-sim.ps1 -Script .\projects\resources\RGNANO_SIM\producer-persistence-reopen.rgsim -Skin -ArtifactsDir .\sim-artifacts-producer-persist-reopen
 ```
 
+## Headless, Silent Runs
+
+Scripted runs never open a window and never play through your speakers:
+
+- `run-rgnano-sim.ps1 -Script ...` sets `SDL_VIDEODRIVER=dummy`, so SDL renders into memory. Screenshots, screen-text assertions and audio captures all still work. Pass `-Visible` to watch a script run in a window.
+- `-Mute` (the suite passes it by default) sends silence to the sound card while still measuring and capturing the real audio. Use `run-rgnano-sim-suite.ps1 -Audible` to hear it.
+- The simulator is linked as a Windows GUI app, so it never opens a console window that could steal keyboard focus.
+
+The simulator surface is exactly 240x240, the RG Nano's 1.54-inch panel resolution; `expect_size 240 240` asserts it.
+
+## Goal Commands (say what you want, not which keys)
+
+Instead of counting button presses, scripts can state a goal. The simulator reads the live screen after every input and keeps pressing the right combo until the goal is met, failing with a clear log line if an input changes nothing:
+
+```text
+goto instrument          # shortest RB+Dpad route from wherever you are
+page FILTER              # LB+Right until the instrument page matches
+focus cutoff             # move the field cursor to the row labelled "cutoff"
+set cutoff 0x80          # focus + A+Dpad until the value is 0x80
+set filter lowpass       # list fields step toward the named entry
+set preset bell          # load a synth preset
+set type sample          # switch the slot to a sample instrument
+instrument 0A            # B+Left/Right/Up/Down to instrument 0A
+row 0C                   # move the Song/Chain/Phrase cursor to row 0C
+```
+
+`goto` knows the view graph (Song, Chain, Phrase, Instrument, Table, Groove, Project, Mixer). `focus`/`set` work on any field screen (Instrument, Project). Each command logs `=> reached in N steps`.
+
+## Synth Script Commands
+
+```text
+sim_set_synth 3 pluck                 # make slot 03 a synth with a preset
+sim_set_instrument_param 3 cutoff 0x60  # any instrument param by name ('_' for spaces)
+expect_instrument_type 0 Synth        # Synth / Sample / Midi
+expect_instrument_name 0 KICK
+expect_instrument_param 0 env_amount 0x30
+```
+
+## Music Tools
+
+- `python tools/lgpt_composer.py` builds every song in `tools/demos/*.py` into `projects/resources/demos/lgpt_<Name>/lgptsav.dat` (real project files).
+- `python tools/render_demos.py [--only name] [--stems]` builds, loads each song in the simulator, bounces it with the app's own Stereo render, and writes WAV + JSON + spectrogram PNG to `sim-artifacts-demos`. `--stems` also prints per-track levels for mixing.
+- `python tools/audio_report.py file.wav --png out.png` prints peak/RMS/clipping/band energy/key histogram for any WAV.
+- If the simulator crashes, it writes `rgnano-sim-crash.txt`; `python tools/symbolize_crash.py` turns it into function names and source lines.
+
 ## Buttons
 
 | RG Nano | Simulator key |

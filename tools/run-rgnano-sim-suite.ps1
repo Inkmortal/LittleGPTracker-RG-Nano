@@ -123,6 +123,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "beginner-first-beat"
+    Script = "beginner-first-beat.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "synth-preset-tour"
     Script = "synth-preset-tour.rgsim"
     Args = @("-ResetLastProject")
@@ -187,8 +192,8 @@ $summary = [pscustomobject]@{
   startedAt = $started.ToString("o")
   endedAt = $ended.ToString("o")
   durationSeconds = [math]::Round(($ended - $started).TotalSeconds, 2)
-  passed = ($results | Where-Object { $_.exitCode -eq 0 }).Count
-  failed = ($results | Where-Object { $_.exitCode -ne 0 }).Count
+  passed = @($results | Where-Object { $_.exitCode -eq 0 }).Count
+  failed = @($results | Where-Object { $_.exitCode -ne 0 }).Count
   results = $results
 }
 

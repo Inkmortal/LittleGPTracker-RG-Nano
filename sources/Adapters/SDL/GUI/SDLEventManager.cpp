@@ -74,6 +74,7 @@ SDLEventManager::SDLEventManager()
 	simCommandIndex_=0;
 	simNextCommandTime_=0;
 	simPendingReleaseKey_=0;
+	simGoalSteps_=0;
 	simMouseKey_=0;
 	simScriptActive_=false;
 	simScriptFailed_=false;
@@ -465,13 +466,8 @@ bool SDLEventManager::AppendSimRoute(const std::string &routeName, const char *s
 	} else if (routeName=="instrument_table.to_table") {
 		lines.push_back("route combo.r.left");
 	} else if (routeName=="instrument.make_sample") {
-		// Fresh synth slot: focus starts on preset, the type switch is one row up
-		lines.push_back("press u 80");
-		lines.push_back("down a");
-		lines.push_back("press l 80");
-		lines.push_back("up a");
-		lines.push_back("wait 120");
-		lines.push_back("press d 80");
+		lines.push_back("set type sample");
+		lines.push_back("focus sample");
 	} else if (routeName=="instrument.open_sample_import") {
 		lines.push_back("press k 80");
 		lines.push_back("wait 300");
@@ -583,6 +579,13 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		iss >> command.value >> command.value2 >> command.arg;
 	} else if (command.op=="sim_set_chain_phrase" || command.op=="sim_set_phrase_note") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2;
+	} else if (command.op=="goto" || command.op=="page" || command.op=="instrument" || command.op=="row") {
+		iss >> command.arg;
+	} else if (command.op=="focus") {
+		std::getline(iss,command.arg);
+		if (!command.arg.empty() && command.arg[0]==' ') command.arg.erase(0,1);
+	} else if (command.op=="set") {
+		iss >> command.arg >> command.arg2;
 	} else if (command.op=="sim_set_synth" || command.op=="expect_instrument_type" || command.op=="expect_instrument_name") {
 		iss >> command.value >> command.arg;
 	} else if (command.op=="sim_set_instrument_param" || command.op=="expect_instrument_param") {
@@ -672,6 +675,33 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 		simCommandIndex_++;
 		simNextCommandTime_=now+(unsigned long)command.value;
 		LogSimState("after wait scheduled",false);
+		return;
+	}
+
+	if (!simGoalRelease_.empty()) {
+		for (int i=(int)simGoalRelease_.size()-1;i>=0;i--) {
+			SetSimKey(window,simGoalRelease_[i],false);
+		}
+		simGoalRelease_.clear();
+		simNextCommandTime_=now+60;
+		return;
+	}
+
+	if (command.op=="goto" || command.op=="focus" || command.op=="set" ||
+	    command.op=="page" || command.op=="instrument" || command.op=="row") {
+		int result=StepSimGoal(window,command);
+		if (result<0) {
+			FailSimScript("goal command failed");
+			return;
+		}
+		if (result==0) {
+			Trace::Log("RGNANO_SIM","%s %s %s => reached in %d steps",command.op.c_str(),
+			           command.arg.c_str(),command.arg2.c_str(),simGoalSteps_);
+			simGoalSteps_=0;
+			simGoalLastState_="";
+			simCommandIndex_++;
+			simNextCommandTime_=now+40;
+		}
 		return;
 	}
 
@@ -1269,6 +1299,211 @@ bool SDLEventManager::ExpectSimScreensDiffer(const std::string &firstPath, const
 		Trace::Error("RGNANO_SIM expected screenshots to differ");
 	}
 	return differs;
+}
+
+void SDLEventManager::PressSimCombo(SDLGUIWindowImp *window, int modifier, int key)
+{
+	if (modifier>0) {
+		SetSimKey(window,modifier,true);
+		simGoalRelease_.push_back(modifier);
+	}
+	SetSimKey(window,key,true);
+	simGoalRelease_.push_back(key);
+	simNextCommandTime_=System::GetInstance()->GetClock()+80;
+	simGoalSteps_++;
+}
+
+// Shortest R+Dpad route between screens (source-derived view graph)
+static const char *simNextHop(const std::string &from, const std::string &to, int *dirKey)
+{
+	struct Edge { const char *from; int key; const char *to; };
+	static const Edge edges[]={
+		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},
+		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},
+		{"chain",SDLK_l,"song"},{"chain",SDLK_r,"phrase"},
+		{"phrase",SDLK_l,"chain"},{"phrase",SDLK_r,"instrument"},
+		{"phrase",SDLK_d,"table"},{"phrase",SDLK_u,"groove"},
+		{"groove",SDLK_d,"phrase"},{"table",SDLK_u,"phrase"},
+		{"instrument",SDLK_l,"phrase"},{"instrument",SDLK_d,"table"},
+	};
+	const int count=sizeof(edges)/sizeof(Edge);
+	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove"};
+	const int nodeCount=8;
+	int prev[8];
+	int via[8];
+	bool seen[8];
+	int start=-1;
+	int goal=-1;
+	for (int i=0;i<nodeCount;i++) {
+		seen[i]=false;
+		prev[i]=-1;
+		via[i]=0;
+		if (from==nodes[i]) start=i;
+		if (to==nodes[i]) goal=i;
+	}
+	if (start<0 || goal<0) return 0;
+	int queue[8];
+	int head=0;
+	int tail=0;
+	queue[tail++]=start;
+	seen[start]=true;
+	while (head<tail) {
+		int n=queue[head++];
+		for (int e=0;e<count;e++) {
+			if (strcmp(edges[e].from,nodes[n])) continue;
+			int m=-1;
+			for (int k=0;k<nodeCount;k++) {
+				if (!strcmp(edges[e].to,nodes[k])) m=k;
+			}
+			if (m<0 || seen[m]) continue;
+			seen[m]=true;
+			prev[m]=n;
+			via[m]=edges[e].key;
+			queue[tail++]=m;
+		}
+	}
+	if (!seen[goal]) return 0;
+	int step=goal;
+	while (prev[step]!=start) step=prev[step];
+	*dirKey=via[step];
+	return nodes[step];
+}
+
+static std::string simLower(const std::string &s)
+{
+	std::string out=s;
+	for (size_t i=0;i<out.size();i++) out[i]=(char)tolower((unsigned char)out[i]);
+	return out;
+}
+
+// Goal commands: 0 = reached, 1 = pressed one combo (call again), -1 = failed.
+// Each call reads the live app state, so scripts say what they want rather
+// than how many times to press a button.
+int SDLEventManager::StepSimGoal(SDLGUIWindowImp *window, SimCommand &command)
+{
+	AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+	if (!appWindow) return -1;
+	std::string view=appWindow->GetCurrentViewName();
+	std::string state=view+"|"+appWindow->GetSimSelectionSummary();
+	Variable *focused=appWindow->GetSimFocusedVariable();
+	if (focused) state+=std::string("|")+focused->GetString();
+	ViewData *viewData=GetSimViewData();
+	if (viewData) {
+		char buf[16];
+		sprintf(buf,"|i%d",viewData->currentInstrument_);
+		state+=buf;
+	}
+	if (simGoalSteps_>0 && state==simGoalLastState_) {
+		Trace::Error("RGNANO_SIM %s %s: last input changed nothing (view=%s focus=%s)",
+		             command.op.c_str(),command.arg.c_str(),view.c_str(),appWindow->GetSimFocusedText().c_str());
+		return -1;
+	}
+	if (simGoalSteps_>300) {
+		Trace::Error("RGNANO_SIM %s %s: gave up after %d steps",command.op.c_str(),command.arg.c_str(),simGoalSteps_);
+		return -1;
+	}
+	simGoalLastState_=state;
+
+	if (command.op=="goto") {
+		if (view==command.arg) return 0;
+		int key=0;
+		if (!simNextHop(view,command.arg,&key)) {
+			Trace::Error("RGNANO_SIM goto %s: no route from %s",command.arg.c_str(),view.c_str());
+			return -1;
+		}
+		PressSimCombo(window,SDLK_n,key);
+		return 1;
+	}
+
+	if (command.op=="instrument") {
+		if (!viewData) return -1;
+		if (view!="instrument") {
+			Trace::Error("RGNANO_SIM instrument %s: goto instrument first",command.arg.c_str());
+			return -1;
+		}
+		int target=(int)strtol(command.arg.c_str(),0,16);
+		int current=viewData->currentInstrument_;
+		if (current==target) return 0;
+		int delta=target-current;
+		if (delta>=16) PressSimCombo(window,SDLK_b,SDLK_u);
+		else if (delta<=-16) PressSimCombo(window,SDLK_b,SDLK_d);
+		else PressSimCombo(window,SDLK_b,delta>0?SDLK_r:SDLK_l);
+		return 1;
+	}
+
+	if (command.op=="row") {
+		// Cursor row (hex) on the Song, Chain or Phrase grid
+		if (!viewData) return -1;
+		int target=(int)strtol(command.arg.c_str(),0,16);
+		int current=-1;
+		if (view=="song") current=viewData->songOffset_+viewData->songY_;
+		else if (view=="chain") current=viewData->chainRow_;
+		else if (view=="phrase") current=viewData->phraseCurPos_;
+		if (current<0) {
+			Trace::Error("RGNANO_SIM row %s: not supported on %s",command.arg.c_str(),view.c_str());
+			return -1;
+		}
+		if (current==target) return 0;
+		PressSimCombo(window,0,target>current?SDLK_d:SDLK_u);
+		return 1;
+	}
+
+	if (command.op=="page") {
+		// Instrument pages show "<L n/5 NAME L>"
+		std::string wanted=std::string(" ")+command.arg+" L>";
+		if (appWindow->ScreenContains(wanted.c_str())) return 0;
+		PressSimCombo(window,SDLK_m,SDLK_r);
+		return 1;
+	}
+
+	// focus / set: move the field cursor until the highlighted row starts with the label
+	std::string label=simLower(command.arg);
+	std::string text=simLower(appWindow->GetSimFocusedText());
+	bool onLabel=text.compare(0,label.size(),label)==0 &&
+	             (text.size()==label.size() || text[label.size()]==' ' || text[label.size()]==':');
+	if (!onLabel) {
+		if (simGoalSteps_>60) {
+			Trace::Error("RGNANO_SIM %s %s: no field with that label on %s",command.op.c_str(),command.arg.c_str(),view.c_str());
+			return -1;
+		}
+		PressSimCombo(window,0,SDLK_d);
+		return 1;
+	}
+	if (command.op=="focus") return 0;
+
+	if (!focused) {
+		Trace::Error("RGNANO_SIM set %s: focused field has no value",command.arg.c_str());
+		return -1;
+	}
+	const std::string &target=command.arg2;
+	if (focused->GetType()==Variable::CHAR_LIST) {
+		if (simLower(focused->GetString())==simLower(target)) return 0;
+		// Lists do not wrap: step toward the wanted entry
+		int wantedIndex=-1;
+		char **list=focused->GetListPointer();
+		for (int k=0;list && k<focused->GetListSize();k++) {
+			if (list[k] && simLower(list[k])==simLower(target)) wantedIndex=k;
+		}
+		if (wantedIndex<0) {
+			Trace::Error("RGNANO_SIM set %s: '%s' is not an option",command.arg.c_str(),target.c_str());
+			return -1;
+		}
+		PressSimCombo(window,SDLK_a,wantedIndex>focused->GetInt()?SDLK_r:SDLK_l);
+		return 1;
+	}
+	if (focused->GetType()==Variable::BOOL) {
+		if (simLower(focused->GetString())==simLower(target)) return 0;
+		PressSimCombo(window,SDLK_a,focused->GetBool()?SDLK_l:SDLK_r);
+		return 1;
+	}
+	int wanted=(int)strtol(target.c_str(),0,0);
+	int current=focused->GetInt();
+	if (current==wanted) return 0;
+	int delta=wanted-current;
+	if (delta>=16) PressSimCombo(window,SDLK_a,SDLK_u);
+	else if (delta<=-16) PressSimCombo(window,SDLK_a,SDLK_d);
+	else PressSimCombo(window,SDLK_a,delta>0?SDLK_r:SDLK_l);
+	return 1;
 }
 
 bool SDLEventManager::ExpectSimView(const std::string &viewName)

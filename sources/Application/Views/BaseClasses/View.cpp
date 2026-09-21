@@ -423,7 +423,7 @@ void View::drawContextOverlay() {
 	SetColor(CD_HILITE2);
 	drawOverlayLine(innerX,y+1,innerW,name,props);
 	SetColor(CD_NORMAL);
-	if (contextOverlayPage_ < 0 || contextOverlayPage_ > 1) {
+	if (contextOverlayPage_ < 0 || contextOverlayPage_ > 2) {
 		contextOverlayPage_ = 0;
 	}
 	if (contextOverlayPage_ == 0) {
@@ -437,6 +437,17 @@ void View::drawContextOverlay() {
 		drawOverlayLine(innerX,y+14,innerW,edit,props);
 		SetColor(CD_HILITE2);
 		drawOverlayLine(innerX,y+16,innerW,"Down: command list",props);
+	} else if (contextOverlayPage_ == 2) {
+		const char *steps[7];
+		getHowToSteps(steps);
+		drawOverlayLine(innerX,y+3,innerW,"HOW TO",props);
+		SetColor(CD_NORMAL);
+		for (int i=0;i<7;i++) {
+			drawOverlayLine(innerX,y+5+i,innerW,steps[i],props);
+		}
+		SetColor(CD_HILITE1);
+		drawOverlayLine(innerX,y+14,innerW,"Guide: docs/TRACKER_BASICS",props);
+		SetColor(CD_NORMAL);
 	} else {
 		drawOverlayLine(innerX,y+3,innerW,"COMMANDS",props);
 		SetColor(CD_HILITE1);
@@ -457,6 +468,89 @@ void View::drawContextOverlay() {
 	SetColor(CD_HILITE2);
 	drawOverlayLine(innerX,y+boxH-2,innerW,"Up/Dn page RB+Sel close",props);
 	SetColor(CD_NORMAL);
+}
+
+// Page 3 of the RB+Select helper: a tiny walkthrough for this screen,
+// written for someone who has never used a tracker.
+void View::getHowToSteps(const char **lines) {
+	for (int i=0;i<7;i++) lines[i]="";
+	switch(viewType_) {
+		case VT_SONG:
+			lines[0]="Song = whole track. Rows go";
+			lines[1]="down in time, 8 columns =";
+			lines[2]="8 instruments at once.";
+			lines[3]="1 A on -- makes a chain";
+			lines[4]="2 RB+Right opens that chain";
+			lines[5]="3 Start plays from this row";
+			lines[6]="Same row = plays together";
+			break;
+		case VT_CHAIN:
+			lines[0]="Chain = a list of bars";
+			lines[1]="(phrases) for one track.";
+			lines[2]="1 A on -- adds a phrase";
+			lines[3]="2 RB+Right opens it";
+			lines[4]="3 next row = next bar";
+			lines[5]="2nd column transposes it";
+			lines[6]="RB+Left back to Song";
+			break;
+		case VT_PHRASE:
+			lines[0]="Phrase = 1 bar, 16 steps.";
+			lines[1]="A on a step adds a note";
+			lines[2]="A+Left/Right: semitone";
+			lines[3]="A+Up/Down: octave";
+			lines[4]="I col: which sound (00-0F)";
+			lines[5]="RB+Right: shape the sound";
+			lines[6]="Start: loop this bar";
+			break;
+		case VT_INSTRUMENT:
+			lines[0]="Instrument = the sound.";
+			lines[1]="preset: A+Left/Right tries";
+			lines[2]="ready sounds. Start = hear";
+			lines[3]="LB+Left/Right: more pages";
+			lines[4]="ENV: short or long notes";
+			lines[5]="FILTER: dark or bright";
+			lines[6]="MIX: reverb and echo";
+			break;
+		case VT_TABLE:
+		case VT_TABLE2:
+			lines[0]="Table = automation: each";
+			lines[1]="row runs a command, one";
+			lines[2]="row per tick. Loops.";
+			lines[3]="Select: pick a command";
+			lines[4]="VOLM fades, PTCH bends,";
+			lines[5]="ARPG arpeggios";
+			lines[6]="RB+Up back";
+			break;
+		case VT_GROOVE:
+			lines[0]="Groove = step lengths.";
+			lines[1]="6 6 = straight";
+			lines[2]="7 5 = light swing";
+			lines[3]="8 4 = heavy shuffle";
+			lines[4]="A+Left/Right edits ticks";
+			lines[5]="GROV command switches";
+			lines[6]="RB+Down back to Phrase";
+			break;
+		case VT_PROJECT:
+			lines[0]="Tempo: speed of the song";
+			lines[1]="Key/Scale: notes snap to";
+			lines[2]="the scale while editing";
+			lines[3]="Reverb/Echo: shared FX,";
+			lines[4]="instruments set sends";
+			lines[5]="Render Stereo+Start = WAV";
+			lines[6]="Save Song keeps your work";
+			break;
+		case VT_MIXER:
+			lines[0]="Mixer shows each track's";
+			lines[1]="level while playing.";
+			lines[2]="Too loud? lower instrument";
+			lines[3]="volume or Project Drive.";
+			lines[4]="Start plays the song";
+			lines[5]="RB+Start stops";
+			lines[6]="RB+Up back to Song";
+			break;
+		default:
+			break;
+	}
 }
 
 void View::CustomizeContextOverlay(const char *&name, const char *&where,
@@ -748,7 +842,8 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 		}
 		if (contextOverlay_) {
 			if (mask == EPBM_DOWN || mask == EPBM_UP) {
-				contextOverlayPage_ = contextOverlayPage_ == 0 ? 1 : 0;
+				// Map -> commands -> how-to, and back
+				contextOverlayPage_ = (contextOverlayPage_ + (mask == EPBM_DOWN ? 1 : 2)) % 3;
 				isDirty_ = true;
 				((AppWindow &)w_).SetDirty();
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)

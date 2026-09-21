@@ -1651,6 +1651,9 @@ const char *SampleInstrument::GetFileName() {
 * Intended for printing where the whole name doesn't fit on screen
 */
 const char *SampleInstrument::GetName() {
+    if (IsEmpty()) {
+        return "EMPTY SAMPLE";
+    }
     Variable *v = FindVariable(SIP_SAMPLE);
     const char *src = v->GetString();
 

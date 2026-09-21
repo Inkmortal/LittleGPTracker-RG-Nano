@@ -43,6 +43,9 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     void RefreshCurrentView();
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     const char *GetCurrentViewName() const;
+    // Variable behind the focused field on Instrument/Project screens, or 0
+    class Variable *GetSimFocusedVariable() const;
+    std::string GetSimFocusedText() const;
     ViewData *GetViewData() const;
     bool ScreenContains(const char *needle) const;
     std::string GetSimDebugSummary() const;

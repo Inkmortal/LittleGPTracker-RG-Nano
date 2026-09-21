@@ -11,7 +11,8 @@ PREFIX :=
 
 CFLAGS	:= -mthreads -g -Wall $(INCLUDES) $(DEFINES) -I$(PWD)/../sources -I$(PWD)/../sources/Externals
 CXXFLAGS:= $(CFLAGS) -std=gnu++03
-LDFLAGS := -L../../libs/Wsdl-mingw
+# GUI subsystem: never opens a console window (which would steal focus)
+LDFLAGS := -L../../libs/Wsdl-mingw -mwindows
 LIBS     :=  -lmingw32 -lSDL -luser32 -lgdi32 -lwinmm -ldxguid
 OUTPUT   := ../lgpt-rgnano-sim
 EXTENSION:= exe

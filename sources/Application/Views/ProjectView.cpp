@@ -177,6 +177,26 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
         new UIIntVarField(position, *v, "Notes: %s", 0, 1, 1, 1);
     T_SimpleList<UIField>::Insert(field);
 
+    // Shared send effects: instruments choose how much they send
+    position._y += 2;
+    v = project_->FindVariable(VAR_REVERB_SIZE);
+    field = new UIIntVarField(position, *v, "Reverb: %2.2X", 0, 0xFF, 1, 0x10);
+    T_SimpleList<UIField>::Insert(field);
+    position._x += 13;
+    v = project_->FindVariable(VAR_REVERB_DAMP);
+    field = new UIIntVarField(position, *v, "Damp: %2.2X", 0, 0xFF, 1, 0x10);
+    T_SimpleList<UIField>::Insert(field);
+    position._x -= 13;
+    position._y += 1;
+    v = project_->FindVariable(VAR_DELAY_STEPS);
+    field = new UIIntVarField(position, *v, "Echo: %d/16", 1, 16, 1, 4);
+    T_SimpleList<UIField>::Insert(field);
+    position._x += 13;
+    v = project_->FindVariable(VAR_DELAY_FEEDBACK);
+    field = new UIIntVarField(position, *v, "Fdbk: %2.2X", 0, 0xFF, 1, 0x10);
+    T_SimpleList<UIField>::Insert(field);
+    position._x -= 13;
+
     position._y += 2;
     UIActionField *a1 =
         new UIActionField("Compact Sequencer", ACTION_PURGE, position);
@@ -189,7 +209,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
 
-    position._y += 2;
+    position._y += 1;
     a1 = new UIActionField("Load Song", ACTION_LOAD, position);
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
@@ -206,7 +226,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 
     v = project_->FindVariable(VAR_MIDIDEVICE);
     NAssert(v);
-    position._y += 2;
+    position._y += 1;
     field = new UIIntVarField(position, *v, "MIDI: %s", 0,
                               MidiService::GetInstance()->Size(), 1, 1);
     T_SimpleList<UIField>::Insert(field);
@@ -218,7 +238,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
                               project_->MAX_RENDER_MODE - 1, 1, 2);
     T_SimpleList<UIField>::Insert(field);
 
-    position._y += 2;
+    position._y += 1;
     a1 = new UIActionField("Exit", ACTION_QUIT, position);
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);

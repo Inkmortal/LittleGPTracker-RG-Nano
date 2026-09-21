@@ -1,6 +1,6 @@
 # RG Nano / M8 Screen And Capability Audit
 
-Last updated: 2026-05-02
+Last updated: 2026-09-21
 
 This is the durable build note for M8-style parity work. It tracks what a producer can do today on the RG Nano fork, what the Dirtywave M8 exposes as a reference workflow, what exists only partially, and what should be built next.
 
@@ -108,7 +108,7 @@ Modal and overlay workflows also matter:
 | Mixer View | Manual p. 30 | Exact manual crop, dark rendered | Mixer View | Partial | Keep channel scopes; add clearer level controls if missing. |
 | EQ Editor View | Manual p. 32 | Exact manual crop, dark rendered | None dedicated | Missing | Research current filter/EQ capabilities, then design minimal EQ screen. |
 | Limiter & Mix Scope View | Manual p. 34 | Extractor creates crop, site currently groups under EQ/Limiter | Mixer waveform only | Partial | Add separate parity node or detail entry; audit limiter/render clipping behavior. |
-| Effect Settings View | Manual p. 36 | Exact manual crop, dark rendered | Commands/effects in tracker data | Audit needed | Search existing FX command implementation before adding UI. |
+| Effect Settings View | Manual p. 36 | Exact manual crop, dark rendered | Project `Reverb`/`Damp`/`Echo`/`Fdbk` + per-synth reverb/delay sends | Partial | Shared reverb and tempo-synced echo exist (`Mixer/SendFX`). No chorus/mod FX, sample instruments do not send yet. |
 | Project View | Manual p. 38 | Exact manual crop, dark rendered | Project View | Implemented | Improve render/save/key docs; verify field order after changes. |
 | System Settings View | Manual p. 40 | Exact manual crop, dark rendered | Config/debug paths | Partial | Keep low priority unless hardware setting blocks production. |
 | Theme View | Manual p. 42 | Exact manual crop, dark rendered | Config colors only | Missing | Low priority; do not build before core music features. |
@@ -118,12 +118,12 @@ Modal and overlay workflows also matter:
 | Render View | Manual p. 47 | Exact manual crop, dark rendered | Project render mode | Partial | Native Project bounce is tested for Stereo/Stems. Add clearer range/name/output feedback and render-to-sample parity. |
 | Selection to Sample | Manual p. 48 | Extractor captures page, not currently a site node | None | Missing | High value for no-live-sampling workflow: render selected song/chain to sample. |
 | Effect Command Help View | Manual p. 48 | Exact manual crop, dark rendered | Command selector exists in command columns | Partial | Confirm universal shortcut and add contextual command help test. |
-| Wavsynth | Manual p. 50 | Not currently a site node | None | Missing | First native synth candidate. |
+| Wavsynth | Manual p. 50 | Not currently a site node | Synth instrument (`SynthInstrument`) | Implemented | Sine/triangle/saw/pulse/supersaw/noise/metal with shape knob, sub, ADSR, filter, LFO, 17 presets, CHRD chords. |
 | Macrosynth | Manual p. 52 | Not currently a site node | None | Missing | Later engine; study open-source references. |
 | Sampler | Manual p. 54 | Exact manual crop, dark rendered | Sample instrument/import | Partial | Add deeper sample parameter/tutorial coverage. |
 | Sample Editor | Manual p. 56 | Extractor creates crop, site currently groups under Sampler | None dedicated | Missing | Build crop/loop/slice/normalize editor after render/export basics. |
-| FM Synth | Manual p. 58 | Not currently a site node | None | Missing | Medium-term engine candidate. |
-| Hypersynth | Manual p. 60 | Not currently a site node | None | Missing | Later engine candidate. |
+| FM Synth | Manual p. 58 | Not currently a site node | Synth `fm`/`ratio` knobs | Partial | 2-operator phase modulation with envelope-driven brightness (KEYS, BELL presets). No 4-op algorithms. |
+| Hypersynth | Manual p. 60 | Not currently a site node | Synth `supersaw` wave + `chord`/CHRD | Partial | Detuned supersaw with one-note chords; no per-voice chord memory like M8. |
 | External Instrument | Manual p. 62 | Not currently a site node | Maybe MIDI/external audio only | Out of scope/audit needed | Hardware path likely limits this. |
 | MIDI Out Instrument | Manual p. 64 | Not currently a site node | MIDI instrument code exists | Audit needed | Verify RG Nano MIDI output before UX promises. |
 
@@ -143,7 +143,7 @@ Modal and overlay workflows also matter:
 | Edit sample start/loop/slice deeply | Limited | Low-medium | Instrument params exist, but no M8-like sample editor. |
 | Record live audio | Not target now | Low | Code exists, hardware path not trusted. |
 | Make movement/automation | Yes, through tables | Medium | Powerful but needs discoverability and command tests. |
-| Use native synth engines | No | High | Sample and MIDI instruments exist; M8 synth engines do not. |
+| Use native synth engines | Yes | High | New projects start with a 16-instrument synth kit; `type` switches any slot between synth and sample. |
 | Mix levels with visual feedback | Partially | Medium | Mixer scopes/waveforms exist; actual level editing parity needs audit. |
 | EQ/limiter/mastering | Mostly no | Medium | M8 has dedicated screens; RG has effects/filter pieces but no parity UI. |
 | Bounce a song | Yes, basic stereo/stems | Medium-low | Project `Render: Stereo` writes `mixdown.wav`; `Render: Stems` writes `channelN.wav` files. Needs M8-style range/name/render-to-sample controls. |

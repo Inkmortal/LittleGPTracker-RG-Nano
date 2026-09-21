@@ -1,4 +1,6 @@
 #include "AppWindow.h"
+#include "Views/BaseClasses/FieldView.h"
+#include "Views/BaseClasses/UIIntVarField.h"
 #include "Application/Commands/ApplicationCommandDispatcher.h"
 #include "Application/Commands/EventDispatcher.h"
 #include "Application/Instruments/SamplePool.h"
@@ -635,6 +637,26 @@ const char *AppWindow::GetCurrentViewName() const {
 }
 
 ViewData *AppWindow::GetViewData() const { return _viewData; }
+
+Variable *AppWindow::GetSimFocusedVariable() const {
+    if (_currentView != _instrumentView && _currentView != _projectView) {
+        return 0;
+    }
+    UIField *focus = ((FieldView *)_currentView)->GetFocus();
+    UIIntVarField *field = dynamic_cast<UIIntVarField *>(focus);
+    return field ? &field->GetVariable() : 0;
+}
+
+// Text of the first highlighted (cursor) item on screen
+std::string AppWindow::GetSimFocusedText() const {
+    std::string summary = GetSimSelectionSummary();
+    size_t a = summary.find('"');
+    if (a == std::string::npos) {
+        return "";
+    }
+    size_t b = summary.find('"', a + 1);
+    return summary.substr(a + 1, b == std::string::npos ? std::string::npos : b - a - 1);
+}
 
 bool AppWindow::ScreenContains(const char *needle) const {
     if (!needle || !needle[0]) {

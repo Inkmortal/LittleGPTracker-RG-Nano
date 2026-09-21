@@ -4,6 +4,8 @@ This manual is for the RG Nano fork of LittleGPTracker. It explains the practica
 
 The short version: Song chooses chains, chains choose phrases, phrases contain notes and commands, instruments choose the sounds, and tables/grooves add motion and feel.
 
+New to trackers? Start with [TRACKER_BASICS.md](TRACKER_BASICS.md): a from-zero walkthrough (first beat, bassline, chords, song structure, music theory cheat sheet).
+
 ## Device Basics
 
 | RG Nano button | Main use |
@@ -174,6 +176,32 @@ Basic actions:
 | `R + Up` | Open Groove. |
 
 New projects default to Project `Key: --`, which means normal chromatic editing. If you set a key/scale later, note edits can follow that scale, and `L + D-pad` remains the quick outside-note override.
+
+## Synth Instruments
+
+Every new project starts with 16 synth instruments, so notes make sound immediately without any samples:
+
+`00 KICK  01 SNARE  02 HAT  03 OPENHAT  04 CLAP  05 BASS  06 LEAD  07 PAD  08 PLUCK  09 KEYS  0A BELL  0B ACID  0C SUBBASS  0D CHIP  0E TOM  0F PERC`
+
+Open one with `R + Right` from Phrase. The synth screen has five pages (`LB + Left/Right`):
+
+| Page | Knobs |
+| --- | --- |
+| SOUND | `type` (synth/sample), `preset`, `wave` (sine, triangle, saw, pulse, supersaw, noise, metal), `shape`, `sub`, `noise`, `fm`, `ratio`, `chord`, `tune` |
+| ENV | `attack`, `decay`, `sustn`, `releas`, `p.env` (pitch drop), `p.dec`, `glide` |
+| FILTER | `filter` (lowpass/highpass/bandpass/off), `cutoff`, `reso`, `env` (brightness burst), `envdec`, `drive` |
+| MOD | `lfo` target (pitch/cutoff/volume/shape), `rate`, `depth`, `fine`, instrument table `auto`/`table` |
+| MIX | `volume`, `pan`, `reverb` send, `delay` send |
+
+The top of each page draws what the knobs do (waveform, envelope, filter curve, LFO, levels), and the lines under it explain the focused knob with real units. When you open an instrument the cursor lands on `preset`: `A + Left/Right` there auditions every ready-made sound. `Start` plays the sound at C3, `RB + A + Left/Up/Right` plays low/mid/high, `RB + A + Down` stops.
+
+Synths understand the usual commands (`VOLM`, `PAN`, `FCUT`, `FRES`, `FLTR`, `PTCH`, `LEGA`, `PFIN`, `ARPG`, `RTRG`, `KILL`, `TABL`) plus `CHRD`: `CHRD abcd` adds notes `a`, `b`, `c`, `d` semitones above the played note, all sounding together (`0047` major, `0037` minor, `047B` major 7, `037A` minor 7). `RTRG` restrikes the envelope for rolls and tremolo.
+
+Notes stopped by `KILL` or by a different instrument on the same track fade out with the instrument's release instead of cutting off.
+
+Reverb and delay are shared by every instrument. Set their character on the Project screen: `Reverb` (room size), `Damp` (darker tail), `Echo` (delay time in 16th notes, 3 = dotted 8th), `Fdbk` (number of repeats). Each instrument chooses how much it sends on its MIX page.
+
+To use a WAV instead, set `type` to `sample` on the first page; the sample lab pages below take over.
 
 ## Instruments And Samples
 

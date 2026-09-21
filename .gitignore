@@ -51,3 +51,6 @@ projects/LittleGPTracker.app
 
 # SDK (too large for git)
 sdk/
+
+# Demo songs are real project files that ship with the build
+!projects/resources/demos/**/lgptsav.dat

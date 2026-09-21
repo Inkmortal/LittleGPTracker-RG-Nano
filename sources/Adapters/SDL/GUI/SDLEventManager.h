@@ -74,6 +74,13 @@ private:
 	size_t simCommandIndex_;
 	unsigned long simNextCommandTime_;
 	int simPendingReleaseKey_;
+	// Goal commands (goto/focus/set/page/instrument) press one combo per
+	// tick until the live app state matches, instead of scripted key lists.
+	std::vector<int> simGoalRelease_;
+	int simGoalSteps_;
+	std::string simGoalLastState_;
+	int StepSimGoal(SDLGUIWindowImp *window, SimCommand &command);
+	void PressSimCombo(SDLGUIWindowImp *window, int modifier, int key);
 	int simMouseKey_;
 	bool simScriptActive_;
 	bool simScriptFailed_;

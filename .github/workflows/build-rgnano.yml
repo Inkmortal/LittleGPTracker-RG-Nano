@@ -11,6 +11,7 @@ on:
       - "sources/**"
       - "docs/RGNANO_USER_MANUAL.md"
       - "docs/RGNANO_INPUT_MAP.md"
+      - "docs/TRACKER_BASICS.md"
 
 jobs:
   rgnano:
@@ -45,6 +46,9 @@ jobs:
           cp projects/resources/RGNANO/INSTALL_HOW_TO.txt dist/lgpt-rgnano/
           cp docs/RGNANO_USER_MANUAL.md dist/lgpt-rgnano/
           cp docs/RGNANO_INPUT_MAP.md dist/lgpt-rgnano/
+          cp docs/TRACKER_BASICS.md dist/lgpt-rgnano/
+          mkdir -p dist/lgpt-rgnano/Tracks
+          cp -r projects/resources/demos/lgpt_* dist/lgpt-rgnano/Tracks/
           mkdir -p dist/opk
           cp projects/lgpt-rgnano.elf projects/opk_build/
           mksquashfs projects/opk_build dist/opk/lgpt-rgnano.opk -all-root -noappend -no-exports -no-xattrs

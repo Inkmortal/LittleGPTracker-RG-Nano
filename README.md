@@ -8,6 +8,14 @@ The goal is to elevate the RG Nano into a tiny, serious tracker workstation comp
 
 This is not a Dirtywave M8 firmware clone. It is a native RG Nano fork of LGPT aimed at a similar pocket-production role: the Nano acts as the final arrangement and production box for sketches made on small devices such as a PO-33, chord/synth gadgets, or prepared sample packs.
 
+## What's New: Synths, FX, Demo Songs
+
+- **Native synth engine** (M8-style): 7 waveforms, sub, noise, FM, one-note chords (`CHRD`), ADSR, pitch envelope, glide, resonant filter with envelope, drive, LFO, 17 presets. New projects start with a 16-instrument synth kit, so you can make a full track with zero samples.
+- **Send effects**: shared reverb and tempo-synced echo; every synth has reverb/delay sends.
+- **Synth screen** with live pictures (waveform, envelope, filter curve, LFO) and plain-English help for the focused knob.
+- **Demo songs** in `projects/resources/demos` (synthwave, wuxia, lo-fi, chiptune) composed with `tools/lgpt_composer.py`.
+- **Beginner guide**: [docs/TRACKER_BASICS.md](docs/TRACKER_BASICS.md). The `RB + Select` helper now has a third "HOW TO" page on every screen.
+
 ## Current Focus
 
 - native RG Nano builds and OPK packaging
@@ -55,8 +63,9 @@ To install a build on the RG Nano:
 /mnt/Applications/Samples
 ```
 
-5. Put `.wav` samples in `/mnt/Applications/Samples`.
-6. Launch `LGPT RG Nano` from the RG Nano app menu.
+5. Copy the demo songs (`Tracks/lgpt_*` in the build zip, or `projects/resources/demos/lgpt_*`) into `/mnt/Applications/Tracks`. They open from the project list like any saved song.
+6. Optional: put `.wav` samples in `/mnt/Applications/Samples`.
+7. Launch `LGPT RG Nano` from the RG Nano app menu.
 
 The default RG Nano config uses:
 

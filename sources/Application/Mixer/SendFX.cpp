@@ -194,6 +194,12 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 	float *din=delayIn_ ;
 	fixed *out=buffer ;
 	float oneMinusDamp=1.0f-damp_ ;
+	// The return sits on the master like a channel bus, so it follows the
+	// Project pregain ("Drive") exactly as the dry buses do.
+	float outputGain=1.0f ;
+	if (project_) {
+		outputGain=project_->GetPregain()/100.0f ;
+	}
 	for (int i=0;i<frames;i++) {
 		float wet[2] ;
 
@@ -227,10 +233,10 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 				if (++ap.index_>=ap.size_) ap.index_=0 ;
 				acc=b-acc ;
 			}
-			wet[c]=acc*3.0f ;
+			wet[c]=acc ;  // Freeverb wet 1/3 of its 3x scale: unity-ish return
 		}
-		wet[0]+=dl ;
-		wet[1]+=dr ;
+		wet[0]=(wet[0]+dl)*outputGain ;
+		wet[1]=(wet[1]+dr)*outputGain ;
 		if (wet[0]>2.0f) wet[0]=2.0f ;
 		if (wet[0]<-2.0f) wet[0]=-2.0f ;
 		if (wet[1]>2.0f) wet[1]=2.0f ;

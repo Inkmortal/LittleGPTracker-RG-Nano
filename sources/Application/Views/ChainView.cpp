@@ -43,7 +43,20 @@ void ChainView::pasteLastPhrase() {
     unsigned char *c = viewData_->GetCurrentChainPointer();
     if ((*c == 0xFF)) {
         *c = lastPhrase_;
+        // Mark it allocated, otherwise "new phrase" can hand out this same
+        // phrase again and the user overwrites notes they already wrote
+        viewData_->song_->phrase_->SetUsed(*c);
         isDirty_ = true;
+        // Pasting re-uses the last phrase; make that visible for beginners
+        static char hint[40];
+        bool hasContent = false;
+        for (int i = 0; i < 16; i++) {
+            if (viewData_->song_->phrase_->note_[(*c) * 16 + i] != 0xFF) {
+                hasContent = true;
+            }
+        }
+        sprintf(hint, hasContent ? "Reused %2.2X. A again = new" : "Phrase %2.2X", *c);
+        View::SetNotification(hint);
     } else {
         lastPhrase_ = *c;
     }
@@ -397,6 +410,9 @@ void ChainView::ProcessButtonMask(unsigned short mask, bool pressed) {
             if (next != NO_MORE_PHRASE) {
                 setPhrase((unsigned char)next);
                 isDirty_ = true;
+                static char hint[40];
+                sprintf(hint, "New phrase %2.2X", (unsigned char)next);
+                View::SetNotification(hint);
             }
             mask &= (0xFFFF - EPBM_A);
         }
@@ -497,6 +513,9 @@ void ChainView::processNormalButtonMask(unsigned short mask) {
                         viewData_->currentPhrase_ = *data;
                         SetChanged();
                         NotifyObservers(&ve);
+                    } else {
+                        // Explain why nothing opened instead of doing nothing
+                        View::SetNotification("Empty: press A for a phrase");
                     }
                 }
 
@@ -593,6 +612,9 @@ void ChainView::processSelectionButtonMask(unsigned short mask) {
                         viewData_->currentPhrase_ = *data;
                         SetChanged();
                         NotifyObservers(&ve);
+                    } else {
+                        // Explain why nothing opened instead of doing nothing
+                        View::SetNotification("Empty: press A for a phrase");
                     }
                 }
 

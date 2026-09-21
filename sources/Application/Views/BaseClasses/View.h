@@ -145,6 +145,7 @@ class View : public Observable {
 
     void drawMap();
     void drawContextOverlay();
+    void getHowToSteps(const char **lines);
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,
                                          const char *&edit, const char *&field,
                                          const char *&cmd1, const char *&cmd2,

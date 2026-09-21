@@ -243,7 +243,7 @@ const char *Variable::GetString() {
         break;
     case CHAR_LIST:
         if ((value_.index_ < 0) || (value_.index_ >= listSize_)) {
-            return "(null)";
+            return "none"; // empty list selection (no sample / no MIDI device)
         } else {
             return list_.char_[value_.index_];
         }
