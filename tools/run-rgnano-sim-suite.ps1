@@ -123,6 +123,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "start-screen-ux"
+    Script = "start-screen-ux.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "beginner-first-beat"
     Script = "beginner-first-beat.rgsim"
     Args = @("-ResetLastProject")

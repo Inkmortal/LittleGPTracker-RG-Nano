@@ -1,3 +1,4 @@
+#include "Application/AppWindow.h"
 #include "MixerView.h"
 #include "Application/Mixer/MixerService.h"
 #include "Application/Model/Mixer.h"
@@ -322,12 +323,12 @@ void MixerView::drawChannelMeters(bool force) {
     const int scopeY = 96;
     const int scopeHeight = 14;
     const int noteRow = 14;
-    GUIColor panel(0x1D, 0x0A, 0x1F);
-    GUIColor meterLow(0xB8, 0x3C, 0xD8);
-    GUIColor meterHot(0xDB, 0x33, 0xDB);
-    GUIColor meterClip(0xF5, 0xEB, 0xFF);
-    GUIColor selected(0xF5, 0xEB, 0xFF);
-    GUIColor frame(0x5E, 0x24, 0x62);
+    GUIColor panel=AppWindow::ThemeColor(CD_BACKGROUND);
+    GUIColor meterLow=AppWindow::ThemeColor(CD_HILITE1);
+    GUIColor meterHot=AppWindow::ThemeColor(CD_HILITE2);
+    GUIColor meterClip=AppWindow::ThemeColor(CD_NORMAL);
+    GUIColor selected=AppWindow::ThemeColor(CD_NORMAL);
+    GUIColor frame=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
 
     if (force) {
         imp->SetColor(panel);
@@ -410,8 +411,8 @@ void MixerView::drawChannelWaveform(int bus, int x, int y, int width, int height
     SDLGUIWindowImp *imp = (SDLGUIWindowImp *)w_.GetImpWindow();
     const int columns = AudioMixer::WAVEFORM_SIZE;
     const int mid = y + (height / 2);
-    GUIColor background(0x1D, 0x0A, 0x1F);
-    GUIColor trace = selected ? GUIColor(0xF5, 0xEB, 0xFF) : GUIColor(0xDB, 0x33, 0xDB);
+    GUIColor background=AppWindow::ThemeColor(CD_BACKGROUND);
+    GUIColor trace = selected ? AppWindow::ThemeColor(CD_NORMAL) : AppWindow::ThemeColor(CD_HILITE2);
 
     imp->SetColor(background);
     GUIRect clear(x, y, x + width, y + height);
@@ -476,9 +477,9 @@ void MixerView::drawWaveform(bool force) {
     const int mid = y + (height / 2);
     const int columns = AudioMixer::WAVEFORM_SIZE;
     const int stepPx = 1;
-    GUIColor scopeBackground(0x1D,0x0A,0x1F);
-    GUIColor scopeTrace(0xDB,0x33,0xDB);
-    GUIColor scopeCenter(0x5E,0x24,0x62);
+    GUIColor scopeBackground=AppWindow::ThemeColor(CD_BACKGROUND);
+    GUIColor scopeTrace=AppWindow::ThemeColor(CD_HILITE2);
+    GUIColor scopeCenter=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
     int peakAbs = 1;
     for (int i=0; i<columns; i++) {
         int sample = mixer->GetMasterWaveformSample(i);

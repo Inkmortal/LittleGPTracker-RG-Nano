@@ -1,17 +1,42 @@
 # Screenshots for the wiki: a brand-new project, step by step.
 wait 500
 screenshot_app wiki-boot.bmp
+# Start screen Help button
 press r 80
+press r 80
+press r 80
+press a 80
+wait 100
+screenshot_app wiki-start-help-1.bmp
+press r 80
+wait 60
+screenshot_app wiki-start-help-2.bmp
+press r 80
+wait 60
+screenshot_app wiki-start-help-3.bmp
+press b 80
+wait 100
+# New: name dialog opens on OK with a free name
+press l 80
+press l 80
+wait 60
+screenshot_app wiki-boot-new.bmp
 press a 80
 wait 200
 screenshot_app wiki-new-project.bmp
-press d 80
-press a 80
-press r 80
 press a 80
 wait 1000
 expect_view song
 screenshot_app wiki-song-empty.bmp
+down n
+press k 80
+up n
+wait 100
+screenshot_app wiki-song-helper-map.bmp
+down n
+press k 80
+up n
+wait 100
 down n
 press r 80
 up n

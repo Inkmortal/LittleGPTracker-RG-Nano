@@ -13,7 +13,7 @@ press d 80
 wait 120
 screenshot_app context-overlay-modal-projects-commands.bmp
 expect_screen_text COMMANDS
-expect_screen_text A+B delete project
+expect_screen_text Delete asks first
 down n
 press k 80
 up n
@@ -30,11 +30,11 @@ up n
 wait 120
 screenshot_app context-overlay-modal-new-song-map.bmp
 expect_screen_text NEW SONG
-expect_screen_text Create project
+expect_screen_text Name a new song
 press d 80
 wait 120
 screenshot_app context-overlay-modal-new-song-commands.bmp
-expect_screen_text A Random makes name
+expect_screen_text RANDOM new name
 down n
 press k 80
 up n

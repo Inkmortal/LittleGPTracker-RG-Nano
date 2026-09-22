@@ -106,7 +106,12 @@ FileType W32FileSystem::GetFileType(const char *path) {
 };
 
 void W32FileSystem::Delete(const char *path) {
-	DeleteFile(path) ;	
+	// Match Unix remove(): files and empty folders
+	if (GetFileType(path)==FT_DIR) {
+		RemoveDirectory(path) ;
+	} else {
+		DeleteFile(path) ;
+	}
 }
 
 Result W32FileSystem::MakeDir(const char *path) {

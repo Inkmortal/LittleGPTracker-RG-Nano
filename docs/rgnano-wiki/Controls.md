@@ -96,11 +96,16 @@ The small label at the top right says what is playing: `PLAY:SONG`, `PLAY:CHAIN`
 
 Sample instruments have their own pages and trim controls — see [Samples](Samples).
 
-## Text entry (new project name)
+## Naming a new song
+
+The letters are in alphabetical order (not QWERTY), so the next letter is always one press away.
 
 | Input | Does |
 | --- | --- |
-| D-pad | move on the on-screen keyboard |
-| **A** | type the letter |
-| **B** | backspace |
-| **Start** | done |
+| D-pad | move over the letters and the `ERASE RANDOM OK CANCEL` row |
+| **A** | type the letter / run the button |
+| **B** | erase a letter; on an empty name, leave without making a song |
+| **LB / RB** | move the cursor inside the name |
+| **Start** | create the song |
+
+The suggested random name is highlighted: the first letter you type replaces it. `name taken` means a song with that name already exists.

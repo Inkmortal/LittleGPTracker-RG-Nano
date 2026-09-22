@@ -4,17 +4,29 @@
 #include "System/Console/Trace.h"
 #include "Application/Views/ModalDialogs/MessageBox.h"
 #include "Application/Model/Project.h"
+#include "HelpDialog.h"
 
 #include <algorithm>
 
-#define LIST_SIZE 20
-#ifdef PLATFORM_RGNANO
-#define LIST_WIDTH 28  // 240px screen has 30 chars width, leave 1 char margin on each side
-#else
-#define LIST_WIDTH 32
-#endif
+#define LIST_WIDTH 26
+#define LIST_SIZE 16
+#define LIST_Y 2
+#define WINDOW_HEIGHT (LIST_Y + LIST_SIZE + 5)
+#define BUTTON_Y (LIST_Y + LIST_SIZE + 1)
 
-static char *buttonText[3] = {"Load", "New", "Exit"};
+// Quitting lives on the MENU/Power key, which leaves room to space these out
+enum ProjectAction { PA_OPEN = 0, PA_NEW, PA_DELETE, PA_HELP, PA_COUNT };
+static const char *buttonText[PA_COUNT] = {"Open", "New", "Delete", "Help"};
+static const int buttonX[PA_COUNT] = {0, 7, 13, 22};
+static const char *buttonHint[PA_COUNT] = {
+    "A: open this song", "A: make a new song", "A: delete this song",
+    "A: how to use the app"};
+
+static bool isProjectFolder(const std::string &name) {
+    std::string prefix = name.substr(0, 4);
+    std::transform(prefix.begin(), prefix.end(), prefix.begin(), ::tolower);
+    return prefix == "lgpt";
+}
 
 Path SelectProjectDialog::lastFolder_("root:") ;
 int SelectProjectDialog::lastProject_ = 0 ;
@@ -44,7 +56,7 @@ static void DeleteProjectCallback(View &v, ModalView &dialog) {
 }
 
 // Recursive helper to delete directory and all contents
-static void RecursiveDeleteDirectory(const Path &dirPath) {
+void SelectProjectDialog::DeleteFolder(const Path &dirPath) {
 	FileSystem *fs = FileSystem::GetInstance();
 	FileType type = fs->GetFileType(dirPath.GetPath().c_str());
 	
@@ -74,7 +86,7 @@ static void RecursiveDeleteDirectory(const Path &dirPath) {
 			IteratorPtr<Path> deleteIt(itemsToDelete.GetIterator());
 			for (deleteIt->Begin(); !deleteIt->IsDone(); deleteIt->Next()) {
 				const Path &item = deleteIt->CurrentItem();
-				RecursiveDeleteDirectory(item);
+				DeleteFolder(item);
 			}
 		}
 	}
@@ -90,17 +102,13 @@ SelectProjectDialog::~SelectProjectDialog() {
 
 void SelectProjectDialog::DrawView() {
 
-	SetWindow(LIST_WIDTH,LIST_SIZE+3) ;
+	SetWindow(LIST_WIDTH,WINDOW_HEIGHT) ;
 
 	GUITextProperties props ;
-
-	SetColor(CD_NORMAL) ;
     View::EnableNotification();
 
-    // Draw projects
-
-    int x = 1;
-    int y = 1;
+	SetColor(CD_HILITE1) ;
+	DrawString((LIST_WIDTH-10)/2,0,"YOUR SONGS",props) ;
 
     if (currentProject_ < topIndex_) {
         topIndex_ = currentProject_;
@@ -109,91 +117,59 @@ void SelectProjectDialog::DrawView() {
 		topIndex_=currentProject_-LIST_SIZE+1 ;
 	} ;
 
+	int y=LIST_Y ;
+	if (content_.Size()==0) {
+		SetColor(CD_NORMAL) ;
+		DrawString(1,y,"No songs yet.",props) ;
+		DrawString(1,y+1,"Pick New to start one.",props) ;
+	}
+
 	IteratorPtr<Path> it(content_.GetIterator()) ;
 	int count=0 ;
-	char buffer[256] ;
+	char buffer[LIST_WIDTH+1] ;
 	for(it->Begin();!it->IsDone();it->Next()) {
 		if ((count>=topIndex_)&&(count<topIndex_+LIST_SIZE)) {
-			Path &current=it->CurrentItem() ;
-			std::string p=current.GetName() ;
-
-			std::string firstFourChars = p.substr(0,4);
-			std::transform(firstFourChars.begin(), firstFourChars.end(), firstFourChars.begin(), ::tolower);
-			if(firstFourChars == "lgpt" && p.size()>4)
-      {
-        int namestart = 4;
-        // skip _ if needed
-        if ((!isalnum(p[4])) && (p.size()>4))
-        {
-          namestart++;
-        }
-				std::string t=p ;
-				p=" " ;
-        p+=t.substr(namestart) ;
-      }
-      else
-      {
-				std::string t=p ;
-				p="[" ;
-				p+=t ;
-				p+="]" ;
-      };
-
-			if (count==currentProject_) {
-				SetColor(CD_HILITE2) ;
-				props.invert_=true ;
+			std::string p=it->CurrentItem().GetName() ;
+			if (isProjectFolder(p) && p.size()>4) {
+				// hide the lgpt_ prefix
+				int namestart = isalnum(p[4]) ? 4 : 5;
+				p=" "+p.substr(namestart) ;
 			} else {
-				SetColor(CD_NORMAL) ;
-				props.invert_=false ;
+				p="["+p+"]" ;
 			}
-			strcpy(buffer,p.c_str()) ;
-			buffer[LIST_WIDTH-1]=0 ;
-			DrawString(x,y,buffer,props) ;
+			bool on=(count==currentProject_) ;
+			SetColor(on?CD_HILITE2:CD_NORMAL) ;
+			props.invert_=on ;
+			// pad the selected row so the bar spans the list
+			snprintf(buffer,sizeof(buffer),"%-*s",LIST_WIDTH,p.c_str()) ;
+			buffer[LIST_WIDTH]=0 ;
+			if (!on) buffer[p.size()<LIST_WIDTH?p.size():LIST_WIDTH]=0 ;
+			DrawString(0,y,buffer,props) ;
 			y+=1 ;
 		}
 		count++ ;
 	} ;
+	props.invert_=false ;
 
-	y=LIST_SIZE+2 ;
-
-	// Calculate button positions for better centering
-	// Total button widths: "Load"(4) + "New"(3) + "Exit"(4) = 11 chars
-	// Distribute remaining space evenly
-#ifdef PLATFORM_RGNANO
-	// For narrower screen, use tighter spacing
-	int buttonPositions[3] = {3, 11, 20};  // Pre-calculated positions for better centering
-#else
-	int offset=LIST_WIDTH/4 ;
-	int buttonPositions[3] = {offset*1, offset*2, offset*3};
-#endif
-
-	SetColor(CD_NORMAL) ;
-
-	for (int i=0;i<3;i++) {
-		const char *text=buttonText[i] ;
-#ifdef PLATFORM_RGNANO
-		x = buttonPositions[i];
-#else
-		x=buttonPositions[i]-strlen(text)/2 ;
-#endif
-		props.invert_=(i==selected_)?true:false ;
-		DrawString(x,y,text,props) ;
+	for (int i=0;i<PA_COUNT;i++) {
+		bool on=(i==selected_) ;
+		SetColor(on?CD_CURSOR:CD_HILITE1) ;
+		props.invert_=on ;
+		DrawString(buttonX[i],BUTTON_Y,buttonText[i],props) ;
 	}
+	props.invert_=false ;
 
-	// Draw version string below border
-	// Window is LIST_SIZE+3 (23 rows), border is at height+1 (24)
-	// So draw at LIST_SIZE+5 (25) to be below the border
-	y = LIST_SIZE + 5;
+	SetColor(CD_MUTE) ;
+	DrawString(0,BUTTON_Y+2,"                          ",props) ;
+	DrawString(0,BUTTON_Y+2,buttonHint[selected_],props) ;
+	DrawString(0,BUTTON_Y+3,"L/R pick  RB+SEL helper",props) ;
+
+	// Version string below the border
 	char buildString[80];
 	sprintf(buildString, "Piggy build %s.%s.%s", PROJECT_NUMBER, PROJECT_RELEASE, BUILD_COUNT);
-#ifdef PLATFORM_RGNANO
-	x = (LIST_WIDTH - strlen(buildString)) / 2;
-#else
-	x = (LIST_WIDTH - strlen(buildString)) / 2;
-#endif
-	props.invert_ = false;
-	DrawString(x, y, buildString, props);
-
+	SetColor(CD_MUTE) ;
+	DrawString((LIST_WIDTH - (int)strlen(buildString)) / 2, WINDOW_HEIGHT + 2, buildString, props);
+	SetColor(CD_NORMAL) ;
 };
 
 void SelectProjectDialog::OnPlayerUpdate(PlayerEventType,
@@ -211,123 +187,94 @@ void SelectProjectDialog::CustomizeContextOverlay(
 	const char *&cmd3, const char *&cmd4, const char *&cmd5,
 	const char *&cmd6, const char *&cmd7) {
 	name="PROJECTS";
-	where="Load New Exit";
-	edit="A+B delete project";
+	where="Open New Delete Help";
+	edit="A runs the button";
 	field="Choose/create song";
 	cmd1="Up/Down choose song";
 	cmd2="B+Up/Dn page list";
-	cmd3="Left/Right action";
-	cmd4="A run action";
-	cmd5="A+B delete project";
-	cmd6="A on folder opens";
+	cmd3="Left/Right button";
+	cmd4="A run button";
+	cmd5="Delete asks first";
+	cmd6="Help: how to use app";
 	cmd7="RB+Select helper";
+}
+
+void SelectProjectDialog::askDelete() {
+    Path current = GetCurrentProjectPath();
+    std::string name = current.GetName();
+    if (content_.Size() == 0 || !isProjectFolder(name)) {
+        View::SetNotification("Pick a song to delete", 0);
+        return;
+    }
+    std::string shown = name.size() > 5 ? name.substr(isalnum(name[4]) ? 4 : 5) : name;
+    std::string message = "Delete " + shown + " ?";
+    MessageBox *mb = new MessageBox(*this, message.c_str(), MBBF_YES | MBBF_NO);
+    DoModal(mb, DeleteProjectCallback);
+}
+
+void SelectProjectDialog::runAction() {
+    switch (selected_) {
+    case PA_OPEN: {
+        if (content_.Size() == 0) {
+            View::SetNotification("No songs yet: pick New", 0);
+            break;
+        }
+        Path current = GetCurrentProjectPath();
+        if (isProjectFolder(current.GetName())) {
+            selection_ = current;
+            lastFolder_ = currentPath_;
+            lastProject_ = currentProject_;
+            EndModal(1);
+        } else if (current.GetName() == "..") {
+            Path parent = currentPath_.GetParent();
+            setCurrentFolder(parent);
+        } else {
+            setCurrentFolder(current);
+        }
+        break;
+    }
+    case PA_NEW: {
+        NewProjectDialog *npd = new NewProjectDialog(*this, currentPath_);
+        DoModal(npd, NewProjectCallback);
+        break;
+    }
+    case PA_DELETE:
+        askDelete();
+        break;
+    case PA_HELP:
+        DoModal(new HelpDialog(*this));
+        break;
+    }
 }
 
 void SelectProjectDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (!pressed) return ;
 
-    if (mask&EPBM_B) {
-        // Handle A + B combination for delete
+    if (mask & EPBM_B) {
+        // A+B is the quick delete shortcut
         if (mask & EPBM_A) {
-            int count = 0;
-            Path *current = 0;
-
-            IteratorPtr<Path> it(content_.GetIterator());
-            for (it->Begin(); !it->IsDone(); it->Next()) {
-                if (count == currentProject_) {
-                    current = &it->CurrentItem();
-                    break;
-                }
-                count++;
-            }
-
-            if (current != 0) {
-                std::string message =
-                    "Delete project '" + current->GetName() + "' ?";
-                MessageBox *mb =
-                    new MessageBox(*this, message.c_str(), MBBF_YES | MBBF_NO);
-                DoModal(mb, DeleteProjectCallback);
-                DrawView();
-            }
+            askDelete();
             return;
         }
         if (mask & EPBM_UP)
             warpToNextProject(-LIST_SIZE);
-        if (mask&EPBM_DOWN) warpToNextProject(LIST_SIZE) ;
-    } else {
-
-        // A modifier
-        if (mask & EPBM_A) {
-            switch (selected_) {
-			case 0: // load
-				{
-                // locate folder user had selected when they hit a
-                int count = 0;
-                Path *current = 0;
-
-                IteratorPtr<Path> it(content_.GetIterator());
-                for (it->Begin(); !it->IsDone(); it->Next()) {
-                    if (count == currentProject_) {
-                        current = &it->CurrentItem();
-                        break;
-                    }
-                    count++;
-                }
-
-					//check if folder is a project, indicated by 'lgpt' being the first 4 characters of the folder name
-					std::string name = current->GetName() ;
-					std::string firstFourChars = name.substr(0,4);
-					std::transform(firstFourChars.begin(), firstFourChars.end(), firstFourChars.begin(), ::tolower);
-					if(firstFourChars == "lgpt"){
-						//ugly hack to make the "name" include subdirectories
-						//we pass along everything past the root dir
-						selection_ = *current ;
-						lastFolder_=currentPath_ ;
-						lastProject_=currentProject_ ;
-						//load the project
-						EndModal(1) ;
-					} else {
-						if (current->GetName() == "..") {
-							Path parent=currentPath_.GetParent() ;
-							setCurrentFolder(parent) ;
-						} else {
-							Path newdir=*current ;
-							setCurrentFolder(newdir) ;
-						}
-					}
-				break ;
-			}
-			case 1: // new
-			{
-                NewProjectDialog *npd =
-                    new NewProjectDialog(*this, currentPath_);
-                DoModal(npd,NewProjectCallback) ;
-				break ;
-            }
-            case 2: // Exit ;
-                EndModal(0) ;
-				break ;
-		}
-        } else {
-
-            // R Modifier
-
-            if (mask & EPBM_R) {
-            } else {
-                // No modifier
-				if (mask==EPBM_UP) warpToNextProject(-1) ;
-				if (mask==EPBM_DOWN) warpToNextProject(1) ;
-				if (mask==EPBM_LEFT) {
-					selected_-- ;
-					if (selected_<0) selected_+=3 ;
-					isDirty_=true ;
-				}
-				if (mask==EPBM_RIGHT) {
-					selected_=(selected_+1)%3 ;
-					isDirty_=true ;
-				}
-            }
-        }
+        if (mask & EPBM_DOWN)
+            warpToNextProject(LIST_SIZE);
+        return;
+    }
+    if (mask == EPBM_A) {
+        runAction();
+        return;
+    }
+    if (mask == EPBM_UP) warpToNextProject(-1);
+    if (mask == EPBM_DOWN) warpToNextProject(1);
+    if (mask == EPBM_LEFT) {
+        selected_ = (selected_ + PA_COUNT - 1) % PA_COUNT;
+        isDirty_ = true;
+    }
+    if (mask == EPBM_RIGHT) {
+        selected_ = (selected_ + 1) % PA_COUNT;
+        isDirty_ = true;
     }
 };
 
@@ -335,6 +282,8 @@ void SelectProjectDialog::warpToNextProject(int amount) {
 
     int offset = currentProject_ - topIndex_;
     int size = content_.Size();
+    if (size == 0)
+        return;
     currentProject_+=amount ;
 	if (currentProject_<0) currentProject_+=size ;
 	if (currentProject_>=size) currentProject_-=size ;
@@ -390,7 +339,7 @@ Result SelectProjectDialog::OnDeleteProject(const Path &projectPath) {
     }
 
     // Recursively delete the project directory and all contents
-	RecursiveDeleteDirectory(projectPath);
+	DeleteFolder(projectPath);
 	
 	// Project deleted successfully, refresh the project list
 	std::string successMsg = "Project deleted: " + pathCopy.GetName();
@@ -399,6 +348,7 @@ Result SelectProjectDialog::OnDeleteProject(const Path &projectPath) {
 	// Refresh current folder to update the list while preserving position
 	int savedProject = currentProject_;
 	int savedTopIndex = topIndex_;
+	int savedButton = selected_;
 	Path currentPathCopy = currentPath_;
 	setCurrentFolder(currentPathCopy);
 	
@@ -410,6 +360,8 @@ Result SelectProjectDialog::OnDeleteProject(const Path &projectPath) {
 		currentProject_ = savedProject;
 	}
     topIndex_ = savedTopIndex;
+    if (listSize > 0)
+        selected_ = savedButton;
     isDirty_ = true;
 		
 	return Result::NoError;
@@ -425,6 +377,7 @@ void SelectProjectDialog::setCurrentFolder(Path &path) {
 	
 	// Let's read all the directory in the root
 
+	bool atRoot=currentPath_.GetPath()==Path("root:").GetPath() ;
 	I_Dir *dir=FileSystem::GetInstance()->Open(currentPath_.GetPath().c_str()) ;
 
   if (dir) 
@@ -443,7 +396,9 @@ void SelectProjectDialog::setCurrentFolder(Path &path) {
 			if (path.IsDirectory())
       {
 				std::string name=path.GetName() ;
-				if (name[0] != '.' || name[1]== '.')
+				// ".." only below the songs folder: there is nothing above it to open
+				bool parent = name == "..";
+				if ((name[0] != '.' && !parent) || (parent && !atRoot))
         {
 					Path *p=new Path(path) ;
 					content_.Insert(p) ;
@@ -456,6 +411,7 @@ void SelectProjectDialog::setCurrentFolder(Path &path) {
 	//reset & redraw screen
 	topIndex_=0 ;
 	currentProject_=0 ;
+	if (content_.Size()==0) selected_=PA_NEW ;
     isDirty_ = true;
 }
 

@@ -1,5 +1,5 @@
 # Source-derived boot route:
-# Load -> New -> NewProjectDialog -> Random -> Ok -> loaded project.
+# Open list -> New -> name dialog (opens on OK with a free name) -> loaded project.
 route boot.new_project_random
 screenshot new-project-route.bmp
 expect_size 240 240

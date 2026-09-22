@@ -41,7 +41,24 @@ def main() -> int:
     for old in ROOT.glob("wiki-*.bmp"):
         old.unlink()
 
-    run(SCRIPTS / "wiki-shots-new.rgsim", reset=True)
+    # Shoot the start screen with only the demo songs listed, not the
+    # throwaway projects earlier sim runs leave behind
+    tracks = ROOT / "rgnano-sim-data" / "tracks"
+    parked = ROOT / "rgnano-sim-data" / "tracks-parked-for-wiki"
+    if parked.exists():
+        raise SystemExit(f"{parked} exists from an interrupted run; move it back to {tracks}")
+    if tracks.exists():
+        tracks.rename(parked)
+    try:
+        tracks.mkdir(parents=True)
+        for demo_dir in (PROJECTS / "resources" / "demos").iterdir():
+            if demo_dir.is_dir():
+                shutil.copytree(demo_dir, tracks / demo_dir.name)
+        run(SCRIPTS / "wiki-shots-new.rgsim", reset=True)
+    finally:
+        shutil.rmtree(tracks, ignore_errors=True)
+        if parked.exists():
+            parked.rename(tracks)
 
     # Demo screens: open Neon Drive through AUTO_LOAD_LAST
     demo = PROJECTS / "resources" / "demos" / "lgpt_NeonDrive"

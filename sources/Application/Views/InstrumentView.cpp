@@ -490,12 +490,12 @@ void InstrumentView::drawLabBar(int x, int y, int width, int value, int maxValue
 void InstrumentView::drawMarkerLine(int x, int y, int height, ColorDefinition color, FourCC markerType) {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
-	GUIColor markerColor(0xF5,0xEB,0xFF);
+	GUIColor markerColor=AppWindow::ThemeColor(CD_NORMAL);
 	bool active=(color==CD_HILITE1);
 	if (color==CD_PLAY) {
-		markerColor=GUIColor(0xD8,0x4C,0xD8);
+		markerColor=AppWindow::ThemeColor(CD_PLAY);
 	} else if (color==CD_HILITE2) {
-		markerColor=GUIColor(0x9B,0x2B,0xB8);
+		markerColor=AppWindow::ThemeBlend(CD_BACKGROUND,CD_HILITE2,60);
 	}
 	int markerWidth=active?3:1;
 	GUIRect marker(x-(markerWidth/2),y,x-(markerWidth/2)+markerWidth,y+height);
@@ -535,10 +535,10 @@ void InstrumentView::drawPixelLabBar(int x, int y, int width, int height, int va
 	if (value>maxValue) value=maxValue;
 
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
-	GUIColor panel(0x1D,0x0A,0x1F);
-	GUIColor frame(0x5E,0x24,0x62);
-	GUIColor fill(0xDB,0x33,0xDB);
-	GUIColor fill2(0xF5,0xEB,0xFF);
+	GUIColor panel=AppWindow::ThemeColor(CD_BACKGROUND);
+	GUIColor frame=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
+	GUIColor fill=AppWindow::ThemeColor(CD_HILITE2);
+	GUIColor fill2=AppWindow::ThemeColor(CD_NORMAL);
 	imp->SetColor(frame);
 	GUIRect outer(x,y,x+width,y+height);
 	imp->DrawRect(outer);
@@ -586,11 +586,11 @@ void InstrumentView::drawSampleWaveform(SampleInstrument *instrument, int x, int
                                         int width, int height, bool showMarkers) {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
-	GUIColor panel(0x1D,0x0A,0x1F);
-	GUIColor frame(0x5E,0x24,0x62);
-	GUIColor center(0x5E,0x24,0x62);
-	GUIColor trace(0xDB,0x33,0xDB);
-	GUIColor traceHot(0xF5,0xEB,0xFF);
+	GUIColor panel=AppWindow::ThemeColor(CD_BACKGROUND);
+	GUIColor frame=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
+	GUIColor center=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
+	GUIColor trace=AppWindow::ThemeColor(CD_HILITE2);
+	GUIColor traceHot=AppWindow::ThemeColor(CD_NORMAL);
 	imp->SetColor(frame);
 	GUIRect outer(x,y,x+width,y+height);
 	imp->DrawRect(outer);
@@ -707,7 +707,7 @@ void InstrumentView::drawSampleLabVisuals() {
 
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
-	GUIColor panel(0x18,0x06,0x1B);
+	GUIColor panel=AppWindow::ThemeColor(CD_BACKGROUND);
 	imp->SetColor(panel);
 	GUIRect clearPanel(0,34,240,128);
 	imp->DrawRect(clearPanel);

@@ -50,7 +50,7 @@ Drums play at a sensible pitch when you type `C 3`. Basses are pre-tuned two oct
 
 ## 3. Your first beat (5 minutes)
 
-1. **New project.** On the start screen choose `New`, then `Random`, then `Ok`. You are on the **Song** screen.
+1. **New song.** On the **Your Songs** start screen press **Right** to highlight `New`, then **A**. The name box opens with a free random name and `OK` highlighted: press **A** again. (Type your own name with the letter grid if you like; **B** erases, **B** on an empty name goes back.) You are on the **Song** screen. The `Help` button on the start screen has a short tour of all of this.
 2. **Make a chain for track 1.** The cursor is on row `00`, column 1 (`--`). Press **A**. It becomes `00` — chain 00 now plays on track 1.
 3. **Open it.** **RB + Right**. You are in **Chain 00**.
 4. **Make a phrase.** Press **A** on the first `--`. It becomes `00`.

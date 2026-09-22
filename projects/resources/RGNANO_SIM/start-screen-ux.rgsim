@@ -1,0 +1,104 @@
+# Start screen, used like a first-time owner would: read Help, open the name
+# editor and back out, type a name, make the song, then delete it again.
+sim_remove_project lgpt_0UX
+wait 500
+expect_screen_text YOUR SONGS
+expect_screen_text Open   New   Delete   Help
+expect_selected_text ="Open"
+expect_screen_text A: open this song
+
+# Help button teaches the basics without the website
+press r 80
+press r 80
+press r 80
+expect_selected_text ="Help"
+press a 80
+wait 80
+screenshot_app start-help-1.bmp
+expect_screen_text HELP 1/5  WHAT IS THIS
+press r 80
+wait 60
+expect_screen_text BUTTONS
+press r 80
+wait 60
+screenshot_app start-help-3.bmp
+expect_screen_text SONG>CHAIN>PHRASE>INSTR
+press b 80
+wait 80
+expect_screen_text YOUR SONGS
+
+# New opens on OK with a free name; B clears it, B again leaves
+press l 80
+press l 80
+expect_selected_text ="New"
+press a 80
+wait 80
+screenshot_app start-new-song.bmp
+expect_screen_text NEW SONG
+expect_screen_text type to replace
+expect_selected_text ="OK"
+press b 80
+wait 60
+expect_screen_text B cancel
+press b 80
+wait 80
+expect_screen_text YOUR SONGS
+
+# Type "0UX" (sorts first in the list): from OK up to the digits, then U-Z
+press a 80
+wait 80
+press u 80
+expect_selected_text ="7"
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+expect_selected_text ="0"
+press a 80
+press u 80
+expect_selected_text ="U"
+press a 80
+press r 80
+press r 80
+press r 80
+expect_selected_text ="X"
+press a 80
+wait 60
+expect_screen_text NAME 0UX
+screenshot_app start-new-typed.bmp
+press s 80
+wait 1000
+expect_view song
+expect_project_exists lgpt_0UX
+
+# Back to the list through Project > Load Song, then delete it
+goto project
+focus load song
+press a 80
+wait 120
+# Confirm boxes start on No; step to Yes
+press l 80
+press a 80
+wait 500
+expect_screen_text YOUR SONGS
+focus 0ux
+press r 80
+press r 80
+expect_selected_text ="Delete"
+expect_screen_text A: delete this song
+press a 80
+wait 120
+expect_screen_text Delete 0UX ?
+expect_selected_text ="No"
+screenshot_app start-delete-confirm.bmp
+press l 80
+press a 80
+wait 200
+expect_no_project lgpt_0UX
+expect_screen_text YOUR SONGS
+
+expect_no_error
+quit

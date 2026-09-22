@@ -22,20 +22,20 @@
 
 AppWindow *instance = 0;
 
-GUIColor AppWindow::backgroundColor_(0x1D, 0x0A, 0x1F);
-GUIColor AppWindow::normalColor_(0xF5, 0xEB, 0xFF);
-GUIColor AppWindow::borderColor_(0xFF, 0x00, 0x8C);
-GUIColor AppWindow::songviewfeColor_(0xA5, 0x5B, 0x8F);
-GUIColor AppWindow::songview00Color_(0x85, 0x3B, 0x6F);
-GUIColor AppWindow::highlightColor_(0xB7, 0x50, 0xD1);
-GUIColor AppWindow::highlight2Color_(0xDB, 0x33, 0xDB);
+GUIColor AppWindow::backgroundColor_(0x0E, 0x12, 0x18);
+GUIColor AppWindow::normalColor_(0xD8, 0xDE, 0xE6);
+GUIColor AppWindow::borderColor_(0x2F, 0x6F, 0x8F);
+GUIColor AppWindow::songviewfeColor_(0x5C, 0x6A, 0x7A);
+GUIColor AppWindow::songview00Color_(0x44, 0x50, 0x5E);
+GUIColor AppWindow::highlightColor_(0x4F, 0xB8, 0xC8);
+GUIColor AppWindow::highlight2Color_(0x5C, 0xC8, 0xA8);
 GUIColor AppWindow::consoleColor_(0x00, 0xFF, 0x00);
-GUIColor AppWindow::cursorColor_(0xFF, 0x00, 0x8C);
-GUIColor AppWindow::playColor_(0xFF, 0x00, 0x8C);
-GUIColor AppWindow::muteColor_(0xF5, 0xEB, 0xFF);
-GUIColor AppWindow::rownumberColor_(0xBA, 0x28, 0xF9);
-GUIColor AppWindow::rownumber2Color_(0xFF, 0x00, 0xFF);
-GUIColor AppWindow::majorbeatColor_(0xBA, 0x28, 0xF9);
+GUIColor AppWindow::cursorColor_(0xFF, 0xC1, 0x4D);
+GUIColor AppWindow::playColor_(0x7C, 0xE0, 0x7C);
+GUIColor AppWindow::muteColor_(0x7A, 0x84, 0x94);
+GUIColor AppWindow::rownumberColor_(0x5A, 0x7A, 0x9A);
+GUIColor AppWindow::rownumber2Color_(0x9A, 0xB8, 0xD8);
+GUIColor AppWindow::majorbeatColor_(0x5A, 0x7A, 0x9A);
 
 int AppWindow::charWidth_ = 8;
 int AppWindow::charHeight_ = 8;
@@ -53,6 +53,49 @@ static void ProjectSelectCallback(View &v, ModalView &dialog) {
         System::GetInstance()->PostQuitMessage();
     }
 };
+
+GUIColor AppWindow::ThemeColor(ColorDefinition cd) {
+    switch (cd) {
+    case CD_BACKGROUND:
+        return backgroundColor_;
+    case CD_BORDER:
+        return borderColor_;
+    case CD_HILITE1:
+        return highlightColor_;
+    case CD_HILITE2:
+        return highlight2Color_;
+    case CD_CONSOLE:
+        return consoleColor_;
+    case CD_CURSOR:
+        return cursorColor_;
+    case CD_PLAY:
+        return playColor_;
+    case CD_MUTE:
+        return muteColor_;
+    case CD_SONGVIEWFE:
+        return songviewfeColor_;
+    case CD_SONGVIEW00:
+        return songview00Color_;
+    case CD_ROW:
+        return rownumberColor_;
+    case CD_ROW2:
+        return rownumber2Color_;
+    case CD_MAJORBEAT:
+        return majorbeatColor_;
+    case CD_NORMAL:
+    default:
+        return normalColor_;
+    }
+}
+
+GUIColor AppWindow::ThemeBlend(ColorDefinition from, ColorDefinition to,
+                               int percent) {
+    GUIColor a = ThemeColor(from);
+    GUIColor b = ThemeColor(to);
+    return GUIColor(a._r + (b._r - a._r) * percent / 100,
+                    a._g + (b._g - a._g) * percent / 100,
+                    a._b + (b._b - a._b) * percent / 100);
+}
 
 void AppWindow::defineColor(const char *colorName, GUIColor &color) {
 
@@ -316,53 +359,7 @@ void AppWindow::Flush() {
                 props.invert_ = (*currentProp & PROP_INVERT) != 0;
                 if (((*currentProp) & 0x7F) != color) {
                     color = (ColorDefinition)((*currentProp) & 0x7F);
-                    GUIColor gcolor = normalColor_;
-                    switch (color) {
-                    case CD_BACKGROUND:
-                        gcolor = backgroundColor_;
-                        break;
-                    case CD_NORMAL:
-                        break;
-                    case CD_BORDER:
-                        gcolor = borderColor_;
-                        break;
-                    case CD_HILITE1:
-                        gcolor = highlightColor_;
-                        break;
-                    case CD_HILITE2:
-                        gcolor = highlight2Color_;
-                        break;
-                    case CD_CONSOLE:
-                        gcolor = consoleColor_;
-                        break;
-                    case CD_CURSOR:
-                        gcolor = cursorColor_;
-                        break;
-                    case CD_PLAY:
-                        gcolor = playColor_;
-                        break;
-                    case CD_MUTE:
-                        gcolor = muteColor_;
-                        break;
-                    case CD_SONGVIEWFE:
-                        gcolor = songviewfeColor_;
-                        break;
-                    case CD_SONGVIEW00:
-                        gcolor = songview00Color_;
-                        break;
-                    case CD_ROW:
-                        gcolor = rownumberColor_;
-                        break;
-                    case CD_ROW2:
-                        gcolor = rownumber2Color_;
-                        break;
-                    case CD_MAJORBEAT:
-                        gcolor = majorbeatColor_;
-                        break;
-                    default:
-                        NAssert(0);
-                        break;
-                    }
+                    GUIColor gcolor = ThemeColor(color);
                     GUIWindow::SetColor(gcolor);
                 }
                 GUIWindow::DrawChar(*current, pos, props);

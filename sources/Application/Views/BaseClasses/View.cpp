@@ -708,9 +708,9 @@ void View::drawMiniWaveform(bool force) {
 	const int y = rect.Height() - height;
 	const int mid = y + (height / 2);
 	const int columns = AudioMixer::WAVEFORM_SIZE;
-	GUIColor scopeBackground(0x1D, 0x0A, 0x1F);
-	GUIColor scopeTrace(0xDB, 0x33, 0xDB);
-	GUIColor scopeCenter(0x5E, 0x24, 0x62);
+	GUIColor scopeBackground=AppWindow::ThemeColor(CD_BACKGROUND);
+	GUIColor scopeTrace=AppWindow::ThemeColor(CD_HILITE2);
+	GUIColor scopeCenter=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
 
 	imp->SetColor(scopeBackground);
 	GUIRect clear(x, y, x + width, y + height);

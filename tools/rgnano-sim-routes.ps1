@@ -27,10 +27,8 @@ function Get-RGNanoSimRoutes {
     "wait 500",
     "press r 80",
     "press a 80",
+    # The name dialog opens on OK with a free random name
     "wait 200",
-    "press d 80",
-    "press a 80",
-    "press r 80",
     "press a 80",
     "wait 1000"
   )

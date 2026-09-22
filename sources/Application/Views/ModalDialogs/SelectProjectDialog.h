@@ -24,12 +24,17 @@ public:
 	Result OnNewProject(std::string &name) ;
     Result OnDeleteProject(const Path &projectPath);
 
+    // Removes a folder and everything in it
+    static void DeleteFolder(const Path &dirPath);
+
     Path GetSelection();
     Path GetCurrentProjectPath();
 
   protected:
     void warpToNextProject(int amount) ;
 	void setCurrentFolder(Path &path) ;
+	void runAction() ;
+	void askDelete() ;
 
 private:
   T_SimpleList<Path> content_;

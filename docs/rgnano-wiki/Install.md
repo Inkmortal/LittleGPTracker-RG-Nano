@@ -37,16 +37,22 @@ On the device these are `/mnt/Applications/Tracks` and `/mnt/Applications/Sample
 
 ## Launch
 
-Open **Native games → LGPT RG Nano**. The project list appears:
+Open **Native games → LGPT RG Nano**. The **Your Songs** list appears. **Up/Down** picks a song, **Left/Right** picks a button, **A** runs it:
 
-<img src="images/boot.png" width="360" alt="Project list">
+<img src="images/boot.png" width="360" alt="Your Songs list">
 
-- **Load** a demo song: highlight `lgpt_NeonDrive` and press **A** on `Load`.
-- **New** starts an empty project (with the synth kit ready to play).
+| Button | Does |
+| --- | --- |
+| **Open** | open the highlighted song (try `NeonDrive`) |
+| **New** | start an empty song with the synth kit ready to play |
+| **Delete** | delete the highlighted song (asks first, starts on `No`) |
+| **Help** | five short pages: what a tracker is, buttons, the screen map, a first beat |
 
-<img src="images/new-project.png" width="360" alt="New project dialog">
+The Menu/Power button quits the app.
 
-Choose `Random` for a name, then `Ok`.
+<img src="images/new-project.png" width="360" alt="New song name dialog">
+
+**New** opens with a free random name already filled in and **OK** highlighted, so **A** creates the song straight away. To pick your own name see [Controls](Controls#naming-a-new-song).
 
 ## Updating
 

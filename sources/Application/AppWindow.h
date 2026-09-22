@@ -27,6 +27,12 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     virtual ~AppWindow();
 
   public:
+    // Theme colors for pixel graphics, so scopes and panels follow config.xml
+    static GUIColor ThemeColor(ColorDefinition cd);
+    // percent 0 = from, 100 = to
+    static GUIColor ThemeBlend(ColorDefinition from, ColorDefinition to,
+                               int percent);
+
     static AppWindow *Create(GUICreateWindowParams &);
     void LoadProject(const Path &path);
     void SaveLastProject(const Path &p);
@@ -75,6 +81,7 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     virtual void Print(char *);
 
     void defineColor(const char *colorName, GUIColor &color);
+
 
     void onQuitApp();
 

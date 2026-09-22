@@ -2,6 +2,7 @@
 // Each page draws a live picture of what its knobs do, plus a plain-English
 // explanation of the focused knob with real units (ms, Hz, semitones).
 
+#include "Application/AppWindow.h"
 #include "InstrumentView.h"
 #include "Application/Instruments/SynthInstrument.h"
 #include "Application/Mixer/SendFX.h"
@@ -329,14 +330,14 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 
-static const GUIColor synthPanel(0x1D,0x0A,0x1F);
-static const GUIColor synthFrame(0x5E,0x24,0x62);
-static const GUIColor synthTrace(0xDB,0x33,0xDB);
-static const GUIColor synthHot(0xF5,0xEB,0xFF);
+static GUIColor synthPanel() { return AppWindow::ThemeColor(CD_BACKGROUND); }
+static GUIColor synthFrame() { return AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45); }
+static GUIColor synthTrace() { return AppWindow::ThemeColor(CD_HILITE2); }
+static GUIColor synthHot() { return AppWindow::ThemeColor(CD_NORMAL); }
 
 static void synthBox(SDLGUIWindowImp *imp, int x, int y, int w, int h) {
-	GUIColor frame=synthFrame;
-	GUIColor panel=synthPanel;
+	GUIColor frame=synthFrame();
+	GUIColor panel=synthPanel();
 	imp->SetColor(frame);
 	GUIRect outer(x,y,x+w,y+h);
 	imp->DrawRect(outer);
@@ -348,7 +349,7 @@ static void synthBox(SDLGUIWindowImp *imp, int x, int y, int w, int h) {
 // Draws a continuous trace through points (px) inside a box
 static void synthPlot(SDLGUIWindowImp *imp, const int *ys, int count, int x, int top,
                       int bottom, bool hot) {
-	GUIColor color=hot?synthHot:synthTrace;
+	GUIColor color=hot?synthHot():synthTrace();
 	imp->SetColor(color);
 	int prev=ys[0];
 	for (int i=0;i<count;i++) {
@@ -378,7 +379,7 @@ void InstrumentView::drawSynthVisuals() {
 
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
-	GUIColor clearColor(0x18,0x06,0x1B);
+	GUIColor clearColor=AppWindow::ThemeColor(CD_BACKGROUND);
 	imp->SetColor(clearColor);
 	GUIRect clearPanel(0,34,240,110);
 	imp->DrawRect(clearPanel);
@@ -455,7 +456,7 @@ void InstrumentView::drawSynthVisuals() {
 		synthPlot(imp,ys,plotW,bx+2,top,bottom,false);
 		if (type!=SFT_OFF) {
 			int cx=bx+2+(int)(log(cut/20.0f)/log(1000.0f)*(plotW-1));
-			GUIColor hot=synthHot;
+			GUIColor hot=synthHot();
 			imp->SetColor(hot);
 			GUIRect marker(cx,top,cx+1,bottom);
 			imp->DrawRect(marker);
@@ -476,7 +477,7 @@ void InstrumentView::drawSynthVisuals() {
 		const char *names[4]={"VOL","PAN","REV","DLY"};
 		FourCC ids[4]={SYP_VOLUME,SYP_PAN,SYP_REVERB,SYP_DELAY};
 		// Clear the box: four bars aligned to text rows 4,6,8,10
-		GUIColor clearColor2(0x18,0x06,0x1B);
+		GUIColor clearColor2=AppWindow::ThemeColor(CD_BACKGROUND);
 		imp->SetColor(clearColor2);
 		GUIRect clearBox(bx,by,bx+bw,by+bh+4);
 		imp->DrawRect(clearBox);

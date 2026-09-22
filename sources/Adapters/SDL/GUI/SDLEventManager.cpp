@@ -23,6 +23,7 @@
 #include "System/Console/Trace.h"
 #include "System/System/System.h"
 #include "Application/Views/BaseClasses/ViewEvent.h"
+#include "Application/Views/ModalDialogs/SelectProjectDialog.h"
 #include "Application/Utils/char.h"
 #include <fstream>
 #include <sstream>
@@ -425,10 +426,8 @@ bool SDLEventManager::AppendSimRoute(const std::string &routeName, const char *s
 		lines.push_back("wait 500");
 		lines.push_back("press r 80");
 		lines.push_back("press a 80");
+		// The name dialog opens on OK with a free random name
 		lines.push_back("wait 200");
-		lines.push_back("press d 80");
-		lines.push_back("press a 80");
-		lines.push_back("press r 80");
 		lines.push_back("press a 80");
 		lines.push_back("wait 1000");
 	} else if (routeName=="project.to_song") {
@@ -536,7 +535,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (command.value<=0) {
 			command.value=80;
 		}
-	} else if (command.op=="down" || command.op=="up" || command.op=="screenshot" || command.op=="screenshot_app" || command.op=="log" || command.op=="expect_file" || command.op=="expect_project_sample" || command.op=="expect_view" || command.op=="expect_player_running" || command.op=="expect_play_mode" || command.op=="sim_set_note_names" || command.op=="expect_sample_trim_order") {
+	} else if (command.op=="down" || command.op=="up" || command.op=="screenshot" || command.op=="screenshot_app" || command.op=="log" || command.op=="expect_file" || command.op=="sim_make_project" || command.op=="sim_remove_project" || command.op=="expect_project_exists" || command.op=="expect_no_project" || command.op=="expect_project_sample" || command.op=="expect_view" || command.op=="expect_player_running" || command.op=="expect_play_mode" || command.op=="sim_set_note_names" || command.op=="expect_sample_trim_order") {
 		iss >> command.arg;
 	} else if (command.op=="expect_screen_text" || command.op=="expect_selected_text" || command.op=="expect_streaming_sample" || command.op=="dump_state") {
 		std::getline(iss,command.arg);
@@ -752,6 +751,33 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_file") {
 		if (!ExpectSimFile(command.arg)) {
 			FailSimScript("file assertion failed");
+			return;
+		}
+	} else if (command.op=="sim_make_project") {
+		// Test fixture: an empty song folder in the project list
+		Path dir=Path("root:").Descend(command.arg);
+		FileSystem::GetInstance()->MakeDir(dir.GetPath().c_str());
+		FileSystem::GetInstance()->MakeDir(dir.Descend("samples").GetPath().c_str());
+		bool made=dir.Exists();
+		Trace::Log("RGNANO_SIM","sim_make_project %s => %s",dir.GetPath().c_str(),made?"ok":"failed");
+		if (!made) {
+			FailSimScript("could not make project folder");
+			return;
+		}
+	} else if (command.op=="sim_remove_project") {
+		// Test setup: clear a folder left behind by an earlier failed run
+		Path dir=Path("root:").Descend(command.arg);
+		if (dir.Exists()) {
+			SelectProjectDialog::DeleteFolder(dir);
+		}
+		Trace::Log("RGNANO_SIM","sim_remove_project %s => %s",dir.GetPath().c_str(),dir.Exists()?"still there":"gone");
+	} else if (command.op=="expect_project_exists" || command.op=="expect_no_project") {
+		Path dir=Path("root:").Descend(command.arg);
+		bool exists=dir.Exists();
+		bool wanted=(command.op=="expect_project_exists");
+		Trace::Log("RGNANO_SIM","%s %s => %s",command.op.c_str(),dir.GetPath().c_str(),exists?"exists":"missing");
+		if (exists!=wanted) {
+			FailSimScript("project folder assertion failed");
 			return;
 		}
 	} else if (command.op=="expect_project_file_bytes") {
