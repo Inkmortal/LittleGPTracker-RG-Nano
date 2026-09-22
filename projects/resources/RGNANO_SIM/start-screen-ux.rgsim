@@ -96,9 +96,9 @@ wait 1000
 expect_view song
 expect_project_exists lgpt_0UX
 
-# Back to the list through Project > Load Song, then delete it
+# Back to the list through Project > Song List, then delete it
 goto project
-focus load song
+focus song list
 press a 80
 wait 120
 # Confirm boxes start on No; step to Yes

@@ -83,16 +83,24 @@ static void SaveAsProjectCallback(View &v,ModalView &dialog) {
     }
 }
 
-static void LoadCallback(View &v,ModalView &dialog) {
+// "Save first?" Yes saves then leaves, No leaves, Cancel stays
+static bool leaveAfterSavePrompt(ModalView &dialog) {
     MixerService::GetInstance()->SetRenderMode(0);
-    if (dialog.GetReturnCode()==MBL_YES) {
+    int answer = dialog.GetReturnCode();
+    if (answer == MBL_YES) {
+        PersistencyService::GetInstance()->Save();
+    }
+    return answer == MBL_YES || answer == MBL_NO;
+}
+
+static void LoadCallback(View &v,ModalView &dialog) {
+    if (leaveAfterSavePrompt(dialog)) {
 		((ProjectView &)v).OnLoadProject() ;
 	}
 } ;
 
 static void QuitCallback(View &v,ModalView &dialog) {
-    MixerService::GetInstance()->SetRenderMode(0);
-    if (dialog.GetReturnCode()==MBL_YES) {
+    if (leaveAfterSavePrompt(dialog)) {
 		((ProjectView &)v).OnQuit() ;
 	}
 } ;
@@ -122,7 +130,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	
 	Variable *v=project_->FindVariable(VAR_TEMPO) ;
     UITempoField *f = new UITempoField(ACTION_TEMPO_CHANGED, position, *v,
-                                       "Tempo: %d [%2.2x]  ", 60, 400, 1, 10);
+                                       "Tempo: %d bpm  ", 60, 400, 1, 10);
     T_SimpleList<UIField>::Insert(f) ;
 	f->AddObserver(*this) ;
 	tempoField_=f ;
@@ -140,7 +148,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 
     position._y += 1;
     v = project_->FindVariable(VAR_SOFTCLIP);
-    field = new UIIntVarField(position, *v, "Type: %s", 0, 4, 1, 4);
+    field = new UIIntVarField(position, *v, "Clip: %s", 0, 4, 1, 4);
     T_SimpleList<UIField>::Insert(field);
 
     v = project_->FindVariable(VAR_SOFTCLIP_GAIN);
@@ -199,18 +207,18 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 
     position._y += 2;
     UIActionField *a1 =
-        new UIActionField("Compact Sequencer", ACTION_PURGE, position);
+        new UIActionField("Remove unused chains", ACTION_PURGE, position);
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
 
     position._y += 1;
-    a1 = new UIActionField("Compact Instruments", ACTION_PURGE_INSTRUMENT,
+    a1 = new UIActionField("Remove unused sounds", ACTION_PURGE_INSTRUMENT,
                            position);
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
 
     position._y += 1;
-    a1 = new UIActionField("Load Song", ACTION_LOAD, position);
+    a1 = new UIActionField("Song List", ACTION_LOAD, position);
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
 
@@ -239,7 +247,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
     T_SimpleList<UIField>::Insert(field);
 
     position._y += 1;
-    a1 = new UIActionField("Exit", ACTION_QUIT, position);
+    a1 = new UIActionField("Quit", ACTION_QUIT, position);
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
 
@@ -290,8 +298,8 @@ void ProjectView::DrawView() {
 // Draw title
 
 	char projectString[80] ;
-    sprintf(projectString, "Project (Build %s.%s.%s)", PROJECT_NUMBER,
-            PROJECT_RELEASE, BUILD_COUNT);
+    // The build number lives on the start screen
+    sprintf(projectString, "Project");
 
     SetColor(CD_NORMAL);
     DrawString(pos._x,pos._y,projectString,props) ;
@@ -362,13 +370,13 @@ void ProjectView::Update(Observable &,I_ObservableData *data) {
         }
         case ACTION_LOAD: {
             MessageBox *mb = new MessageBox(
-                *this, "Load song and lose changes ?", MBBF_YES | MBBF_NO);
+                *this, "Save song first ?", MBBF_YES | MBBF_NO | MBBF_CANCEL);
             DoModal(mb, LoadCallback);
             break;
         }
         case ACTION_QUIT: {
-            MessageBox *mb = new MessageBox(*this, "Quit and lose faith ?",
-                                            MBBF_YES | MBBF_NO);
+            MessageBox *mb = new MessageBox(*this, "Save song first ?",
+                                            MBBF_YES | MBBF_NO | MBBF_CANCEL);
             DoModal(mb, QuitCallback);
             break;
         }

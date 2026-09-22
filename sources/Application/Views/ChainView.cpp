@@ -690,7 +690,7 @@ void ChainView::DrawView() {
 
     char title[20];
     SetColor(CD_NORMAL);
-    sprintf(title, "Chain %2.2x", viewData_->currentChain_);
+    sprintf(title, "Chain %2.2X", viewData_->currentChain_);
     DrawString(pos._x, pos._y, title, props);
 
     // Compute song grid location
@@ -853,14 +853,13 @@ void ChainView::drawChannelMeters(int x, int y) {
     GUITextProperties props;
     GUIPoint pos(x, y);
 
-    SetColor(CD_NORMAL);
-
-    // Draw meters for all 8 channels
+    // Level meter per track; the track being edited is lit
     for (int i = 0; i < 8; i++) {
-        // Channel number
         char channelLabel[4];
         sprintf(channelLabel, "%d", i + 1);
+        SetColor(i == viewData_->songX_ ? CD_HILITE2 : CD_MUTE);
         DrawString(pos._x, pos._y, channelLabel, props);
+        SetColor(CD_MUTE);
 
         // Meter visualization
         pos._x += 1;
@@ -896,7 +895,7 @@ void ChainView::drawChannelMeters(int x, int y) {
             else if (width==4) DrawString(pos._x, pos._y, "####..", props);
             else if (width==5) DrawString(pos._x, pos._y, "#####.", props);
             else DrawString(pos._x, pos._y, "######", props);
-            SetColor(CD_NORMAL);
+            SetColor(CD_MUTE);
         } else {
             // Silent: show empty meter
             DrawString(pos._x, pos._y, "......", props);
@@ -906,4 +905,5 @@ void ChainView::drawChannelMeters(int x, int y) {
         pos._y++;
         pos._x = x;
     }
+    SetColor(CD_NORMAL);
 };

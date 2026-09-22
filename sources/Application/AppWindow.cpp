@@ -35,7 +35,7 @@ GUIColor AppWindow::playColor_(0x7C, 0xE0, 0x7C);
 GUIColor AppWindow::muteColor_(0x7A, 0x84, 0x94);
 GUIColor AppWindow::rownumberColor_(0x5A, 0x7A, 0x9A);
 GUIColor AppWindow::rownumber2Color_(0x9A, 0xB8, 0xD8);
-GUIColor AppWindow::majorbeatColor_(0x5A, 0x7A, 0x9A);
+GUIColor AppWindow::majorbeatColor_(0xF2, 0xE4, 0xC0);
 
 int AppWindow::charWidth_ = 8;
 int AppWindow::charHeight_ = 8;

@@ -28,7 +28,7 @@ Two parts: each instrument's **MIX** page sets how much it sends (`reverb`, `del
 Lower instrument volumes (kick and bass eat the most headroom), or `Drive` on the Project screen. Watch the Mixer meters.
 
 **How do I get back to the project list?**
-Project screen → `Load Song`, or press the Menu/Power button for the app menu.
+Project screen → `Song List`, or press the Menu/Power button for the app menu.
 
 **I changed a demo song by accident.**
 Songs only change on disk when you save. Reload it, or copy the demo folder from the build zip again.

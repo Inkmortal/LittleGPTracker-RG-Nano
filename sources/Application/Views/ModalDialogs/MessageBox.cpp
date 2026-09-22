@@ -11,10 +11,12 @@ MessageBox::MessageBox(View &view,const char *message,int btnFlags):
 	ModalView(view),
 	message_(message) {
 
+	// Reading order, so Cancel ends up last (and selected by default)
+	static const int order[MBL_LAST]={MBL_OK,MBL_YES,MBL_NO,MBL_CANCEL} ;
 	buttonCount_=0 ;
 	for (int i=0;i<MBL_LAST;i++) {
-		if (btnFlags&(1<<(i))) {
-			button_[buttonCount_]=i ;
+		if (btnFlags&(1<<(order[i]))) {
+			button_[buttonCount_]=order[i] ;
 			buttonCount_++ ;
 		}
 	}

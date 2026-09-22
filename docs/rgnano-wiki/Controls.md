@@ -10,7 +10,7 @@ The RG Nano has few buttons, so almost everything is **a button held + a D-pad d
 
 **Start** plays and stops. **RB + Select** opens the helper on every screen.
 
-> On the RG Nano, **Select** is the `FN` button. **LB/RB** are the shoulder buttons. The Menu/Power button opens the app's exit menu.
+> On the RG Nano, **Select** is the `FN` button. **LB/RB** are the shoulder buttons. The Menu/Power button opens the app menu: **Save and quit**, **Quit, don't save** (asks first) and **Debug tools**.
 
 ## Moving between screens
 

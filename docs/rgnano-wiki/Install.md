@@ -48,7 +48,7 @@ Open **Native games → LGPT RG Nano**. The **Your Songs** list appears. **Up/Do
 | **Delete** | delete the highlighted song (asks first, starts on `No`) |
 | **Help** | five short pages: what a tracker is, buttons, the screen map, a first beat |
 
-The Menu/Power button quits the app.
+The Menu/Power button opens the app menu, where **Save and quit** is the safe way out.
 
 <img src="images/new-project.png" width="360" alt="New song name dialog">
 

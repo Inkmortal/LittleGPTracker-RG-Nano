@@ -5,7 +5,7 @@ expect_view song
 # Power menu helper.
 press p 80
 wait 120
-expect_selected_text powerMenu=Exit
+expect_selected_text powerMenu=Save and quit
 down n
 press k 80
 up n
@@ -18,10 +18,10 @@ down n
 press k 80
 up n
 wait 80
-expect_selected_text powerMenu=Exit
+expect_selected_text powerMenu=Save and quit
 
-# Debug menu helper.
-press d 80
+# Debug menu helper (last entry: Up wraps to it).
+press u 80
 wait 80
 press a 80
 wait 120

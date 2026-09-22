@@ -80,12 +80,14 @@ How many ticks each step lasts, cycling. `06 06` is straight. `07 05` swings (lo
 | --- | --- |
 | Tempo | BPM |
 | Master / Drive | output level / level into the soft clipper |
-| Type | soft clipper strength (Bypass … Insane) |
+| Clip | soft clipper strength (Bypass … Insane) |
 | Transpose | shifts every note in the song |
 | Key / Scale / Notes | note-editing helper and sharp/flat spelling |
 | Reverb / Damp | size and darkness of the shared reverb |
 | Echo / Fdbk | delay time in 16ths (`3` = dotted 8th) and repeats |
-| Load / Save / Save As | song files |
+| Song List / Save Song / Save Song As | back to the song list (offers to save first), save, save a copy |
+| Remove unused chains / sounds | tidy up chains, phrases and instruments nothing uses |
+| Quit | leave the app (offers to save first) |
 | Render | `Stereo` or `Stems`, then **Start** to export ([Export](Export)) |
 
 <br clear="right">

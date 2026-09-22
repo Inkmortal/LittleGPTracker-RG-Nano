@@ -373,7 +373,7 @@ void InstrumentView::drawSynthVisuals() {
 	char line[40];
 
 	SetColor(CD_HILITE2);
-	sprintf(line,"<L %d/5 %s L>",labPage_+1,getSynthPageName());
+	sprintf(line,"<LB %d/5 %s LB>",labPage_+1,getSynthPageName());
 	DrawString((30-(int)strlen(line))/2,2,line,props);
 	SetColor(CD_NORMAL);
 

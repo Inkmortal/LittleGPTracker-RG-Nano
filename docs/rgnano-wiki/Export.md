@@ -20,4 +20,4 @@ The files land in the song's folder: `Applications/Tracks/lgpt_<name>/`.
 
 - Stems are recorded **before** the shared reverb and echo; the stereo mix includes them.
 - To get a clean loop, stop exactly at the end of the song, or trim the WAV on a computer.
-- If the export sounds squashed or distorted, lower `Drive` on the Project screen or the instrument volumes, and watch the [Mixer](Screens#mixer). `Type: Subtle` softly catches the occasional peak.
+- If the export sounds squashed or distorted, lower `Drive` on the Project screen or the instrument volumes, and watch the [Mixer](Screens#mixer). `Clip: Subtle` softly catches the occasional peak.

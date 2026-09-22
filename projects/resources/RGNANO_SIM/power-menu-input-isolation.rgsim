@@ -11,7 +11,7 @@ expect_audio_silence 0
 press p 80
 wait 160
 expect_view song
-expect_selected_text Exit
+expect_selected_text powerMenu=Save and quit
 dump_state power menu open
 expect_audio_silence 0
 press p 80

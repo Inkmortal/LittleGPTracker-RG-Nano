@@ -67,6 +67,7 @@ static void DrawSimOverlayText(SDL_Surface *screen, const char *text, int x, int
 
 #ifdef PLATFORM_RGNANO_SIM
 static ViewData *GetSimViewData();
+static const char *powerMenuSelectedLabel(int selection);
 #endif
 
 SDLEventManager::SDLEventManager() 
@@ -1475,8 +1476,8 @@ int SDLEventManager::StepSimGoal(SDLGUIWindowImp *window, SimCommand &command)
 	}
 
 	if (command.op=="page") {
-		// Instrument pages show "<L n/5 NAME L>"
-		std::string wanted=std::string(" ")+command.arg+" L>";
+		// Instrument pages show "<LB n/5 NAME LB>"
+		std::string wanted=std::string(" ")+command.arg+" LB>";
 		if (appWindow->ScreenContains(wanted.c_str())) return 0;
 		PressSimCombo(window,SDLK_m,SDLK_r);
 		return 1;
@@ -1553,7 +1554,7 @@ bool SDLEventManager::ExpectSimSelectedText(const std::string &needle)
 	if (showPowerMenu_) {
 		selected += showExitConfirm_ ?
 			(exitConfirmSelection_==0 ? "; powerConfirm=Yes" : "; powerConfirm=No") :
-			(powerMenuSelection_==0 ? "; powerMenu=Exit" : "; powerMenu=Debug");
+			(std::string("; powerMenu=")+powerMenuSelectedLabel(powerMenuSelection_));
 	}
 	if (showDebugScreen_) {
 		const char *debugItems[]={"Audio Input Monitor","System Info","Exit Debug"};
@@ -2538,7 +2539,7 @@ void SDLEventManager::LogSimState(const char *label, bool includeScreen)
 	if (showPowerMenu_) {
 		summary += showExitConfirm_ ?
 			(exitConfirmSelection_==0 ? " overlay=power-confirm selected=Yes" : " overlay=power-confirm selected=No") :
-			(powerMenuSelection_==0 ? " overlay=power-menu selected=Exit" : " overlay=power-menu selected=Debug");
+			(std::string(" overlay=power-menu selected=")+powerMenuSelectedLabel(powerMenuSelection_));
 	}
 	if (showDebugScreen_) {
 		const char *debugItems[]={"Audio Input Monitor","System Info","Exit Debug"};
@@ -2584,82 +2585,98 @@ int SDLEventManager::GetKeyCode(const char *key)
 	return -1 ;
 }
 
+// Menu/Power overlay entries. Saving only makes sense with a song open.
+enum PowerItem { PI_SAVE_QUIT = 0, PI_QUIT_NO_SAVE, PI_QUIT, PI_DEBUG };
+
+static bool powerMenuHasSong() {
+	ViewData *viewData=GetSimViewData();
+	return viewData && viewData->project_;
+}
+
+static int powerMenuItems(int *items) {
+	int count=0;
+	if (powerMenuHasSong()) {
+		items[count++]=PI_SAVE_QUIT;
+		items[count++]=PI_QUIT_NO_SAVE;
+	} else {
+		items[count++]=PI_QUIT;
+	}
+	items[count++]=PI_DEBUG;
+	return count;
+}
+
+static const char *powerItemLabel(int item) {
+	switch (item) {
+		case PI_SAVE_QUIT: return "Save and quit";
+		case PI_QUIT_NO_SAVE: return "Quit, don't save";
+		case PI_QUIT: return "Quit";
+		default: return "Debug tools";
+	}
+}
+
+static const char *powerMenuSelectedLabel(int selection) {
+	int items[4];
+	int count=powerMenuItems(items);
+	if (selection<0 || selection>=count) selection=0;
+	return powerItemLabel(items[selection]);
+}
+
+static Uint32 themeRGB(SDL_Surface *screen, const GUIColor &c) {
+	return SDL_MapRGB(screen->format, c._r & 0xFF, c._g & 0xFF, c._b & 0xFF);
+}
+
 void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *window)
 {
 	if (!showPowerMenu_ || !screen) return;
 	int scale = window ? window->GetScale() : 1;
 
-	// Darken background
-	SDL_Rect fullScreen = {0, 0, screen->w, screen->h};
-	SDL_FillRect(screen, &fullScreen, SDL_MapRGB(screen->format, 40, 40, 40));
+	Uint32 bg = themeRGB(screen, AppWindow::ThemeColor(CD_BACKGROUND));
+	Uint32 border = themeRGB(screen, AppWindow::ThemeColor(CD_BORDER));
+	Uint32 idle = themeRGB(screen, AppWindow::ThemeBlend(CD_BACKGROUND, CD_BORDER, 30));
+	Uint32 hot = themeRGB(screen, AppWindow::ThemeColor(CD_CURSOR));
+	Uint32 text = themeRGB(screen, AppWindow::ThemeColor(CD_NORMAL));
+	Uint32 title = themeRGB(screen, AppWindow::ThemeColor(CD_HILITE1));
 
+	SDL_Rect fullScreen = {0, 0, (Uint16)screen->w, (Uint16)screen->h};
+	SDL_FillRect(screen, &fullScreen, bg);
+
+	const char *heading;
+	const char *labels[4];
+	int count;
+	int selected;
 	if (showExitConfirm_) {
-		// Exit confirmation dialog
-		int menuWidth = 180;
-		int menuHeight = 80;
-		SDL_Rect menuBox = {
-			(screen->w - menuWidth) / 2,
-			(screen->h - menuHeight) / 2,
-			menuWidth,
-			menuHeight
-		};
-		SDL_FillRect(screen, &menuBox, SDL_MapRGB(screen->format, 240, 240, 240));
-
-		int itemHeight = 25;
-		int itemY = menuBox.y + 20;
-
-		// Yes option
-		SDL_Rect yesRect = {menuBox.x + 10, itemY, menuWidth - 20, itemHeight};
-		Uint32 yesColor = (exitConfirmSelection_ == 0) ?
-			SDL_MapRGB(screen->format, 80, 120, 200) :
-			SDL_MapRGB(screen->format, 200, 200, 200);
-		SDL_FillRect(screen, &yesRect, yesColor);
-		DrawSimOverlayText(screen,"Yes",yesRect.x + 10,yesRect.y + 8,
-			SDL_MapRGB(screen->format, exitConfirmSelection_ == 0 ? 255 : 20, exitConfirmSelection_ == 0 ? 255 : 20, exitConfirmSelection_ == 0 ? 255 : 20),scale);
-
-		// No option
-		SDL_Rect noRect = {menuBox.x + 10, itemY + itemHeight + 5, menuWidth - 20, itemHeight};
-		Uint32 noColor = (exitConfirmSelection_ == 1) ?
-			SDL_MapRGB(screen->format, 80, 120, 200) :
-			SDL_MapRGB(screen->format, 200, 200, 200);
-		SDL_FillRect(screen, &noRect, noColor);
-		DrawSimOverlayText(screen,"No",noRect.x + 10,noRect.y + 8,
-			SDL_MapRGB(screen->format, exitConfirmSelection_ == 1 ? 255 : 20, exitConfirmSelection_ == 1 ? 255 : 20, exitConfirmSelection_ == 1 ? 255 : 20),scale);
+		heading = "Lose unsaved changes?";
+		labels[0] = "Yes, quit";
+		labels[1] = "No, go back";
+		count = 2;
+		selected = exitConfirmSelection_;
 	} else {
-		// Main power menu
-		int menuWidth = 180;
-		int menuHeight = 80;
-		SDL_Rect menuBox = {
-			(screen->w - menuWidth) / 2,
-			(screen->h - menuHeight) / 2,
-			menuWidth,
-			menuHeight
-		};
-		SDL_FillRect(screen, &menuBox, SDL_MapRGB(screen->format, 240, 240, 240));
+		heading = "MENU";
+		int items[4];
+		count = powerMenuItems(items);
+		for (int i=0;i<count;i++) labels[i] = powerItemLabel(items[i]);
+		selected = powerMenuSelection_;
+	}
 
-		int itemHeight = 25;
-		int itemY = menuBox.y + 10;
+	const int itemHeight = 22;
+	const int menuWidth = 200;
+	const int menuHeight = 34 + count * (itemHeight + 4);
+	SDL_Rect frame = {(Sint16)((screen->w - menuWidth) / 2 - 2), (Sint16)((screen->h - menuHeight) / 2 - 2),
+		(Uint16)(menuWidth + 4), (Uint16)(menuHeight + 4)};
+	SDL_FillRect(screen, &frame, border);
+	SDL_Rect menuBox = {(Sint16)(frame.x + 2), (Sint16)(frame.y + 2), (Uint16)menuWidth, (Uint16)menuHeight};
+	SDL_FillRect(screen, &menuBox, bg);
+	DrawSimOverlayText(screen, heading, menuBox.x + 10, menuBox.y + 10, title, scale);
 
-		// Exit option
-		SDL_Rect exitRect = {menuBox.x + 10, itemY, menuWidth - 20, itemHeight};
-		Uint32 exitColor = (powerMenuSelection_ == 0) ?
-			SDL_MapRGB(screen->format, 80, 120, 200) :
-			SDL_MapRGB(screen->format, 200, 200, 200);
-		SDL_FillRect(screen, &exitRect, exitColor);
-		DrawSimOverlayText(screen,"Exit",exitRect.x + 10,exitRect.y + 8,
-			SDL_MapRGB(screen->format, powerMenuSelection_ == 0 ? 255 : 20, powerMenuSelection_ == 0 ? 255 : 20, powerMenuSelection_ == 0 ? 255 : 20),scale);
-
-		// Debug option
-		SDL_Rect debugRect = {menuBox.x + 10, itemY + itemHeight + 5, menuWidth - 20, itemHeight};
-		Uint32 debugColor = (powerMenuSelection_ == 1) ?
-			SDL_MapRGB(screen->format, 80, 120, 200) :
-			SDL_MapRGB(screen->format, 200, 200, 200);
-		SDL_FillRect(screen, &debugRect, debugColor);
-		DrawSimOverlayText(screen,"Debug",debugRect.x + 10,debugRect.y + 8,
-			SDL_MapRGB(screen->format, powerMenuSelection_ == 1 ? 255 : 20, powerMenuSelection_ == 1 ? 255 : 20, powerMenuSelection_ == 1 ? 255 : 20),scale);
+	for (int i=0;i<count;i++) {
+		SDL_Rect item = {(Sint16)(menuBox.x + 8), (Sint16)(menuBox.y + 28 + i * (itemHeight + 4)),
+			(Uint16)(menuWidth - 16), (Uint16)itemHeight};
+		bool on = (i == selected);
+		SDL_FillRect(screen, &item, on ? hot : idle);
+		DrawSimOverlayText(screen, labels[i], item.x + 8, item.y + 7, on ? bg : text, scale);
 	}
 	RenderMenuHelp(screen,window,showExitConfirm_ ? "EXIT?" : "POWER",
-		showExitConfirm_ ? "Confirm app exit" : "Global app menu",
+		showExitConfirm_ ? "Quit without saving" : "Save, quit or debug",
 		showExitConfirm_ ? "Up/Down choose" : "Up/Down choose",
 		showExitConfirm_ ? "A confirm" : "A open choice",
 		showExitConfirm_ ? "B back to menu" : "B or Power close",
@@ -2783,7 +2800,7 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 			case SDLK_a:  // A button - confirm
 			case SDLK_RETURN:
 				if (exitConfirmSelection_ == 0) {
-					// Yes - quit
+					// Yes - quit without saving
 					showPowerMenu_ = false;
 					showExitConfirm_ = false;
 					menuHelpOverlay_ = false;
@@ -2817,22 +2834,32 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 		// Handle main power menu
 		switch (key) {
 			case SDLK_u:  // UP
-				powerMenuSelection_--;
-				if (powerMenuSelection_ < 0) powerMenuSelection_ = 1;
+			case SDLK_d: { // DOWN
+				int items[4];
+				int count = powerMenuItems(items);
+				powerMenuSelection_ = (powerMenuSelection_ + (key == SDLK_u ? count - 1 : 1)) % count;
 				break;
-
-			case SDLK_d:  // DOWN
-				powerMenuSelection_++;
-				if (powerMenuSelection_ > 1) powerMenuSelection_ = 0;
-				break;
+			}
 
 			case SDLK_a:  // A button - confirm
-			case SDLK_RETURN:
-				if (powerMenuSelection_ == 0) {
-					// Exit - show confirmation
+			case SDLK_RETURN: {
+				int items[4];
+				int count = powerMenuItems(items);
+				int item = items[powerMenuSelection_ < count ? powerMenuSelection_ : 0];
+				if (item == PI_SAVE_QUIT) {
+					PersistencyService::GetInstance()->Save();
+					Trace::Log("EVENT","Power menu: saved song before quitting");
+					showPowerMenu_ = false;
+					menuHelpOverlay_ = false;
+					PostQuitMessage();
+				} else if (item == PI_QUIT) {
+					showPowerMenu_ = false;
+					menuHelpOverlay_ = false;
+					PostQuitMessage();
+				} else if (item == PI_QUIT_NO_SAVE) {
 					showExitConfirm_ = true;
-					exitConfirmSelection_ = 1;  // Default to "No"
-				} else if (powerMenuSelection_ == 1) {
+					exitConfirmSelection_ = 1;  // Default to "No, go back"
+				} else {
 					// Debug screen - open it
 					showPowerMenu_ = false;
 					showDebugScreen_ = true;
@@ -2840,6 +2867,7 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 					debugScreenSelection_ = 0;
 				}
 				break;
+			}
 
 			case SDLK_b:  // B button - cancel
 			case SDLK_ESCAPE:

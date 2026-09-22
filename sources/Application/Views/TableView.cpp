@@ -868,7 +868,7 @@ void TableView::DrawView() {
 
     char title[20];
     SetColor(CD_NORMAL);
-    sprintf(title, "Table %2.2x", viewData_->currentTable_);
+    sprintf(title, "Table %2.2X", viewData_->currentTable_);
     DrawString(pos._x, pos._y, title, props);
 
     // Compute song grid location

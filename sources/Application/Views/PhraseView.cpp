@@ -1283,7 +1283,7 @@ void PhraseView::DrawView() {
     char title[20];
 
     SetColor(CD_NORMAL);
-    sprintf(title, "Phrase %2.2x", viewData_->currentPhrase_);
+    sprintf(title, "Phrase %2.2X", viewData_->currentPhrase_);
     DrawString(pos._x, pos._y, title, props);
 
     // Compute song grid location
@@ -1318,9 +1318,9 @@ void PhraseView::DrawView() {
     buffer[4] = 0;
     for (int j = 0; j < 16; j++) {
         unsigned char d = *data++;
-        setTextProps(props, 0, j, false);
         (0 == j || 4 == j || 8 == j || 12 == j) ? SetColor(CD_MAJORBEAT)
                                                 : SetColor(CD_NORMAL);
+        setTextProps(props, 0, j, false);
         if (d == 0xFF) {
             DrawString(pos._x, pos._y, "----", props);
         } else {
@@ -1342,11 +1342,12 @@ void PhraseView::DrawView() {
 
     for (int j = 0; j < 16; j++) {
         unsigned char d = *data++;
-        setTextProps(props, 1, j, false);
         (0 == j || 4 == j || 8 == j || 12 == j) ? SetColor(CD_MAJORBEAT)
                                                 : SetColor(CD_NORMAL);
+        setTextProps(props, 1, j, false);
         if (d == 0xFF) {
-            SetColor(CD_NORMAL);
+            if (!props.invert_)
+                SetColor(CD_NORMAL);
             DrawString(pos._x, pos._y, "I", props);
             DrawString(pos._x + 1, pos._y, "--", props);
         } else {
@@ -1354,7 +1355,7 @@ void PhraseView::DrawView() {
             DrawString(pos._x, pos._y, buffer, props);
             if (j == row_ && (col_ == 0 || col_ == 1)) {
                 SetColor(CD_NORMAL);
-                sprintf(buffer, "I%2.2x: ", d);
+                sprintf(buffer, "I%2.2X: ", d);
                 std::string instrLine = buffer;
                 setTextProps(props, 1, j, true);
                 GUIPoint location = GetTitlePosition();
@@ -1381,9 +1382,9 @@ void PhraseView::DrawView() {
     for (int j = 0; j < 16; j++) {
         FourCC command = *f++;
         fourCC2char(command, buffer);
-        setTextProps(props, 2, j, false);
         (0 == j || 4 == j || 8 == j || 12 == j) ? SetColor(CD_MAJORBEAT)
                                                 : SetColor(CD_NORMAL);
+        setTextProps(props, 2, j, false);
         DrawString(pos._x, pos._y, buffer, props);
         setTextProps(props, 2, j, true);
         pos._y++;
@@ -1402,12 +1403,10 @@ void PhraseView::DrawView() {
 
     for (int j = 0; j < 16; j++) {
         ushort p = *param++;
+        (0 == j || 4 == j || 8 == j || 12 == j) ? SetColor(CD_MAJORBEAT)
+                                                : SetColor(CD_NORMAL);
+        // after the row color, so the cursor keeps its highlight
         setTextProps(props, 3, j, false);
-        /*		if (p==0xFFFF) {
-                    DrawString(pos._x,pos._y,"----",props) ;
-                } else {
-        */ (0 == j || 4 == j || 8 == j || 12 == j) ? SetColor(CD_MAJORBEAT)
-                                                   : SetColor(CD_NORMAL);
         hexshort2char(p, buffer);
         DrawString(pos._x, pos._y, buffer, props);
         /*		}
@@ -1449,12 +1448,10 @@ void PhraseView::DrawView() {
 
     for (int j = 0; j < 16; j++) {
         ushort p = *param++;
+        (0 == j || 4 == j || 8 == j || 12 == j) ? SetColor(CD_MAJORBEAT)
+                                                : SetColor(CD_NORMAL);
+        // after the row color, so the cursor keeps its highlight
         setTextProps(props, 5, j, false);
-        /*		if (p==0xFFFF) {
-                    DrawString(pos._x,pos._y,"----",props) ;
-                } else {
-        */ (0 == j || 4 == j || 8 == j || 12 == j) ? SetColor(CD_MAJORBEAT)
-                                                   : SetColor(CD_NORMAL);
         hexshort2char(p, buffer);
         DrawString(pos._x, pos._y, buffer, props);
         /*		}

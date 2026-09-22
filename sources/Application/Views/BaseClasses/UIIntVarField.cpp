@@ -53,6 +53,10 @@ void UIIntVarField::Draw(GUIWindow &w,int offset) {
 		case Variable::BOOL:
 			{
 			const char *cvalue=src_.GetString() ;
+			// Saved as true/false; shown as on/off
+			if (src_.GetType()==Variable::BOOL) {
+				cvalue=src_.GetBool() ? "on" : "off" ;
+			}
 			sprintf(buffer,format_,cvalue) ;
 			}
 			break ;

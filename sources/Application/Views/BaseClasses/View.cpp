@@ -610,30 +610,33 @@ void View::drawNotes() {
 
         Player *player=Player::GetInstance() ;
 		
-		//column banger refactor
-		props.invert_= true;
-        for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
-			if (i==viewData_->songX_) {
-				SetColor(CD_HILITE2) ;
+		// Track strip under the grid. Stopped: track numbers with the current
+		// one lit. Playing: each track's note, octave and instrument.
+		bool live = player->IsRunning() && viewData_->playMode_ != PM_AUDITION;
+		props.invert_ = false;
+		for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+			bool current = (i==viewData_->songX_);
+			if (live) {
+				SetColor(current ? CD_HILITE2 : CD_NORMAL);
+				DrawString(pos._x,pos._y,player->GetPlayedNote(i),props) ;
+				pos._y++ ;
+				DrawString(pos._x,pos._y,player->GetPlayedOctive(i),props) ;
+				pos._y++ ;
+				SetColor(current ? CD_HILITE2 : CD_MUTE);
+				DrawString(pos._x,pos._y,player->GetPlayedInstrument(i),props) ;
 			} else {
-				SetColor(CD_HILITE1) ;
-			}
-			if (player->IsRunning() && viewData_->playMode_ != PM_AUDITION) {
-				DrawString(pos._x,pos._y,player->GetPlayedNote(i),props) ; //row for the note values
+				char label[3] = {' ', (char)('1' + i), 0};
+				SetColor(current ? CD_HILITE2 : CD_MUTE);
+				DrawString(pos._x,pos._y,label,props) ;
 				pos._y++ ;
-				DrawString(pos._x,pos._y,player->GetPlayedOctive(i),props) ; //row for the octive values
+				DrawString(pos._x,pos._y,"  ",props) ;
 				pos._y++ ;
-				DrawString(pos._x,pos._y,player->GetPlayedInstrument(i),props) ; //draw instrument number
-			} else {
-				DrawString(pos._x,pos._y,"  ",props) ; //row for the note values
-				pos._y++ ;
-				DrawString(pos._x,pos._y,"  ",props) ; //row for the octive values
-				pos._y++ ;
-				DrawString(pos._x,pos._y,"  ",props) ; //draw instrument number
+				DrawString(pos._x,pos._y,"  ",props) ;
 			}
 			pos._y = initialY ;
 			pos._x+= 3;
 		}
+		SetColor(CD_NORMAL);
 }
 
 void View::drawMiniMeters() {
@@ -652,7 +655,7 @@ void View::drawMiniMeters() {
 	}
 
 	GUITextProperties props;
-	props.invert_=true;
+	props.invert_=false;
 	int x = anchor._x;
 	int masterLevel = MixerService::GetInstance()->GetMasterPeakPercent();
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
@@ -670,7 +673,7 @@ void View::drawMiniMeters() {
 		} else if (level > 62) {
 			SetColor(CD_PLAY);
 		} else {
-			SetColor(CD_HILITE1);
+			SetColor(CD_MUTE);
 		}
 		if (!isPlaying) {
 			DrawString(x,y,"   ",props);
