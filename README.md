@@ -10,7 +10,7 @@ This is not a Dirtywave M8 firmware clone. It is a native RG Nano fork of LGPT a
 
 ## What's New: Synths, FX, Demo Songs
 
-**Guide:** the [project wiki](https://github.com/Inkmortal/LittleGPTracker-RG-Nano-Audio-In-Sampling/wiki) covers install, controls, your first song, every screen, the synth, commands and a music theory cheat sheet, with screenshots from the real app.
+**Guide:** the [user guide site](https://inkmortal.github.io/LittleGPTracker-RG-Nano-Audio-In-Sampling/) covers install, controls, your first song, every screen, the synth, commands and a music theory cheat sheet, with screenshots from the real app.
 
 - **Native synth engine** (M8-style): 7 waveforms, sub, noise, FM, one-note chords (`CHRD`), ADSR, pitch envelope, glide, resonant filter with envelope, drive, LFO, 17 presets. New projects start with a 16-instrument synth kit, so you can make a full track with zero samples.
 - **Send effects**: shared reverb and tempo-synced echo; every synth has reverb/delay sends.

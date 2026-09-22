@@ -446,7 +446,7 @@ void View::drawContextOverlay() {
 			drawOverlayLine(innerX,y+5+i,innerW,steps[i],props);
 		}
 		SetColor(CD_HILITE1);
-		drawOverlayLine(innerX,y+14,innerW,"Full guide: project wiki",props);
+		drawOverlayLine(innerX,y+14,innerW,"Full guide: project website",props);
 		SetColor(CD_NORMAL);
 	} else {
 		drawOverlayLine(innerX,y+3,innerW,"COMMANDS",props);

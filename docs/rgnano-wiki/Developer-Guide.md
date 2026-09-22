@@ -91,6 +91,10 @@ Demo songs live in `tools/demos/*.py`.
 | Simulator script runner | `sources/Adapters/SDL/GUI/SDLEventManager.cpp` |
 | Simulator boot / headless | `sources/Adapters/RGNANO_SIM/` |
 
-## Publishing this wiki
+## Publishing this guide
 
-The wiki source is `docs/rgnano-wiki/` in the main repository. `tools\publish-wiki.ps1` copies it into the GitHub wiki repository and pushes.
+The guide source is `docs/rgnano-wiki/*.md` (plain Markdown, also valid as a GitHub wiki).
+
+- `python tools/build_guide_site.py` renders it into a static site in `build/guide-site`.
+- `python tools\publish_guide_site.py --gh-user <account>` builds it and publishes to GitHub Pages (`gh-pages` branch): https://inkmortal.github.io/LittleGPTracker-RG-Nano-Audio-In-Sampling/
+- `tools\publish-wiki.ps1` mirrors the same pages into a GitHub wiki, if the repository uses one.

@@ -8,7 +8,8 @@ param(
 # Publishes docs/rgnano-wiki (pages + images) to the repository's GitHub wiki.
 # The source of truth stays in the main repository; this script only mirrors it.
 
-$ErrorActionPreference = "Stop"
+# Native git writes progress to stderr; don't treat that as a failure
+$ErrorActionPreference = "Continue"
 $root = Split-Path -Parent $PSScriptRoot
 $source = Join-Path $root "docs\rgnano-wiki"
 $work = Join-Path ([System.IO.Path]::GetTempPath()) "rgnano-wiki-publish"
@@ -25,11 +26,7 @@ if ($GitHubUser) {
 if (Test-Path $work) { Remove-Item -LiteralPath $work -Recurse -Force }
 & git @gitAuth clone --quiet $remote $work 2>$null
 if ($LASTEXITCODE -ne 0) {
-  # A brand-new wiki has no git repository until its first page exists
-  New-Item -ItemType Directory -Force -Path $work | Out-Null
-  & git -C $work init --quiet
-  & git -C $work checkout --quiet -b master
-  & git -C $work remote add origin $remote
+  throw "Could not clone $remote. GitHub only creates a wiki repository after its first page is saved on github.com/$Repo/wiki - create any page there once, then rerun."
 }
 
 Get-ChildItem -LiteralPath $work -Force | Where-Object { $_.Name -ne ".git" } | Remove-Item -Recurse -Force
