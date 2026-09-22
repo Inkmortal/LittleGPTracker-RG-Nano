@@ -37,6 +37,9 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     // Repaint every character cell on the next flush, erasing pixel graphics
     // (for example a closed dialog's key caps)
     void InvalidateScreenCache();
+    // Paint now, outside the normal event path (overlays drawn by the event
+    // manager). full = redraw the view and repaint every cell first.
+    void RepaintNow(bool full);
     void LoadProject(const Path &path);
     void SaveLastProject(const Path &p);
     void CloseProject();

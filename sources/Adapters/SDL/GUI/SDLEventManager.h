@@ -52,6 +52,13 @@ private:
 	KeyboardControllerSource *keyboardCS_ ;
 
 	void HandlePowerMenuInput(SDLKey key) ;
+	// Redraw after a Menu/Power or debug overlay input. The device waits for
+	// events instead of polling, so nothing else would repaint the screen.
+	void RefreshOverlays(bool wasOpen) ;
+#ifdef PLATFORM_RGNANO
+	// Firmware shutdown (long power press): save the song, then power off
+	void HandleShutdownRequest() ;
+#endif
 	void HandleDebugScreenInput(SDLKey key) ;
 	bool HandleMenuHelpInput(SDLKey key) ;
 	void LogReplayKey(SDLKey key, bool pressed) ;

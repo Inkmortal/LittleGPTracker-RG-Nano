@@ -250,6 +250,14 @@ void AppWindow::DrawString(const char *string, GUIPoint &pos,
     }
 };
 
+void AppWindow::RepaintNow(bool full) {
+    if (full) {
+        InvalidateScreenCache();
+        Redraw();
+    }
+    Flush();
+}
+
 void AppWindow::InvalidateScreenCache() {
     memset(_preScreen, 0, 1200);
     memset(_preScreenProp, 0xFF, 1200);

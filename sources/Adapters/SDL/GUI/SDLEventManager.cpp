@@ -26,6 +26,11 @@
 #include "Application/Views/ModalDialogs/SelectProjectDialog.h"
 #include "Application/Utils/char.h"
 #include <fstream>
+#ifdef PLATFORM_RGNANO
+#include <signal.h>
+#include <unistd.h>
+#include <stdio.h>
+#endif
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
@@ -184,21 +189,84 @@ bool SDLEventManager::Init()
 	return true ;
 } 
 
+static bool powerMenuHasSong();
+
+#ifdef PLATFORM_RGNANO
+// FunKey OS "powerdown schedule" sends SIGUSR1 to the recorded app pid and
+// powers off shortly after unless the app takes over with "powerdown handle".
+static volatile sig_atomic_t shutdownRequested_=0;
+
+static void onShutdownSignal(int) {
+	shutdownRequested_=1;
+}
+
+static void installShutdownHandler() {
+	struct sigaction sa;
+	memset(&sa,0,sizeof(sa));
+	sa.sa_handler=onShutdownSignal;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGUSR1,&sa,0);
+	// Launch scripts normally record the pid; OPKs are started directly
+	char cmd[64];
+	snprintf(cmd,sizeof(cmd),"pid record %d >/dev/null 2>&1",(int)getpid());
+	system(cmd);
+}
+
+void SDLEventManager::HandleShutdownRequest()
+{
+	shutdownRequested_=0;
+	// Cancel the firmware's own timer; we power off once the song is saved
+	system("powerdown handle >/dev/null 2>&1");
+	Trace::Log("EVENT","Shutdown requested: saving song");
+	if (powerMenuHasSong()) {
+		PersistencyService::GetInstance()->Save();
+	}
+	sync();
+	system("pid erase >/dev/null 2>&1");
+	system("powerdown now >/dev/null 2>&1");
+	PostQuitMessage();
+}
+#endif
+
+void SDLEventManager::RefreshOverlays(bool wasOpen)
+{
+	AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+	if (!appWindow) return;
+	bool open=showPowerMenu_ || showDebugScreen_;
+	// Closing: the overlay covered the whole screen, repaint every cell
+	appWindow->RepaintNow(wasOpen && !open);
+}
+
 int SDLEventManager::MainLoop()
 {
 	GUIWindow *appWindow=Application::GetInstance()->GetWindow() ;
 	SDLGUIWindowImp *sdlWindow=(SDLGUIWindowImp *)appWindow->GetImpWindow() ;
+#ifdef PLATFORM_RGNANO
+	installShutdownHandler();
+#endif
 
 	while (!finished_)
 	{
 		SDL_Event event;
-#ifdef PLATFORM_RGNANO_SIM
+#if defined(PLATFORM_RGNANO_SIM)
 		bool hasEvent = (SDL_PollEvent(&event) != 0);
+#elif defined(PLATFORM_RGNANO)
+		// Same 10 ms wait SDL_WaitEvent uses, but a shutdown signal can
+		// interrupt it
+		bool hasEvent = false;
+		while (!finished_ && !(hasEvent = (SDL_PollEvent(&event) != 0))) {
+			if (shutdownRequested_) {
+				HandleShutdownRequest();
+				break;
+			}
+			SDL_Delay(10);
+		}
 #else
 		bool hasEvent = (SDL_WaitEvent(&event) != 0);
 #endif
 		if (hasEvent)
     {
+		bool overlayWasOpen = showPowerMenu_ || showDebugScreen_;
 #ifdef PLATFORM_RGNANO_SIM
 			if (HandleSimMouse(sdlWindow,event)) {
 				continue;
@@ -233,6 +301,7 @@ int SDLEventManager::MainLoop()
 							}
 						}
 #endif
+						RefreshOverlays(overlayWasOpen);
 						break;
 					}
 #endif
@@ -246,9 +315,11 @@ int SDLEventManager::MainLoop()
 							menuInputHeld_[event.key.keysym.sym]=true;
 						}
 						if (HandleMenuHelpInput(event.key.keysym.sym)) {
+							RefreshOverlays(overlayWasOpen);
 							break;
 						}
 						HandlePowerMenuInput(event.key.keysym.sym);
+						RefreshOverlays(overlayWasOpen);
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 						if (dumpEvent_) {
 							AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
@@ -269,9 +340,11 @@ int SDLEventManager::MainLoop()
 							menuInputHeld_[event.key.keysym.sym]=true;
 						}
 						if (HandleMenuHelpInput(event.key.keysym.sym)) {
+							RefreshOverlays(overlayWasOpen);
 							break;
 						}
 						HandleDebugScreenInput(event.key.keysym.sym);
+						RefreshOverlays(overlayWasOpen);
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 						if (dumpEvent_) {
 							AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
@@ -2564,6 +2637,9 @@ void SDLEventManager::PostQuitMessage()
 {
   Trace::Log("EVENT","SDEM:PostQuitMessage()") ;
 	finished_=true  ;
+#ifdef PLATFORM_RGNANO
+	system("pid erase >/dev/null 2>&1");
+#endif
 } ; 
 
 
@@ -2589,7 +2665,8 @@ int SDLEventManager::GetKeyCode(const char *key)
 enum PowerItem { PI_SAVE_QUIT = 0, PI_QUIT_NO_SAVE, PI_QUIT, PI_DEBUG };
 
 static bool powerMenuHasSong() {
-	ViewData *viewData=GetSimViewData();
+	AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+	ViewData *viewData=appWindow ? appWindow->GetViewData() : 0;
 	return viewData && viewData->project_;
 }
 
