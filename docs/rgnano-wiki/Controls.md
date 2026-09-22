@@ -102,7 +102,8 @@ The letters are in alphabetical order (not QWERTY), so the next letter is always
 
 | Input | Does |
 | --- | --- |
-| D-pad | move over the letters and the `ERASE RANDOM OK CANCEL` row |
+| D-pad | move over the letters and the `abc RANDOM OK CANCEL` row |
+| **A** on `abc` / `ABC` | switch the letters to lowercase / uppercase |
 | **A** | type the letter / run the button |
 | **B** | erase a letter; on an empty name, leave without making a song |
 | **LB / RB** | move the cursor inside the name |

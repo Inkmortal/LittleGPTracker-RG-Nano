@@ -47,6 +47,20 @@ expect_screen_text YOUR SONGS
 # Type "0UX" (sorts first in the list): from OK up to the digits, then U-Z
 press a 80
 wait 80
+# abc switches the grid to lowercase and back
+press l 80
+press l 80
+expect_selected_text ="abc"
+press a 80
+wait 60
+expect_screen_text a b c d e
+expect_selected_text ="ABC"
+press a 80
+wait 60
+expect_screen_text A B C D E
+press r 80
+press r 80
+expect_selected_text ="OK"
 press u 80
 expect_selected_text ="7"
 press l 80

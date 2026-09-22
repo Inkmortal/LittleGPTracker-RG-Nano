@@ -21,9 +21,14 @@ static const char *gridRows[GRID_ROWS] = {
     "0123456789",
 };
 
-enum NameAction { NA_ERASE = 0, NA_RANDOM, NA_OK, NA_CANCEL, NA_COUNT };
-static const char *actionText[NA_COUNT] = {"ERASE", "RANDOM", "OK", "CANCEL"};
+// B already erases, so the first button switches letter case instead
+enum NameAction { NA_CASE = 0, NA_RANDOM, NA_OK, NA_CANCEL, NA_COUNT };
 static const int actionX[NA_COUNT] = {1, 8, 16, 20};
+
+static char gridChar(int row, int col, bool lower) {
+    char c = gridRows[row][col];
+    return (lower && c >= 'A' && c <= 'Z') ? c - 'A' + 'a' : c;
+}
 
 static int rowWidth(int row) {
     if (row == ACTION_ROW)
@@ -36,7 +41,7 @@ static int rowWidth(int row) {
 
 NewProjectDialog::NewProjectDialog(View &view, Path currentPath)
     : ModalView(view), currentPath_(currentPath), cursor_(0), row_(0),
-      col_(0), suggested_(false) {}
+      col_(0), lower_(false), suggested_(false) {}
 
 NewProjectDialog::~NewProjectDialog() {}
 
@@ -84,7 +89,7 @@ void NewProjectDialog::DrawView() {
     // Letter grid, one blank column between letters
     for (int row = 0; row < GRID_ROWS; row++) {
         for (int col = 0; col < GRID_COLS; col++) {
-            buffer[0] = gridRows[row][col];
+            buffer[0] = gridChar(row, col, lower_);
             if (buffer[0] == ' ')
                 continue;
             bool on = (row == row_ && col == col_);
@@ -98,7 +103,10 @@ void NewProjectDialog::DrawView() {
         bool on = (row_ == ACTION_ROW && col_ == i);
         SetColor(on ? CD_CURSOR : CD_HILITE1);
         props.invert_ = on;
-        DrawString(actionX[i], GRID_Y + GRID_ROWS * GRID_STEP, actionText[i], props);
+        const char *text = (i == NA_CASE) ? (lower_ ? "ABC" : "abc")
+                           : (i == NA_RANDOM) ? "RANDOM"
+                           : (i == NA_OK) ? "OK" : "CANCEL";
+        DrawString(actionX[i], GRID_Y + GRID_ROWS * GRID_STEP, text, props);
     }
     props.invert_ = false;
 
@@ -133,9 +141,9 @@ void NewProjectDialog::CustomizeContextOverlay(
 	cmd2="A type letter";
 	cmd3="B erase, empty=exit";
 	cmd4="LB/RB move in name";
-	cmd5="RANDOM new name";
+	cmd5="abc/ABC switch case";
 	cmd6="START or OK create";
-	cmd7="CANCEL goes back";
+	cmd7="RANDOM new name";
 }
 
 void NewProjectDialog::typeChar(char c) {
@@ -185,12 +193,12 @@ void NewProjectDialog::confirm() {
 
 void NewProjectDialog::activate() {
     if (row_ < ACTION_ROW) {
-        typeChar(gridRows[row_][col_]);
+        typeChar(gridChar(row_, col_, lower_));
         return;
     }
     switch (col_) {
-    case NA_ERASE:
-        erase();
+    case NA_CASE:
+        lower_ = !lower_;
         break;
     case NA_RANDOM:
         randomName();

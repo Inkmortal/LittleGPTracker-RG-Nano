@@ -2,57 +2,50 @@
 #define _RANDOM_NAMES_H_
 
 #include <string>
-#include <vector>
 #include <cstdlib>
 #include "time.h"
 
-static const std::string adj[] = {
-        "Red", "Swift", "Spoopy", "Gentle", "Fierce",
-        "Sparkling", "Magic", "Curious", "Fast", "Hyped",
-        "Rizzy", "Radiant", "Soothing", "Weird", "Haunted",
-        "Buzzy", "Wild", "Joyful", "Serene", "Wobbly",
-        "Lively", "Dopey", "Dynamic", "Graceful", "Cool",
-        "Playful", "Dorky", "Singing", "Clever", "Quirky",
-        "Dull", "Fine", "Gold", "Gray", "Huge",
-        "Light", "Chocolate", "Ripe", "Sour", "Tart",
-        "Tough", "Brisk", "Fresh", "Grand", "Lean",
-        "Lush", "Mild", "Pale", "Rich", "Ripe"
-    };
-static const std::string vrb[] =
-    {
-        "Jump", "Explore", "Dance", "Whisper", "Roar",
-        "Run", "Climb", "Song", "Sleep", "Laugh",
-        "Banana", "Fly", "Reader", "Build", "Create",
-        "Hiker", "Cook", "Brows", "Cod", "Dope",
-        "Glow", "Gyatt", "Dream", "Play", "Wire",
-        "Holla", "Question", "Rizz", "Plant", "Craft",
-        "Pecker", "Roar", "Purr", "Surfer", "Drum",
-        "Kick", "Flip", "Snap", "Clap", "Snap",
-        "Bite", "Chew", "Hunt", "Singer", "Draw",
-        "Sleeper", "Skier", "Smile", "Yell", "Zoomer"
-    };
+// Song-title style names: a mood word + a place/thing, e.g. NeonTide,
+// JadeRiver, MidnightRun. Every pair fits MAX_NAME_LENGTH (12).
+static const char *nameMoods[] = {
+    "Neon",   "Jade",   "Velvet", "Silver", "Golden", "Crystal",
+    "Amber",  "Cobalt", "Violet", "Scarlet","Ivory",  "Onyx",
+    "Lunar",  "Solar",  "Astral", "Cosmic", "Stellar","Polar",
+    "Misty",  "Rainy",  "Stormy", "Sunny",  "Frozen", "Hazy",
+    "Quiet",  "Lonely", "Distant","Hidden", "Lost",   "Faded",
+    "Electric","Analog","Pixel",  "Digital","Chrome", "Retro",
+    "Midnight","Twilight","Dawn", "Dusk",   "Summer", "Winter",
+    "Wild",   "Secret", "Dream",  "Echo",   "Ghost",  "Paper",
+};
+static const char *nameThings[] = {
+    "Tide",   "River",  "Ocean",  "Rain",   "Storm",  "Wave",
+    "Sky",    "Moon",   "Star",   "Comet",  "Orbit",  "Nova",
+    "City",   "Street", "Avenue", "Harbor", "Garden", "Temple",
+    "Forest", "Valley", "Canyon", "Desert", "Island", "Summit",
+    "Drive",  "Run",    "Flight", "Voyage", "Escape", "Drift",
+    "Dream",  "Memory", "Signal", "Pulse",  "Groove", "Rhythm",
+    "Lights", "Fire",   "Glow",   "Shadow", "Mirror", "Window",
+    "Sword",  "Lotus",  "Lantern","Petal",  "Echo",   "Heart",
+};
 
-bool noSeed = true;
-//Wonky assignment because < C++11
-std::vector<std::string> adjectives_ (adj, adj + sizeof(adj) / sizeof(adj[0]) );
-std::vector<std::string> verbs_ (vrb, vrb + sizeof(vrb) / sizeof(vrb[0]) );
+static bool randomNamesSeeded = false;
 
-// Generate a random name made in the format of: "adjective-verb"
 std::string getRandomName() {
-    if (noSeed){
-        srand(uint(time(NULL)));
-        noSeed = false;
+    if (!randomNamesSeeded) {
+        srand((unsigned)time(NULL));
+        randomNamesSeeded = true;
     }
-
-    std::string adjective = adjectives_[rand() % adjectives_.size()];
-    std::string verb = verbs_[rand() % verbs_.size()];
-
-    while ((adjective + verb).length() > MAX_NAME_LENGTH) {
-        adjective = adjectives_[rand() % adjectives_.size()];
-        verb = verbs_[rand() % verbs_.size()];
-    }
-
-    return (adjective + verb);
+    const int moods = sizeof(nameMoods) / sizeof(nameMoods[0]);
+    const int things = sizeof(nameThings) / sizeof(nameThings[0]);
+    std::string name;
+    do {
+        std::string mood = nameMoods[rand() % moods];
+        std::string thing = nameThings[rand() % things];
+        if (mood == thing)
+            continue;
+        name = mood + thing;
+    } while (name.empty() || name.length() > MAX_NAME_LENGTH);
+    return name;
 }
 
 #endif //_RANDOM_NAMES_H_

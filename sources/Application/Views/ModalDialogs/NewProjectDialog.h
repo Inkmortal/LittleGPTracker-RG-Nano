@@ -39,6 +39,7 @@ private:
   int cursor_;   // insert position in name_
   int row_;      // grid row, the last row is the action row
   int col_;
+  bool lower_;     // letter grid types lowercase
   bool suggested_; // name is an untouched random pick; typing replaces it
 };
 #endif
