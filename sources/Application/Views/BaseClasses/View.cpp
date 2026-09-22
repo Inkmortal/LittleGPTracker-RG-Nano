@@ -7,6 +7,7 @@
 #include "Application/Model/Config.h"
 #include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
 #include "ModalView.h"
+#include "Application/Views/ModalDialogs/GuideDialog.h"
 #include <string.h>
 
 bool View::initPrivate_=false ;
@@ -165,6 +166,8 @@ void View::drawMap() {
 	}//!minilayout
 }
 
+// The helper draws in screen coordinates, also when it is shown over a
+// dialog (whose DrawString is offset to the dialog window).
 void View::drawOverlayLine(int x, int y, int width, const char *text,
                            GUITextProperties &props) {
 	if (width<=0) return;
@@ -180,7 +183,7 @@ void View::drawOverlayLine(int x, int y, int width, const char *text,
 		buffer[i]=' ';
 	}
 	buffer[maxWidth]=0;
-	DrawString(x,y,buffer,props);
+	View::DrawString(x,y,buffer,props);
 }
 
 void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
@@ -267,20 +270,20 @@ void View::drawContextOverlay() {
 	if (boxH<18) boxH=18;
 
 	SetColor(CD_BACKGROUND);
-	ClearRect(x,y,boxW,boxH);
+	View::ClearRect(x,y,boxW,boxH);
 	SetColor(CD_BORDER);
 	for (int i=0;i<boxW;i++) {
-		DrawString(x+i,y,"-",props);
-		DrawString(x+i,y+boxH-1,"-",props);
+		View::DrawString(x+i,y,"-",props);
+		View::DrawString(x+i,y+boxH-1,"-",props);
 	}
 	for (int j=0;j<boxH;j++) {
-		DrawString(x,y+j,"|",props);
-		DrawString(x+boxW-1,y+j,"|",props);
+		View::DrawString(x,y+j,"|",props);
+		View::DrawString(x+boxW-1,y+j,"|",props);
 	}
-	DrawString(x,y,"+",props);
-	DrawString(x+boxW-1,y,"+",props);
-	DrawString(x,y+boxH-1,"+",props);
-	DrawString(x+boxW-1,y+boxH-1,"+",props);
+	View::DrawString(x,y,"+",props);
+	View::DrawString(x+boxW-1,y,"+",props);
+	View::DrawString(x,y+boxH-1,"+",props);
+	View::DrawString(x+boxW-1,y+boxH-1,"+",props);
 
 	const char *name="SONG";
 	const char *where="RB+Right Chain";
@@ -465,6 +468,8 @@ void View::drawContextOverlay() {
 		SetColor(CD_NORMAL);
 		drawOverlayLine(innerX,y+15,innerW,edit,props);
 	}
+	SetColor(CD_CURSOR);
+	drawOverlayLine(innerX,y+boxH-3,innerW,"A: full guide for this",props);
 	SetColor(CD_HILITE2);
 	drawOverlayLine(innerX,y+boxH-2,innerW,"Up/Dn page RB+Sel close",props);
 	SetColor(CD_NORMAL);
@@ -779,6 +784,23 @@ void View::drawMiniWaveform(bool force) {
 #endif
 }
 
+void View::GetGuideTopic(const char *&page, const char *&section) {
+	page="screens";
+	section="";
+	switch(viewType_) {
+		case VT_SONG: section="Song"; break;
+		case VT_CHAIN: section="Chain"; break;
+		case VT_PHRASE: section="Phrase"; break;
+		case VT_INSTRUMENT: section="Instrument (synth)"; break;
+		case VT_TABLE:
+		case VT_TABLE2: section="Table"; break;
+		case VT_GROOVE: section="Groove"; break;
+		case VT_PROJECT: section="Project"; break;
+		case VT_MIXER: section="Mixer"; break;
+		default: page=""; break;
+	}
+}
+
 void View::DrawGraphics() {
 	if (modalView_) {
 		modalView_->DrawGraphics() ;
@@ -855,6 +877,18 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 			return;
 		}
 		if (contextOverlay_) {
+			if (mask == EPBM_A) {
+				// Full guide at the page for this screen
+				contextOverlay_ = false;
+				const char *page = "";
+				const char *section = "";
+				GetGuideTopic(page, section);
+				if (page) {  // 0: already the guide
+					DoModal(new GuideDialog(*this, page, section));
+				}
+				((AppWindow &)w_).SetDirty();
+				return;
+			}
 			if (mask == EPBM_DOWN || mask == EPBM_UP) {
 				// Map -> commands -> how-to, and back
 				contextOverlayPage_ = (contextOverlayPage_ + (mask == EPBM_DOWN ? 1 : 2)) % 3;

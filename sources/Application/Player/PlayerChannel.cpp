@@ -44,6 +44,18 @@ void PlayerChannel::StopInstrument() {
      instr_=0 ;
 } ;
 
+void PlayerChannel::StopQuickly() {
+     if (instr_) {
+       instr_->StopQuickly(index_) ;
+       if (instr_->IsReleasing(index_)) {
+         tail_=instr_ ;
+       }
+     } else if (tail_) {
+       tail_->StopQuickly(index_) ;
+     }
+     instr_=0 ;
+} ;
+
 void PlayerChannel::ForgetInstrument(I_Instrument *instr) {
      if (instr_==instr) {
        instr_=0 ;

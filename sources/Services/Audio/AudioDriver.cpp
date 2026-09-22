@@ -5,6 +5,30 @@
 #include "System/Console/n_assert.h"
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <time.h>
+#endif
+
+static double gRenderLoad = 0.0;   // smoothed, 1.0 == real time
+static double gRenderLoadPeak = 0.0;
+static int gLastBufferSamples = 0;
+static volatile unsigned long gUnderruns = 0;
+
+static double nowMicros() {
+#ifdef _WIN32
+  static LARGE_INTEGER freq = {0};
+  if (freq.QuadPart == 0) QueryPerformanceFrequency(&freq);
+  LARGE_INTEGER t;
+  QueryPerformanceCounter(&t);
+  return (double)t.QuadPart * 1000000.0 / (double)freq.QuadPart;
+#else
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return ts.tv_sec * 1000000.0 + ts.tv_nsec / 1000.0;
+#endif
+}
 
 #ifdef PLATFORM_RGNANO_SIM
 static int gSimAudioPeak = 0;
@@ -131,16 +155,50 @@ void AudioDriver::AddBuffer(short *buffer,int samplecount) {
     SYS_MEMSET(pool_[poolQueuePosition_].buffer_, 0, len);
   }
 #endif
+  gLastBufferSamples = samplecount ;
   pool_[poolQueuePosition_].size_=len ;
   poolQueuePosition_=(poolQueuePosition_+1)%SOUND_BUFFER_COUNT ;
 	hasData_=true ;
 }
 
 void AudioDriver::OnNewBufferNeeded() {
+  double start = nowMicros() ;
+  gLastBufferSamples = 0 ;
   SetChanged() ;
   Event event(Event::ADET_BUFFERNEEDED);
   NotifyObservers(&event) ;
+  if (gLastBufferSamples > 0) {
+    double budget = gLastBufferSamples * 1000000.0 / 44100.0 ;
+    double load = (nowMicros() - start) / budget ;
+    gRenderLoad = gRenderLoad * 0.95 + load * 0.05 ;
+    if (load > gRenderLoadPeak) gRenderLoadPeak = load ;
+#ifdef PLATFORM_RGNANO_SIM
+    static int buffers = 0 ;
+    if (++buffers % 400 == 0) {
+      Trace::Log("AUDIOLOAD", "avg %d%% peak %d%% underruns %lu",
+                 GetRenderLoadPercent(), TakeRenderLoadPeak(), gUnderruns) ;
+    }
+#endif
+  }
 } ;
+
+int AudioDriver::GetRenderLoadPercent() {
+  return (int)(gRenderLoad * 100.0 + 0.5) ;
+}
+
+int AudioDriver::TakeRenderLoadPeak() {
+  int peak = (int)(gRenderLoadPeak * 100.0 + 0.5) ;
+  gRenderLoadPeak = 0.0 ;
+  return peak ;
+}
+
+unsigned long AudioDriver::GetUnderrunCount() {
+  return gUnderruns ;
+}
+
+void AudioDriver::noteUnderrun() {
+  gUnderruns++ ;
+}
 
 void AudioDriver::onAudioBufferTick()
 {

@@ -19,7 +19,7 @@ public:
 	virtual void CloseDriver();
 	virtual bool StartDriver() ; 
 	virtual void StopDriver();
-	virtual int GetPlayedBufferPercentage() { return 0 ;} ;
+	virtual int GetPlayedBufferPercentage() { return GetRenderLoadPercent() ;} ;
     virtual int GetSampleRate() { return 44100; } ;	
     virtual bool Interlaced() { return true ; } ;
     virtual double GetStreamTime() ;

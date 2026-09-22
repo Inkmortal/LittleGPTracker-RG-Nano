@@ -43,6 +43,9 @@ public:
 	virtual bool Render(fixed *buffer,int samplecount) ;
 
 	void Clear() ;
+	// Fade the wet return to silence over ~0.25 s, then clear the tails
+	void FadeOut() ;
+	void CancelFade() ;
 
 	// Parameter curves, shared with the Project screen text
 	static float ReverbSizeFromParam(int value) ;
@@ -57,6 +60,8 @@ private:
 	bool allocated_ ;
 	bool hasInput_ ;
 	int tail_ ;              // frames left to render after the last input
+	int fade_ ;              // frames left in a FadeOut, 0 = none
+	int fadeLength_ ;
 
 	float reverbIn_[SENDFX_MAX_FRAMES*2] ;
 	float delayIn_[SENDFX_MAX_FRAMES*2] ;

@@ -101,6 +101,8 @@ class View : public Observable {
     // Pixel graphics drawn after the text layer is flushed, so they are never
     // painted over by character cells. Goes to the open modal if there is one.
     void DrawGraphics();
+    // Guide page and section explaining this screen (A in the helper)
+    virtual void GetGuideTopic(const char *&page, const char *&section);
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int currentTick);
     virtual void OnFocus() = 0;
 

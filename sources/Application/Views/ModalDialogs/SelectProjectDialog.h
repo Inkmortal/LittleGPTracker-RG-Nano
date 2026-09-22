@@ -14,6 +14,7 @@ public:
 	virtual void OnPlayerUpdate(PlayerEventType ,unsigned int currentTick) ;
 	virtual void OnFocus() ;
 	virtual void ProcessButtonMask(unsigned short mask,bool pressed) ;
+	virtual void GetGuideTopic(const char *&page, const char *&section) ;
 	virtual void CustomizeContextOverlay(const char *&name, const char *&where,
 										 const char *&edit, const char *&field,
 										 const char *&cmd1, const char *&cmd2,

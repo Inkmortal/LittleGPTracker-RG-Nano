@@ -19,6 +19,8 @@ extern fixed panlaw[] ;
 #define SYNTH_KRATE 100
 #define SYNTH_FADE_SECONDS 0.003f
 #define SYNTH_SILENCE 0.00008f
+// Release used when the transport stops (-40 dB in this time)
+#define SYNTH_QUICK_RELEASE_SECONDS 0.08f
 
 enum SynthStage {
 	SS_OFF=0,
@@ -415,6 +417,7 @@ SynthInstrument::SynthInstrument() {
 		v.lfoPhase_=0.0f ;
 		v.glideNote_=60.0f ;
 		v.hasPlayed_=false ;
+		v.fastRelease_=false ;
 		v.ic1eq_=v.ic2eq_=0.0f ;
 		v.fa1_=v.fa2_=v.fa3_=v.fk_=0.0f ;
 		v.chordCount_=1 ;
@@ -620,6 +623,7 @@ void SynthInstrument::startVoice(int channel,unsigned char note,bool cleanStart)
 	v.pendingStart_=false ;
 	v.active_=true ;
 	v.stage_=SS_ATTACK ;
+	v.fastRelease_=false ;
 	v.level_=0.0f ;
 	v.pitchEnv_=1.0f ;
 	v.filterEnv_=1.0f ;
@@ -652,6 +656,14 @@ void SynthInstrument::Stop(int channel) {
 		v.pendingStart_=false ;
 	}
 	v.stage_=SS_RELEASE ;
+}
+
+void SynthInstrument::StopQuickly(int channel) {
+	SynthVoice &v=voices_[channel] ;
+	if (!v.active_) return ;
+	v.pendingStart_=false ;
+	v.stage_=SS_RELEASE ;
+	v.fastRelease_=true ;
 }
 
 /***************************************************************
@@ -1031,6 +1043,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	float attackInc=1.0f/(TimeFromParam(attack_->GetInt())*sampleRate) ;
 	float decayCoef=coefFromTime(TimeFromParam(decay_->GetInt()),sampleRate) ;
 	float releaseCoef=coefFromTime(TimeFromParam(release_->GetInt()),sampleRate) ;
+	float quickReleaseCoef=coefFromTime(SYNTH_QUICK_RELEASE_SECONDS,sampleRate) ;
 	float pitchCoef=coefFromTime(TimeFromParam(pitchDec_->GetInt()),sampleRate) ;
 	float envCoef=coefFromTime(TimeFromParam(envDec_->GetInt()),sampleRate) ;
 	float fadeInc=1.0f/(SYNTH_FADE_SECONDS*sampleRate) ;
@@ -1135,7 +1148,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 				}
 				break ;
 			case SS_RELEASE:
-				v.level_*=releaseCoef ;
+				v.level_*=v.fastRelease_?quickReleaseCoef:releaseCoef ;
 				if (v.level_<SYNTH_SILENCE) {
 					v.level_=0.0f ;
 					v.stage_=SS_OFF ;

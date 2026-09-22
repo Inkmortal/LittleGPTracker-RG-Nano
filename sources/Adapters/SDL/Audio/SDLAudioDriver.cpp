@@ -154,6 +154,9 @@ void SDLAudioDriver::OnChunkDone(Uint8 *stream, int len) {
         // then get next queued buffer and copy data from it
 
         if (pool_[poolPlayPosition_].buffer_ == 0) {
+            if (thread_ && isPlaying_) {
+                noteUnderrun();
+            }
             SYS_MEMCPY(mainBuffer_ + bufferSize_ - bufferPos_, miniBlank_, len);
             bufferSize_ = bufferSize_ - bufferPos_ + len;
 
@@ -187,7 +190,5 @@ void SDLAudioDriver::OnChunkDone(Uint8 *stream, int len) {
 }
 
 int SDLAudioDriver::GetPlayedBufferPercentage() {
-    //	return
-    //100-(bufferSize_-bufferPos_-fragSize_)*100/(bufferSize_-fragSize_) ;
-    return 0;
-};
+    return GetRenderLoadPercent();
+}

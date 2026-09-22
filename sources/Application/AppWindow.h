@@ -29,6 +29,19 @@ class AppWindow : public GUIWindow, I_Observer, Status {
   public:
     // Theme colors for pixel graphics, so scopes and panels follow config.xml
     static GUIColor ThemeColor(ColorDefinition cd);
+    // Colour themes, chosen in the Menu/Power menu and kept in
+    // root:.lgpt-theme. config.xml colours still override a theme.
+    static int ThemeCount();
+    static const char *ThemeName(int theme);
+    static int CurrentTheme();
+    // Switch theme now: recolour, repaint and remember it
+    void SelectTheme(int theme);
+    static void SetThemeColors(GUIColor background, GUIColor normal,
+                               GUIColor border, GUIColor hilite1,
+                               GUIColor hilite2, GUIColor cursor,
+                               GUIColor play, GUIColor mute, GUIColor row,
+                               GUIColor row2, GUIColor majorbeat,
+                               GUIColor songFE, GUIColor song00);
     // percent 0 = from, 100 = to
     static GUIColor ThemeBlend(ColorDefinition from, ColorDefinition to,
                                int percent);
@@ -87,6 +100,7 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     virtual void Print(char *);
 
     void defineColor(const char *colorName, GUIColor &color);
+    void defineAllColors();
 
 
     void onQuitApp();

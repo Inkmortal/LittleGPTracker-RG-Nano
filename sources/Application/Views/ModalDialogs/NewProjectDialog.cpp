@@ -208,6 +208,11 @@ void NewProjectDialog::OnFocus() {
     col_ = NA_DONE;
 };
 
+void NewProjectDialog::GetGuideTopic(const char *&page, const char *&section) {
+    page = "controls";
+    section = "Naming a new song";
+}
+
 void NewProjectDialog::CustomizeContextOverlay(
     const char *&name, const char *&where, const char *&edit,
     const char *&field, const char *&cmd1, const char *&cmd2,

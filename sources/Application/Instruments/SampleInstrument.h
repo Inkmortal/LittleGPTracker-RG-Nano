@@ -49,6 +49,9 @@ enum SampleInstrumentLoopMode {
 #define SIP_PRINTFX MAKE_FOURCC('P', 'R', 'F', 'X')
 #define SIP_IR_PAD MAKE_FOURCC('I', 'R', 'P', 'D')
 #define SIP_IR_WET MAKE_FOURCC('I', 'R', 'W', 'T')
+// Shared reverb / echo sends, same as the synth's MIX page
+#define SIP_REVERB MAKE_FOURCC('S', 'R', 'V', 'B')
+#define SIP_DELAY MAKE_FOURCC('S', 'D', 'L', 'Y')
 
 #define FB_BUFFER_LENGTH 3500 // (in samples)
 
@@ -62,6 +65,7 @@ public:
        virtual bool Start(int channel,unsigned char note,bool trigger=true) ;
        virtual void Stop(int channel) ;
        virtual bool Render(int channel,fixed *buffer,int size,bool updateTick) ;
+       void sendToEffects(fixed *buffer,int size) ;
        virtual bool IsInitialized() ;
 	   virtual bool IsEmpty() ;
 
@@ -141,6 +145,8 @@ private:
        Variable *printFx_;
        Variable *irPad_;
 	   Variable *irWet_;
+	   Variable *reverb_;
+	   Variable *delay_;
 	   int suggestedRootNote_;
 
        static bool useDirtyDownsampling_;

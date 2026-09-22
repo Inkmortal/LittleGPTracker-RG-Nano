@@ -66,7 +66,16 @@ public:
 
 	void OnNewBufferNeeded() ;
 
+	// Audio engine load: time spent rendering a buffer / the buffer's play
+	// time, in percent (smoothed, and the worst since the last read).
+	// Over 100 means the device cannot keep up and the output drops out.
+	static int GetRenderLoadPercent() ;
+	static int TakeRenderLoadPeak() ;
+	// Times the output ran dry while playing (heard as clicks or crackle)
+	static unsigned long GetUnderrunCount() ;
+
 protected:
+	static void noteUnderrun() ;
 	void eatBuffer(void *buffer,int size) ; // size in bytes
 	void onAudioBufferTick() ;
 	bool hasData() ;

@@ -1149,8 +1149,12 @@ void SongView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
 
     char strbuffer[10];
     pos._y += 1;
-    sprintf(strbuffer, "%3.3d%%", player->GetPlayedBufferPercentage());
+    // Audio engine load; amber when the device is close to its limit
+    int load = player->GetPlayedBufferPercentage();
+    sprintf(strbuffer, "%3.3d%%", load > 999 ? 999 : load);
+    SetColor(load >= 80 ? CD_CURSOR : CD_NORMAL);
     DrawString(pos._x, pos._y, strbuffer, props);
+    SetColor(CD_NORMAL);
 
     System *sys = System::GetInstance();
     int batt = sys->GetBatteryLevel();

@@ -46,7 +46,7 @@ Open **Native games → LGPT RG Nano**. The **Your Songs** list appears. **Up/Do
 | **Open** | open the highlighted song (try `NeonDrive`) |
 | **New** | start an empty song with the synth kit ready to play |
 | **Delete** | delete the highlighted song (asks first, starts on `No`) |
-| **Help** | five short pages: what a tracker is, buttons, the screen map, a first beat |
+| **Help** | this whole guide, built in: pick a topic and read it on the device |
 
 The Menu/Power button opens the app menu, where **Save and quit** is the safe way out.
 

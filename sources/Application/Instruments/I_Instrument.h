@@ -57,6 +57,9 @@ public:
 
 	  // True while a stopped voice is still fading out (synth release tail)
 	  virtual bool IsReleasing(int channel) { return false ; } ;
+	  // Transport stop: end the note within a few tens of ms instead of
+	  // playing its full release
+	  virtual void StopQuickly(int channel) { Stop(channel) ; } ;
 
 };
 #endif

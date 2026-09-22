@@ -72,8 +72,9 @@ static void DrawSimOverlayText(SDL_Surface *screen, const char *text, int x, int
 
 #ifdef PLATFORM_RGNANO_SIM
 static ViewData *GetSimViewData();
-static const char *powerMenuSelectedLabel(int selection);
 #endif
+static const char *powerMenuSelectedLabel(int selection);
+static void readSystemLevels();
 
 SDLEventManager::SDLEventManager() 
 {
@@ -212,6 +213,25 @@ static void installShutdownHandler() {
 	system(cmd);
 }
 
+// Every 10 s of playback, append the audio load to root:lgpt-perf.log on the
+// SD card so dropouts on the device can be read back from a PC.
+static void logAudioLoad() {
+	static Uint32 last=0;
+	Uint32 now=SDL_GetTicks();
+	if (now-last<10000) return;
+	last=now;
+	Player *player=Player::GetInstance();
+	if (!player || !player->IsRunning()) return;
+	Path log=Path("root:").Descend("lgpt-perf.log");
+	I_File *f=FileSystem::GetInstance()->Open(log.GetPath().c_str(),(char *)"a");
+	if (!f) return;
+	f->Printf("t=%us load=%d%% peak=%d%% underruns=%lu\n",(unsigned)(now/1000),
+		AudioDriver::GetRenderLoadPercent(),AudioDriver::TakeRenderLoadPeak(),
+		AudioDriver::GetUnderrunCount());
+	f->Close();
+	delete f;
+}
+
 void SDLEventManager::HandleShutdownRequest()
 {
 	shutdownRequested_=0;
@@ -259,6 +279,7 @@ int SDLEventManager::MainLoop()
 				HandleShutdownRequest();
 				break;
 			}
+			logAudioLoad();
 			SDL_Delay(10);
 		}
 #else
@@ -288,6 +309,7 @@ int SDLEventManager::MainLoop()
 						menuInputHeld_[event.key.keysym.sym]=true;
 						showPowerMenu_ = !showPowerMenu_;
 						if (showPowerMenu_) {
+							readSystemLevels();
 							powerMenuSelection_ = 0;  // Reset to first option
 							showExitConfirm_ = false;
 							menuHelpOverlay_ = false;
@@ -2662,7 +2684,72 @@ int SDLEventManager::GetKeyCode(const char *key)
 }
 
 // Menu/Power overlay entries. Saving only makes sense with a song open.
-enum PowerItem { PI_SAVE_QUIT = 0, PI_QUIT_NO_SAVE, PI_QUIT, PI_DEBUG };
+enum PowerItem { PI_VOLUME = 0, PI_BRIGHTNESS, PI_THEME, PI_SAVE_QUIT, PI_QUIT_NO_SAVE, PI_QUIT, PI_DEBUG };
+#define POWER_MENU_MAX_ITEMS 7
+
+// System volume / brightness, same as the RG Nano's own menu: FunKey OS
+// "volume" and "brightness" commands, 0-100 in steps of 10.
+static int systemVolume_=50;
+static int systemBrightness_=70;
+
+static int readSystemLevel(const char *tool,int fallback) {
+#ifdef PLATFORM_RGNANO
+	// "<tool> get" prints 0-100; read it back through the app's file layer
+	char cmd[96];
+	snprintf(cmd,sizeof(cmd),"%s get > /tmp/lgpt-level 2>/dev/null",tool);
+	if (system(cmd)!=0) return fallback;
+	I_File *f=FileSystem::GetInstance()->Open("/tmp/lgpt-level",(char *)"r");
+	if (!f) return fallback;
+	char text[16];
+	int n=f->Read(text,1,sizeof(text)-1);
+	f->Close();
+	delete f;
+	if (n<=0) return fallback;
+	text[n]=0;
+	int value=atoi(text);
+	return (value>=0 && value<=100) ? value : fallback;
+#else
+	return fallback;
+#endif
+}
+
+static void readSystemLevels() {
+	systemVolume_=readSystemLevel("volume",systemVolume_);
+	systemBrightness_=readSystemLevel("brightness",systemBrightness_);
+}
+
+static void setSystemLevel(const char *tool,int value) {
+#ifdef PLATFORM_RGNANO
+	// Backgrounded: "set" also stores the value in the bootloader env
+	char cmd[64];
+	snprintf(cmd,sizeof(cmd),"%s set %d >/dev/null 2>&1 &",tool,value);
+	system(cmd);
+#endif
+	Trace::Log("EVENT","Power menu: %s %d",tool,value);
+}
+
+static void adjustSystemLevel(int item,int delta) {
+	if (item==PI_THEME) {
+		AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+		int count=AppWindow::ThemeCount();
+		int theme=(AppWindow::CurrentTheme()+(delta>0?1:count-1))%count;
+		if (appWindow) appWindow->SelectTheme(theme);
+		Trace::Log("EVENT","Power menu: colors %s",AppWindow::ThemeName(theme));
+		return;
+	}
+	if (item==PI_VOLUME) {
+		systemVolume_+=delta;
+		if (systemVolume_<0) systemVolume_=0;
+		if (systemVolume_>100) systemVolume_=100;
+		setSystemLevel("volume",systemVolume_);
+	} else if (item==PI_BRIGHTNESS) {
+		systemBrightness_+=delta;
+		// Never all the way dark: the menu must stay readable
+		if (systemBrightness_<10) systemBrightness_=10;
+		if (systemBrightness_>100) systemBrightness_=100;
+		setSystemLevel("brightness",systemBrightness_);
+	}
+}
 
 static bool powerMenuHasSong() {
 	AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
@@ -2672,6 +2759,9 @@ static bool powerMenuHasSong() {
 
 static int powerMenuItems(int *items) {
 	int count=0;
+	items[count++]=PI_VOLUME;
+	items[count++]=PI_BRIGHTNESS;
+	items[count++]=PI_THEME;
 	if (powerMenuHasSong()) {
 		items[count++]=PI_SAVE_QUIT;
 		items[count++]=PI_QUIT_NO_SAVE;
@@ -2683,7 +2773,20 @@ static int powerMenuItems(int *items) {
 }
 
 static const char *powerItemLabel(int item) {
+	static char volume[32];
+	static char brightness[32];
 	switch (item) {
+		case PI_VOLUME:
+			snprintf(volume,sizeof(volume),"Volume     < %3d%% >",systemVolume_);
+			return volume;
+		case PI_BRIGHTNESS:
+			snprintf(brightness,sizeof(brightness),"Brightness < %3d%% >",systemBrightness_);
+			return brightness;
+		case PI_THEME: {
+			static char theme[32];
+			snprintf(theme,sizeof(theme),"Colors     < %-5s>",AppWindow::ThemeName(AppWindow::CurrentTheme()));
+			return theme;
+		}
 		case PI_SAVE_QUIT: return "Save and quit";
 		case PI_QUIT_NO_SAVE: return "Quit, don't save";
 		case PI_QUIT: return "Quit";
@@ -2692,7 +2795,7 @@ static const char *powerItemLabel(int item) {
 }
 
 static const char *powerMenuSelectedLabel(int selection) {
-	int items[4];
+	int items[POWER_MENU_MAX_ITEMS];
 	int count=powerMenuItems(items);
 	if (selection<0 || selection>=count) selection=0;
 	return powerItemLabel(items[selection]);
@@ -2718,7 +2821,7 @@ void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *wind
 	SDL_FillRect(screen, &fullScreen, bg);
 
 	const char *heading;
-	const char *labels[4];
+	const char *labels[POWER_MENU_MAX_ITEMS];
 	int count;
 	int selected;
 	if (showExitConfirm_) {
@@ -2729,7 +2832,7 @@ void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *wind
 		selected = exitConfirmSelection_;
 	} else {
 		heading = "MENU";
-		int items[4];
+		int items[POWER_MENU_MAX_ITEMS];
 		count = powerMenuItems(items);
 		for (int i=0;i<count;i++) labels[i] = powerItemLabel(items[i]);
 		selected = powerMenuSelection_;
@@ -2753,8 +2856,8 @@ void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *wind
 		DrawSimOverlayText(screen, labels[i], item.x + 8, item.y + 7, on ? bg : text, scale);
 	}
 	RenderMenuHelp(screen,window,showExitConfirm_ ? "EXIT?" : "POWER",
-		showExitConfirm_ ? "Quit without saving" : "Save, quit or debug",
-		showExitConfirm_ ? "Up/Down choose" : "Up/Down choose",
+		showExitConfirm_ ? "Quit without saving" : "Sound, light, quit",
+		showExitConfirm_ ? "Up/Down choose" : "Up/Down  L/R adjust",
 		showExitConfirm_ ? "A confirm" : "A open choice",
 		showExitConfirm_ ? "B back to menu" : "B or Power close",
 		"R+Select helper");
@@ -2912,18 +3015,30 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 		switch (key) {
 			case SDLK_u:  // UP
 			case SDLK_d: { // DOWN
-				int items[4];
+				int items[POWER_MENU_MAX_ITEMS];
 				int count = powerMenuItems(items);
 				powerMenuSelection_ = (powerMenuSelection_ + (key == SDLK_u ? count - 1 : 1)) % count;
 				break;
 			}
 
-			case SDLK_a:  // A button - confirm
-			case SDLK_RETURN: {
-				int items[4];
+			case SDLK_l:  // LEFT / RIGHT change volume and brightness
+			case SDLK_r: {
+				int items[POWER_MENU_MAX_ITEMS];
 				int count = powerMenuItems(items);
 				int item = items[powerMenuSelection_ < count ? powerMenuSelection_ : 0];
-				if (item == PI_SAVE_QUIT) {
+				adjustSystemLevel(item, key == SDLK_l ? -10 : 10);
+				break;
+			}
+
+			case SDLK_a:  // A button - confirm
+			case SDLK_RETURN: {
+				int items[POWER_MENU_MAX_ITEMS];
+				int count = powerMenuItems(items);
+				int item = items[powerMenuSelection_ < count ? powerMenuSelection_ : 0];
+				if (item == PI_VOLUME || item == PI_BRIGHTNESS || item == PI_THEME) {
+					// A steps up, Left/Right go either way
+					adjustSystemLevel(item, 10);
+				} else if (item == PI_SAVE_QUIT) {
 					PersistencyService::GetInstance()->Save();
 					Trace::Log("EVENT","Power menu: saved song before quitting");
 					showPowerMenu_ = false;

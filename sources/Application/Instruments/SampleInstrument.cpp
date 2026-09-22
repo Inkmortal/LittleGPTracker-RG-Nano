@@ -1,3 +1,4 @@
+#include "Application/Mixer/SendFX.h"
 #include "SampleInstrument.h"
 #include "SamplePool.h"
 #include "System/Console/Trace.h"
@@ -128,6 +129,12 @@ SampleInstrument::SampleInstrument() {
 
      irWet_ = new Variable("effect amount", SIP_IR_WET, 45);
      Insert(irWet_);
+
+     reverb_ = new Variable("reverb", SIP_REVERB, 0);
+     Insert(reverb_);
+
+     delay_ = new Variable("delay", SIP_DELAY, 0);
+     Insert(delay_);
 
      // Initalize instrument's voices update list
 
@@ -990,8 +997,24 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 		somethingToMix=true ;
     }
 
+    if (somethingToMix) {
+      sendToEffects(buffer,size) ;
+    }
     return somethingToMix ; 
 } ;
+
+// Copy the rendered voice to the shared reverb / echo (SendFX), like synths
+void SampleInstrument::sendToEffects(fixed *buffer,int size) {
+  float reverb=reverb_->GetInt()/255.0f ;
+  float delay=delay_->GetInt()/255.0f ;
+  if (reverb<=0.0f && delay<=0.0f) return ;
+  static float send[SENDFX_MAX_FRAMES*2] ;
+  int frames=size<SENDFX_MAX_FRAMES ? size : SENDFX_MAX_FRAMES ;
+  for (int i=0;i<frames*2;i++) {
+    send[i]=fp2fl(buffer[i])/32767.0f ;
+  }
+  SendFX::GetInstance()->AddSend(send,frames,reverb,delay) ;
+}
 
 
 void SampleInstrument::AssignSample(int i) {

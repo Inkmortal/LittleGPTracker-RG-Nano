@@ -50,6 +50,8 @@ jobs:
           mkdir -p dist/lgpt-rgnano/Tracks
           cp -r projects/resources/demos/lgpt_* dist/lgpt-rgnano/Tracks/
           mkdir -p dist/opk
+          python3 tools/build_ingame_guide.py --check
+          cp projects/resources/guide/guide.txt projects/opk_build/
           cp projects/lgpt-rgnano.elf projects/opk_build/
           mksquashfs projects/opk_build dist/opk/lgpt-rgnano.opk -all-root -noappend -no-exports -no-xattrs
           cp dist/opk/lgpt-rgnano.opk dist/lgpt-rgnano/

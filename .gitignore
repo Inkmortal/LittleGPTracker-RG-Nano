@@ -55,3 +55,7 @@ sdk/
 # Demo songs are real project files that ship with the build
 !projects/resources/demos/**/lgptsav.dat
 dist/
+
+# Chinese instrument samples (tools/fetch_chinese_samples.py)
+exports/chinese-samples/
+!projects/resources/samples/chinese/*.wav

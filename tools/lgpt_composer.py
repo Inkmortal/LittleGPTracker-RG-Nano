@@ -29,6 +29,7 @@ Run `python tools/lgpt_composer.py --help` for the demo build commands.
 from __future__ import annotations
 
 import argparse
+import wave
 import importlib.util
 import re
 import shutil
@@ -289,6 +290,7 @@ class Project:
         self.song = [[0xFF] * 8 for _ in range(256)]
         self.tables: dict[int, list[tuple[str, int, str, int, str, int]]] = {}
         self.grooves: dict[int, list[int]] = {0: [6, 6]}
+        self.sample_files: dict[str, Path] = {}
 
     # --- project settings -------------------------------------------------
     def set(self, name: str, value: object) -> None:
@@ -310,6 +312,29 @@ class Project:
         for k, v in params.items():
             values[k.replace("_", " ")] = v
         self.instruments[slot] = Instrument("Synth", values)
+        return slot
+
+    def sample(self, slot: int, wav: Path, root: int | str, volume: int = 0x80, **params: object) -> int:
+        """Sample instrument playing a WAV that is copied into the project's
+        samples folder. root is the note the recording plays at (C3 = 60, or
+        a name like "A3"); other params use the save names with '_' for spaces
+        (e.g. reverb=0x60, delay=0x20, loopmode="none")."""
+        wav = Path(wav)
+        with wave.open(str(wav), "rb") as w:
+            frames = w.getnframes()
+        root_note = note(root) if isinstance(root, str) else int(root)
+        values: dict[str, object] = {
+            "sample": wav.name,
+            "volume": volume,
+            "root note": root_note,
+            "loopmode": "none",
+            "start": 0,
+            "end": frames,
+        }
+        for k, v in params.items():
+            values[k.replace("_", " ")] = v
+        self.instruments[slot] = Instrument("Sample", values)
+        self.sample_files[wav.name] = wav
         return slot
 
     def table(self, index: int, rows: Sequence[tuple]) -> int:
@@ -439,7 +464,10 @@ class Project:
     def save(self, tracks_dir: Path) -> Path:
         folder = tracks_dir / f"lgpt_{self.name}"
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / "samples").mkdir(exist_ok=True)
+        samples = folder / "samples"
+        samples.mkdir(exist_ok=True)
+        for name, src in self.sample_files.items():
+            shutil.copyfile(src, samples / name)
         (folder / "lgptsav.dat").write_text(self.to_xml(), encoding="ascii")
         return folder
 

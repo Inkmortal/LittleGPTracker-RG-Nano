@@ -83,6 +83,7 @@ struct SynthVoice {
 	unsigned char midiNote_ ;
 	unsigned char pendingNote_ ;
 	bool pendingClean_ ;
+	bool fastRelease_ ;     // transport stop: short release
 
 	float phase_[SYNTH_MAX_PARTIALS][3] ;
 	float fmPhase_[SYNTH_MAX_PARTIALS] ;
@@ -170,6 +171,7 @@ public:
 	virtual void GetTableState(TableSaveState &state) ;
 	virtual void SetTableState(TableSaveState &state) ;
 	virtual bool IsReleasing(int channel) ;
+	virtual void StopQuickly(int channel) ;
 
 	void ApplyPreset(int preset) ;
 	void LoadPreset(const char *name) ;

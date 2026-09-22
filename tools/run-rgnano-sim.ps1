@@ -31,6 +31,8 @@ if ($ArtifactsDir) {
 
 Copy-Item -LiteralPath (Join-Path $resourceDir "config.xml") -Destination (Join-Path $exeDir "config.xml") -Force
 Copy-Item -LiteralPath (Join-Path $resourceDir "mapping.xml") -Destination (Join-Path $exeDir "mapping.xml") -Force
+# Built-in guide (tools/build_ingame_guide.py), read as bin:guide.txt
+Copy-Item -LiteralPath (Join-Path $root "projects\resources\guide\guide.txt") -Destination (Join-Path $exeDir "guide.txt") -Force
 
 $sdlDll = Join-Path $root "projects\resources\W32\SDL.dll"
 if (Test-Path -LiteralPath $sdlDll) {

@@ -24,6 +24,8 @@ SendFX::SendFX() {
 	allocated_=false ;
 	hasInput_=false ;
 	tail_=0 ;
+	fade_=0 ;
+	fadeLength_=1 ;
 	feedback_=0.84f ;
 	damp_=0.2f ;
 	reverbLevel_=1.0f ;
@@ -122,6 +124,21 @@ void SendFX::Clear() {
 	delayLp_[0]=delayLp_[1]=0.0f ;
 	hasInput_=false ;
 	tail_=0 ;
+	fade_=0 ;
+}
+
+void SendFX::CancelFade() {
+	if (fade_>0) {
+		Clear() ;
+	}
+	fadeLength_=1 ;
+}
+
+void SendFX::FadeOut() {
+	if (!allocated_ || (!hasInput_ && tail_<=0)) return ;
+	fadeLength_=sampleRate_/4 ;
+	if (fadeLength_<1) fadeLength_=1 ;
+	fade_=fadeLength_ ;
 }
 
 void SendFX::AddSend(const float *stereo,int frames,float reverb,float delay) {
@@ -182,7 +199,7 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 	if (!hasInput_ && tail_<=0) {
 		return false ;
 	}
-	if (hasInput_) {
+	if (hasInput_ && fade_==0) {
 		tail_=sampleRate_*SENDFX_TAIL_SECONDS ;
 	}
 	updateSettings() ;
@@ -235,8 +252,13 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 			}
 			wet[c]=acc ;  // Freeverb wet 1/3 of its 3x scale: unity-ish return
 		}
-		wet[0]=(wet[0]+dl)*outputGain ;
-		wet[1]=(wet[1]+dr)*outputGain ;
+		float gain=outputGain ;
+		if (fade_>0) {
+			gain*=(float)fade_/(float)fadeLength_ ;
+			fade_-- ;
+		}
+		wet[0]=(wet[0]+dl)*gain ;
+		wet[1]=(wet[1]+dr)*gain ;
 		if (wet[0]>2.0f) wet[0]=2.0f ;
 		if (wet[0]<-2.0f) wet[0]=-2.0f ;
 		if (wet[1]>2.0f) wet[1]=2.0f ;
@@ -255,5 +277,10 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 	}
 	hasInput_=false ;
 	tail_-=samplecount ;
+	if (fadeLength_>0 && fade_==0 && tail_>0 && fadeLength_!=1) {
+		// Fade finished: drop what is left in the rooms and echoes
+		fadeLength_=1 ;
+		Clear() ;
+	}
 	return true ;
 }

@@ -114,4 +114,6 @@ Available on every screen, including dialogs. **Down/Up** flips between:
 2. **Commands** — the buttons for this screen. On the synth pages it also explains the knob under the cursor.
 3. **How to** — a short walkthrough for this screen
 
+On any page, **A** opens the built-in guide at the section for the current screen.
+
 While the helper is open, other buttons are ignored, so you can't change anything by accident.

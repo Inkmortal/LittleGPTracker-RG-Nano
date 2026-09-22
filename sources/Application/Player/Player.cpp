@@ -1,3 +1,4 @@
+#include "Application/Mixer/SendFX.h"
 #include "Player.h"
 #include "Application/Views/BaseClasses/ViewEvent.h"
 #include "System/io/Status.h"
@@ -206,6 +207,9 @@ void Player::Start(PlayMode mode,bool forceSongMode) {
 	PlayerEvent pe(PET_START) ;
 	NotifyObservers(&pe) ;
 
+	// Restarting mid fade: start from clean rooms instead of a half-faded tail
+	SendFX::GetInstance()->CancelFade() ;
+
 	isRunning_=true ; // keep last !!!!
 
 	mixer_->Unlock() ;
@@ -262,8 +266,10 @@ void Player::Stop() {
 	mixer_->Lock() ;
 
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
-		mixer_->StopChannel(i) ;
+		mixer_->StopChannelQuickly(i) ;
 	}
+	// Stop means stop: reverb and echo fade out instead of ringing on
+	SendFX::GetInstance()->FadeOut() ;
 	MidiService::GetInstance()->OnPlayerStop() ;
 	mixer_->OnPlayerStop() ;
 

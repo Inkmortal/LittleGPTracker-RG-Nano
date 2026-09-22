@@ -39,6 +39,8 @@ public:
 	
 	void StartChannel(int channel) ;
 	void StopChannel(int channel) ;
+	// Transport stop: fade instead of ringing out
+	void StopChannelQuickly(int channel) ;
 
 	bool IsChannelPlaying(int channel) ;
 	

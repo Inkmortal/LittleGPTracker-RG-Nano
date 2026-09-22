@@ -43,6 +43,10 @@ if (-not $NoBuild) {
 }
 
 Write-Host "Packaging OPK..."
+# Built-in guide from the wiki, shipped next to the binary (bin:guide.txt)
+python (Join-Path $PSScriptRoot "build_ingame_guide.py") | Out-Host
+if ($LASTEXITCODE -ne 0) { throw "guide build failed" }
+Copy-Item -LiteralPath (Join-Path $projects "resources\guide\guide.txt") -Destination (Join-Path $projects "opk_build\guide.txt") -Force
 Copy-Item -LiteralPath (Join-Path $projects "lgpt-rgnano.elf") -Destination (Join-Path $projects "opk_build\lgpt-rgnano.elf") -Force
 $opkOut = Join-Path $projects "lgpt-rgnano.opk"
 wsl -e bash -lc "cd '$wslProjects' && mksquashfs opk_build lgpt-rgnano.opk -all-root -noappend -no-exports -no-xattrs >/dev/null"

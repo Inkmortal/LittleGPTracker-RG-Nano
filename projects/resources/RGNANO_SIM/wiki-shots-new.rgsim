@@ -1,19 +1,18 @@
 # Screenshots for the wiki: a brand-new project, step by step.
 wait 500
 screenshot_app wiki-boot.bmp
-# Start screen Help button
+# Start screen Help button: the built-in guide
 press r 80
 press r 80
 press r 80
 press a 80
 wait 100
-screenshot_app wiki-start-help-1.bmp
-press r 80
+screenshot_app wiki-start-guide-topics.bmp
+press a 80
+wait 100
+screenshot_app wiki-start-guide-page.bmp
+press b 80
 wait 60
-screenshot_app wiki-start-help-2.bmp
-press r 80
-wait 60
-screenshot_app wiki-start-help-3.bmp
 press b 80
 wait 100
 # New: name dialog opens on OK with a free name

@@ -22,20 +22,66 @@
 
 AppWindow *instance = 0;
 
-GUIColor AppWindow::backgroundColor_(0x0E, 0x12, 0x18);
-GUIColor AppWindow::normalColor_(0xD8, 0xDE, 0xE6);
-GUIColor AppWindow::borderColor_(0x2F, 0x6F, 0x8F);
-GUIColor AppWindow::songviewfeColor_(0x5C, 0x6A, 0x7A);
-GUIColor AppWindow::songview00Color_(0x44, 0x50, 0x5E);
-GUIColor AppWindow::highlightColor_(0x4F, 0xB8, 0xC8);
-GUIColor AppWindow::highlight2Color_(0x5C, 0xC8, 0xA8);
+// Theme colours, in ColorDefinition-like order
+struct AppTheme {
+    const char *name;
+    unsigned char background[3], normal[3], border[3], hilite1[3],
+        hilite2[3], cursor[3], play[3], mute[3], row[3], row2[3],
+        majorbeat[3], songFE[3], song00[3];
+};
+
+static const AppTheme appThemes[] = {
+    // Ink: warm off-white on near black, orange labels, yellow cursor
+    {"Ink", {0x12, 0x12, 0x14}, {0xE6, 0xE4, 0xDF}, {0x5E, 0x5A, 0x56},
+     {0xF0, 0xA0, 0x60}, {0xE8, 0xD8, 0xB8}, {0xFF, 0xD0, 0x40},
+     {0x8C, 0xD8, 0x7C}, {0x80, 0x7C, 0x78}, {0x72, 0x6E, 0x6A},
+     {0xA8, 0xA2, 0x9C}, {0xFF, 0xF4, 0xE0}, {0x72, 0x6E, 0x6A},
+     {0x50, 0x4E, 0x4C}},
+    // Slate: dark blue with teal accents
+    {"Slate", {0x0E, 0x12, 0x18}, {0xD8, 0xDE, 0xE6}, {0x2F, 0x6F, 0x8F},
+     {0x4F, 0xB8, 0xC8}, {0x5C, 0xC8, 0xA8}, {0xFF, 0xC1, 0x4D},
+     {0x7C, 0xE0, 0x7C}, {0x7A, 0x84, 0x94}, {0x5A, 0x7A, 0x9A},
+     {0x9A, 0xB8, 0xD8}, {0xF2, 0xE4, 0xC0}, {0x5C, 0x6A, 0x7A},
+     {0x44, 0x50, 0x5E}},
+    // Mono: greys only, white cursor
+    {"Mono", {0x10, 0x10, 0x10}, {0xD8, 0xD8, 0xD8}, {0x60, 0x60, 0x60},
+     {0xB0, 0xB0, 0xB0}, {0xC8, 0xC8, 0xC8}, {0xFF, 0xFF, 0xFF},
+     {0xE0, 0xE0, 0xE0}, {0x78, 0x78, 0x78}, {0x68, 0x68, 0x68},
+     {0x98, 0x98, 0x98}, {0xFF, 0xFF, 0xFF}, {0x68, 0x68, 0x68},
+     {0x48, 0x48, 0x48}},
+    // Amber: retro monochrome terminal
+    {"Amber", {0x14, 0x0C, 0x04}, {0xFF, 0xB0, 0x40}, {0x80, 0x50, 0x18},
+     {0xFF, 0xC8, 0x70}, {0xE0, 0x98, 0x38}, {0xFF, 0xE0, 0xA0},
+     {0xFF, 0xD8, 0x80}, {0x90, 0x60, 0x28}, {0x90, 0x60, 0x28},
+     {0xC0, 0x84, 0x38}, {0xFF, 0xD8, 0x90}, {0x90, 0x60, 0x28},
+     {0x60, 0x40, 0x18}},
+    // Pink: the original magenta look
+    {"Pink", {0x1D, 0x0A, 0x1F}, {0xF5, 0xEB, 0xFF}, {0xFF, 0x00, 0x8C},
+     {0xB7, 0x50, 0xD1}, {0xDB, 0x33, 0xDB}, {0xFF, 0x00, 0x8C},
+     {0xFF, 0x00, 0x8C}, {0xF5, 0xEB, 0xFF}, {0xBA, 0x28, 0xF9},
+     {0xFF, 0x00, 0xFF}, {0xBA, 0x28, 0xF9}, {0xA5, 0x5B, 0x8F},
+     {0x85, 0x3B, 0x6F}},
+};
+static const int appThemeCount = sizeof(appThemes) / sizeof(appThemes[0]);
+static int currentTheme = 0;
+#define THEME_FILE "root:.lgpt-theme"
+
+static GUIColor themeRGB(const unsigned char *c) { return GUIColor(c[0], c[1], c[2]); }
+
+GUIColor AppWindow::backgroundColor_(0x12, 0x12, 0x14);
+GUIColor AppWindow::normalColor_(0xE6, 0xE4, 0xDF);
+GUIColor AppWindow::borderColor_(0x5E, 0x5A, 0x56);
+GUIColor AppWindow::songviewfeColor_(0x72, 0x6E, 0x6A);
+GUIColor AppWindow::songview00Color_(0x50, 0x4E, 0x4C);
+GUIColor AppWindow::highlightColor_(0xF0, 0xA0, 0x60);
+GUIColor AppWindow::highlight2Color_(0xE8, 0xD8, 0xB8);
 GUIColor AppWindow::consoleColor_(0x00, 0xFF, 0x00);
-GUIColor AppWindow::cursorColor_(0xFF, 0xC1, 0x4D);
-GUIColor AppWindow::playColor_(0x7C, 0xE0, 0x7C);
-GUIColor AppWindow::muteColor_(0x7A, 0x84, 0x94);
-GUIColor AppWindow::rownumberColor_(0x5A, 0x7A, 0x9A);
-GUIColor AppWindow::rownumber2Color_(0x9A, 0xB8, 0xD8);
-GUIColor AppWindow::majorbeatColor_(0xF2, 0xE4, 0xC0);
+GUIColor AppWindow::cursorColor_(0xFF, 0xD0, 0x40);
+GUIColor AppWindow::playColor_(0x8C, 0xD8, 0x7C);
+GUIColor AppWindow::muteColor_(0x80, 0x7C, 0x78);
+GUIColor AppWindow::rownumberColor_(0x72, 0x6E, 0x6A);
+GUIColor AppWindow::rownumber2Color_(0xA8, 0xA2, 0x9C);
+GUIColor AppWindow::majorbeatColor_(0xFF, 0xF4, 0xE0);
 
 int AppWindow::charWidth_ = 8;
 int AppWindow::charHeight_ = 8;
@@ -53,6 +99,90 @@ static void ProjectSelectCallback(View &v, ModalView &dialog) {
         System::GetInstance()->PostQuitMessage();
     }
 };
+
+int AppWindow::ThemeCount() { return appThemeCount; }
+
+const char *AppWindow::ThemeName(int theme) {
+    if (theme < 0 || theme >= appThemeCount)
+        theme = 0;
+    return appThemes[theme].name;
+}
+
+int AppWindow::CurrentTheme() { return currentTheme; }
+
+static void applyTheme(int theme) {
+    if (theme < 0 || theme >= appThemeCount)
+        theme = 0;
+    currentTheme = theme;
+    const AppTheme &t = appThemes[theme];
+    AppWindow::SetThemeColors(themeRGB(t.background), themeRGB(t.normal),
+                              themeRGB(t.border), themeRGB(t.hilite1),
+                              themeRGB(t.hilite2), themeRGB(t.cursor),
+                              themeRGB(t.play), themeRGB(t.mute),
+                              themeRGB(t.row), themeRGB(t.row2),
+                              themeRGB(t.majorbeat), themeRGB(t.songFE),
+                              themeRGB(t.song00));
+}
+
+void AppWindow::SetThemeColors(GUIColor background, GUIColor normal,
+                               GUIColor border, GUIColor hilite1,
+                               GUIColor hilite2, GUIColor cursor, GUIColor play,
+                               GUIColor mute, GUIColor row, GUIColor row2,
+                               GUIColor majorbeat, GUIColor songFE,
+                               GUIColor song00) {
+    backgroundColor_ = background;
+    normalColor_ = normal;
+    borderColor_ = border;
+    highlightColor_ = hilite1;
+    highlight2Color_ = hilite2;
+    cursorColor_ = cursor;
+    playColor_ = play;
+    muteColor_ = mute;
+    rownumberColor_ = row;
+    rownumber2Color_ = row2;
+    majorbeatColor_ = majorbeat;
+    songviewfeColor_ = songFE;
+    songview00Color_ = song00;
+}
+
+// Saved theme name, or -1
+static int loadSavedTheme() {
+    Path path(THEME_FILE);
+    I_File *file = FileSystem::GetInstance()->Open(path.GetPath().c_str(), (char *)"r");
+    if (!file)
+        return -1;
+    char name[32];
+    int n = file->Read(name, 1, sizeof(name) - 1);
+    file->Close();
+    delete file;
+    if (n <= 0)
+        return -1;
+    name[n] = 0;
+    for (int i = 0; i < n; i++) {
+        if (name[i] == '\n' || name[i] == '\r')
+            name[i] = 0;
+    }
+    for (int i = 0; i < appThemeCount; i++) {
+        if (!strcmp(name, appThemes[i].name))
+            return i;
+    }
+    return -1;
+}
+
+void AppWindow::SelectTheme(int theme) {
+    applyTheme(theme);
+    defineAllColors();
+    Path path(THEME_FILE);
+    I_File *file = FileSystem::GetInstance()->Open(path.GetPath().c_str(), (char *)"w");
+    if (file) {
+        file->Printf("%s\n", ThemeName(currentTheme));
+        file->Close();
+        delete file;
+    }
+    GUIWindow::Clear(backgroundColor_);
+    InvalidateScreenCache();
+    SetDirty();
+}
 
 GUIColor AppWindow::ThemeColor(ColorDefinition cd) {
     switch (cd) {
@@ -112,6 +242,23 @@ void AppWindow::defineColor(const char *colorName, GUIColor &color) {
     }
 }
 
+// config.xml colours override the theme
+void AppWindow::defineAllColors() {
+    defineColor("BACKGROUND", backgroundColor_);
+    defineColor("FOREGROUND", normalColor_);
+    defineColor("BORDER", borderColor_);
+    defineColor("SONGVIEW_FE", songviewfeColor_);
+    defineColor("SONGVIEW_00", songview00Color_);
+    defineColor("HICOLOR1", highlightColor_);
+    defineColor("HICOLOR2", highlight2Color_);
+    defineColor("CURSORCOLOR", cursorColor_);
+    defineColor("PLAYCOLOR", playColor_);
+    defineColor("MUTECOLOR", muteColor_);
+    defineColor("ROWCOLOR1", rownumberColor_);
+    defineColor("ROWCOLOR2", rownumber2Color_);
+    defineColor("MAJORBEAT", majorbeatColor_);
+}
+
 AppWindow::AppWindow(I_GUIWindowImp &imp) : GUIWindow(imp) {
 
     instance = this;
@@ -147,19 +294,9 @@ AppWindow::AppWindow(I_GUIWindowImp &imp) : GUIWindow(imp) {
     // Init midi services
     MidiService::GetInstance()->Init();
 
-    defineColor("BACKGROUND", backgroundColor_);
-    defineColor("FOREGROUND", normalColor_);
-    defineColor("BORDER", borderColor_);
-    defineColor("SONGVIEW_FE", songviewfeColor_);
-    defineColor("SONGVIEW_00", songview00Color_);
-    defineColor("HICOLOR1", highlightColor_);
-    defineColor("HICOLOR2", highlight2Color_);
-    defineColor("CURSORCOLOR", cursorColor_);
-    defineColor("PLAYCOLOR", playColor_);
-    defineColor("MUTECOLOR", muteColor_);
-    defineColor("ROWCOLOR1", rownumberColor_);
-    defineColor("ROWCOLOR2", rownumber2Color_);
-    defineColor("MAJORBEAT", majorbeatColor_);
+    int savedTheme = loadSavedTheme();
+    applyTheme(savedTheme >= 0 ? savedTheme : 0);
+    defineAllColors();
 
     GUIWindow::Clear(backgroundColor_);
 

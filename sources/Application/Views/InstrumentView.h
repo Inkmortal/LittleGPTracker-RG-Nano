@@ -51,6 +51,9 @@ protected:
 	                           const char *&cmd5, const char *&cmd6,
 	                           const char *&cmd7) ;
 	InstrumentType getInstrumentType() ;
+public:
+	virtual void GetGuideTopic(const char *&page, const char *&section) ;
+protected:
 	void drawSampleLabVisuals() ;
 	void drawLabText(int x, int y, const char *text, GUITextProperties &props) ;
 	void drawLabBar(int x, int y, int width, int value, int maxValue) ;

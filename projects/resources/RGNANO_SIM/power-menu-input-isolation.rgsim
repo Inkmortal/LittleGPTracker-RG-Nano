@@ -11,8 +11,33 @@ expect_audio_silence 0
 press p 80
 wait 160
 expect_view song
-expect_selected_text powerMenu=Save and quit
+expect_selected_text powerMenu=Volume
 dump_state power menu open
+# Left/Right change the system volume and brightness like the RG Nano menu
+press r 80
+wait 60
+expect_selected_text powerMenu=Volume     <  60% >
+press l 80
+wait 60
+expect_selected_text powerMenu=Volume     <  50% >
+press d 80
+wait 60
+expect_selected_text powerMenu=Brightness
+press d 80
+wait 60
+expect_selected_text powerMenu=Colors     < Ink  >
+screenshot_app power-menu-ink.bmp
+press r 80
+wait 80
+expect_selected_text powerMenu=Colors     < Slate>
+screenshot_app power-menu-slate.bmp
+press l 80
+wait 80
+expect_selected_text powerMenu=Colors     < Ink  >
+press d 80
+wait 60
+expect_selected_text powerMenu=Save and quit
+expect_view song
 expect_audio_silence 0
 press p 80
 wait 120

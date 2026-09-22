@@ -8,18 +8,18 @@ Launching the app shows **Your Songs**. **Up/Down** picks a song, **Left/Right**
 
 <img src="images/boot.png" width="300" alt="Your Songs list">
 
-Not sure what anything means? Pick **Help** first. It's five short pages you can flip through with **Left/Right**; **B** closes it:
+Not sure what anything means? Pick **Help**: this whole guide is built into the app. **Up/Down** picks a topic, **A** opens it. Inside a page **Up/Down** scrolls, **Left/Right** jumps between sections, **B** goes back to the topics.
 
-<img src="images/start-help-1.png" width="240" alt="Help: what a tracker is"> <img src="images/start-help-2.png" width="240" alt="Help: buttons"> <img src="images/start-help-3.png" width="240" alt="Help: the map">
+<img src="images/start-guide-topics.png" width="240" alt="Guide topics"> <img src="images/start-guide-page.png" width="240" alt="A guide page">
 
-The third page is the **map**. Every screen in the app sits on it, and you move between them by holding **RB** and pressing a direction:
+Every screen in the app sits on a **map**, and you move between them by holding **RB** and pressing a direction:
 
 ```text
-PROJ           GROOVE
- |               |
-SONG > CHAIN > PHRASE > INSTR
- |               |
-MIXER          TABLE
+PROJ         GROOVE
+ |             |
+SONG>CHAIN>PHRASE>INSTR
+ |             |
+MIXER        TABLE
 ```
 
 ## 2. Make a new song
@@ -44,6 +44,7 @@ Hold **RB** and press **Select** (the `FN` key). This helper works on every scre
 - Page 1, **MAP**: where you are (highlighted) and where **RB + direction** goes from here.
 - **Down**: page 2, every button on this screen.
 - **Down** again: page 3, **HOW TO** — a tiny walkthrough for this screen.
+- **A**: opens this guide at the page for the screen you're on.
 - **RB + Select** again closes it.
 
 Whenever you're unsure, open it. The rest of this guide tells you which screen you're on so you can follow along on the map.

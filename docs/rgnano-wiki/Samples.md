@@ -22,7 +22,7 @@ Imported samples live inside the song folder (`lgpt_<name>/samples/`), so the so
 | Page | What it edits |
 | --- | --- |
 | Source | sample, root note, detune, slices |
-| Shape | volume, pan, crush, drive, downsample |
+| Shape | volume, pan, reverb and delay sends (the shared FX set on the Project screen), crush, drive, downsample |
 | Filter | cutoff, resonance, filter type and mode |
 | Loop | loop mode, start, loop start, end |
 | Motion | instrument table, feedback |

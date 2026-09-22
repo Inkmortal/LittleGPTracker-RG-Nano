@@ -4,7 +4,7 @@
 #include "System/Console/Trace.h"
 #include "Application/Views/ModalDialogs/MessageBox.h"
 #include "Application/Model/Project.h"
-#include "HelpDialog.h"
+#include "GuideDialog.h"
 
 #include <algorithm>
 
@@ -20,7 +20,7 @@ static const char *buttonText[PA_COUNT] = {"Open", "New", "Delete", "Help"};
 static const int buttonX[PA_COUNT] = {0, 7, 13, 22};
 static const char *buttonHint[PA_COUNT] = {
     "A: open this song", "A: make a new song", "A: delete this song",
-    "A: how to use the app"};
+    "A: the full guide"};
 
 static bool isProjectFolder(const std::string &name) {
     std::string prefix = name.substr(0, 4);
@@ -181,6 +181,11 @@ void SelectProjectDialog::OnFocus() {
     currentProject_ = lastProject_;
 };
 
+void SelectProjectDialog::GetGuideTopic(const char *&page, const char *&section) {
+	page="first-song";
+	section="1. The start screen";
+}
+
 void SelectProjectDialog::CustomizeContextOverlay(
 	const char *&name, const char *&where, const char *&edit,
 	const char *&field, const char *&cmd1, const char *&cmd2,
@@ -242,7 +247,7 @@ void SelectProjectDialog::runAction() {
         askDelete();
         break;
     case PA_HELP:
-        DoModal(new HelpDialog(*this));
+        DoModal(new GuideDialog(*this));
         break;
     }
 }

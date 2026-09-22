@@ -174,6 +174,14 @@ void InstrumentView::fillSampleShapePage(SampleInstrument *instrument, GUIPoint 
 	f1=new UIIntVarField(position,*v,"pan    %2.2X",0,0xFE,1,0x10) ;
 	T_SimpleList<UIField>::Insert(f1) ;
 	position._y+=1 ;
+	v=instrument->FindVariable(SIP_REVERB) ;
+	f1=new UIIntVarField(position,*v,"reverb %2.2X",0,0xFF,1,0x10) ;
+	T_SimpleList<UIField>::Insert(f1) ;
+	position._y+=1 ;
+	v=instrument->FindVariable(SIP_DELAY) ;
+	f1=new UIIntVarField(position,*v,"delay  %2.2X",0,0xFF,1,0x10) ;
+	T_SimpleList<UIField>::Insert(f1) ;
+	position._y+=1 ;
 	v=instrument->FindVariable(SIP_CRUSH);
 	f1=new UIIntVarField(position,*v,"crush  %2.2d",1,0x10,1,4) ;
 	T_SimpleList<UIField>::Insert(f1) ;
@@ -1321,6 +1329,11 @@ void InstrumentView::DrawView() {
 } ;
 
 void InstrumentView::OnFocus() { onInstrumentChange(); }
+
+void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
+	page="screens";
+	section=(getInstrumentType()==IT_SAMPLE) ? "Instrument (sample)" : "Instrument (synth)";
+}
 
 void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&where,
                                              const char *&edit, const char *&field,

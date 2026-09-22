@@ -7,23 +7,49 @@ expect_screen_text Open   New   Delete   Help
 expect_selected_text ="Open"
 expect_screen_text A: open this song
 
-# Help button teaches the basics without the website
+# Help opens the built-in guide (the whole wiki, on the device)
 press r 80
 press r 80
 press r 80
 expect_selected_text ="Help"
+expect_screen_text A: the full guide
 press a 80
 wait 80
-screenshot_app start-help-1.bmp
-expect_screen_text HELP 1/5  WHAT IS THIS
+screenshot_app start-guide-topics.bmp
+expect_screen_text GUIDE
+expect_selected_text Your First Song
+press d 80
+expect_selected_text Controls
+press a 80
+wait 80
+screenshot_app start-guide-page.bmp
+expect_screen_text Controls
+expect_screen_text held + a D-pad direction
+# Right jumps to the next section heading
 press r 80
 wait 60
-expect_screen_text BUTTONS
+expect_screen_text Moving between screens
 press r 80
 wait 60
-screenshot_app start-help-3.bmp
-expect_screen_text SONG>CHAIN>PHRASE>INSTR
+expect_screen_text Everywhere
 press b 80
+wait 60
+expect_screen_text pick a topic
+press b 80
+wait 80
+expect_screen_text YOUR SONGS
+
+# A in the RB+Select helper opens the guide at this screen's page
+down n
+press k 80
+up n
+wait 80
+expect_screen_text A: full guide for this
+press a 80
+wait 80
+expect_screen_text Your First Song
+expect_screen_text 1. The start screen
+press s 80
 wait 80
 expect_screen_text YOUR SONGS
 

@@ -13,6 +13,8 @@ public:
 	virtual bool Render(fixed *buffer,int samplecount) ;
 	void StartInstrument(I_Instrument *instr,unsigned char note,bool cleanStart) ;
 	void StopInstrument() ;
+	// Transport stop: notes and ringing tails fade within ~0.1 s
+	void StopQuickly() ;
 	I_Instrument *GetInstrument() ;
 	void SetMute(bool muted) ;
 	bool IsMuted() ;

@@ -85,6 +85,12 @@ void PlayerMixer::StopChannel(int channel) {
 } ;
 
 
+void PlayerMixer::StopChannelQuickly(int channel) {
+    channel_[channel]->StopQuickly() ;
+    notes_[channel]=0xFF ;
+	isChannelPlaying_[channel]=false ;
+} ;
+
 bool PlayerMixer::IsChannelPlaying(int channel) {
 	return isChannelPlaying_[channel] ;
 } ;
