@@ -215,6 +215,25 @@ static void installShutdownHandler() {
 
 // Every 10 s of playback, append the audio load to root:lgpt-perf.log on the
 // SD card so dropouts on the device can be read back from a PC.
+// First line of a small text file, or "" (used for /proc and /sys probes)
+static std::string readSystemLine(const char *path) {
+	I_File *f=FileSystem::GetInstance()->Open(path,(char *)"r");
+	if (!f) return "";
+	char text[192];
+	int n=f->Read(text,1,sizeof(text)-1);
+	f->Close();
+	delete f;
+	if (n<=0) return "";
+	text[n]=0;
+	std::string line(text);
+	size_t nl=line.find('\n');
+	if (nl!=std::string::npos) line=line.substr(0,nl);
+	return line;
+}
+
+// While a song plays, append what only the device knows to
+// root:lgpt-perf.log: our own render load, ALSA's dropout counter and the
+// CPU clock. Read it from a PC by plugging the Nano in as a USB drive.
 static void logAudioLoad() {
 	static Uint32 last=0;
 	Uint32 now=SDL_GetTicks();
@@ -225,9 +244,31 @@ static void logAudioLoad() {
 	Path log=Path("root:").Descend("lgpt-perf.log");
 	I_File *f=FileSystem::GetInstance()->Open(log.GetPath().c_str(),(char *)"a");
 	if (!f) return;
-	f->Printf("t=%us load=%d%% peak=%d%% underruns=%lu\n",(unsigned)(now/1000),
-		AudioDriver::GetRenderLoadPercent(),AudioDriver::TakeRenderLoadPeak(),
-		AudioDriver::GetUnderrunCount());
+	std::string khz=readSystemLine("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+	std::string governor=readSystemLine("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+	// "state: RUNNING ... xruns: N" in the ALSA playback status
+	std::string xruns;
+	I_File *status=FileSystem::GetInstance()->Open("/proc/asound/card0/pcm0p/sub0/status",(char *)"r");
+	if (status) {
+		char text[1024];
+		int n=status->Read(text,1,sizeof(text)-1);
+		status->Close();
+		delete status;
+		if (n>0) {
+			text[n]=0;
+			const char *found=strstr(text,"xruns");
+			if (found) {
+				xruns=found;
+				size_t nl=xruns.find('\n');
+				if (nl!=std::string::npos) xruns=xruns.substr(0,nl);
+			}
+		}
+	}
+	f->Printf("t=%us load=%d%% peak=%d%% underruns=%lu cpu=%s(%s) %s\n",
+		(unsigned)(now/1000),AudioDriver::GetRenderLoadPercent(),
+		AudioDriver::TakeRenderLoadPeak(),AudioDriver::GetUnderrunCount(),
+		khz.empty()?"?":khz.c_str(),governor.empty()?"?":governor.c_str(),
+		xruns.empty()?"xruns ?":xruns.c_str());
 	f->Close();
 	delete f;
 }
