@@ -52,7 +52,7 @@ The Menu/Power button quits the app.
 
 <img src="images/new-project.png" width="360" alt="New song name dialog">
 
-**New** opens with a free random name already filled in and **OK** highlighted, so **A** creates the song straight away. To pick your own name see [Controls](Controls#naming-a-new-song).
+**New** opens with a free random name already filled in and **DONE** highlighted, so **A** creates the song straight away. To pick your own name see [Controls](Controls#naming-a-new-song).
 
 ## Updating
 

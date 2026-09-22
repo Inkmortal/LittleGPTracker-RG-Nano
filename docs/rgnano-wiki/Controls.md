@@ -102,11 +102,11 @@ The letters are in alphabetical order (not QWERTY), so the next letter is always
 
 | Input | Does |
 | --- | --- |
-| D-pad | move over the letters and the `abc RANDOM OK CANCEL` row |
-| **A** on `abc` / `ABC` | switch the letters to lowercase / uppercase |
+| D-pad | move over the keys and the `abc RANDOM CANCEL DONE` row (Down from the buttons wraps to the top letters) |
+| **A** on `abc` / `ABC`, or **Select** | switch the keys to lowercase / uppercase |
 | **A** | type the letter / run the button |
 | **B** | erase a letter; on an empty name, leave without making a song |
 | **LB / RB** | move the cursor inside the name |
-| **Start** | create the song |
+| **Start** or `DONE` | create the song |
 
 The suggested random name is highlighted: the first letter you type replaces it. `name taken` means a song with that name already exists.

@@ -58,7 +58,7 @@ static const HelpPage helpPages[] = {
       "The RB+SELECT helper",
       "draws this map too."}},
     {"FIRST BEAT",
-     {"1 New, then A on OK",
+     {"1 New, then A on DONE",
       "2 Song: A on the --",
       "3 RB+Right, then A",
       "4 RB+Right: the phrase",

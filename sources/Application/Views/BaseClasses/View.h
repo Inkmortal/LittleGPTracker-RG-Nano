@@ -98,6 +98,9 @@ class View : public Observable {
     // Override in subclasses
 
     virtual void DrawView() = 0;
+    // Pixel graphics drawn after the text layer is flushed, so they are never
+    // painted over by character cells. Goes to the open modal if there is one.
+    void DrawGraphics();
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int currentTick);
     virtual void OnFocus() = 0;
 
@@ -122,6 +125,8 @@ class View : public Observable {
     void SetNotification(const char *notification, int offset = 2);
 
   protected:
+    // Override to draw pixel graphics on top of this view's text
+    virtual void drawGraphics() {}
     virtual void ProcessButtonMask(unsigned short mask, bool pressed) = 0;
 
     // to remove once everything got to viewdata

@@ -6,8 +6,9 @@
 
 #define MAX_NAME_LENGTH 12
 
-// D-pad name editor: an alphabetical letter grid plus an action row.
-// Opens with a free random name so A on OK creates a song straight away.
+// D-pad name editor: an on-screen keyboard of spaced key caps in
+// alphabetical order plus an action row. Opens with a free random name and
+// DONE selected, so A creates a song straight away.
 class NewProjectDialog:public ModalView {
 public:
   NewProjectDialog(View &view, Path currentPath = "root:");
@@ -25,6 +26,9 @@ public:
                                        const char *&cmd7);
 
   std::string GetName();
+
+protected:
+  virtual void drawGraphics();
 
 private:
   bool nameTaken();

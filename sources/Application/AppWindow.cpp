@@ -250,6 +250,11 @@ void AppWindow::DrawString(const char *string, GUIPoint &pos,
     }
 };
 
+void AppWindow::InvalidateScreenCache() {
+    memset(_preScreen, 0, 1200);
+    memset(_preScreenProp, 0xFF, 1200);
+}
+
 void AppWindow::Clear(bool all) {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     GUIWindow::Clear(backgroundColor_);
@@ -377,6 +382,9 @@ void AppWindow::Flush() {
         pos._x = 0;
     }
     long flushEnd = System::GetInstance()->GetClock();
+    if (_currentView) {
+        _currentView->DrawGraphics();
+    }
     GUIWindow::Flush();
     Unlock();
     memcpy(_preScreen, _charScreen, 1200);

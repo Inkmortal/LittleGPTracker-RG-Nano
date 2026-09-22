@@ -34,6 +34,9 @@ class AppWindow : public GUIWindow, I_Observer, Status {
                                int percent);
 
     static AppWindow *Create(GUICreateWindowParams &);
+    // Repaint every character cell on the next flush, erasing pixel graphics
+    // (for example a closed dialog's key caps)
+    void InvalidateScreenCache();
     void LoadProject(const Path &path);
     void SaveLastProject(const Path &p);
     void CloseProject();

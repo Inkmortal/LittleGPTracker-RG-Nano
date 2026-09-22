@@ -29,7 +29,7 @@ Move to **New** and press **A**.
 <img src="images/boot-new.png" width="240" alt="New highlighted">
 <img src="images/new-project.png" width="300" alt="Name a new song">
 
-A random free name is already filled in and **OK** is highlighted, so pressing **A** now is fine. To use your own name, move **Up** into the letters and type with **A**: the first letter replaces the suggestion, **B** erases, **Start** creates the song. **B** on an empty name (or **CANCEL**) takes you back without making anything.
+A random free name is already filled in and **DONE** is highlighted, so pressing **A** now is fine. To use your own name, press **Down** into the keyboard and type with **A** (**Select** switches to lowercase): the first letter replaces the suggestion, **B** erases, **Start** creates the song. **B** on an empty name (or `CANCEL`) takes you back without making anything.
 
 You land on the **Song** screen: 8 empty tracks.
 

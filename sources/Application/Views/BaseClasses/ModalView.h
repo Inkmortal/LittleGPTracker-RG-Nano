@@ -18,6 +18,9 @@ class ModalView : public View {
     virtual void DrawString(int x, int y, const char *txt,
                             GUITextProperties &props);
     void EndModal(int returnCode);
+    // Window position in characters, for pixel graphics
+    int windowLeft() const { return left_; }
+    int windowTop() const { return top_; }
 
   private:
     bool finished_;

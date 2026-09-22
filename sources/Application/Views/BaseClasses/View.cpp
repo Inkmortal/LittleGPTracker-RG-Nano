@@ -776,6 +776,17 @@ void View::drawMiniWaveform(bool force) {
 #endif
 }
 
+void View::DrawGraphics() {
+	if (modalView_) {
+		modalView_->DrawGraphics() ;
+		return ;
+	}
+	if (contextOverlay_) {
+		return ;
+	}
+	drawGraphics() ;
+}
+
 void View::DoModal(ModalView *view,ModalViewCallback cb) {
 	modalView_=view ;
 	modalView_->OnFocus() ;
@@ -875,6 +886,7 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 			}
 			SAFE_DELETE(modalView_) ;
 			isDirty_=true ;
+			((AppWindow &)w_).InvalidateScreenCache() ;
 		}
 	} else {
 		ProcessButtonMask(mask,pressed);

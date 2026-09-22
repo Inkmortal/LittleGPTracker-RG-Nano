@@ -32,12 +32,19 @@ void CALLBACK winmm_cback(HWAVEOUT hwo, UINT uMsg, DWORD dwInstance, DWORD dwPar
 W32AudioDriver::W32AudioDriver(int index,AudioSettings &settings):AudioDriver(settings) {
 	waveOut_=0 ;
 	index_=index ;
+	InitializeCriticalSection(&callbackLock_) ;
 }
 
 W32AudioDriver::~W32AudioDriver() {
 	if (waveOut_) {
 		CloseDriver() ;
 	}
+	DeleteCriticalSection(&callbackLock_) ;
+}
+
+void W32AudioDriver::waitForCallback() {
+	EnterCriticalSection(&callbackLock_) ;
+	LeaveCriticalSection(&callbackLock_) ;
 }
 
 bool W32AudioDriver::InitDriver() {
@@ -74,6 +81,7 @@ void W32AudioDriver::CloseDriver() {
 	// Returned buffers must not call back into observers that are being
 	// torn down (winmm fires WOM_DONE for every queued buffer on reset).
 	isPlaying_=false ;
+	waitForCallback() ;
 	if (waveOut_) {
 		waveOutReset(waveOut_) ;
 	}
@@ -116,6 +124,8 @@ bool W32AudioDriver::StartDriver() {
 } ; 
 
 void W32AudioDriver::StopDriver() {
+	// AudioDriver::Stop already cleared isPlaying_, so later callbacks bail
+	waitForCallback() ;
 	if (waveOut_) {
 	   waveOutReset(waveOut_) ;
     }
@@ -128,7 +138,9 @@ double W32AudioDriver::GetStreamTime() {
 
 void W32AudioDriver::OnChunkDone(W32SoundBuffer *sb) {
 
+	EnterCriticalSection(&callbackLock_) ;
 	if (!isPlaying_) {
+		LeaveCriticalSection(&callbackLock_) ;
 		return ;
 	}
 
@@ -141,6 +153,7 @@ void W32AudioDriver::OnChunkDone(W32SoundBuffer *sb) {
 	} else {
 		MidiService::GetInstance()->Flush() ;
 	}
+	LeaveCriticalSection(&callbackLock_) ;
 
 } ;
 

@@ -27,11 +27,15 @@ public:
 	void OnChunkDone(W32SoundBuffer *) ;
 protected:
 	void sendNextChunk(bool notify=true) ;
+	// Blocks until no WOM_DONE callback is mid-chunk. Reset/Close must not
+	// run while the callback is inside waveOutWrite: winmm deadlocks.
+	void waitForCallback() ;
   void clearPlayedChunk(W32SoundBuffer *) ;
 private:
 	double streamTime_ ;
   int index_ ;
 	int ticksBeforeMidi_ ;
 	HWAVEOUT waveOut_ ;
+	CRITICAL_SECTION callbackLock_ ;
 } ;
 #endif
