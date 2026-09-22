@@ -18,6 +18,8 @@ Project screen → `Key: A`, `Scale: Aeolian mode (minor)`. Now **A + Left/Right
 
 ## Chords that fit A minor
 
+Type the **root note** in the note column, then add the **CHRD** value for the kind of chord (see [Synth](Synth#chords-with-chrd) for why).
+
 | Chord | Root note | CHRD | Role |
 | --- | --- | --- | --- |
 | Am | A | `0037` | home |

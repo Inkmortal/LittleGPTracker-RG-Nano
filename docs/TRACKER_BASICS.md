@@ -79,22 +79,51 @@ That's a beat. Now add the snare and hats on their own tracks:
 
 ## 5. Chords in one track
 
-Each track plays one note at a time, but the synth can play a whole chord from one note:
+Each track plays one note at a time, but the synth can play a whole chord from one note with the `CHRD` command.
 
-1. Make a track with instrument `07` (PAD).
-2. Put a note on row `00`, move to the first command column (`----`), press **Select**, pick `CHRD`, then set its value.
-3. The value lists the notes **above** your note, in semitones, one hex digit each:
+**How it works — two parts:**
 
-| CHRD value | Chord | Sounds |
+- **The note you type picks WHICH chord.** Type `A 2` and you get an A chord.
+- **The CHRD value picks WHAT KIND.** `0047` = major (happy), `0037` = minor (sad).
+
+So `A 2` + `CHRD 0037` = **A minor**, and `F 2` + `CHRD 0047` = **F major**. The CHRD value on its own is never "A" or "F" — it's only major or minor.
+
+**What the digits actually do:** each digit says "also play the note this many steps up from mine". `0037` on `A 2`:
+
+```text
+A                               <- your note
+A  A# B  C                      <- 3 steps up:  C
+A  A# B  C  C# D  D# E          <- 7 steps up:  E
+                                   plays A + C + E = A minor
+```
+
+Count every key, black ones included (A → A# → B → C is 3 steps). Past 9 the digits are hex letters: `A` = 10, `B` = 11.
+
+| Type this note | + CHRD `0037` plays | + CHRD `0047` plays |
+| --- | --- | --- |
+| `A 2` | A C E = **A minor** | A C# E = A major |
+| `C 3` | C D# G = C minor | C E G = **C major** |
+| `D 2` | D F A = **D minor** | D F# A = D major |
+| `E 2` | E G B = **E minor** | E G# B = E major |
+| `F 2` | F G# C = F minor | F A C = **F major** |
+| `G 2` | G A# D = G minor | G B D = **G major** |
+
+The **bold** ones are the chords that belong to A minor / C major — use those and it always sounds right.
+
+More kinds, same idea (the note still picks which chord):
+
+| CHRD | Kind | Sounds |
 | --- | --- | --- |
 | `0047` | major | happy, bright |
 | `0037` | minor | sad, serious |
 | `047B` | major 7 | dreamy, lo-fi |
 | `037A` | minor 7 | smooth, jazzy |
+| `047A` | dominant 7 | bluesy, wants to move on |
 | `0057` | sus4 | open, unresolved |
-| `0007` | power chord (5th) | rock, neutral |
+| `0027` | sus2 | airy |
+| `0007` | power chord | rock, neutral |
 
-For a whole-bar pad, put one chord at row `00` of each phrase. Changing the note changes the chord's root: `A 2` + `0037` is A minor, `F 2` + `0047` is F major.
+**Try it:** make a track with instrument `07` (PAD). Put `A 2` on row `00`, move to the first command column (`----`), press **Select**, pick `CHRD`, set it to `0037`. For a whole-bar pad, put one chord at row `00` of each phrase.
 
 ## 6. Turning a loop into a song
 

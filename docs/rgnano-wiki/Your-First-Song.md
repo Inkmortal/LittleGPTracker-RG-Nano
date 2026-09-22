@@ -51,20 +51,51 @@ Each track plays one sound at a time, so drums get a track each.
 
 ## 5. Chords from one note
 
-Tracks are one note at a time, but the synth can play a chord from a single note.
+Tracks are one note at a time, but the synth can play a chord from a single note with the `CHRD` command.
+
+**How it works — two parts:**
+
+- **The note you type picks WHICH chord.** Type `A 2` and you get an A chord.
+- **The CHRD value picks WHAT KIND.** `0047` = major (happy), `0037` = minor (sad).
+
+So `A 2` + `CHRD 0037` = **A minor**, and `F 2` + `CHRD 0047` = **F major**. The CHRD value on its own is never "A" or "F" — it's only major or minor.
+
+**What the digits actually do:** each digit says "also play the note this many steps up from mine". `0037` on `A 2`:
+
+```text
+A                               <- your note
+A  A# B  C                      <- 3 steps up:  C
+A  A# B  C  C# D  D# E          <- 7 steps up:  E
+                                   plays A + C + E = A minor
+```
+
+Count every key, black ones included (A → A# → B → C is 3 steps). Past 9 the digits are hex letters: `A` = 10, `B` = 11.
+
+| Type this note | + CHRD `0037` plays | + CHRD `0047` plays |
+| --- | --- | --- |
+| `A 2` | A C E = **A minor** | A C# E = A major |
+| `C 3` | C D# G = C minor | C E G = **C major** |
+| `D 2` | D F A = **D minor** | D F# A = D major |
+| `E 2` | E G B = **E minor** | E G# B = E major |
+| `F 2` | F G# C = F minor | F A C = **F major** |
+| `G 2` | G A# D = G minor | G B D = **G major** |
+
+The **bold** ones are the chords that belong to A minor / C major — use those and it always sounds right.
+
+**Try it:**
 
 1. Track 5, new chain, new phrase, instrument `07` (PAD).
-2. On row `00` add `A 2`, move to the first command column, **Select** → `CHRD`, and set it to `0037`. That's A minor.
+2. On row `00` add `A 2`, move to the first command column, **Select** → `CHRD`, and set it to `0037`. You hear A minor.
 3. Make three more phrases in the same chain for a four-bar progression:
 
-| Bar | Note | CHRD | Chord |
+| Bar | Note (which chord) | CHRD (what kind) | You hear |
 | --- | --- | --- | --- |
-| 1 | `A 2` | `0037` | A minor |
-| 2 | `F 2` | `0047` | F major |
-| 3 | `C 3` | `0047` | C major |
-| 4 | `G 2` | `0047` | G major |
+| 1 | `A 2` | `0037` minor | A minor |
+| 2 | `F 2` | `0047` major | F major |
+| 3 | `C 3` | `0047` major | C major |
+| 4 | `G 2` | `0047` major | G major |
 
-`Am F C G` — one of the most-used progressions in pop and synthwave. Give the bass the same roots (`A F C G`) and it all locks together.
+`Am F C G` — one of the most-used progressions in pop and synthwave. Give the bass the same notes (`A F C G`) and it all locks together.
 
 <img src="images/demo-phrase-chords.png" width="300" alt="Chord phrase with CHRD">
 

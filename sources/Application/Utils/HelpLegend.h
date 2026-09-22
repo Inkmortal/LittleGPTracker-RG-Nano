@@ -25,9 +25,11 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[2].assign("from original pitch");
 			break;
 		case I_CMD_CHRD:
-			result[0].assign("CHoRD:abcd synth notes");
-			result[1].assign("added on top of the note");
-			result[2].assign("0047=maj 0037=min 047B=M7");
+			// The note picks which chord, the value picks what kind
+			// (legend area is 20 characters wide)
+			result[0].assign("note picks chord");
+			result[1].assign("0037 minor 0047 maj");
+			result[2].assign("A 2 + 0037 = Am");
 			break;
 		case I_CMD_VOLM:
 			result[0].assign("VOLuMe:aabb");

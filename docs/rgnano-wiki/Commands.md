@@ -20,7 +20,7 @@ Timing: 1 step = 6 ticks at the default groove. Ramp speeds (`aa`) count in grou
 | --- | --- | --- | --- |
 | `VOLM` | `aabb` | volume to `bb`, ramping over `aa` (`00` = instant) | `VOLM 0050` ghost note · `VOLM 4000` slow fade out |
 | `KILL` | `--bb` | stop the note after `bb` ticks | `KILL 0000` cut now · `KILL 0003` half a step |
-| `CHRD` | `abcd` | add notes `a b c d` semitones above (synths) | `0037` minor · `0047` major · `037A` min7 |
+| `CHRD` | `abcd` | turn the note into a chord: the note picks **which** chord, the value picks **what kind** (each digit = also play the note that many steps up) | `A 2` + `0037` = A minor · `C 3` + `0047` = C major |
 | `ARPG` | `abcd` | cycle root, +a, +b, +c, +d every tick | `ARPG 0047` chiptune major |
 | `RTRG` | `aabb` | retrigger every `bb` ticks | `RTRG 0003` 32nd roll · `RTRG 0002` tremolo |
 | `PTCH` | `aabb` | bend to `bb` semitones (signed) at speed `aa` | `PTCH 1002` up 2 · `PTCH 10FE` down 2 |

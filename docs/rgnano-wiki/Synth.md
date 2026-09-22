@@ -102,21 +102,51 @@ The reverb room and echo time are shared by every instrument and set on the **Pr
 
 ## Chords with CHRD
 
-`CHRD abcd` in a phrase adds notes `a`, `b`, `c`, `d` semitones above the played note (hex, `0` = unused). It overrides the `chord` knob for that note.
+**How it works — two parts:**
 
-| CHRD | Chord |
-| --- | --- |
-| `0047` | major |
-| `0037` | minor |
-| `0057` | sus4 |
-| `0027` | sus2 |
-| `047B` | major 7 |
-| `037A` | minor 7 |
-| `047A` | dominant 7 |
-| `0007` | power (5th) |
-| `037E` | minor add9 (voicing with the 9th on top) |
+- **The note you type picks WHICH chord.** Type `A 2` and you get an A chord.
+- **The CHRD value picks WHAT KIND.** `0047` = major (happy), `0037` = minor (sad).
 
-Inversions sound smoother: play `C 3` with `0059` for F major over C (C–F–A) instead of jumping to `F 2`.
+So `A 2` + `CHRD 0037` = **A minor**, and `F 2` + `CHRD 0047` = **F major**. The CHRD value on its own is never "A" or "F" — it's only major or minor.
+
+**What the digits actually do:** each digit says "also play the note this many steps up from mine". `0037` on `A 2`:
+
+```text
+A                               <- your note
+A  A# B  C                      <- 3 steps up:  C
+A  A# B  C  C# D  D# E          <- 7 steps up:  E
+                                   plays A + C + E = A minor
+```
+
+Count every key, black ones included (A → A# → B → C is 3 steps). Past 9 the digits are hex letters: `A` = 10, `B` = 11.
+
+| Type this note | + CHRD `0037` plays | + CHRD `0047` plays |
+| --- | --- | --- |
+| `A 2` | A C E = **A minor** | A C# E = A major |
+| `C 3` | C D# G = C minor | C E G = **C major** |
+| `D 2` | D F A = **D minor** | D F# A = D major |
+| `E 2` | E G B = **E minor** | E G# B = E major |
+| `F 2` | F G# C = F minor | F A C = **F major** |
+| `G 2` | G A# D = G minor | G B D = **G major** |
+
+The **bold** ones are the chords that belong to A minor / C major — use those and it always sounds right.
+
+More kinds, same idea (the note still picks which chord):
+
+| CHRD | Kind | Sounds |
+| --- | --- | --- |
+| `0047` | major | happy, bright |
+| `0037` | minor | sad, serious |
+| `047B` | major 7 | dreamy, lo-fi |
+| `037A` | minor 7 | smooth, jazzy |
+| `047A` | dominant 7 | bluesy, wants to move on |
+| `0057` | sus4 | open, unresolved |
+| `0027` | sus2 | airy |
+| `0007` | power chord | rock, neutral |
+
+`CHRD` overrides the `chord` knob for that note. The `chord` knob does the same thing for every note of the instrument (pick `minor` and every note you type becomes a minor chord).
+
+**Smoother changes (inversions):** a chord doesn't have to start on its own name. `C 3` + `0059` plays C F A — still an F major chord, just stacked differently — so moving from C major to F major barely moves your hand. Advanced; skip it until the basics feel easy.
 
 ## Recipes
 
