@@ -59,3 +59,8 @@ dist/
 # Chinese instrument samples (tools/fetch_chinese_samples.py)
 exports/chinese-samples/
 !projects/resources/samples/chinese/*.wav
+
+# Runtime copies written by the simulator
+projects/guide.txt
+rgnano-sim-data/tracks/.lgpt-theme
+lgpt-perf.log
