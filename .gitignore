@@ -64,3 +64,6 @@ exports/chinese-samples/
 projects/guide.txt
 rgnano-sim-data/tracks/.lgpt-theme
 lgpt-perf.log
+
+# Demo songs ship their sample recordings
+!projects/resources/demos/**/samples/*.wav

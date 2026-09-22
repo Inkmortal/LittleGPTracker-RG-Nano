@@ -31,26 +31,30 @@ Four finished songs built only from the synth kit. Open them from the project li
 
 ## Jade Sword — wuxia / donghua
 
-`lgpt_JadeSword` · A minor pentatonic · 96 BPM · 2:00
+`lgpt_JadeSword` · A minor pentatonic · 92 BPM · 2:05
 
-Neon Drive's song map re-scored for a martial-arts epic. Compare the two projects screen by screen.
+Neon Drive's song map re-scored for a martial-arts epic, played on **recordings of real Chinese instruments**. Compare the two projects screen by screen.
 
 | Track | Part |
 | --- | --- |
-| 1 | taiko (the tom preset tuned way down) |
-| 2 | reverb-soaked clap |
-| 3 | woodblock and hats |
-| 4 | sub bass on the chord roots |
-| 5 | string pad |
-| 6 | guzheng (FM pluck) — flowing broken chords, glissandos, tremolo |
-| 7 | erhu (bowed saw with glide) — the chorus melody |
-| 8 | dizi (breathy sine flute) and gong |
+| 1 | dagu (big drum) with rim hits |
+| 2 | Beijing-opera percussion: bangu clapper drum, small gong, cymbals |
+| 3 | temple block in the verses, pipa tremolo in the second chorus |
+| 4 | sub bass on the chord roots (synth) |
+| 5 | soft string pad (synth) |
+| 6 | guzheng — flowing broken chords, glissandos, tremolo |
+| 7 | erhu — the chorus melody |
+| 8 | dizi flute in the verses, the big opera gong on section starts |
 
 **Look at:**
 - **Every melody uses only A C D E G** — the pentatonic scale is what makes it sound Chinese.
-- **Guzheng tremolo** — `RTRG 0002` on long notes in the break.
+- **Sample instruments** — open any of them: each plays one recording, repitched from its `root` note. Erhu and dizi have two recordings each (low and high) so no note is stretched too far.
+- **Grace notes** — a quick step into a melody note (`D4 E4` at the start of a bar) is how erhu and dizi players ornament.
+- **Pipa and guzheng tremolo** — `RTRG 0002` retriggers the note every two ticks.
 - **Glissando** — a fast pentatonic run with rising `VOLM` before the chorus.
-- **Erhu slides** — the instrument's `glide` knob, no commands needed.
+- **Opera percussion on one track** — each step picks its own instrument (clapper, small gong, cymbals).
+
+The recordings are CC0 and CC BY 4.0 from Freesound; `CREDITS.md` in the song folder lists every author.
 
 ## Rainy Window — lo-fi hip-hop
 

@@ -291,6 +291,7 @@ class Project:
         self.tables: dict[int, list[tuple[str, int, str, int, str, int]]] = {}
         self.grooves: dict[int, list[int]] = {0: [6, 6]}
         self.sample_files: dict[str, Path] = {}
+        self.extra_files: dict[str, Path] = {}  # copied next to lgptsav.dat (credits, notes)
 
     # --- project settings -------------------------------------------------
     def set(self, name: str, value: object) -> None:
@@ -468,6 +469,8 @@ class Project:
         samples.mkdir(exist_ok=True)
         for name, src in self.sample_files.items():
             shutil.copyfile(src, samples / name)
+        for name, src in self.extra_files.items():
+            shutil.copyfile(src, folder / name)
         (folder / "lgptsav.dat").write_text(self.to_xml(), encoding="ascii")
         return folder
 

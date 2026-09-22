@@ -60,13 +60,38 @@ foreach ($doc in @("RGNANO_USER_MANUAL.md", "RGNANO_INPUT_MAP.md", "TRACKER_BASI
 }
 New-Item -ItemType Directory -Force -Path $tracks | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $applications "Samples") | Out-Null
+# Demo songs: a demo you never edited is updated; one you saved over keeps
+# your version. installed.hash remembers what we copied last time.
+function Get-SongHash([string]$folder) {
+  $song = Join-Path $folder "lgptsav.dat"
+  if (-not (Test-Path -LiteralPath $song)) { return "" }
+  return (Get-FileHash -LiteralPath $song -Algorithm SHA256).Hash
+}
 Get-ChildItem -LiteralPath (Join-Path $projects "resources\demos") -Directory | ForEach-Object {
   $dest = Join-Path $tracks $_.Name
+  $marker = Join-Path $dest ".installed.hash"
+  $replace = $true
   if ((Test-Path $dest) -and -not $UpdateDemos) {
-    Write-Host "  keeping existing $($_.Name) (use -UpdateDemos to replace)"
-  } else {
+    $installed = if (Test-Path -LiteralPath $marker) { (Get-Content -LiteralPath $marker -Raw).Trim() } else { "" }
+    $current = Get-SongHash $dest
+    if ($current -eq (Get-SongHash $_.FullName)) {
+      $replace = $true   # already this version; refresh samples and marker
+    } elseif ($installed -and $installed -eq $current) {
+      $replace = $true   # untouched since the last install
+    } elseif ($installed) {
+      $replace = $false  # the user saved changes into it
+      Write-Host "  keeping $($_.Name): it has your edits (use -UpdateDemos to replace)"
+    } else {
+      # Installed before hashes were recorded: keep a copy, then update
+      $backup = "$dest-backup-$(Get-Date -Format yyyyMMdd-HHmmss)"
+      Copy-Item -LiteralPath $dest -Destination $backup -Recurse
+      Write-Host "  $($_.Name): previous copy kept as $(Split-Path -Leaf $backup)"
+    }
+  }
+  if ($replace) {
     if (Test-Path $dest) { Remove-Item -LiteralPath $dest -Recurse -Force }
     Copy-Item -LiteralPath $_.FullName -Destination $dest -Recurse
+    Set-Content -LiteralPath $marker -Value (Get-SongHash $_.FullName) -NoNewline
     Write-Host "  demo $($_.Name)"
   }
 }
