@@ -1,0 +1,26 @@
+# A on an EMPTY cell reuses the last chain/phrase, A again makes a new one.
+# On a cell that already holds one, A must leave it alone - it used to arm
+# "new" and every further press handed out another number.
+route boot.new_project_random
+expect_view song
+
+press a 80
+expect_song_chain 0 0 00
+press a 80
+expect_song_chain 0 0 01
+press a 80
+expect_song_chain 0 0 01
+press a 80
+expect_song_chain 0 0 01
+
+# Same rule inside a chain
+goto chain
+press a 80
+expect_chain_phrase 1 0 00
+press a 80
+expect_chain_phrase 1 0 01
+press a 80
+expect_chain_phrase 1 0 01
+
+expect_no_error
+quit

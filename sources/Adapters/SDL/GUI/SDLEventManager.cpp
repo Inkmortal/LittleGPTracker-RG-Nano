@@ -231,6 +231,32 @@ static std::string readSystemLine(const char *path) {
 	return line;
 }
 
+// One line per launch in root:lgpt-perf.log, so the build that actually ran
+// can be read back from the SD card (the device clock is not reliable).
+static void logSessionStart() {
+	std::string build="unknown";
+	I_File *id=FileSystem::GetInstance()->Open(Path("bin:build-id.txt").GetPath().c_str(),(char *)"r");
+	if (id) {
+		char text[64];
+		int n=id->Read(text,1,sizeof(text)-1);
+		id->Close();
+		delete id;
+		if (n>0) {
+			text[n]=0;
+			build=text;
+			while (!build.empty() && (build[build.size()-1]=='\n' || build[build.size()-1]=='\r')) {
+				build.erase(build.size()-1);
+			}
+		}
+	}
+	Path log=Path("root:").Descend("lgpt-perf.log");
+	I_File *f=FileSystem::GetInstance()->Open(log.GetPath().c_str(),(char *)"a");
+	if (!f) return;
+	f->Printf("=== app start, build %s ===\n",build.c_str());
+	f->Close();
+	delete f;
+}
+
 // While a song plays, append what only the device knows to
 // root:lgpt-perf.log: our own render load, ALSA's dropout counter and the
 // CPU clock. Read it from a PC by plugging the Nano in as a USB drive.
@@ -304,6 +330,7 @@ int SDLEventManager::MainLoop()
 	SDLGUIWindowImp *sdlWindow=(SDLGUIWindowImp *)appWindow->GetImpWindow() ;
 #ifdef PLATFORM_RGNANO
 	installShutdownHandler();
+	logSessionStart();
 #endif
 
 	while (!finished_)

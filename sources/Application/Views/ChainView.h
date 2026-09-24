@@ -22,7 +22,8 @@ class ChainView : public View {
     void warpInColumn(int offset);
     void cutPosition();
     void clonePosition();
-    void pasteLastPhrase();
+    // true when the slot was empty and got the last phrase pasted into it
+    bool pasteLastPhrase();
     void extendSelection();
 
     GUIRect getSelectionRect();

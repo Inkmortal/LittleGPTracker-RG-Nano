@@ -1955,9 +1955,12 @@
    bar) is how erhu and
    dizi players ornament.
  - Pipa and guzheng tremolo
-   - RTRG 0002 retriggers
-   the note every two
-   ticks.
+   - RTRG 0004 retriggers
+   the note every four
+   ticks. Smaller numbers
+   are faster; 0002 was too
+   fast to hear as separate
+   notes.
  - Glissando - a fast
    pentatonic run with
    rising VOLM before the

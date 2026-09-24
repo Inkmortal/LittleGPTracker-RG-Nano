@@ -35,13 +35,14 @@ void ChainView::cutPosition() {
     cutSelection();
 };
 
-void ChainView::pasteLastPhrase() {
+bool ChainView::pasteLastPhrase() {
 
     // If we're on an empty spot, we past the last phrase
     // otherwise we take the current phrase as last
 
     unsigned char *c = viewData_->GetCurrentChainPointer();
-    if ((*c == 0xFF)) {
+    bool wasEmpty = (*c == 0xFF);
+    if (wasEmpty) {
         *c = lastPhrase_;
         // Mark it allocated, otherwise "new phrase" can hand out this same
         // phrase again and the user overwrites notes they already wrote
@@ -60,6 +61,7 @@ void ChainView::pasteLastPhrase() {
     } else {
         lastPhrase_ = *c;
     }
+    return wasEmpty;
 };
 
 void ChainView::updateCursor(int dx, int dy) {
@@ -486,8 +488,8 @@ void ChainView::processNormalButtonMask(unsigned short mask) {
             if (mask & EPBM_L)
                 pasteClipboard();
             if (mask == EPBM_A) {
-                pasteLastPhrase();
-                if (viewData_->chainCol_ == 0)
+                // "A again = new phrase" only where the slot was empty
+                if (pasteLastPhrase() && viewData_->chainCol_ == 0)
                     viewMode_ = VM_NEW;
             }
             if (mask & EPBM_R)

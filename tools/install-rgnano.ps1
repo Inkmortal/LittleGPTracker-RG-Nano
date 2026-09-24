@@ -47,6 +47,10 @@ Write-Host "Packaging OPK..."
 python (Join-Path $PSScriptRoot "build_ingame_guide.py") | Out-Host
 if ($LASTEXITCODE -ne 0) { throw "guide build failed" }
 Copy-Item -LiteralPath (Join-Path $projects "resources\guide\guide.txt") -Destination (Join-Path $projects "opk_build\guide.txt") -Force
+# The app logs this on every launch, so the build that ran can be identified
+$buildId = (git -C $root rev-parse --short HEAD).Trim()
+if ((git -C $root status --porcelain -- sources projects).Length -gt 0) { $buildId = "$buildId+local" }
+Set-Content -LiteralPath (Join-Path $projects "opk_build\build-id.txt") -Value $buildId -NoNewline -Encoding ascii
 Copy-Item -LiteralPath (Join-Path $projects "lgpt-rgnano.elf") -Destination (Join-Path $projects "opk_build\lgpt-rgnano.elf") -Force
 $opkOut = Join-Path $projects "lgpt-rgnano.opk"
 wsl -e bash -lc "cd '$wslProjects' && mksquashfs opk_build lgpt-rgnano.opk -all-root -noappend -no-exports -no-xattrs >/dev/null"

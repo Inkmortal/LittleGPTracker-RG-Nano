@@ -67,3 +67,6 @@ lgpt-perf.log
 
 # Demo songs ship their sample recordings
 !projects/resources/demos/**/samples/*.wav
+
+# Build stamp written into the OPK at install time
+projects/opk_build/build-id.txt

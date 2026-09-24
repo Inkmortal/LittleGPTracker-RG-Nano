@@ -29,7 +29,8 @@ class SongView : public View {
     void cutPosition();
     void clonePosition();
     void deepClonePosition();
-    void pasteLast();
+    // true when the cell was empty and got the last chain pasted into it
+    bool pasteLast();
     void fillClipboardData();
     GUIRect getSelectionRect();
     void copySelection();

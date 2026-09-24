@@ -122,13 +122,14 @@ void SongView::cutPosition() {
         current step is empty
  ******************************************************/
 
-void SongView::pasteLast() {
+bool SongView::pasteLast() {
 
     // If we're on an empty spot, we past the last chain
     // otherwise we take the current chain as last
 
     unsigned char *c = viewData_->GetCurrentSongPointer();
-    if (*c == 0xFF) {
+    bool wasEmpty = (*c == 0xFF);
+    if (wasEmpty) {
         *c = lastChain_;
         viewData_->song_->chain_->SetUsed(*c);
         isDirty_ = true;
@@ -140,6 +141,7 @@ void SongView::pasteLast() {
     } else {
         lastChain_ = *c;
     }
+    return wasEmpty;
 };
 
 /******************************************************
@@ -717,9 +719,11 @@ void SongView::processNormalButtonMask(unsigned int mask) {
                 pasteClipboard();
             }
             if (mask == EPBM_A) {
-
-                pasteLast();
-                viewMode_ = VM_NEW;
+                // Only an empty cell offers "A again = new chain"; on a
+                // filled one A would keep replacing it with a new number
+                if (pasteLast()) {
+                    viewMode_ = VM_NEW;
+                }
             }
             if (mask & EPBM_R) {
                 switchSoloMode();
