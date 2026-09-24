@@ -777,7 +777,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		iss >> command.value >> command.value2;
 	} else if (command.op=="expect_phrase_row_count" || command.op=="expect_size") {
 		iss >> command.value >> command.value2;
-	} else if (command.op=="expect_instrument_sample" || command.op=="expect_playing_channel" || command.op=="sim_import_sample_to_instrument" || command.op=="expect_instrument_root" || command.op=="expect_instrument_root_suggestion" || command.op=="sim_detect_trim_root") {
+	} else if (command.op=="expect_instrument_sample" || command.op=="expect_playing_channel" || command.op=="expect_channel_row" || command.op=="sim_import_sample_to_instrument" || command.op=="expect_instrument_root" || command.op=="expect_instrument_root_suggestion" || command.op=="sim_detect_trim_root") {
 		iss >> command.value >> command.arg;
 	} else if (command.op=="sim_set_sample_trim") {
 		iss >> command.value >> command.value2 >> command.arg;
@@ -1060,6 +1060,11 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_playing_channel") {
 		if (!ExpectSimPlayingChannel(command.value,command.arg)) {
 			FailSimScript("playing channel assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_channel_row") {
+		if (!ExpectSimChannelRow(command.value,command.arg)) {
+			FailSimScript("channel row assertion failed");
 			return;
 		}
 	} else if (command.op=="expect_audio_activity") {
@@ -1865,6 +1870,23 @@ bool SDLEventManager::ExpectSimPlayingChannel(int channel, const std::string &in
 	if (!matches) {
 		Trace::Log("RGNANO_SIM_PLAYER","%s",player->GetSimDebugSummary().c_str());
 	}
+	return matches;
+}
+
+// The song row a track is playing (hex), e.g. after a live-mode cue
+bool SDLEventManager::ExpectSimChannelRow(int channel, const std::string &hexRow)
+{
+	Player *player=Player::GetInstance();
+	ViewData *viewData=GetSimViewData();
+	if (!player || !viewData || channel<0 || channel>=SONG_CHANNEL_COUNT) {
+		Trace::Error("RGNANO_SIM expect_channel_row invalid channel=%d",channel);
+		return false;
+	}
+	int wanted=(int)strtol(hexRow.c_str(),0,16);
+	bool playing=player->IsChannelPlaying(channel);
+	int actual=viewData->songPlayPos_[channel];
+	bool matches=playing && actual==wanted;
+	Trace::Log("RGNANO_SIM","expect_channel_row channel=%d playing=%s row=%02X expected=%02X => %s",channel,playing?"yes":"no",actual,wanted,matches?"match":"mismatch");
 	return matches;
 }
 

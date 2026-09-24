@@ -1,3 +1,5 @@
+#include "System/Console/CrashLog.h"
+#include "Application/Model/Project.h"
 #include "DINGOOSystem.h"
 #include "Adapters/Unix/FileSystem/UnixFileSystem.h"
 #include "Adapters/SDL/GUI/GUIFactory.h"
@@ -57,11 +59,30 @@ void GPSDLSystem::Boot(int argc,char **argv) {
     if (fileLogger -> Init().Succeeded()) {
         Trace::GetInstance()->SetLogger(*fileLogger);
         Trace::Log("RGNANO", "File logger initialized at %s", logPath.GetPath().c_str());
+        Trace::Log("RGNANO", "build %s.%s.%s", PROJECT_NUMBER, PROJECT_RELEASE, BUILD_COUNT);
     } else {
         Trace::GetInstance() -> SetLogger(*(new StdOutLogger()));
         Trace::Error("RGNANO failed to initialize file logger at %s", logPath.GetPath().c_str());
     }
 #endif
+
+    // A crash writes what happened (and the last actions) here
+    CrashLog::InstallSignalHandlers("/mnt/Applications/lgpt-rgnano-crash.txt");
+    {
+        // The installer writes the commit next to the binary in the OPK
+        char build[48] = "unknown";
+        // (tinyxml's stub turns fopen/FILE into I_File here)
+        I_File *f = FileSystem::GetInstance()->Open("build-id.txt", "r");
+        if (f) {
+            int n = f->Read(build, 1, sizeof(build) - 1);
+            build[n > 0 ? n : 0] = 0;
+            build[strcspn(build, "\r\n")] = 0;
+            f->Close();
+            delete f;
+        }
+        CrashLog::SetBuild(build);
+        Trace::Log("RGNANO", "commit %s", build);
+    }
 
     Config::GetInstance() -> ProcessArguments(argc,argv);
 

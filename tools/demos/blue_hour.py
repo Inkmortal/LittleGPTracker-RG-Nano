@@ -42,7 +42,7 @@ def build() -> Project:
     p.params["reverb damp"] = "120"
 
     use(p, KICK, "drums-jazz/kick", 0x50)
-    use(p, RIDE, "drums-jazz/ride", 0x70, reverb=0x30)
+    use(p, RIDE, "drums-jazz/ride", 0x58, reverb=0x30)
     use(p, BRUSH, "drums-jazz/brush-tap", 0x80)
     use(p, SWISH, "drums-jazz/brush-swish", 0x58)
     use(p, BASS_LOW, "bass/upright-low", 0xC8)
@@ -51,7 +51,7 @@ def build() -> Project:
         use(p, slot, f"chords/piano-{q}", 0x98, reverb=0x40)
     use(p, TRUMPET, "brass/trumpet", 0xA0, reverb=0x50,
         mod1_type="swell", mod1_dest="volume", mod1_amount=-40, mod1_rate=0x70)
-    use(p, BELL, "drums-jazz/ride-bell", 0x60)
+    use(p, BELL, "drums-jazz/ride-bell", 0x48)
 
     ride = Phrase.drums("x...x.x.x...x.x.", RIDE, ghost=0x60)
     ride_bell = Phrase.merge(ride, Phrase.drums("............x...", BELL))

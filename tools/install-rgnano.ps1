@@ -45,7 +45,7 @@ if (-not $NoBuild) {
 # Run the device's own code under qemu-arm: the Windows simulator can't catch
 # device-only bugs like the Nano's broken libm exp()
 $wslRoot = Convert-ToWslPath $root
-foreach ($check in @("math_check.cpp", "synth_release_check.cpp", "mod_check.cpp", "chorus_check.cpp")) {
+foreach ($check in @("math_check.cpp", "synth_release_check.cpp", "mod_check.cpp", "chorus_check.cpp", "crash_check.cpp")) {
   Write-Host "ARM check: $check"
   wsl -e bash -lc "set -o pipefail; cd '$wslRoot' && bash tools/dsp-harness/run.sh tools/dsp-harness/$check 2>&1 | grep -v '^\['"
   if ($LASTEXITCODE -ne 0) { throw "ARM check failed: $check" }
@@ -61,6 +61,11 @@ $buildId = (git -C $root rev-parse --short HEAD).Trim()
 if ((git -C $root status --porcelain -- sources projects).Length -gt 0) { $buildId = "$buildId+local" }
 Set-Content -LiteralPath (Join-Path $projects "opk_build\build-id.txt") -Value $buildId -NoNewline -Encoding ascii
 Copy-Item -LiteralPath (Join-Path $projects "lgpt-rgnano.elf") -Destination (Join-Path $projects "opk_build\lgpt-rgnano.elf") -Force
+# Keep this build's symbols: a crash report from the device names its commit
+$elfArchive = Join-Path $root "build\elf"
+New-Item -ItemType Directory -Force -Path $elfArchive | Out-Null
+# (the unstripped copy the Makefile keeps as lgpt-rgnano.elf.debug)
+Copy-Item -LiteralPath (Join-Path $projects "lgpt-rgnano.elf.debug") -Destination (Join-Path $elfArchive "$buildId.elf") -Force
 $opkOut = Join-Path $projects "lgpt-rgnano.opk"
 wsl -e bash -lc "cd '$wslProjects' && mksquashfs opk_build lgpt-rgnano.opk -all-root -noappend -no-exports -no-xattrs >/dev/null"
 if ($LASTEXITCODE -ne 0) { throw "mksquashfs failed" }

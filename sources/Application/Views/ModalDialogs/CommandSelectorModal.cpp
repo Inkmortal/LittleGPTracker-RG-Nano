@@ -129,11 +129,6 @@ void CommandSelectorModal::ProcessButtonMask(unsigned short mask, bool pressed) 
             *liveTarget_ = selectedCommand_;
         }
         EndModal(1);  // Confirm selection
-    } else if (mask & EPBM_SELECT) {
-        if (liveTarget_) {
-            *liveTarget_ = selectedCommand_;
-        }
-        EndModal(1);  // Confirm selection
     } else if (mask & EPBM_B) {
         if (liveTarget_) {
             *liveTarget_ = savedCmd_;
@@ -192,11 +187,11 @@ void CommandSelectorModal::CustomizeContextOverlay(
     const char *&cmd6, const char *&cmd7) {
 	name="COMMAND";
 	where="Phrase/Table FX";
-	edit="A or Select choose";
+	edit="A choose  B cancel";
 	field="Pick tracker cmd";
 	cmd1="Dpad move grid";
 	cmd2="A choose command";
-	cmd3="Select also chooses";
+	cmd3="In a phrase: A+Up/Dn A-Z";
 	cmd4="B cancel";
 	cmd5="Help below grid";
 	cmd6="Then edit params";

@@ -15,6 +15,14 @@ The arrangement. Columns are the 8 tracks, rows are time. Each cell holds a chai
 
 <br clear="right">
 
+### Live mode
+
+<img src="images/song-live.png" width="300" align="right" alt="Live mode">
+
+**Select** turns the Song screen into a clip launcher. **Start** on a cell cues that chain on its track (it blinks green until it starts, then loops), **LB + Start** cues the whole row, **RB + Start** cues a track to stop, **B + Start** stops everything. The buttons are listed at the bottom of the screen. Full table: [Controls → Live mode](Controls#live-mode).
+
+<br clear="right">
+
 ## Chain
 
 <img src="images/demo-chain.png" width="300" align="right" alt="Chain">

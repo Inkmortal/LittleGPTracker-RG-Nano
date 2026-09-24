@@ -1,3 +1,4 @@
+#include "System/Console/CrashLog.h"
 #include "Application/Instruments/SynthInstrument.h"
 #include "Application/Mixer/SendFX.h"
 #include "Player.h"
@@ -101,6 +102,7 @@ bool Player::IsChannelMuted(int channel) {
 } ;
 
 void Player::Start(PlayMode mode,bool forceSongMode) {
+	CrashLog::Note("player start mode %d%s",mode,sequencerMode_==SM_LIVE?" live":"") ;
     
 	mixer_->Lock() ;
 
@@ -272,6 +274,7 @@ void Player::ForgetInstrument(I_Instrument *instrument) {
 }
 
 void Player::Stop() {
+	CrashLog::Note("player stop") ;
 
 	mixer_->Lock() ;
 
@@ -375,15 +378,9 @@ char *Player::GetLiveIndicator(int channel) {
 } ;
 
 void Player::SetSequencerMode(SequencerMode mode) {
-	if (isRunning_) {
-		switch(mode) {
-			case SM_LIVE:
-				mode_=PM_LIVE ;
-				break ;
-			case SM_SONG:
-				mode_=PM_SONG;
-				break ;
-		} ;
+	if (isRunning_ && (mode_==PM_SONG || mode_==PM_LIVE)) {
+		mode_=(mode==SM_LIVE)?PM_LIVE:PM_SONG ;
+		viewData_->playMode_=mode_ ;  // the PLAY: label follows
 	} ;
 	sequencerMode_=mode ;
 } ;
@@ -424,9 +421,12 @@ bool Player::IsChannelPlaying(int channel) {
 
 void Player::OnStartButton(PlayMode origin,unsigned int from,bool startFromPrevious,unsigned char chainPos) {
 
+	// Live mode only changes what Start does on the Song screen; everywhere
+	// else Start still plays (and stops) as usual
 	switch(GetSequencerMode()) {
 
         case SM_SONG:
+        case SM_LIVE:
 
 			// If sequencer not running, start otherwise stop
 
@@ -443,8 +443,6 @@ void Player::OnStartButton(PlayMode origin,unsigned int from,bool startFromPrevi
 				Start(origin,startFromPrevious) ;
 			}
     		break ;
-		case SM_LIVE: // doesn't make much sense here
-			break ;
 	}
 }
 

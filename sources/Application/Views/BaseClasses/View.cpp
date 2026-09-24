@@ -1,3 +1,4 @@
+#include "System/Console/CrashLog.h"
 #include "View.h"
 #include "System/Console/Trace.h"
 #include "Application/Player/Player.h"
@@ -71,9 +72,6 @@ GUIPoint View::GetAnchor() {
 		anchorX = ((width - SONG_CHANNEL_COUNT*3 - 3) / 2) + 3 - 1;
 	}
 
-#ifdef PLATFORM_RGNANO
-	Trace::Log("RGNANO","GetAnchor: rect.Width()=%d, width=%d, anchorX=%d", rect.Width(), width, anchorX);
-#endif
 
 	return GUIPoint(anchorX, (height-View::songRowCount_)/2 - 1) ;
 }
@@ -319,7 +317,7 @@ void View::drawContextOverlay() {
 			cmd4="Start play song row";
 			cmd5="LB+Dpad jump/tempo";
 			cmd6="A+R solo  B+R mute";
-			cmd7="RB+Right Chain";
+			cmd7="Select LIVE mode";
 			break;
 		case VT_CHAIN:
 			name="CHAIN";
@@ -332,7 +330,7 @@ void View::drawContextOverlay() {
 			cmd4="Start play cur ch";
 			cmd5="RB+Start song ctx";
 			cmd6="A+R solo  B+R mute";
-			cmd7="RB+Right Phrase";
+			cmd7="LB+Start render sample";
 			break;
 		case VT_PHRASE:
 			name="PHRASE";
@@ -344,12 +342,12 @@ void View::drawContextOverlay() {
 			cmd3="A+Dpad edit value";
 			cmd4="LB+Dpad free note";
 			cmd5="Select command picker";
-			cmd6="Start play cur ch";
+			cmd6="Start play  LB+St render";
 			cmd7="RB+Start song ctx";
 			break;
 		case VT_PROJECT:
 			name="PROJECT";
-			where="RB+Up Song";
+			where="RB+Down Song";
 			edit="Dpad field A+Dpad val";
 			field="Tempo key scale render";
 			cmd1="Dpad choose field";
@@ -358,20 +356,21 @@ void View::drawContextOverlay() {
 			cmd4="B secondary action";
 			cmd5="Set tempo/key/scale";
 			cmd6="Render/save here";
-			cmd7="RB+Up Song";
+			cmd7="RB+Down Song";
 			break;
 		case VT_INSTRUMENT:
+			// Synth and sample instruments replace this (MIDI keeps it)
 			name="INSTR";
-			where="RB+Left Phrase Sel sample";
-			edit="LB+LR page LB+UD mark";
-			field="Sample lab + markers";
+			where="RB+Left Phrase";
+			edit="A+Dpad edit value";
+			field="MIDI instrument";
 			cmd1="Dpad choose field";
-			cmd2="A activate/sample";
-			cmd3="A+Dpad edit value";
-			cmd4="LB+A+LR nudge mark";
-			cmd5="RB+A arrows audition";
-			cmd6="Sel root detect/accept";
-			cmd7="RB+Left Phrase";
+			cmd2="A+Left/Right small step";
+			cmd3="A+Up/Down big step";
+			cmd4="type: synth/sample/MIDI";
+			cmd5="B+Left/Right other instr";
+			cmd6="RB+Up all sounds";
+			cmd7="RB+Down instr table";
 			break;
 		case VT_TABLE:
 			name="TABLE";
@@ -382,7 +381,7 @@ void View::drawContextOverlay() {
 			cmd2="Select command picker";
 			cmd3="A+Dpad edit value";
 			cmd4="A paste last cmd";
-			cmd5="B+R interpolate";
+			cmd5="B+LB mark  B+RB interp";
 			cmd6="Start play cur ch";
 			cmd7="RB+Right Inst Table";
 			break;
@@ -395,13 +394,13 @@ void View::drawContextOverlay() {
 			cmd2="Select command picker";
 			cmd3="A+Dpad edit value";
 			cmd4="A paste last cmd";
-			cmd5="B+R interpolate";
+			cmd5="B+LB mark  B+RB interp";
 			cmd6="Start play phrase";
 			cmd7="RB+Left Table";
 			break;
 		case VT_GROOVE:
 			name="GROOVE";
-			where="RB+Up Phrase";
+			where="RB+Down Phrase";
 			edit="A+Dpad tick values";
 			field="Timing/swing table";
 			cmd1="Dpad move tick cell";
@@ -422,7 +421,7 @@ void View::drawContextOverlay() {
 			cmd3="A+Left/Right fine";
 			cmd4="LB+A mute  RB+A solo";
 			cmd5="C D R = FX returns";
-			cmd6="Start play  RB+Start stop";
+			cmd6="Start play/stop song";
 			cmd7="RB+Down FX settings";
 			break;
 		case VT_FX:
@@ -491,12 +490,72 @@ void View::drawContextOverlay() {
 		drawOverlayLine(innerX,y+14,innerW,where,props);
 		SetColor(CD_NORMAL);
 		drawOverlayLine(innerX,y+15,innerW,edit,props);
+		// The rest of this screen's keys, where the helper box is tall enough
+		const char *more[10];
+		int count=getMoreKeys(more,10);
+		int room=boxH-3-(17+1);
+		if (count>0 && room>1) {
+			SetColor(CD_HILITE2);
+			drawOverlayLine(innerX,y+17,innerW,"MORE KEYS",props);
+			SetColor(CD_NORMAL);
+			for (int i=0;i<count && i<room;i++) {
+				drawOverlayLine(innerX,y+18+i,innerW,more[i],props);
+			}
+		}
 	}
 	SetColor(CD_CURSOR);
 	drawOverlayLine(innerX,y+boxH-3,innerW,"A: full guide for this",props);
 	SetColor(CD_HILITE2);
 	drawOverlayLine(innerX,y+boxH-2,innerW,"Up/Dn page RB+Sel close",props);
 	SetColor(CD_NORMAL);
+}
+
+// Keys the 7 command lines have no room for, per screen (helper page 2)
+int View::getMoreKeys(const char **lines,int max) {
+	static const char *song[]={"Select  LIVE mode on/off","Live: Start cue a cell",
+		"Live: LB+Start cue the row","Live: RB+Start stop track","Live: B+Start stop all",
+		"B+Up/Dn 16 rows  B+A delete","B+LB select, then B copy","A+LB paste",
+		"B+RB mute  A+RB solo","RB+LB unmute all"};
+	static const char *chain[]={"B+Dpad other chain/track","B+A delete",
+		"B+LB select, then B copy","A+LB paste","2nd column: transpose",
+		"B+RB mute  A+RB solo","RB+LB unmute all"};
+	static const char *phrase[]={"B+Dpad other phrase/track","B+A delete",
+		"B+LB select, then B copy","A+LB paste","A+Up/Dn on cmd: A to Z",
+		"LB+Start render to sample","RB+Up Groove RB+Dn Table","B+RB mute  A+RB solo",
+		"RB+LB unmute all"};
+	static const char *instrument[]={"B+Dpad other instrument","B+A clear sample/table",
+		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song"};
+	static const char *table[]={"B+Left/Right other table","B+A delete",
+		"B+LB select, then B copy","A+LB paste","RB+Start play the song"};
+	static const char *groove[]={"B+Left/Right other groove","B+A clear the step",
+		"RB+Start play the song"};
+	static const char *project[]={"Start play/stop the song","B on Tempo: tap tempo"};
+	static const char *mixer[]={"LB+A mute  RB+A solo","A+Left/Right fine step",
+		"C/D/R = FX returns M=master","RB+Down FX settings"};
+	static const char *fx[]={"Up/Down next knob","A+Left/Right small step",
+		"A+Up/Down big step","Start play/stop the song"};
+	const char **list=0;
+	int count=0;
+#define MORE_KEYS(a) list=a; count=sizeof(a)/sizeof(a[0]);
+	switch(viewType_) {
+		case VT_SONG: MORE_KEYS(song); break;
+		case VT_CHAIN: MORE_KEYS(chain); break;
+		case VT_PHRASE: MORE_KEYS(phrase); break;
+		case VT_INSTRUMENT: MORE_KEYS(instrument); break;
+		case VT_TABLE:
+		case VT_TABLE2: MORE_KEYS(table); break;
+		case VT_GROOVE: MORE_KEYS(groove); break;
+		case VT_PROJECT: MORE_KEYS(project); break;
+		case VT_MIXER: MORE_KEYS(mixer); break;
+		case VT_FX: MORE_KEYS(fx); break;
+		default: break;
+	}
+#undef MORE_KEYS
+	// Dialogs have their own commands, not the screen's
+	if (IsModal()) count=0;
+	if (count>max) count=max;
+	for (int i=0;i<count;i++) lines[i]=list[i];
+	return count;
 }
 
 // Page 3 of the RB+Select helper: a tiny walkthrough for this screen,
@@ -511,7 +570,7 @@ void View::getHowToSteps(const char **lines) {
 			lines[3]="1 A on -- makes a chain";
 			lines[4]="2 RB+Right opens that chain";
 			lines[5]="3 Start plays from this row";
-			lines[6]="Same row = plays together";
+			lines[6]="Select: LIVE, cue cells";
 			break;
 		case VT_CHAIN:
 			lines[0]="Chain = a list of bars";
@@ -962,6 +1021,7 @@ void View::DrawGraphics() {
 }
 
 void View::DoModal(ModalView *view,ModalViewCallback cb) {
+	CrashLog::Note("dialog open over view %d",viewType_) ;
 	modalView_=view ;
 	modalView_->OnFocus() ;
 	modalViewCallback_=cb ;
@@ -992,6 +1052,10 @@ void View::SetDirty(bool isDirty) {
 
 void View::ProcessButton(unsigned short mask, bool pressed) {
 	isDirty_=false ;
+	if (pressed) {
+		CrashLog::Note("keys %04X view %d%s%s",mask,viewType_,modalView_?" dialog":"",
+		               contextOverlay_?" helper":"") ;
+	}
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	const char *dumpInput = Config::GetInstance()->GetValue("DUMPEVENT");
 	bool shouldLogInput = dumpInput && !strcmp(dumpInput, "YES");
@@ -1071,6 +1135,7 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 				modalViewCallback_(*this,*modalView_) ;
 			}
 			SAFE_DELETE(modalView_) ;
+			CrashLog::Note("dialog closed") ;
 			isDirty_=true ;
 			((AppWindow &)w_).InvalidateScreenCache() ;
 		}

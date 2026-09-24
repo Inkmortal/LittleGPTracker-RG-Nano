@@ -1067,7 +1067,9 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		}
 	}
 
-	if (getInstrumentType()==IT_SAMPLE && mask==(EPBM_R|EPBM_START)) {
+	// On the waveform pages RB+Start toggles the loop preview; elsewhere it
+	// plays the song like on every other screen
+	if (getInstrumentType()==IT_SAMPLE && isWaveMarkerPage() && mask==(EPBM_R|EPBM_START)) {
 		toggleSamplePreviewLoop();
 		return;
 	}
@@ -1167,7 +1169,11 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		viewMode_=VM_NORMAL ;
 	}
 
-	FieldView::ProcessButtonMask(mask) ;
+	// B and RB combos belong to the screen (switch instrument, cut, go to
+	// another screen), never to the focused knob
+	if (!(mask&(EPBM_B|EPBM_R))) {
+		FieldView::ProcessButtonMask(mask) ;
+	}
 
 	// The type field swaps the whole instrument: rebuild before anything
 	// else touches the (now replaced) fields.
@@ -1179,6 +1185,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	// B Modifier
 
     if (mask & EPBM_B) {
+        // B+A cuts; B+arrows switch instrument. Never both from one press.
+        if (mask&EPBM_A) mask&=~(EPBM_LEFT|EPBM_RIGHT|EPBM_UP|EPBM_DOWN) ;
         if (mask&EPBM_LEFT) warpToNext(-1) ;
 		if (mask&EPBM_RIGHT) warpToNext(+1);
 		if (mask&EPBM_DOWN) warpToNext(-16) ;
@@ -1276,7 +1284,7 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
                 }
             } else {
 				// No modifier
-                if (mask & EPBM_START) {
+                if (mask == EPBM_START) {
                     player->OnStartButton(PM_PHRASE, viewData_->songX_, false,
                                           viewData_->chainRow_);
                 }
@@ -1384,7 +1392,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 	cmd1="Dpad choose field";
 	cmd3="A+Dpad edit value";
 	cmd4="LB+Left/Right page";
-	cmd5="RB+A arrows audition";
+	cmd5="RB+A L/U/R audition";
 	cmd6="RB+Left Phrase";
 	cmd7="RB+Select close";
 	if (labPage_==0) {
@@ -1393,9 +1401,9 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd1="Dpad choose sample/root";
 		cmd2="Sel on sample: import";
 		cmd3="Sel on root: suggest/use";
-		cmd4="A+UD sample: Start/Loop/End";
-		cmd5="A+LR nudge, RB fast";
-		cmd6="Start preview";
+		cmd4="LB+UD pick Start/Loop/End";
+		cmd5="LB+A+LR nudge marker";
+		cmd6="RB+A+Up hear it";
 		cmd7="RB+Start once/loop";
 	} else if (labPage_==1) {
 		field="Shape: level/pan/grit";
@@ -1421,7 +1429,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd3="Dpad to start/lstart/end";
 		cmd4="A+Dpad exact values";
 		cmd5="Sel root from trim";
-		cmd6="Start preview";
+		cmd6="RB+A+Up hear it";
 		cmd7="RB+Start once/loop";
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
 		field="2 envelopes/LFOs";

@@ -1,0 +1,53 @@
+# Live mode on the Dusk demo: Select switches it on, LB+Start launches a
+# row, Start cues one track's cell, B+Start stops everything, Select
+# switches back. Start on other screens still plays while in Live.
+wait 1500
+expect_view song
+expect_screen_text Song - Dusk
+press k 80
+wait 200
+expect_screen_text Live - Dusk
+expect_screen_text St cue  LB+St row  RB+St stop
+# The drop (row 02): every track together
+row 02
+down m
+press s 80
+up m
+wait 800
+expect_player_running yes
+expect_play_mode live
+expect_screen_text PLAY:LIVE
+expect_channel_row 0 02
+expect_channel_row 2 02
+# Cue the break's kick cell (row 03, track 1) for the next bar: Start twice
+row 03
+press s 80
+wait 40
+press s 80
+wait 150
+screenshot_app song-live.bmp
+wait 3500
+expect_channel_row 0 03
+expect_channel_row 2 02
+expect_audio_activity 32
+# B+Start stops everything now
+down b
+press s 80
+up b
+wait 300
+expect_player_running no
+# Start on the Chain screen still plays in Live mode
+goto chain
+press s 80
+wait 600
+expect_player_running yes
+press s 80
+wait 300
+expect_player_running no
+goto song
+# Select switches back to Song mode
+press k 80
+wait 200
+expect_screen_text Song - Dusk
+expect_no_error
+quit

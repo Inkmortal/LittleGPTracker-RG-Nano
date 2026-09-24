@@ -117,9 +117,9 @@ void GrooveView::ProcessButtonMask(unsigned short mask,bool pressed) {
 
 	    	} else {
                 // No modifier
-    			if (mask&EPBM_DOWN) updateCursor(1) ;
-    			if (mask&EPBM_UP) updateCursor(-1) ;
-    			if (mask&EPBM_START) {
+    			if (mask==EPBM_DOWN) updateCursor(1) ;
+    			if (mask==EPBM_UP) updateCursor(-1) ;
+    			if (mask==EPBM_START) {
 					player->OnStartButton(PM_PHRASE,viewData_->songX_,false,viewData_->chainRow_) ;
     			}
 		    }

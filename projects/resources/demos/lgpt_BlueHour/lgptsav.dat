@@ -1100,11 +1100,11 @@
         </INSTRUMENT>
         <INSTRUMENT ID="01" TYPE="Sample">
             <PARAM NAME="sample" VALUE="drums-jazz-ride.wav" />
-            <PARAM NAME="volume" VALUE="112" />
+            <PARAM NAME="volume" VALUE="88" />
             <PARAM NAME="root note" VALUE="60" />
             <PARAM NAME="loopmode" VALUE="none" />
             <PARAM NAME="start" VALUE="0" />
-            <PARAM NAME="end" VALUE="110250" />
+            <PARAM NAME="end" VALUE="79380" />
             <PARAM NAME="reverb" VALUE="48" />
         </INSTRUMENT>
         <INSTRUMENT ID="02" TYPE="Sample">
@@ -1181,11 +1181,11 @@
         </INSTRUMENT>
         <INSTRUMENT ID="0A" TYPE="Sample">
             <PARAM NAME="sample" VALUE="drums-jazz-ride-bell.wav" />
-            <PARAM NAME="volume" VALUE="96" />
+            <PARAM NAME="volume" VALUE="72" />
             <PARAM NAME="root note" VALUE="60" />
             <PARAM NAME="loopmode" VALUE="none" />
             <PARAM NAME="start" VALUE="0" />
-            <PARAM NAME="end" VALUE="66150" />
+            <PARAM NAME="end" VALUE="52920" />
         </INSTRUMENT>
     </INSTRUMENTBANK>
     <TABLES>

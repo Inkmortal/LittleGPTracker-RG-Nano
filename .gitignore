@@ -74,3 +74,6 @@ rgnano-sim-crash.txt
 
 # Simulator song-list state
 rgnano-sim-data/tracks/.lgpt-*
+projects/rgnano-sim.log.*
+projects/resources/RGNANO_SIM/soak.rgsim
+projects/lgpt-rgnano.elf.debug

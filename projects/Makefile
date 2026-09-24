@@ -233,7 +233,7 @@ W32DIRS     :=  .\
 #---------------------------------------------------------------------------------
 
 COMMONFILES := \
-	Logger.o Trace.o Result.o Status.o Config.o \
+	Logger.o Trace.o CrashLog.o Result.o Status.o Config.o \
 	Timer.o FileSystem.o FontConfig.o \
 	SysMutex.o TimeService.o \
 	MidiOutDevice.o MidiInDevice.o MidiService.o Groove.o \

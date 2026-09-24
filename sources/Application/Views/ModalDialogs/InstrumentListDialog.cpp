@@ -369,14 +369,6 @@ void InstrumentListDialog::ProcessButtonMask(unsigned short mask,
         duplicate();
         return;
     }
-    if (mask & EPBM_L) {
-        // LB+Up/Down: a page at a time
-        if (mask & EPBM_UP)
-            move(-LIST_ROWS);
-        if (mask & EPBM_DOWN)
-            move(LIST_ROWS);
-        return;
-    }
     if (mask == EPBM_UP) {
         move(-1);
     } else if (mask == EPBM_DOWN) {

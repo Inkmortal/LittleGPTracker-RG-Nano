@@ -1,4 +1,6 @@
 #define SDL_MAIN_HANDLED
+#include "System/Console/CrashLog.h"
+#include <io.h>
 #include "Application/Application.h"
 #include "Adapters/RGNANO_SIM/System/RGNanoSimSystem.h"
 #include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
@@ -40,7 +42,10 @@ static LONG WINAPI simCrashHandler(EXCEPTION_POINTERS *info)
 #endif
 		fflush(f);
 	}
-	if (out) fclose(out);
+	if (out) {
+		CrashLog::Dump(_fileno(out));
+		fclose(out);
+	}
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 

@@ -91,6 +91,8 @@ void MixerView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	//	return ;
 	//} ;
 	//
+	// Like every other screen, act on presses only
+	if (!pressed) return ;
 	
 	if (clipboard_.active_) {
 		viewMode_=VM_SELECTION ;
@@ -168,9 +170,6 @@ void MixerView::processNormalButtonMask(unsigned int mask) {
 					SetChanged();
 					NotifyObservers(&ve) ;
 				}
-				if (mask&EPBM_START) {
-				    onStop() ;
-                }
 	    	} else {
 
 			// L Modifier
@@ -179,7 +178,7 @@ void MixerView::processNormalButtonMask(unsigned int mask) {
 
 				} else {
 					// No modif
-					if (mask&EPBM_START) {
+					if (mask==EPBM_START) {
 						onStart() ;
 					}
 				   if (mask&EPBM_LEFT) updateCursor(-1,0)  ;

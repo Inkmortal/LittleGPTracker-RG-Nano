@@ -66,10 +66,8 @@ Config::~Config()
 
 const char *Config::GetValue(const char *key) 
 {
+	// Looked up on every player tick and key press: no logging here
 	Variable *v=FindVariable(key) ;
-	if (v) {
-		Trace::Log("CONFIG","Got value for %s=%s",key,v->GetString()) ;
-	}
 	return v?v->GetString():0 ;
 } ;
 

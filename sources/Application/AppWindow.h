@@ -153,7 +153,12 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     static GUIColor rownumberColor_;
     static GUIColor rownumber2Color_;
     static GUIColor majorbeatColor_;
+#ifdef PLATFORM_RGNANO
+// bin: is the read-only OPK on the device; keep it next to the songs
+#define LAST_PROJECT_NAME "root:.lgpt-last"
+#else
 #define LAST_PROJECT_NAME "bin:last_project"
+#endif
 
     ColorDefinition colorIndex_;
 

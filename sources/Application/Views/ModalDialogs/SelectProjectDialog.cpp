@@ -260,11 +260,7 @@ void SelectProjectDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (!pressed) return ;
 
     if (mask & EPBM_B) {
-        // A+B is the quick delete shortcut
-        if (mask & EPBM_A) {
-            askDelete();
-            return;
-        }
+        // (Deleting is the Delete button, which asks first)
         if (mask & EPBM_UP)
             warpToNextProject(-LIST_SIZE);
         if (mask & EPBM_DOWN)

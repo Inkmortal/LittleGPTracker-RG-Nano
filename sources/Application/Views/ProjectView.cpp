@@ -263,7 +263,7 @@ void ProjectView::ProcessButtonMask(unsigned short mask,bool pressed) {
             NotifyObservers(&ve);
         }
     } else {
-        if (mask&EPBM_START) {
+        if (mask==EPBM_START) {
             Player *player = Player::GetInstance();
 
             int renderMode = viewData_->renderMode_;

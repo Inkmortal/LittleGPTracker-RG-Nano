@@ -118,6 +118,12 @@ unsigned int EventDispatcher::OnTimerTick() {
 	unsigned sendMask=(eventMask_&repeatMask_) ;
 	unsigned long now=System::GetInstance()->GetClock();
 
+	// RB + direction switches screens: holding it must not keep walking
+	// through the map
+	if (eventMask_&(1<<EPBT_R)) {
+		return 0 ;
+	}
+
 	if (sendMask) {
 		int current=0 ;
 		while (sendMask) {

@@ -63,6 +63,10 @@ class SongView : public View {
 
     int lastQueuedPosition_[8]; // .Last live queued position for song
                                 //  used for drawing purpose
+    int queuedCellShown_[8];    // .Song row drawn as a queued cell, -1 none
+    void toggleLiveMode();
+    // One song cell with its normal colours; queued = the live-mode cue look
+    void drawSongCell(int track, int songRow, bool queued);
 
     struct {                  // .Clipboard structure
         bool active_;         // .If currently making a selection

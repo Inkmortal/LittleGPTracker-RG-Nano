@@ -1,4 +1,5 @@
 #include "SongView.h"
+#include <string.h>
 #include "Application/Commands/ApplicationCommandDispatcher.h"
 #include "Application/Mixer/MixerService.h"
 #include "Application/Model/ProjectDatas.h"
@@ -31,6 +32,7 @@ SongView::SongView(GUIWindow &w, ViewData *viewData, const char *song)
     for (int i = 0; i < 8; i++) {
         this->lastPlayedPosition_[i] = 0;
         this->lastQueuedPosition_[i] = 0;
+        this->queuedCellShown_[i] = -1;
     }
     clipboard_.active_ = false;
     clipboard_.data_ = 0;
@@ -514,7 +516,9 @@ void SongView::onStart() {
 
 void SongView::startCurrentRow() {
     Player *player = Player::GetInstance();
-    player->SetSequencerMode(SM_LIVE);
+    if (player->GetSequencerMode() != SM_LIVE) {
+        toggleLiveMode();
+    }
     player->OnSongStartButton(0, 7, false, false);
 }
 
@@ -672,28 +676,32 @@ void SongView::ProcessButtonMask(unsigned short mask, bool pressed) {
         selection active
  ******************************************************/
 
+void SongView::toggleLiveMode() {
+    Player *player = Player::GetInstance();
+    bool live = player->GetSequencerMode() != SM_LIVE;
+    player->SetSequencerMode(live ? SM_LIVE : SM_SONG);
+    SetNotification(live ? "LIVE: Start cues a cell" : "SONG mode", 0);
+    isDirty_ = true;
+}
+
 void SongView::processNormalButtonMask(unsigned int mask) {
+
+    if (mask == EPBM_SELECT) {
+        toggleLiveMode();
+        return;
+    }
 
     // B Modifier
 
     if (mask & EPBM_B) {
 
+        // B+A cuts; B+Up/Down jump. Never both from one press.
+        if (mask & EPBM_A)
+            mask &= ~(EPBM_UP | EPBM_DOWN);
         if (mask & EPBM_DOWN)
             updateSongOffset(SongView::jumpLength_);
         if (mask & EPBM_UP)
             updateSongOffset(-SongView::jumpLength_);
-        if (mask & (EPBM_RIGHT | EPBM_LEFT)) {
-            Player *player = Player::GetInstance();
-            switch (player->GetSequencerMode()) {
-            case SM_SONG:
-                player->SetSequencerMode(SM_LIVE);
-                break;
-            case SM_LIVE:
-                player->SetSequencerMode(SM_SONG);
-                break;
-            }
-            isDirty_ = true;
-        }
         if ((mask & EPBM_A) && (!(mask & EPBM_R)))
             cutPosition();
         if (mask & EPBM_L) {
@@ -704,7 +712,11 @@ void SongView::processNormalButtonMask(unsigned int mask) {
             toggleMute();
         };
         if (mask & EPBM_START) {
-            startImmediate();
+            if (Player::GetInstance()->GetSequencerMode() == SM_LIVE) {
+                Player::GetInstance()->Stop();
+            } else {
+                startImmediate();
+            }
         }
     } else {
 
@@ -771,7 +783,8 @@ void SongView::processNormalButtonMask(unsigned int mask) {
                     NotifyObservers(&ve);
                 }
 
-                if (mask & EPBM_START) {
+                if ((mask & EPBM_START) &&
+                    Player::GetInstance()->GetSequencerMode() == SM_LIVE) {
                     onStop();
                 }
 
@@ -889,13 +902,14 @@ void SongView::processSelectionButtonMask(unsigned int mask) {
                     NotifyObservers(&ve);
                 }
 
-                if (mask & EPBM_START) {
+                if ((mask & EPBM_START) &&
+                    Player::GetInstance()->GetSequencerMode() == SM_LIVE) {
                     onStop();
                 }
 
-            } else {
+            } else if (!(mask & EPBM_L)) {
 
-                // No modifier
+                // No modifier (LB combos only work without a selection)
 
                 if (mask & EPBM_DOWN)
                     updateCursor(0, 1);
@@ -918,7 +932,39 @@ void SongView::processSelectionButtonMask(unsigned int mask) {
         redraw completely the song view
  ******************************************************/
 
+void SongView::drawSongCell(int track, int songRow, bool queued) {
+    int y = songRow - viewData_->songOffset_;
+    if (y < 0 || y >= View::songRowCount_ || clipboard_.active_) {
+        return;
+    }
+    GUIPoint anchor = GetAnchor();
+    GUITextProperties props;
+    unsigned char d =
+        viewData_->song_->data_[SONG_CHANNEL_COUNT * songRow + track];
+    bool cursor = (track == viewData_->songX_ && y == viewData_->songY_);
+    if (queued) {
+        SetColor(CD_PLAY);
+        props.invert_ = true;
+    } else if (cursor) {
+        SetColor(((cursorAnimFrame_ / 30) % 2 == 0) ? CD_HILITE2 : CD_HILITE1);
+        props.invert_ = true;
+    } else {
+        SetColor(d == 0xFE ? CD_SONGVIEWFE : (d == 0x00 ? CD_SONGVIEW00 : CD_NORMAL));
+    }
+    char text[3];
+    if (d == 0xFF) {
+        strcpy(text, "--");
+    } else {
+        hex2char(d, text);
+    }
+    DrawString(anchor._x + track * 3, anchor._y + y, text, props);
+    SetColor(CD_NORMAL);
+}
+
 void SongView::DrawView() {
+    for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
+        queuedCellShown_[i] = -1;
+    }
 
     Clear();
     View::EnableNotification();
@@ -1048,6 +1094,14 @@ void SongView::DrawView() {
 
     drawMap();
     drawNotes();
+    if (player->GetSequencerMode() == SM_LIVE) {
+        // Live mode's buttons, under the track strip (the title says Live;
+        // the helper lists the rest)
+        int y = anchor._y + View::songRowCount_ + 4;
+        SetColor(CD_PLAY);
+        DrawString(0, y, "St cue  LB+St row  RB+St stop", props);
+        SetColor(CD_NORMAL);
+    }
     drawSideMeters(true);
     drawMiniWaveform(true);
 
@@ -1117,6 +1171,27 @@ void SongView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
                 }
             }
         }
+
+        // Live mode: the cued cell blinks in the play colour until it starts
+
+        int cue = -1;
+        if (player->GetSequencerMode() == SM_LIVE && eventType != PET_STOP &&
+            player->GetQueueingMode(i) != QM_NONE) {
+            QueueingMode q = player->GetQueueingMode(i);
+            if (q == QM_CHAINSTART || q == QM_PHRASESTART || q == QM_TICKSTART) {
+                cue = player->GetQueuePosition(i);
+            }
+        }
+        if (queuedCellShown_[i] >= 0 && queuedCellShown_[i] != cue) {
+            drawSongCell(i, queuedCellShown_[i], false);
+            queuedCellShown_[i] = -1;
+        }
+        if (cue >= 0) {
+            bool on = player->GetLiveIndicator(i)[0] != ' ';
+            drawSongCell(i, cue, on);
+            queuedCellShown_[i] = cue;
+        }
+        SetColor(CD_CURSOR);
 
         // If in live mode, update queued position
 

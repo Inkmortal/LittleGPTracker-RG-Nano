@@ -154,6 +154,9 @@ class View : public Observable {
     void drawMap();
     void drawContextOverlay();
     void getHowToSteps(const char **lines);
+    int getMoreKeys(const char **lines, int max);
+    // Dialogs override: they are not the screen underneath
+    virtual bool IsModal() { return false; }
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,
                                          const char *&edit, const char *&field,
                                          const char *&cmd1, const char *&cmd2,

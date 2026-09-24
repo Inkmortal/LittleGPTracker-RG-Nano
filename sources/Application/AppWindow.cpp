@@ -1,3 +1,4 @@
+#include "System/Console/CrashLog.h"
 #include "AppWindow.h"
 #include "Application/Utils/RecentSongs.h"
 #include "Views/BaseClasses/FieldView.h"
@@ -534,6 +535,13 @@ void AppWindow::Flush() {
     }
     GUIWindow::Flush();
     Unlock();
+    {
+        Player *player = Player::GetInstance();
+        char state[48];
+        snprintf(state, sizeof(state), "view %s player %s", GetCurrentViewName(),
+                 player && player->IsRunning() ? "on" : "off");
+        CrashLog::Heartbeat(state);
+    }
     memcpy(_preScreen, _charScreen, 1200);
     memcpy(_preScreenProp, _charScreenProp, 1200);
 };
@@ -542,6 +550,7 @@ void AppWindow::LoadProject(const Path &p) {
     Trace::Log("LoadProject", "%s\n", p.GetPath().c_str());
     // The song list can show recently opened songs first
     RecentSongs::Touch(Path(p).GetName());
+    CrashLog::Note("load song %s", Path(p).GetName().c_str());
     _root = p;
 
     _closeProject = false;
@@ -975,6 +984,7 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
 
     case VET_SWITCH_VIEW: {
         ViewType *vt = (ViewType *)ve->GetData();
+        CrashLog::Note("screen %d", (int)*vt);
         if (_currentView) {
             _currentView->LooseFocus();
         }

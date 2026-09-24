@@ -974,6 +974,9 @@ void PhraseView::processNormalButtonMask(unsigned short mask) {
     Player *player = Player::GetInstance();
 
     if (mask & EPBM_B) {
+        // B+A cuts; B+arrows move. Never both from one press.
+        if (mask & EPBM_A)
+            mask &= ~(EPBM_LEFT | EPBM_RIGHT | EPBM_UP | EPBM_DOWN);
         if (mask & EPBM_LEFT)
             warpToNeighbour(-1);
         if (mask & EPBM_RIGHT)
@@ -1008,18 +1011,12 @@ void PhraseView::processNormalButtonMask(unsigned short mask) {
                 }
             }
 
-            if (mask & EPBM_DOWN) {
-                if (isCommandColumn())
-                    enterCommandSelector();
-                else
-                    updateCursorValue(VUD_DOWN);
-            }
-            if (mask & EPBM_UP) {
-                if (isCommandColumn())
-                    enterCommandSelector();
-                else
-                    updateCursorValue(VUD_UP);
-            }
+            // Select opens the command picker; A+Up/Down on a command
+            // steps through the commands A to Z
+            if (mask & EPBM_DOWN)
+                updateCursorValue(VUD_DOWN);
+            if (mask & EPBM_UP)
+                updateCursorValue(VUD_UP);
             if (mask & EPBM_LEFT)
                 updateCursorValue(VUD_LEFT);
             if (mask & EPBM_RIGHT)
@@ -1196,34 +1193,9 @@ void PhraseView::processSelectionButtonMask(unsigned short mask) {
             // R Modifier
 
             if (mask & EPBM_R) {
-                if (mask & EPBM_LEFT) {
-                    ViewType vt = VT_CHAIN;
-                    ViewEvent ve(VET_SWITCH_VIEW, &vt);
-                    SetChanged();
-                    NotifyObservers(&ve);
-                }
-                if (mask & EPBM_RIGHT) {
-                    unsigned char *c = phrase_->instr_ +
-                                       (16 * viewData_->currentPhrase_ + row_);
-                    if (*c != 0xFF) {
-                        viewData_->currentInstrument_ = *c;
-                    } else {
-                        int nearest = findClosestInstrumentFor(row_);
-                        if (nearest >= 0) {
-                            viewData_->currentInstrument_ = nearest;
-                        } else viewData_->currentInstrument_= lastInstr_;
-                    }
-                    ViewType vt = VT_INSTRUMENT;
-                    ViewEvent ve(VET_SWITCH_VIEW, &vt);
-                    SetChanged();
-                    NotifyObservers(&ve);
-                }
-                if (mask & EPBM_START) {
-                    player->OnStartButton(PM_PHRASE, viewData_->songX_, true,
-                                          viewData_->chainRow_);
-                }
-                if (mask & EPBM_L)
-                    unMuteAll();
+                // RB combos (screens, play the song, unmute) work the same
+                // with a selection
+                processNormalButtonMask(mask);
 
             } else {
                 // L Modifier

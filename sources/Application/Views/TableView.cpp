@@ -686,18 +686,12 @@ void TableView::processNormalButtonMask(unsigned short mask) {
         // A modifier
 
         if (mask & EPBM_A) {
-            if (mask & EPBM_DOWN) {
-                if (isCommandColumn())
-                    enterCommandSelector();
-                else
-                    updateCursorValue(-0x10);
-            }
-            if (mask & EPBM_UP) {
-                if (isCommandColumn())
-                    enterCommandSelector();
-                else
-                    updateCursorValue(0x10);
-            }
+            // Select opens the command picker; A+Up/Down on a command
+            // steps through the commands A to Z
+            if (mask & EPBM_DOWN)
+                updateCursorValue(-0x10);
+            if (mask & EPBM_UP)
+                updateCursorValue(0x10);
             if (mask & EPBM_LEFT)
                 updateCursorValue(-0x01);
             if (mask & EPBM_RIGHT)
@@ -789,18 +783,9 @@ void TableView::processSelectionButtonMask(unsigned short mask) {
             // R Modifier
 
             if (mask & EPBM_R) {
-                if (mask & EPBM_UP) {
-                    ViewType vt = VT_PHRASE;
-                    ViewEvent ve(VET_SWITCH_VIEW, &vt);
-                    SetChanged();
-                    NotifyObservers(&ve);
-                }
-                if (mask & EPBM_START) {
-                    player->OnStartButton(PM_PHRASE, viewData_->songX_, true,
-                                          viewData_->chainRow_);
-                }
-                /*			if (mask&EPBM_L) unMuteAll() ;
-                 */
+                // RB combos (screens, play the song) work the same with a
+                // selection
+                processNormalButtonMask(mask);
             } else {
                 // L Modifier
                 if (mask & EPBM_L) {

@@ -458,6 +458,9 @@ void ChainView::processNormalButtonMask(unsigned short mask) {
     // B Modifier
 
     if (mask & EPBM_B) {
+        // B+A cuts; B+arrows move. Never both from one press.
+        if (mask & EPBM_A)
+            mask &= ~(EPBM_LEFT | EPBM_RIGHT | EPBM_UP | EPBM_DOWN);
         if (mask & EPBM_LEFT)
             warpToNeighbour(-1);
         if (mask & EPBM_RIGHT)
@@ -632,6 +635,10 @@ void ChainView::processSelectionButtonMask(unsigned short mask) {
                 if (mask & EPBM_L)
                     unMuteAll();
 
+            } else if (mask & EPBM_L) {
+                // LB+Start renders, as without a selection
+                if (mask & EPBM_START)
+                    renderToSample(PM_CHAIN);
             } else {
 
                 // No modifier

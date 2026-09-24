@@ -197,7 +197,7 @@ void GuideDialog::DrawView() {
 
     SetColor(CD_MUTE);
     DrawString(0, FOOTER_Y, "Up/Dn scroll  L/R section", props);
-    DrawString(0, FOOTER_Y + 1, "B topics  A page down", props);
+    DrawString(0, FOOTER_Y + 1, "B topics  LB/RB page", props);
     SetColor(CD_NORMAL);
 }
 
@@ -260,7 +260,6 @@ void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
     case EPBM_DOWN:
         scrollTo(top_ + 1);
         break;
-    case EPBM_A:
     case EPBM_R:
         scrollTo(top_ + TEXT_ROWS - 1);
         break;

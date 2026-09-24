@@ -170,15 +170,18 @@ def kit_dusty() -> dict:
 
 def kit_jazz() -> dict:
     s = {}
-    partials = [510, 683, 877, 1145, 1506, 2013, 2680]
-    ride = sum(np.sin(2 * np.pi * f * t(2.5) + RNG.uniform(0, 6.28)) / (1 + k * 0.4)
-               for k, f in enumerate(partials))
-    wash = filt(noise(2.5), "bandpass", [4000, 12000]) * 0.25
-    stick = filt(noise(0.02), "highpass", 5000) * env(0.02, 0.003)
-    body = (ride * 0.5 + wash) * env(2.5, 0.9)
-    body[: len(stick)] += stick * 2
+    # A ride is mostly shimmer: bright noise that washes on, with a faint
+    # high ping from many close inharmonic partials (low pure tones sound
+    # like a cowbell)
+    partials = [3120, 3480, 3910, 4270, 4790, 5230, 5860, 6410, 7020]
+    ping = sum(np.sin(2 * np.pi * f * t(1.8) + RNG.uniform(0, 6.28)) for f in partials) / len(partials)
+    wash = filt(noise(1.8), "bandpass", [3500, 13000])
+    stick = filt(noise(0.02), "highpass", 6000) * env(0.02, 0.003)
+    body = wash * 0.8 * env(1.8, 0.55) + ping * 0.25 * env(1.8, 0.25)
+    body[: len(stick)] += stick * 1.5
     s["ride"] = finish(body, 0.3)
-    bell = sum(np.sin(2 * np.pi * f * 1.5 * t(1.5)) for f in partials[:3]) * env(1.5, 0.5)
+    bell = (sum(np.sin(2 * np.pi * f * 1.2 * t(1.2)) for f in partials[:4]) / 4 * env(1.2, 0.35)
+            + filt(noise(1.2), "bandpass", [4000, 12000]) * 0.4 * env(1.2, 0.3))
     s["ride-bell"] = finish(bell, 0.2)
     swish = filt(noise(0.45), "bandpass", [2500, 9000]) * np.sin(np.pi * np.clip(t(0.45) / 0.45, 0, 1)) ** 1.5
     s["brush-swish"] = finish(swish, 0.05)
@@ -314,7 +317,10 @@ PACKS = {
 
 
 def main() -> int:
+    only = set(sys.argv[1:])  # pack names to rebuild; none = all
     for pack, (make, roots) in PACKS.items():
+        if only and pack not in only:
+            continue
         folder = SAMPLES / pack
         folder.mkdir(parents=True, exist_ok=True)
         sounds = make()

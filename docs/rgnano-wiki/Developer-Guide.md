@@ -79,6 +79,22 @@ Demo songs live in `tools/demos/*.py`.
 | `python tools\audio_report.py file.wav --png out.png` | peak, RMS, crest, clipping, silent seconds, band energy, pitch classes |
 | `python tools\capture_wiki_screens.py` | regenerates every screenshot on this wiki |
 
+## Crashes and logs
+
+On the device the app writes `Applications/lgpt-rgnano.log` (the previous run is kept as `.log.prev`, capped at 1 MB with rotation to `.log.old`). Every 30 s a `[HEARTBEAT]` line records uptime and memory, so slow growth shows up. `[TRAIL]` lines are the recent keys, screens, dialogs and play/stop.
+
+A crash (SIGSEGV, SIGBUS, SIGILL, SIGFPE, SIGABRT) appends a report to `Applications/lgpt-rgnano-crash.txt`: the commit, signal, fault address, `pc`/`lr`, return addresses found on the stack and the last 48 actions. The installer archives each build's ELF as `build/elf/<commit>.elf`, and
+
+```
+python tools/nano_crash_report.py        # card mounted as D:
+```
+
+names the functions and lines and prints the last heartbeats and log lines.
+
+Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 --seed 1` writes a random-play script; run it with `tools/run-rgnano-sim.ps1 -Script projects/resources/RGNANO_SIM/soak.rgsim -Mute -OpenDemo Dusk` and read the `[HEARTBEAT]` lines. The simulator's own crash handler writes `rgnano-sim-crash.txt` with the same action trail.
+
+`DUMPEVENT` in `config.xml` logs every player tick and key: keep it `NO` on the device.
+
 ## Code map
 
 | Area | Where |

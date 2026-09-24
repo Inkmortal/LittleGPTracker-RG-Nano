@@ -91,9 +91,6 @@ void FXView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			SetChanged() ;
 			NotifyObservers(&ve) ;
 		}
-		if (mask&EPBM_START) {
-			Player::GetInstance()->OnStartButton(PM_SONG,viewData_->songX_,true,viewData_->songX_) ;
-		}
 	} else if (mask==EPBM_START) {
 		Player::GetInstance()->OnStartButton(PM_SONG,viewData_->songX_,false,viewData_->songX_) ;
 	}

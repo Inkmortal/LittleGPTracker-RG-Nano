@@ -153,6 +153,11 @@ $suite = @(
     Args = @("-OpenDemo=NeonDrive")
   },
   @{
+    Name = "live-mode"
+    Script = "live-mode.rgsim"
+    Args = @("-OpenDemo=Dusk")
+  },
+  @{
     Name = "fx-screen"
     Script = "fx-screen.rgsim"
     Args = @("-OpenDemo=NeonDrive")

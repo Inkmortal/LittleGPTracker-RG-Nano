@@ -2,7 +2,7 @@
 	<ROOTFOLDER value="/mnt/Applications/Tracks"/>
 	<SAMPLELIB value="/mnt/Applications/Samples"/>
 	<AUDIOBUFFERSIZE value='512'/>
-	<DUMPEVENT value="YES"/>
+	<DUMPEVENT value="NO"/>  <!-- YES logs every player tick: debugging only, fills the card -->
 	<SCREENMULT value='1'/>  <!-- Don't scale, 240x240 native -->
 	<CHANNELMODE value='SPLIT'/>  <!-- SPLIT (default) or PAGED -->
 	<KEY_A value="a" />

@@ -530,6 +530,15 @@
    047B -> 047E (major
    add9) gives dreamier
    chords.
+ - Jam it live: on the Song
+   screen press Select for
+   Live mode. Start on a
+   cell cues it, LB + Start
+   cues a whole row: loop
+   the break, drop back
+   into the drop when it
+   feels right. See
+   Controls -> Live mode.
  - Chop it: on a phrase, LB
    + Start records it into
    a new sample (render to
@@ -559,7 +568,8 @@
 *B
    jump to the neighbouring
    chain / phrase /
-   instrument
+   instrument (on Song: 16
+   rows up/down)
  
  Start plays and stops. RB
  + Select opens the helper
@@ -600,12 +610,14 @@
 *Instrument
    -
    RB + Left: Phrase
-   RB + Up: -
+   RB + Up: list of all
+   sounds
    RB + Down: Instrument
    table
 *Table
    Instrument table
-   RB + Left: -
+   RB + Left: Table (from
+   the instrument table)
    RB + Up: back up
    RB + Down: -
 *Groove
@@ -631,7 +643,10 @@
  
  If a cell is empty, RB +
  Right tells you to press A
- first.
+ first. Holding RB + a
+ direction moves one
+ screen, however long you
+ hold it.
  
 =Everywhere
  
@@ -642,17 +657,30 @@
 *RB + Start
    play / stop the whole
    song from a Chain,
-   Phrase or Instrument
-   screen
+   Phrase, Table, Groove or
+   Instrument screen
 *RB + Select
    helper: Down/Up flips
    map -> commands ->
    how-to, RB + Select
    closes
 *A + RB
-   solo the track
+   solo the track (Song,
+   Chain, Phrase)
 *B + RB
-   mute the track
+   mute the track (Song,
+   Chain, Phrase); on the
+   Mixer it's LB + A / RB +
+   A
+*B + LB
+   start a selection; B
+   copies it, A + LB pastes
+ 
+ Each combo does one thing
+ on a screen: nothing is
+ mapped twice, and a combo
+ never fires two actions at
+ once.
  
  The small label at the top
  right says what is
@@ -679,6 +707,8 @@
 *B + A
    delete the chain from
    this cell
+*B + Up/Down
+   16 rows up / down
 *LB + Up/Down
    jump through song
    sections
@@ -687,9 +717,59 @@
 *Start
    play the song from this
    row
+*B + Start
+   while playing, jump
+   every track to this row
+   right away
+*Select
+   switch to Live mode and
+   back (see below)
+ 
+=Live mode
+ 
+ Jam with your song: loop
+ sections, bring parts in
+ and out, switch sections
+ on the beat. Select on the
+ Song screen switches Song
+ Live; the title says
+ which, and the buttons are
+ listed at the bottom of
+ the screen.
+ 
+*Start on a cell
+   cue that chain on its
+   track: it starts when
+   the track's current
+   chain ends, then loops.
+   Press twice to switch at
+   the next bar instead
 *LB + Start
-   play just this row in
-   live mode
+   cue the whole row: every
+   track switches to this
+   section together
+*RB + Start
+   cue a stop for this
+   track (twice: stop at
+   the next bar)
+*B + Start
+   stop everything now
+*B + RB / A + RB
+   mute / solo a track
+   while it plays
+ 
+ A cued cell blinks in
+ green until it starts. A
+ track keeps looping its
+ chain until you cue
+ something else, so you can
+ leave the drums on the
+ verse while the bass moves
+ to the chorus. LB + Start
+ also switches to Live by
+ itself. The Mixer, and
+ Start on any other screen,
+ work as usual.
  
 =Chain
  
@@ -707,6 +787,10 @@
 *Start
    play this track's chain
    on a loop
+*LB + Start
+   record the chain into a
+   new sample (render to
+   sample)
  
 =Phrase
  
@@ -727,6 +811,12 @@
    pick the instrument
 *Select on a command column
    open the command picker
+*A + Up/Down on a command
+   step through the
+   commands A to Z
+*A + Left/Right on a comman
+   step through the
+   commands in list order
 *B + A
    delete
 *B + D-pad
@@ -734,6 +824,10 @@
    phrase
 *Start
    loop this bar
+*LB + Start
+   record this bar into a
+   new sample (render to
+   sample)
  
 =Instrument
  
@@ -747,7 +841,14 @@
    change the focused knob
 *B + Left/Right
    previous / next
-   instrument
+   instrument (B + Up/Down:
+   16 at a time)
+*B + A
+   on sample: remove the
+   sample; on table: clear
+   it
+*RB + Up
+   the list of all sounds
 *Start
    play / stop the phrase,
    same as the Phrase
@@ -764,6 +865,20 @@
  Sample instruments have
  their own pages and trim
  controls - see Samples.
+ 
+=Mixer and FX
+ 
+*Left/Right
+   pick a strip (Mixer)
+*Up/Down
+   pick a knob (FX)
+*A + Up/Down / A + Left/Rig
+   big / small step
+*LB + A / RB + A
+   mute / solo the track
+   (Mixer)
+*Start
+   play / stop the song
  
 =Naming a new song
  
@@ -986,6 +1101,23 @@
    tracks go dim, and a bar
    gets an amber cap when
    it's close to full.
+ 
+=Live mode
+ 
+ Select turns the Song
+ screen into a clip
+ launcher. Start on a cell
+ cues that chain on its
+ track (it blinks green
+ until it starts, then
+ loops), LB + Start cues
+ the whole row, RB + Start
+ cues a track to stop, B +
+ Start stops everything.
+ The buttons are listed at
+ the bottom of the screen.
+ Full table: Controls ->
+ Live mode.
  
 =Chain
  
@@ -2669,15 +2801,14 @@
    pick the marker
 *LB + A + Left/Right
    nudge it
-*A + Up/Down on the sample 
-   pick the marker
-*A + Left/Right on the samp
-   nudge it (add RB for big
-   steps)
-*Start
-   preview from S to E
+*RB + A + Up
+   hear the sample from S
+   to E (Left/Right: an
+   octave down/up)
 *RB + Start
-   toggle loop preview
+   switch that preview
+   between once and loop
+   (PREV: on screen)
  
 =Root note
  

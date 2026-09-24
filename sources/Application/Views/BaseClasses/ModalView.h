@@ -10,6 +10,7 @@ class ModalView : public View {
     virtual ~ModalView();
 
     bool IsFinished();
+    virtual bool IsModal() { return true; }
     int GetReturnCode();
 
   protected:

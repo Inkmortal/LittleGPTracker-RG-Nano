@@ -197,7 +197,7 @@ void ImportSampleDialog::CustomizeContextOverlay(
 	cmd4="A listen/import/exit";
 	cmd5="Start+Up/Dn preview";
 	cmd6="Start+Right import";
-	cmd7="RB+Select helper";
+	cmd7="B leave  RB+Sel helper";
 }
 
 void ImportSampleDialog::preview(Path &element) {
@@ -245,11 +245,12 @@ void ImportSampleDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (mask&EPBM_B) {  
 		if (mask&EPBM_UP) warpToNextSample(-LIST_SIZE) ;
 		if (mask&EPBM_DOWN) warpToNextSample(LIST_SIZE) ;
-	} else if (mask&EPBM_A) {
-		// Allow browse preview
-		if (mask&EPBM_UP) warpToNextSample(-1) ;
-		if (mask&EPBM_DOWN) warpToNextSample(1) ;
-
+		if (mask==EPBM_B) { // leave, like every other dialog
+			endPreview() ;
+			EndModal(0) ;
+		}
+	} else if (mask==EPBM_A) {
+		// (Browsing while listening is Start+Up/Down)
 		Path *element = getImportElement();
 		if (!element) {
 			Trace::Error("ImportSampleDialog no element for A mask %u",mask);
