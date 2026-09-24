@@ -5,6 +5,7 @@
 #include "Application/Views/ModalDialogs/MessageBox.h"
 #include "Application/Model/Project.h"
 #include "GuideDialog.h"
+#include "Application/Utils/RecentSongs.h"
 
 #include <algorithm>
 
@@ -108,7 +109,10 @@ void SelectProjectDialog::DrawView() {
     View::EnableNotification();
 
 	SetColor(CD_HILITE1) ;
-	DrawString((LIST_WIDTH-10)/2,0,"YOUR SONGS",props) ;
+	DrawString(0,0,"YOUR SONGS",props) ;
+	SetColor(CD_MUTE) ;
+	const char *order=RecentSongs::SortByRecent()?"recent first":"A to Z";
+	DrawString(LIST_WIDTH-(int)strlen(order),0,order,props) ;
 
     if (currentProject_ < topIndex_) {
         topIndex_ = currentProject_;
@@ -162,7 +166,7 @@ void SelectProjectDialog::DrawView() {
 	SetColor(CD_MUTE) ;
 	DrawString(0,BUTTON_Y+2,"                          ",props) ;
 	DrawString(0,BUTTON_Y+2,buttonHint[selected_],props) ;
-	DrawString(0,BUTTON_Y+3,"L/R pick  RB+SEL helper",props) ;
+	DrawString(0,BUTTON_Y+3,"L/R pick  SEL change order",props) ;
 
 	// Version string below the border
 	char buildString[80];
@@ -269,6 +273,25 @@ void SelectProjectDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
     }
     if (mask == EPBM_A) {
         runAction();
+        return;
+    }
+    if (mask == EPBM_SELECT) {
+        // Switch the order, staying on the same song
+        std::string current = GetCurrentProjectPath().GetName();
+        RecentSongs::SetSortByRecent(!RecentSongs::SortByRecent());
+        int button = selected_;
+        // A copy: setCurrentFolder assigns its argument to currentPath_
+        Path folder(currentPath_);
+        setCurrentFolder(folder);
+        selected_ = button;
+        int index = 0;
+        IteratorPtr<Path> it(content_.GetIterator());
+        for (it->Begin(); !it->IsDone(); it->Next(), index++) {
+            if (it->CurrentItem().GetName() == current) {
+                warpToNextProject(index);
+                break;
+            }
+        }
         return;
     }
     if (mask == EPBM_UP) warpToNextProject(-1);
@@ -392,7 +415,8 @@ void SelectProjectDialog::setCurrentFolder(Path &path) {
 
 		dir->GetContent("*");
     dir->Sort();
-      
+
+		std::vector<Path *> folders;
 		IteratorPtr<Path> it(dir->GetIterator()) ;
 		for(it->Begin();!it->IsDone();it->Next())
     {
@@ -405,12 +429,38 @@ void SelectProjectDialog::setCurrentFolder(Path &path) {
 				bool parent = name == "..";
 				if ((name[0] != '.' && !parent) || (parent && !atRoot))
         {
-					Path *p=new Path(path) ;
-					content_.Insert(p) ;
+					folders.push_back(new Path(path)) ;
 				}
       }
 		}
 		delete (dir) ;
+
+		// Most recently opened first, then the rest A-Z (the list is
+		// already A-Z, and the sort keeps that order for ties)
+		if (RecentSongs::SortByRecent()) {
+			std::vector<std::string> recent=RecentSongs::List();
+			std::vector<int> rank(folders.size());
+			for (size_t i=0;i<folders.size();i++) {
+				std::string name=folders[i]->GetName() ;
+				rank[i]=(name=="..")?-1:1000000 ;
+				for (size_t r=0;r<recent.size() && name!="..";r++) {
+					if (recent[r]==name) { rank[i]=(int)r; break; }
+				}
+			}
+			std::vector<size_t> order(folders.size());
+			for (size_t i=0;i<order.size();i++) order[i]=i;
+			for (size_t i=1;i<order.size();i++) {
+				size_t v=order[i]; size_t j=i;
+				while (j>0 && rank[order[j-1]]>rank[v]) { order[j]=order[j-1]; j--; }
+				order[j]=v;
+			}
+			std::vector<Path *> sorted;
+			for (size_t i=0;i<order.size();i++) sorted.push_back(folders[order[i]]);
+			folders=sorted;
+		}
+		for (size_t i=0;i<folders.size();i++) {
+			content_.Insert(folders[i]) ;
+		}
   }
 
 	//reset & redraw screen

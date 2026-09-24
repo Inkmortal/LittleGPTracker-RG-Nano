@@ -1,4 +1,5 @@
 #include "AppWindow.h"
+#include "Application/Utils/RecentSongs.h"
 #include "Views/BaseClasses/FieldView.h"
 #include "Views/BaseClasses/UIIntVarField.h"
 #include "Application/Commands/ApplicationCommandDispatcher.h"
@@ -538,6 +539,8 @@ void AppWindow::Flush() {
 
 void AppWindow::LoadProject(const Path &p) {
     Trace::Log("LoadProject", "%s\n", p.GetPath().c_str());
+    // The song list can show recently opened songs first
+    RecentSongs::Touch(Path(p).GetName());
     _root = p;
 
     _closeProject = false;

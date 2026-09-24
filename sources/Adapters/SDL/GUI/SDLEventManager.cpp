@@ -968,9 +968,10 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="sim_make_project") {
 		// Test fixture: an empty song folder in the project list
 		Path dir=Path("root:").Descend(command.arg);
-		FileSystem::GetInstance()->MakeDir(dir.GetPath().c_str());
-		FileSystem::GetInstance()->MakeDir(dir.Descend("samples").GetPath().c_str());
-		bool made=dir.Exists();
+		// Results must be checked, or the debug build asserts
+		Result folder=FileSystem::GetInstance()->MakeDir(dir.GetPath().c_str());
+		Result samples=FileSystem::GetInstance()->MakeDir(dir.Descend("samples").GetPath().c_str());
+		bool made=folder.Succeeded() && samples.Succeeded() && dir.Exists();
 		Trace::Log("RGNANO_SIM","sim_make_project %s => %s",dir.GetPath().c_str(),made?"ok":"failed");
 		if (!made) {
 			FailSimScript("could not make project folder");

@@ -1,0 +1,40 @@
+# Song list order: Select switches between most-recent-first and A to Z.
+# A song you just opened comes back at the top of the recent order.
+wait 800
+sim_remove_project lgpt_ZzRecentTest
+sim_make_project lgpt_ZzRecentTest
+# A to Z: the new song is last, Up from the top wraps to it
+press k 80
+wait 150
+expect_screen_text A to Z
+press u 80
+wait 100
+expect_selected_text ZzRecentTest
+press a 80
+wait 1500
+expect_view song
+# Back to the song list through the power menu
+press p 80
+wait 150
+press d 80
+press d 80
+press d 80
+expect_selected_text powerMenu=Song List
+press a 80
+wait 200
+press a 80
+wait 1500
+expect_screen_text YOUR SONGS
+expect_screen_text A to Z
+# Recent first: the song we just had open is the top row
+press k 80
+wait 150
+expect_screen_text recent first
+expect_selected_text ZzRecentTest
+expect_selected_text r6c2="ZzRecentTest"
+press d 80
+press u 80
+expect_selected_text ZzRecentTest
+sim_remove_project lgpt_ZzRecentTest
+expect_no_error
+quit

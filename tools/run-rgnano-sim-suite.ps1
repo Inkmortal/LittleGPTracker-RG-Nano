@@ -143,6 +143,11 @@ $suite = @(
     Args = @("-OpenDemo=JadeSword")
   },
   @{
+    Name = "song-list-order"
+    Script = "song-list-order.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "mod-slots"
     Script = "mod-slots.rgsim"
     Args = @("-ResetLastProject")

@@ -211,6 +211,13 @@ if ($ResetLastProject) {
   if (Test-Path -LiteralPath $lastProjectFile) {
     Remove-Item -LiteralPath $lastProjectFile -Force
   }
+  # Song list order and recent list start fresh too
+  foreach ($state in ".lgpt-sort", ".lgpt-recent") {
+    $stateFile = Join-Path $dataDir "tracks\$state"
+    if (Test-Path -LiteralPath $stateFile) {
+      Remove-Item -LiteralPath $stateFile -Force
+    }
+  }
 }
 
 if ($OpenDemo) {

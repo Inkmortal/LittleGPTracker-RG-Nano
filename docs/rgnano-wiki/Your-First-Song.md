@@ -4,7 +4,7 @@ Ten minutes, device in hand. You'll start from the very first screen, make a bea
 
 ## 1. The start screen
 
-Launching the app shows **Your Songs**. **Up/Down** picks a song, **Left/Right** picks a button along the bottom, **A** runs it. The line under the buttons says what **A** will do.
+Launching the app shows **Your Songs**. **Up/Down** picks a song, **Left/Right** picks a button along the bottom, **A** runs it. The line under the buttons says what **A** will do. Songs you opened most recently are at the top; **Select** switches the list to A to Z and back (the top right corner says which).
 
 <img src="images/boot.png" width="300" alt="Your Songs list">
 

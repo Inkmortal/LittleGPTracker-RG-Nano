@@ -19,7 +19,12 @@
  button along the bottom, A
  runs it. The line under
  the buttons says what A
- will do.
+ will do. Songs you opened
+ most recently are at the
+ top; Select switches the
+ list to A to Z and back
+ (the top right corner says
+ which).
  
  Not sure what anything
  means? Pick Help: this

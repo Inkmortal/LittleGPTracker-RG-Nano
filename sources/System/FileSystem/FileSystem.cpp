@@ -30,6 +30,8 @@ Path::Path(const Path &other) {
 } ;
 
 Path &Path::operator=(const Path &other) {
+	// Self-assignment would free the string before copying it
+	if (this==&other) return *this ;
 	SAFE_FREE(path_) ;
 	path_=(char *)SYS_MALLOC((int)strlen(other.path_)+1) ;
 	strcpy(path_,other.path_) ;
