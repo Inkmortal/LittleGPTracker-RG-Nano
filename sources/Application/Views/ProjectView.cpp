@@ -83,7 +83,7 @@ static void SaveAsProjectCallback(View &v,ModalView &dialog) {
     }
 }
 
-// "Save first?" Yes saves then leaves, No leaves, Cancel stays
+// "Save your work?" Yes saves then leaves, No leaves, B stays
 static bool leaveAfterSavePrompt(ModalView &dialog) {
     MixerService::GetInstance()->SetRenderMode(0);
     int answer = dialog.GetReturnCode();
@@ -128,40 +128,43 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	position._y -= 2;
 #endif
 	
+	// Grouped under headings (drawn in DrawView), most used first
+	int top=position._y ;
+	headingRow_[0]=top ;         // SONG
+	position._y=top+1 ;
+
+    UIActionField *a1 = new UIActionField("Save Song", ACTION_SAVE, position);
+    a1->AddObserver(*this);
+    T_SimpleList<UIField>::Insert(a1);
+
+    position._y += 1;
+    a1 = new UIActionField("Song List", ACTION_LOAD, position);
+    a1->AddObserver(*this);
+    T_SimpleList<UIField>::Insert(a1);
+
+    position._y += 1;
+    a1 = new UIActionField("Save Song As", ACTION_SAVE_AS, position);
+    a1->AddObserver(*this);
+    T_SimpleList<UIField>::Insert(a1);
+
 	Variable *v=project_->FindVariable(VAR_TEMPO) ;
+    position._y += 1;
     UITempoField *f = new UITempoField(ACTION_TEMPO_CHANGED, position, *v,
                                        "Tempo: %d bpm  ", 60, 400, 1, 10);
     T_SimpleList<UIField>::Insert(f) ;
 	f->AddObserver(*this) ;
 	tempoField_=f ;
 
-    v = project_->FindVariable(VAR_MASTERVOL);
     position._y += 1;
-    UIIntVarField *field =
-        new UIIntVarField(position, *v, "Master: %d", 10, 100, 1, 10);
+    v = project_->FindVariable(VAR_RENDER);
+    NAssert(v);
+    UIIntVarField *field = new UIIntVarField(position, *v, "Render: %s", 0,
+                              project_->MAX_RENDER_MODE - 1, 1, 2);
     T_SimpleList<UIField>::Insert(field);
 
-    v = project_->FindVariable(VAR_PREGAIN);
+    // KEY: note editing helpers
     position._y += 2;
-    field = new UIIntVarField(position, *v, "Drive: %d", 10, 200, 1, 10);
-    T_SimpleList<UIField>::Insert(field);
-
-    position._y += 1;
-    v = project_->FindVariable(VAR_SOFTCLIP);
-    field = new UIIntVarField(position, *v, "Clip: %s", 0, 4, 1, 4);
-    T_SimpleList<UIField>::Insert(field);
-
-    v = project_->FindVariable(VAR_SOFTCLIP_GAIN);
-    position._x += 13;
-    field = new UIIntVarField(position, *v, "%s", 0, 1, 1, 1);
-    T_SimpleList<UIField>::Insert(field);
-    position._x -= 13;
-
-    v = project_->FindVariable(VAR_TRANSPOSE);
-    position._y += 2;
-    UIIntVarField *f2=new UIIntVarField(position,*v,"Transpose: %3.2d",-48,48,0x1,0xC) ;
-	T_SimpleList<UIField>::Insert(f2) ;
-
+    headingRow_[1]=position._y ;
     Variable *noteNames = project_->FindVariable(VAR_NOTE_NAMES);
     v = project_->FindVariable(VAR_SCALE_KEY);
     position._y += 1;
@@ -185,8 +188,36 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
         new UIIntVarField(position, *v, "Notes: %s", 0, 1, 1, 1);
     T_SimpleList<UIField>::Insert(field);
 
-    // Shared send effects: instruments choose how much they send
+    v = project_->FindVariable(VAR_TRANSPOSE);
+    position._y += 1;
+    UIIntVarField *f2=new UIIntVarField(position,*v,"Transpose: %3.2d",-48,48,0x1,0xC) ;
+	T_SimpleList<UIField>::Insert(f2) ;
+
+    // MIX: output level and the shared reverb / echo
     position._y += 2;
+    headingRow_[2]=position._y ;
+    v = project_->FindVariable(VAR_MASTERVOL);
+    position._y += 1;
+    field = new UIIntVarField(position, *v, "Master: %d", 10, 100, 1, 10);
+    T_SimpleList<UIField>::Insert(field);
+
+    v = project_->FindVariable(VAR_PREGAIN);
+    position._y += 1;
+    field = new UIIntVarField(position, *v, "Drive: %d", 10, 200, 1, 10);
+    T_SimpleList<UIField>::Insert(field);
+
+    position._y += 1;
+    v = project_->FindVariable(VAR_SOFTCLIP);
+    field = new UIIntVarField(position, *v, "Clip: %s", 0, 4, 1, 4);
+    T_SimpleList<UIField>::Insert(field);
+
+    v = project_->FindVariable(VAR_SOFTCLIP_GAIN);
+    position._x += 13;
+    field = new UIIntVarField(position, *v, "%s", 0, 1, 1, 1);
+    T_SimpleList<UIField>::Insert(field);
+    position._x -= 13;
+
+    position._y += 1;
     v = project_->FindVariable(VAR_REVERB_SIZE);
     field = new UIIntVarField(position, *v, "Reverb: %2.2X", 0, 0xFF, 1, 0x10);
     T_SimpleList<UIField>::Insert(field);
@@ -205,9 +236,11 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
     T_SimpleList<UIField>::Insert(field);
     position._x -= 13;
 
+    // TIDY: housekeeping and leaving
     position._y += 2;
-    UIActionField *a1 =
-        new UIActionField("Remove unused chains", ACTION_PURGE, position);
+    headingRow_[3]=position._y ;
+    position._y += 1;
+    a1 = new UIActionField("Remove unused chains", ACTION_PURGE, position);
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
 
@@ -217,33 +250,11 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
     a1->AddObserver(*this);
     T_SimpleList<UIField>::Insert(a1);
 
-    position._y += 1;
-    a1 = new UIActionField("Song List", ACTION_LOAD, position);
-    a1->AddObserver(*this);
-    T_SimpleList<UIField>::Insert(a1);
-
-    position._y += 1;
-    a1 = new UIActionField("Save Song", ACTION_SAVE, position);
-    a1->AddObserver(*this);
-    T_SimpleList<UIField>::Insert(a1);
-
-    position._y += 1;
-    a1 = new UIActionField("Save Song As", ACTION_SAVE_AS, position);
-    a1->AddObserver(*this);
-    T_SimpleList<UIField>::Insert(a1);
-
     v = project_->FindVariable(VAR_MIDIDEVICE);
     NAssert(v);
     position._y += 1;
     field = new UIIntVarField(position, *v, "MIDI: %s", 0,
                               MidiService::GetInstance()->Size(), 1, 1);
-    T_SimpleList<UIField>::Insert(field);
-
-    position._y += 2;
-    v = project_->FindVariable(VAR_RENDER);
-    NAssert(v);
-    field = new UIIntVarField(position, *v, "Render: %s", 0,
-                              project_->MAX_RENDER_MODE - 1, 1, 2);
     T_SimpleList<UIField>::Insert(field);
 
     position._y += 1;
@@ -303,6 +314,16 @@ void ProjectView::DrawView() {
 
     SetColor(CD_NORMAL);
     DrawString(pos._x,pos._y,projectString,props) ;
+
+    // Group headings
+    static const char *headings[4] = {"SONG", "KEY", "MIX", "TIDY UP"};
+    GUIPoint anchor = GetAnchor();
+    int hx = miniLayout_ ? 0 : anchor._x - 1;
+    SetColor(CD_HILITE1);
+    for (int i = 0; i < 4; i++) {
+        DrawString(hx, headingRow_[i], headings[i], props);
+    }
+    SetColor(CD_NORMAL);
 
     FieldView::Redraw();
     drawMap();
@@ -370,13 +391,15 @@ void ProjectView::Update(Observable &,I_ObservableData *data) {
         }
         case ACTION_LOAD: {
             MessageBox *mb = new MessageBox(
-                *this, "Save song first ?", MBBF_YES | MBBF_NO | MBBF_CANCEL);
+                *this, "Save your work ?", MBBF_YES | MBBF_NO);
+            mb->SelectButton(MBL_YES);
             DoModal(mb, LoadCallback);
             break;
         }
         case ACTION_QUIT: {
-            MessageBox *mb = new MessageBox(*this, "Save song first ?",
-                                            MBBF_YES | MBBF_NO | MBBF_CANCEL);
+            MessageBox *mb = new MessageBox(*this, "Save your work ?",
+                                            MBBF_YES | MBBF_NO);
+            mb->SelectButton(MBL_YES);
             DoModal(mb, QuitCallback);
             break;
         }

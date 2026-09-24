@@ -32,6 +32,8 @@ public:
 	virtual void OnPlayerUpdate(PlayerEventType ,unsigned int currentTick) ;
 	virtual void OnFocus() ;
 	virtual void ProcessButtonMask(unsigned short mask,bool pressed) ;
+	// Start on this button (default: the last one, e.g. No)
+	void SelectButton(int button) ;
 	virtual void CustomizeContextOverlay(const char *&name, const char *&where,
 										 const char *&edit, const char *&field,
 										 const char *&cmd1, const char *&cmd2,

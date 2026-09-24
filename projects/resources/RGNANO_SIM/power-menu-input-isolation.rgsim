@@ -36,7 +36,7 @@ wait 80
 expect_selected_text powerMenu=Colors     < Ink  >
 press d 80
 wait 60
-expect_selected_text powerMenu=Save and quit
+expect_selected_text powerMenu=Song List
 expect_view song
 expect_audio_silence 0
 press p 80

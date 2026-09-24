@@ -1,4 +1,5 @@
 #include "MessageBox.h"
+#include <string.h>
 
 static const char *buttonText[MBL_LAST] = {
 	"Ok",
@@ -31,12 +32,15 @@ void MessageBox::DrawView() {
 // message size
 	int size=message_.size() ;
 
-// compute space needed for buttons
-// and set window size
+// buttons are drawn with a 3 space gap between them
 
-	int btnSize=5 ;
-	int width=buttonCount_*(btnSize+1)+1 ;
-	width=(size>width)?size:width ;
+	int buttonsWidth=0 ;
+	for (int i=0;i<buttonCount_;i++) {
+		buttonsWidth+=strlen(buttonText[button_[i]]) ;
+	}
+	buttonsWidth+=3*(buttonCount_-1) ;
+	int width=(size>buttonsWidth)?size:buttonsWidth ;
+	width+=2 ;
 	SetWindow(width,3) ;
 
 // draw text
@@ -48,14 +52,17 @@ void MessageBox::DrawView() {
 	DrawString(x,y,message_.c_str(),props) ;
 	
 	y=2 ;
-	int offset=width/(buttonCount_+1) ;
-
+	x=(width-buttonsWidth)/2 ;
 	for (int i=0;i<buttonCount_;i++) {
 		const char *text=buttonText[button_[i]] ;
-		x=offset*(i+1)-strlen(text)/2 ;
-		props.invert_=(i==selected_)?true:false ;
+		bool on=(i==selected_) ;
+		SetColor(on?CD_CURSOR:CD_NORMAL) ;
+		props.invert_=on ;
 		DrawString(x,y,text,props) ;
-	}	
+		x+=strlen(text)+3 ;
+	}
+	props.invert_=false ;
+	SetColor(CD_NORMAL) ;
 } ;
 
 void MessageBox::OnPlayerUpdate(PlayerEventType ,unsigned int currentTick) {
@@ -73,28 +80,36 @@ void MessageBox::CustomizeContextOverlay(
 	field="Confirm/cancel";
 	cmd1="Left/Right choose";
 	cmd2="A confirm choice";
-	cmd3="No/Cancel backs out";
+	cmd3="B backs out";
 	cmd4="Read message first";
 	cmd5="Use No if unsure";
 	cmd6="Delete is final";
 	cmd7="RB+Select helper";
 }
-void MessageBox::ProcessButtonMask(unsigned short mask,bool pressed) {
-	if (mask&EPBM_A) {
-		EndModal(button_[selected_]) ;
+void MessageBox::SelectButton(int button) {
+	for (int i=0;i<buttonCount_;i++) {
+		if (button_[i]==button) selected_=i ;
 	}
-	if (mask&EPBM_LEFT) {
-		selected_=(selected_+1) ;
-		if (selected_>=buttonCount_) {
-			selected_=0 ;
-		}
-	} 
-	if (mask&EPBM_RIGHT) {
-		selected_=(selected_-1) ;
-		if (selected_<0) {
-			selected_=buttonCount_-1 ;
-		}
-	} 
+}
+
+void MessageBox::ProcessButtonMask(unsigned short mask,bool pressed) {
+	// Act on the press only (the release used to move the selection back)
+	if (!pressed) return ;
+	if (mask==EPBM_A) {
+		EndModal(button_[selected_]) ;
+		return ;
+	}
+	if (mask==EPBM_B) {
+		// B always backs out without doing anything
+		EndModal(MBL_CANCEL) ;
+		return ;
+	}
+	if (mask==EPBM_LEFT) {
+		selected_=(selected_+buttonCount_-1)%buttonCount_ ;
+	}
+	if (mask==EPBM_RIGHT) {
+		selected_=(selected_+1)%buttonCount_ ;
+	}
 	isDirty_=true ;
 } ;
 

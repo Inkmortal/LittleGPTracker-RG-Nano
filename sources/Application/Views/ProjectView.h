@@ -32,5 +32,6 @@ private:
   unsigned long lastTick_;
   unsigned long lastClock_;
   UIField *tempoField_;
+  int headingRow_[4]; // screen rows of the group headings
 } ;
 #endif

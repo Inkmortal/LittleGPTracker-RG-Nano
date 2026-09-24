@@ -623,6 +623,12 @@ void AppWindow::LoadProject(const Path &p) {
     Redraw();
 }
 
+void AppWindow::ReturnToSongList() {
+    CloseProject();
+    SetDirty();
+    RepaintNow(true);
+}
+
 void AppWindow::CloseProject() {
 
     _closeProject = false;

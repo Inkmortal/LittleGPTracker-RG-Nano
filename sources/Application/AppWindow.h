@@ -56,6 +56,8 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     void LoadProject(const Path &path);
     void SaveLastProject(const Path &p);
     void CloseProject();
+    // Close the song and show the song list (Menu/Power > Song List)
+    void ReturnToSongList();
 
     virtual void Clear(bool all = false);
     void InvalidateCharCache();

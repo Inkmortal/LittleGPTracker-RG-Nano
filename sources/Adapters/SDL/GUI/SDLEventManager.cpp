@@ -2766,7 +2766,9 @@ int SDLEventManager::GetKeyCode(const char *key)
 }
 
 // Menu/Power overlay entries. Saving only makes sense with a song open.
-enum PowerItem { PI_VOLUME = 0, PI_BRIGHTNESS, PI_THEME, PI_SAVE_QUIT, PI_QUIT_NO_SAVE, PI_QUIT, PI_DEBUG };
+enum PowerItem { PI_VOLUME = 0, PI_BRIGHTNESS, PI_THEME, PI_SONG_LIST, PI_QUIT, PI_DEBUG };
+// What "Save your work?" leads to once answered
+static int powerConfirmAction_=PI_QUIT;
 #define POWER_MENU_MAX_ITEMS 7
 
 // System volume / brightness, same as the RG Nano's own menu: FunKey OS
@@ -2845,8 +2847,8 @@ static int powerMenuItems(int *items) {
 	items[count++]=PI_BRIGHTNESS;
 	items[count++]=PI_THEME;
 	if (powerMenuHasSong()) {
-		items[count++]=PI_SAVE_QUIT;
-		items[count++]=PI_QUIT_NO_SAVE;
+		items[count++]=PI_SONG_LIST;
+		items[count++]=PI_QUIT;
 	} else {
 		items[count++]=PI_QUIT;
 	}
@@ -2869,8 +2871,7 @@ static const char *powerItemLabel(int item) {
 			snprintf(theme,sizeof(theme),"Colors     < %-5s>",AppWindow::ThemeName(AppWindow::CurrentTheme()));
 			return theme;
 		}
-		case PI_SAVE_QUIT: return "Save and quit";
-		case PI_QUIT_NO_SAVE: return "Quit, don't save";
+		case PI_SONG_LIST: return "Song List";
 		case PI_QUIT: return "Quit";
 		default: return "Debug tools";
 	}
@@ -2907,9 +2908,9 @@ void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *wind
 	int count;
 	int selected;
 	if (showExitConfirm_) {
-		heading = "Lose unsaved changes?";
-		labels[0] = "Yes, quit";
-		labels[1] = "No, go back";
+		heading = "Save your work?";
+		labels[0] = "Yes";
+		labels[1] = "No";
 		count = 2;
 		selected = exitConfirmSelection_;
 	} else {
@@ -2938,9 +2939,9 @@ void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *wind
 		DrawSimOverlayText(screen, labels[i], item.x + 8, item.y + 7, on ? bg : text, scale);
 	}
 	RenderMenuHelp(screen,window,showExitConfirm_ ? "EXIT?" : "POWER",
-		showExitConfirm_ ? "Quit without saving" : "Sound, light, quit",
+		showExitConfirm_ ? "Save before leaving" : "Sound, light, quit",
 		showExitConfirm_ ? "Up/Down choose" : "Up/Down  L/R adjust",
-		showExitConfirm_ ? "A confirm" : "A open choice",
+		showExitConfirm_ ? "A answer" : "A open choice",
 		showExitConfirm_ ? "B back to menu" : "B or Power close",
 		"R+Select helper");
 }
@@ -3061,18 +3062,22 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 
 			case SDLK_a:  // A button - confirm
 			case SDLK_RETURN:
+			{
 				if (exitConfirmSelection_ == 0) {
-					// Yes - quit without saving
-					showPowerMenu_ = false;
-					showExitConfirm_ = false;
-					menuHelpOverlay_ = false;
-					PostQuitMessage();
+					PersistencyService::GetInstance()->Save();
+					Trace::Log("EVENT","Power menu: saved song");
+				}
+				showPowerMenu_ = false;
+				showExitConfirm_ = false;
+				menuHelpOverlay_ = false;
+				if (powerConfirmAction_ == PI_SONG_LIST) {
+					AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+					if (appWindow) appWindow->ReturnToSongList();
 				} else {
-					// No - back to main menu
-					showExitConfirm_ = false;
-					exitConfirmSelection_ = 0;
+					PostQuitMessage();
 				}
 				break;
+			}
 
 			case SDLK_b:  // B button - cancel
 			case SDLK_ESCAPE:
@@ -3120,19 +3125,15 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 				if (item == PI_VOLUME || item == PI_BRIGHTNESS || item == PI_THEME) {
 					// A steps up, Left/Right go either way
 					adjustSystemLevel(item, 10);
-				} else if (item == PI_SAVE_QUIT) {
-					PersistencyService::GetInstance()->Save();
-					Trace::Log("EVENT","Power menu: saved song before quitting");
-					showPowerMenu_ = false;
-					menuHelpOverlay_ = false;
-					PostQuitMessage();
+				} else if ((item == PI_QUIT || item == PI_SONG_LIST) && powerMenuHasSong()) {
+					// Ask first; Yes (save) is the default answer
+					powerConfirmAction_ = item;
+					showExitConfirm_ = true;
+					exitConfirmSelection_ = 0;
 				} else if (item == PI_QUIT) {
 					showPowerMenu_ = false;
 					menuHelpOverlay_ = false;
 					PostQuitMessage();
-				} else if (item == PI_QUIT_NO_SAVE) {
-					showExitConfirm_ = true;
-					exitConfirmSelection_ = 1;  // Default to "No, go back"
 				} else {
 					// Debug screen - open it
 					showPowerMenu_ = false;
