@@ -70,7 +70,7 @@ Timing: 1 step = 6 ticks at the default groove. Ramp speeds (`aa`) count in grou
 
 <img src="images/table.png" width="300" align="right" alt="Table">
 
-A table is a little 16-row loop of commands that advances one row per tick. Point an instrument at it (Instrument → MOD page → `table`, `auto`) or start it from a phrase with `TABL`.
+A table is a little 16-row loop of commands that advances one row per tick. Point an instrument at it (Instrument → synth LFO page or sample Motion page → `table`, `auto`) or start it from a phrase with `TABL`.
 
 Example — a trance gate on a pad:
 

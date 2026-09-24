@@ -136,6 +136,8 @@ SampleInstrument::SampleInstrument() {
      delay_ = new Variable("delay", SIP_DELAY, 0);
      Insert(delay_);
 
+     mods_.Create(*this);
+
      // Initalize instrument's voices update list
 
      for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
@@ -150,6 +152,9 @@ SampleInstrument::SampleInstrument() {
          rp->updaters_.push_back(&rp->speedRamp_);
          rp->updaters_.push_back(&rp->legato_);
          rp->updaters_.push_back(&rp->pfin_);
+         for (int m = 0; m < MOD_SLOT_COUNT; m++) {
+             rp->updaters_.push_back(&rp->mods_[m]);
+         }
 	} ;
 
  // Reset table state
@@ -174,6 +179,18 @@ bool SampleInstrument::Init() {
 void SampleInstrument::OnStart() {
 	tableState_.Reset() ;
 } ;
+
+// Mod slots can push values past their range; commands never did. Keep
+// volume positive, pan inside the pan law table and the filter in 0..1.
+static void clampModulated(renderParams *rp) {
+	if (rp->volume_<0) rp->volume_=0 ;
+	if (rp->pan_<0) rp->pan_=0 ;
+	if (rp->pan_>i2fp(254)) rp->pan_=i2fp(254) ;
+	if (rp->cutoff_<0) rp->cutoff_=0 ;
+	if (rp->cutoff_>i2fp(1)) rp->cutoff_=i2fp(1) ;
+	if (rp->reso_<0) rp->reso_=0 ;
+	if (rp->reso_>i2fp(1)) rp->reso_=i2fp(1) ;
+}
 
 bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 {
@@ -382,6 +399,10 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 		}
 
 		rp->activeUpdaters_.clear() ;
+
+		// Envelopes and LFOs from the MOD page restart with every note
+		float krateHz=Audio::GetInstance()->GetSampleRate()/(float)KRATE_SAMPLE_COUNT ;
+		mods_.StartVoice(rp->mods_,rp->activeUpdaters_,krateHz,channel*131+midinote) ;
 	}	
 	return true ;
 }
@@ -524,6 +545,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 				rp->volume_=rp->baseVolume_+rup.volumeOffset_ ;
 				rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
 				rp->pan_=rp->basePan_+rup.panOffset_ ;
+				clampModulated(rp) ;
 			}
 
 		// Process retrig
@@ -794,6 +816,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 						rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
 						rp->cutoff_=rp->baseFCut_+rup.cutOffset_ ;
 						rp->reso_=rp->baseFRes_+rup.resOffset_ ;
+						clampModulated(rp) ;
 						rp->fbMix_=rp->baseFbMix_+rup.fbMixOffset_ ;
 						rp->fbTun_=rp->baseFbTun_+rup.fbTunOffset_ ;
 

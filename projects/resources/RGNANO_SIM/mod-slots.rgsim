@@ -1,0 +1,71 @@
+# The MOD page: two envelope/LFO slots on both synth and sample
+# instruments. Set a slot, check the value in real units, hear it.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+goto instrument
+expect_screen_text Instrument 00 SYNTH
+
+# Synth: slot 1 = decay envelope sweeping the filter, slot 2 = vibrato
+set preset pad
+page MOD
+expect_screen_text 5/6 MOD
+set mod1 decay
+set dest1 cutoff
+set amt1 80
+set rate1 0x60
+expect_instrument_param 0 mod1_type decay
+expect_instrument_param 0 mod1_dest cutoff
+expect_instrument_param 0 mod1_amount 80
+focus rate1
+expect_screen_text 312 ms
+set mod2 sine
+set amt2 6
+focus rate2
+expect_screen_text 1.60 Hz
+screenshot_app mod-synth.bmp
+# RB+A+Up previews it
+down n
+down a
+press u 80
+up a
+up n
+wait 400
+expect_play_mode audition
+expect_audio_activity 64
+down n
+down a
+press d 80
+up a
+up n
+wait 300
+
+# A preset starts clean: picking one switches both slots off
+page SOUND
+set preset keys
+expect_instrument_param 0 mod1_type off
+expect_instrument_param 0 mod2_type off
+
+# Sample instrument: same page, sixth page is still MOTION
+instrument 01
+page SOUND
+set type sample
+expect_instrument_type 1 Sample
+page MOD
+expect_screen_text 5/6 MOD
+set mod1 square
+set dest1 volume
+set amt1 -60
+expect_instrument_param 1 mod1_type square
+expect_instrument_param 1 mod1_amount -60
+page MOTION
+expect_screen_text 6/6 MOTION
+screenshot_app mod-sample.bmp
+
+goto song
+expect_no_error
+quit

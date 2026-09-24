@@ -1,4 +1,4 @@
-// Synth pages of the Instrument screen: SOUND, ENV, FILTER, MOD, MIX.
+// Synth pages of the Instrument screen: SOUND, ENV, FILTER, LFO, MOD, MIX.
 // Each page draws a live picture of what its knobs do, plus a plain-English
 // explanation of the focused knob with real units (ms, Hz, semitones).
 
@@ -43,7 +43,8 @@ const char *InstrumentView::getSynthPageName() {
 		case 0: return "SOUND";
 		case 1: return "ENV";
 		case 2: return "FILTER";
-		case 3: return "MOD";
+		case 3: return "LFO";
+		case INSTRUMENT_MOD_PAGE: return "MOD";
 		default: return "MIX";
 	}
 }
@@ -144,6 +145,9 @@ void InstrumentView::fillSynthParameters() {
 			f=new UIIntVarOffField(position,*v,"table  %2.2X",0x00,0x7F,1,0x10);
 			T_SimpleList<UIField>::Insert(f);
 			position._y+=1;
+			break;
+		case INSTRUMENT_MOD_PAGE:
+			fillModPage(s,position);
 			break;
 		default:
 			SYNTH_FIELD(SYP_VOLUME,"volume %2.2X",0,0xFF,1,0x10);
@@ -324,6 +328,7 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 			strcpy(line2,"echo time: Project screen");
 			break;
 		default:
+			getModFieldHelp(id,s,line1,line2,value);
 			break;
 	}
 }
@@ -373,7 +378,7 @@ void InstrumentView::drawSynthVisuals() {
 	char line[40];
 
 	SetColor(CD_HILITE2);
-	sprintf(line,"<LB %d/5 %s LB>",labPage_+1,getSynthPageName());
+	sprintf(line,"<LB %d/%d %s LB>",labPage_+1,INSTRUMENT_PAGE_COUNT,getSynthPageName());
 	DrawString((30-(int)strlen(line))/2,2,line,props);
 	SetColor(CD_NORMAL);
 
@@ -472,6 +477,8 @@ void InstrumentView::drawSynthVisuals() {
 			ys[x]=mid-(int)(v*(bottom-top)/2);
 		}
 		synthPlot(imp,ys,plotW,bx+2,top,bottom,false);
+	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
+		drawModPlot(s,bx,by,bw,bh);
 	} else {
 		// Mix: level meters for the four knobs
 		const char *names[4]={"VOL","PAN","REV","DLY"};
@@ -559,9 +566,14 @@ void InstrumentView::customizeSynthOverlay(const char *&name, const char *&where
 			cmd1="cutoff = brightness";
 			break;
 		case 3:
-			name="SYNTH MOD";
+			name="SYNTH LFO";
 			field="LFO wobble + table";
 			cmd1="lfo target, rate, depth";
+			break;
+		case INSTRUMENT_MOD_PAGE:
+			name="SYNTH MOD";
+			field="2 envelopes/LFOs";
+			cmd1="type: decay/swell or LFO";
 			break;
 		default:
 			name="SYNTH MIX";

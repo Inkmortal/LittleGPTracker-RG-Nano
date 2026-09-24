@@ -95,7 +95,7 @@ flowchart TD
 | Chain View | Manual "Chain View", page 12 | Chain phrases into sections | Present; keep play-position and phrase list readable. |
 | Phrase View | Manual "Phrase View", page 14 | Write notes, instruments, commands | Present; now has full-width mini waveform. Needs command help audit. |
 | Instrument View | Manual "Instrument View", page 16 | Pick engine/sample and shape sound | Present for sample instruments; needs engine expansion. |
-| Instrument Modulation View | Manual "Instrument Modulation View", page 18 | LFO/envelope/tracking modulation | Missing as an M8-style native surface. LGPT tables cover some movement, but not direct modulators. |
+| Instrument Modulation View | Manual "Instrument Modulation View", page 18 | LFO/envelope/tracking modulation | Partial: every sample and synth instrument has a MOD page with two slots (decay/swell envelope or sine/triangle/square/saw/random LFO) aimed at volume, cutoff, reso, pitch or pan. No key/velocity tracking yet; the M8 has four modulators. |
 | Instrument Pool View | Manual "Instrument Pool View", page 22 | Browse/copy/manage instrument slots | Missing as a dedicated pool view. Could be a compact instrument browser. |
 | Table View | Manual "Table View", page 24 | Per-step command automation | Present as LGPT Table and instrument table. Needs discoverability and tests. |
 | Groove View | Manual "Groove View", page 26 | Timing feel and swing | Present. |

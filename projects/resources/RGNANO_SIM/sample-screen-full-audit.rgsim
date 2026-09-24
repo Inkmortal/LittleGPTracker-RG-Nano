@@ -98,6 +98,9 @@ screenshot_app sample-full-12-loop-marker-edit.bmp
 
 route combo.l.right
 wait 120
+expect_screen_text MOD
+route combo.l.right
+wait 120
 expect_screen_text MOTION
 screenshot_app sample-full-13-motion.bmp
 press d 80

@@ -19,7 +19,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SAMPLE_LAB_PAGE_COUNT 5
 
 static char *instrumentTypeNames[2]={(char *)"sample",(char *)"synth"} ;
 
@@ -142,6 +141,9 @@ void InstrumentView::fillSampleParameters() {
 			break;
 		case 3:
 			fillSampleLoopPage(instrument,position);
+			break;
+		case INSTRUMENT_MOD_PAGE:
+			fillModPage(instrument,position);
 			break;
 		default:
 			fillSampleMotionPage(instrument,position);
@@ -325,6 +327,7 @@ const char *InstrumentView::getLabPageName() {
 		case 1: return "SHAPE";
 		case 2: return "FILTER";
 		case 3: return "LOOP";
+		case INSTRUMENT_MOD_PAGE: return "MOD";
 		default: return "MOTION";
 	}
 }
@@ -715,7 +718,7 @@ void InstrumentView::drawSampleLabVisuals() {
 	GUITextProperties props;
 	char line[40];
 	SetColor(CD_HILITE2);
-	sprintf(line,"<LB %d/5 %s LB>",labPage_+1,getLabPageName());
+	sprintf(line,"<LB %d/%d %s LB>",labPage_+1,INSTRUMENT_PAGE_COUNT,getLabPageName());
 	DrawString((40-(int)strlen(line))/2,2,line,props);
 	SetColor(CD_NORMAL);
 
@@ -866,6 +869,19 @@ void InstrumentView::drawSampleLabVisuals() {
 		sprintf(line,"mode %d atten %02X",GetVarInt(instrument,SIP_FILTMODE),GetVarInt(instrument,SIP_ATTENUATE));
 		DrawString(3,12,line,props);
 #endif
+	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
+		drawModPlot(instrument,10,36,220,52);
+		// The focused setting in real units (ms, Hz, semitones)
+		UIIntVarField *field=(UIIntVarField *)GetFocus();
+		if (field) {
+			char l1[40],l2[40],value[40];
+			getModFieldHelp(field->GetVariableID(),instrument,l1,l2,value);
+			if (value[0]) {
+				SetColor(CD_HILITE1);
+				drawLabText((30-(int)strlen(value))/2,13,value,props);
+				SetColor(CD_NORMAL);
+			}
+		}
 	} else {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 		SetColor(CD_NORMAL);
@@ -917,9 +933,9 @@ void InstrumentView::warpToNext(int offset) {
 void InstrumentView::switchLabPage(int offset) {
 	labPage_+=offset;
 	if (labPage_<0) {
-		labPage_=SAMPLE_LAB_PAGE_COUNT-1;
+		labPage_=INSTRUMENT_PAGE_COUNT-1;
 	}
-	if (labPage_>=SAMPLE_LAB_PAGE_COUNT) {
+	if (labPage_>=INSTRUMENT_PAGE_COUNT) {
 		labPage_=0;
 	}
 	lastFocusID_=0;
@@ -1316,6 +1332,8 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		name="INSTR FILTER";
 	} else if (labPage_==3) {
 		name="INSTR LOOP";
+	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
+		name="INSTR MOD";
 	} else {
 		name="INSTR MOTION";
 	}
@@ -1362,6 +1380,24 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd5="Sel root from trim";
 		cmd6="Start preview";
 		cmd7="RB+Start once/loop";
+	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
+		field="2 envelopes/LFOs";
+		edit="A+Dpad edit value";
+		cmd1="type: decay/swell or LFO";
+		cmd2="dest: what it moves";
+		cmd3="amt: how far (+/-)";
+		cmd4="rate: higher = faster";
+		cmd5="LB+Left/Right page";
+		// The focused setting explained
+		UIIntVarField *focused=(UIIntVarField *)GetFocus();
+		if (focused && isModField(focused->GetVariableID())) {
+			static char help1[40],help2[40],value[40];
+			int i=viewData_->currentInstrument_;
+			I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
+			getModFieldHelp(focused->GetVariableID(),instr,help1,help2,value);
+			where=help1;
+			edit=help2;
+		}
 	} else {
 		field="Motion: table/fb";
 		edit="Automation source";

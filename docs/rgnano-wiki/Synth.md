@@ -75,7 +75,7 @@ Times are exponential: `00` = 1 ms, `40` = 10 ms, `80` = 100 ms, `C0` = 1 s, `FF
 
 <br clear="right">
 
-### MOD — movement
+### LFO — wobble
 
 | Knob | Does |
 | --- | --- |
@@ -84,6 +84,21 @@ Times are exponential: `00` = 1 ms, `40` = 10 ms, `80` = 100 ms, `C0` = 1 s, `FF
 | `depth` | how much; `00` = off |
 | `fine` | fine tune in cents |
 | `auto` / `table` | an instrument table that runs on every note |
+
+### MOD — envelopes and LFOs
+
+Two slots, **mod1** and **mod2**, each move one part of the sound on every note. Sample instruments have the same page.
+
+| Knob | Does |
+| --- | --- |
+| `mod1` / `mod2` | `decay` (starts full, falls away) or `swell` (rises, then holds) — envelopes; `sine`, `triangle`, `square`, `saw`, `random` — LFOs |
+| `dest` | what it moves: `volume`, `cutoff`, `reso`, `pitch`, `pan` |
+| `amt` | how far, `-127` … `+127`; minus goes the other way. On pitch, `+127` = 2 octaves |
+| `rate` | higher is always faster: envelopes `00` = 10 s … `FF` = 1 ms, LFOs `00` = 0.05 Hz … `FF` = 50 Hz |
+
+The picture shows both slots over two seconds; the focused knob shows its real value (`312 ms`, `1.60 Hz`, `+3.0 semitones`). Picking a preset switches both slots off.
+
+**Try:** `mod1 decay`, `dest1 cutoff`, `amt1 +80`, `rate1 60` — a pluck that closes its filter on every note. `mod2 sine`, `dest2 pitch`, `amt2 +4` — gentle vibrato.
 
 ### MIX — level and space
 

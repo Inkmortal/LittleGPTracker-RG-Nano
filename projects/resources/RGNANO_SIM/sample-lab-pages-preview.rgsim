@@ -73,6 +73,9 @@ expect_screen_text LOOP
 screenshot_app sample-lab-loop.bmp
 route combo.l.right
 wait 120
+expect_screen_text MOD
+route combo.l.right
+wait 120
 expect_screen_text MOTION
 screenshot_app sample-lab-motion.bmp
 

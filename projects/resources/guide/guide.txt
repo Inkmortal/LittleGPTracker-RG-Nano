@@ -570,8 +570,8 @@
  
 *LB + Left/Right
    change page (SOUND, ENV,
-   FILTER, MOD, MIX for
-   synths)
+   FILTER, LFO, MOD, MIX
+   for synths)
 *A + Left/Right on preset
    browse ready-made sounds
 *A + D-pad
@@ -846,17 +846,20 @@
  
 =Instrument (synth)
  
- Five pages, switched with
- LB + Left/Right. The top
- half draws what the page
- does - waveform, envelope,
- filter curve, LFO, levels
- - and shows the preset
- name and the focused value
- in real units (32 ms, 641
- Hz). The knobs are listed
- below. Full details on the
- Synth page.
+ Six pages (SOUND, ENV,
+ FILTER, LFO, MOD, MIX),
+ switched with LB +
+ Left/Right. The top half
+ draws what the page does -
+ waveform, envelope, filter
+ curve, LFO, modulation,
+ levels - and shows the
+ preset name and the
+ focused value in real
+ units (32 ms, 641 Hz). The
+ knobs are listed below.
+ Full details on the Synth
+ page.
  
  The first row, type,
  switches the slot between
@@ -865,8 +868,8 @@
 =Instrument (sample)
  
  Sample instruments have
- five pages too: Source,
- Shape, Filter, Loop,
+ six pages too: Source,
+ Shape, Filter, Loop, Mod,
  Motion, with a waveform
  and start/loop/end
  markers. See Samples.
@@ -879,12 +882,14 @@
  own once triggered - by
  TABL in a phrase, or
  automatically by an
- instrument (MOD page,
- table). Use them for
- arpeggios, stutters, pitch
- wobbles and filter wiggles
- you don't want to write
- note by note.
+ instrument (table on the
+ synth LFO page or the
+ sample Motion page). Use
+ them for arpeggios,
+ stutters, pitch wobbles
+ and filter wiggles you
+ don't want to write note
+ by note.
  
 =Groove
  
@@ -1158,7 +1163,7 @@
    saturation before the
    filter - warmth, grit
  
-=MOD - movement
+=LFO - wobble
  
 *lfo
    what wobbles: pitch
@@ -1176,6 +1181,50 @@
 *auto / table
    an instrument table that
    runs on every note
+ 
+=MOD - envelopes and LFOs
+ 
+ Two slots, mod1 and mod2,
+ each move one part of the
+ sound on every note.
+ Sample instruments have
+ the same page.
+ 
+*mod1 / mod2
+   decay (starts full,
+   falls away) or swell
+   (rises, then holds) -
+   envelopes; sine,
+   triangle, square, saw,
+   random - LFOs
+*dest
+   what it moves: volume,
+   cutoff, reso, pitch, pan
+*amt
+   how far, -127 ... +127;
+   minus goes the other
+   way. On pitch, +127 = 2
+   octaves
+*rate
+   higher is always faster:
+   envelopes 00 = 10 s ...
+   FF = 1 ms, LFOs 00 =
+   0.05 Hz ... FF = 50 Hz
+ 
+ The picture shows both
+ slots over two seconds;
+ the focused knob shows its
+ real value (312 ms, 1.60
+ Hz, +3.0 semitones).
+ Picking a preset switches
+ both slots off.
+ 
+ Try: mod1 decay, dest1
+ cutoff, amt1 +80, rate1 60
+ - a pluck that closes its
+ filter on every note. mod2
+ sine, dest2 pitch, amt2 +4
+ - gentle vibrato.
  
 =MIX - level and space
  
@@ -1565,9 +1614,11 @@
  loop of commands that
  advances one row per tick.
  Point an instrument at it
- (Instrument -> MOD page ->
- table, auto) or start it
- from a phrase with TABL.
+ (Instrument -> synth LFO
+ page or sample Motion page
+ -> table, auto) or start
+ it from a phrase with
+ TABL.
  
  Example - a trance gate on
  a pad:
@@ -1924,7 +1975,7 @@
    gong, cymbals
 *3
    temple block in the
-   verses, pipa tremolo in
+   verses, pipa plucks in
    the second chorus
 *4
    sub bass on the chord
@@ -1933,8 +1984,7 @@
    soft string pad (synth)
 *6
    guzheng - flowing broken
-   chords, glissandos,
-   tremolo
+   chords and glissandos
 *7
    erhu - the chorus melody
 *8
@@ -1960,13 +2010,15 @@
    (D4 E4 at the start of a
    bar) is how erhu and
    dizi players ornament.
- - Pipa and guzheng tremolo
-   - RTRG 0004 retriggers
-   the note every four
-   ticks. Smaller numbers
-   are faster; 0002 was too
-   fast to hear as separate
-   notes.
+ - Soft second plucks - in
+   the break the guzheng
+   plucks its long notes
+   again with VOLM 50, like
+   a player letting the
+   string ring. (Fast RTRG
+   on a recorded instrument
+   stutters, so it's saved
+   for drums.)
  - Glissando - a fast
    pentatonic run with
    rising VOLM before the
@@ -2090,7 +2142,7 @@
 =Sample pages
  
  LB + Left/Right switches
- between the five sample
+ between the six sample
  pages:
  
 *Source
@@ -2108,6 +2160,11 @@
 *Loop
    loop mode, start, loop
    start, end
+*Mod
+   two envelopes/LFOs on
+   volume, cutoff, reso,
+   pitch or pan - see Synth
+   -> MOD
 *Motion
    instrument table,
    feedback

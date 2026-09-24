@@ -391,6 +391,7 @@ SynthInstrument::SynthInstrument() {
 	Insert(table_) ;
 	tableAuto_=new Variable("table automation",SYP_TABLEAUTO,false) ;
 	Insert(tableAuto_) ;
+	mods_.Create(*this) ;
 
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		SynthVoice &v=voices_[i] ;
@@ -439,6 +440,9 @@ SynthInstrument::SynthInstrument() {
 		v.updaters_.push_back(&v.legato_) ;
 		v.updaters_.push_back(&v.pfin_) ;
 		v.updaters_.push_back(&v.arp_) ;
+		for (int m=0;m<MOD_SLOT_COUNT;m++) {
+			v.updaters_.push_back(&v.mods_[m]) ;
+		}
 		for (unsigned int u=0;u<v.updaters_.size();u++) {
 			v.updaters_[u]->Disable() ;
 		}
@@ -481,6 +485,7 @@ void SynthInstrument::ApplyPreset(int preset) {
 		if (v) v->SetInt(base.values_[i].value_) ;
 	}
 	lfoAmt_->SetInt(0) ;
+	mods_.Reset() ;
 	reverb_->SetInt(0) ;
 	delay_->SetInt(0) ;
 	volume_->SetInt(0x80) ;
@@ -593,6 +598,12 @@ bool SynthInstrument::Start(int channel,unsigned char note,bool cleanStart) {
 		}
 		v.activeUpdaters_.clear() ;
 		v.speed_=FP_ONE ;
+		// Envelopes and LFOs from the MOD page restart with every note
+		float sampleRate=(float)Audio::GetInstance()->GetSampleRate() ;
+		if (sampleRate<8000.0f) sampleRate=44100.0f ;
+		mods_.StartVoice(v.mods_,v.activeUpdaters_,
+		                 sampleRate/(float)((SYNTH_KRATE/SYNTH_BLOCK)*SYNTH_BLOCK),
+		                 channel*131+note) ;
 
 		int chord=chord_->GetInt() ;
 		if (chord<0 || chord>=SYNTH_CHORD_COUNT) chord=0 ;

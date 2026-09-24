@@ -4,6 +4,7 @@
 
 #include "Foundation/Types/Types.h"
 #include "SRPUpdaters.h"
+#include "ModSources.h"
 #include <vector>
 
 enum FeedbackMode {
@@ -74,6 +75,7 @@ struct renderParams {
 	LogSpeedRamp legato_ ;
 	LogSpeedRamp pfin_ ;
 	Arp arp_ ;
+	ModSource mods_[MOD_SLOT_COUNT] ;
 
 	bool couldClick_ ;
 

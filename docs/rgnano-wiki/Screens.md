@@ -48,19 +48,19 @@ Beat rows (`00 04 08 0C`) are highlighted so you can see the grid. The line at t
 <img src="images/synth-5-mix.png" width="190" alt="MIX">
 </p>
 
-Five pages, switched with **LB + Left/Right**. The top half draws what the page does — waveform, envelope, filter curve, LFO, levels — and shows the preset name and the focused value in real units (`32 ms`, `641 Hz`). The knobs are listed below. Full details on the **[Synth](Synth)** page.
+Six pages (SOUND, ENV, FILTER, LFO, MOD, MIX), switched with **LB + Left/Right**. The top half draws what the page does — waveform, envelope, filter curve, LFO, modulation, levels — and shows the preset name and the focused value in real units (`32 ms`, `641 Hz`). The knobs are listed below. Full details on the **[Synth](Synth)** page.
 
 The first row, `type`, switches the slot between **synth** and **sample**.
 
 ## Instrument (sample)
 
-Sample instruments have five pages too: Source, Shape, Filter, Loop, Motion, with a waveform and start/loop/end markers. See **[Samples](Samples)**.
+Sample instruments have six pages too: Source, Shape, Filter, Loop, Mod, Motion, with a waveform and start/loop/end markers. See **[Samples](Samples)**.
 
 ## Table
 
 <img src="images/table.png" width="300" align="right" alt="Table">
 
-Three command columns that step one row per tick and loop. Tables run on their own once triggered — by `TABL` in a phrase, or automatically by an instrument (MOD page, `table`). Use them for arpeggios, stutters, pitch wobbles and filter wiggles you don't want to write note by note.
+Three command columns that step one row per tick and loop. Tables run on their own once triggered — by `TABL` in a phrase, or automatically by an instrument (`table` on the synth LFO page or the sample Motion page). Use them for arpeggios, stutters, pitch wobbles and filter wiggles you don't want to write note by note.
 
 <br clear="right">
 

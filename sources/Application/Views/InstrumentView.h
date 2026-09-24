@@ -8,6 +8,9 @@
 
 // View-owned "type" field (sample/synth) shown first on page 1
 #define INSTRUMENT_TYPE_FIELD MAKE_FOURCC('I','T','Y','P')
+// Pages per instrument (sample and synth both have six, MOD is the 5th)
+#define INSTRUMENT_PAGE_COUNT 6
+#define INSTRUMENT_MOD_PAGE 4
 
 class InstrumentView: public FieldView, public I_Observer {
 public:
@@ -44,6 +47,10 @@ protected:
 	const char *getSynthPageName() ;
 	void getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1, char *line2, char *value) ;
 	void auditionSynth(int offset) ;
+	void fillModPage(I_Instrument *instr, GUIPoint position) ;
+	bool isModField(FourCC id) ;
+	void getModFieldHelp(FourCC id, I_Instrument *instr, char *line1, char *line2, char *value) ;
+	void drawModPlot(I_Instrument *instr, int bx, int by, int bw, int bh) ;
 	void customizeSynthOverlay(const char *&name, const char *&where,
 	                           const char *&edit, const char *&field,
 	                           const char *&cmd1, const char *&cmd2,

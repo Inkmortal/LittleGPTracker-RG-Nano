@@ -52,12 +52,15 @@ set cutoff 0x80
 expect_instrument_param 0 filter lowpass
 expect_instrument_param 0 cutoff 0x80
 screenshot_app synth-page-3-filter.bmp
+page LFO
+screenshot_app synth-page-4-lfo.bmp
 page MOD
-screenshot_app synth-page-4-mod.bmp
+expect_screen_text 5/6 MOD
+screenshot_app synth-page-5-mod.bmp
 page MIX
 set reverb 0x40
 expect_instrument_param 0 reverb 0x40
-screenshot_app synth-page-5-mix.bmp
+screenshot_app synth-page-6-mix.bmp
 
 # Other instrument, then switch its engine to sample and back
 instrument 01

@@ -17,7 +17,7 @@ Imported samples live inside the song folder (`lgpt_<name>/samples/`), so the so
 
 ## Sample pages
 
-**LB + Left/Right** switches between the five sample pages:
+**LB + Left/Right** switches between the six sample pages:
 
 | Page | What it edits |
 | --- | --- |
@@ -25,6 +25,7 @@ Imported samples live inside the song folder (`lgpt_<name>/samples/`), so the so
 | Shape | volume, pan, reverb and delay sends (the shared FX set on the Project screen), crush, drive, downsample |
 | Filter | cutoff, resonance, filter type and mode |
 | Loop | loop mode, start, loop start, end |
+| Mod | two envelopes/LFOs on volume, cutoff, reso, pitch or pan — see [Synth → MOD](Synth#mod--envelopes-and-lfos) |
 | Motion | instrument table, feedback |
 
 ## Trimming

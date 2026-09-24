@@ -86,7 +86,7 @@ The small label at the top right says what is playing: `PLAY:SONG`, `PLAY:CHAIN`
 
 | Input | Does |
 | --- | --- |
-| **LB + Left/Right** | change page (SOUND, ENV, FILTER, MOD, MIX for synths) |
+| **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX for synths) |
 | **A + Left/Right** on `preset` | browse ready-made sounds |
 | **A + D-pad** | change the focused knob |
 | **B + Left/Right** | previous / next instrument |

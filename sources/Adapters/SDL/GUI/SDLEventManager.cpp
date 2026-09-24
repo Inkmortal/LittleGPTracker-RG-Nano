@@ -33,6 +33,7 @@
 #include <stdio.h>
 #endif
 #include <sstream>
+#include <algorithm>
 #include <stdlib.h>
 #include <string.h>
 
@@ -793,10 +794,13 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (!command.arg.empty() && command.arg[0]==' ') command.arg.erase(0,1);
 	} else if (command.op=="set") {
 		iss >> command.arg >> command.arg2;
+		// Parameter names with spaces are written with '_' (mod1_type)
+		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
 	} else if (command.op=="sim_set_synth" || command.op=="expect_instrument_type" || command.op=="expect_instrument_name") {
 		iss >> command.value >> command.arg;
 	} else if (command.op=="sim_set_instrument_param" || command.op=="expect_instrument_param") {
 		iss >> command.value >> command.arg >> command.arg2;
+		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
 	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2 >> command.arg3;
 	}

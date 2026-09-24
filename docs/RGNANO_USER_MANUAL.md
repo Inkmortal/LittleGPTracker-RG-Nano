@@ -183,14 +183,15 @@ Every new project starts with 16 synth instruments, so notes make sound immediat
 
 `00 KICK  01 SNARE  02 HAT  03 OPENHAT  04 CLAP  05 BASS  06 LEAD  07 PAD  08 PLUCK  09 KEYS  0A BELL  0B ACID  0C SUBBASS  0D CHIP  0E TOM  0F PERC`
 
-Open one with `R + Right` from Phrase. The synth screen has five pages (`LB + Left/Right`):
+Open one with `R + Right` from Phrase. The synth screen has six pages (`LB + Left/Right`):
 
 | Page | Knobs |
 | --- | --- |
 | SOUND | `type` (synth/sample), `preset`, `wave` (sine, triangle, saw, pulse, supersaw, noise, metal), `shape`, `sub`, `noise`, `fm`, `ratio`, `chord`, `tune` |
 | ENV | `attack`, `decay`, `sustn`, `releas`, `p.env` (pitch drop), `p.dec`, `glide` |
 | FILTER | `filter` (lowpass/highpass/bandpass/off), `cutoff`, `reso`, `env` (brightness burst), `envdec`, `drive` |
-| MOD | `lfo` target (pitch/cutoff/volume/shape), `rate`, `depth`, `fine`, instrument table `auto`/`table` |
+| LFO | `lfo` target (pitch/cutoff/volume/shape), `rate`, `depth`, `fine`, instrument table `auto`/`table` |
+| MOD | two slots: envelope (`decay`/`swell`) or LFO (`sine`/`triangle`/`square`/`saw`/`random`) aimed at volume, cutoff, reso, pitch or pan, with `amt` and `rate` |
 | MIX | `volume`, `pan`, `reverb` send, `delay` send |
 
 The top of each page draws what the knobs do (waveform, envelope, filter curve, LFO, levels), and the lines under it explain the focused knob with real units. When you open an instrument the cursor lands on `preset`: `A + Left/Right` there auditions every ready-made sound. `Start` plays the sound at C3, `RB + A + Left/Up/Right` plays low/mid/high, `RB + A + Down` stops.
@@ -226,6 +227,7 @@ The Instrument screen now splits sample design into five compact lab pages. Use 
 | Shape | Volume, pan, crush, drive, downsample, interpolation. |
 | Filter | Cutoff, resonance, filter type, mode, attenuation. |
 | Loop | Loop mode, slices, sample start, loop start, loop end. |
+| Mod | Two envelopes/LFOs, same as the synth MOD page. |
 | Motion | Instrument table automation and feedback movement. |
 
 On the Source and Loop pages, the waveform has three editable markers: `START`, `LSTART`, and `END`. The screen now spells out the active edit target as `EDIT START`, `EDIT LSTART`, or `EDIT END`, and shows the three marker positions as `S`, `L`, and `E` values below the waveform. On Source, keep focus on the `sample` row and use `A + Up/Down` to choose the active marker, then `A + Left/Right` to nudge it. Hold `RB` as well for a faster nudge. These shortcuts never change the assigned sample; `Select` is the import action. The original shoulder controls also remain: `LB + Up/Down` chooses the active marker and `LB + A + Left/Right` nudges it. The app keeps the trim order valid, so `START` cannot move past `LSTART`/`END`, and `END` cannot move left of the current loop/start range. The normal field list remains available below the visual panel for exact parameter editing. The waveform itself stays magenta; bright white is reserved for the active marker so the trim selection is easier to read on the tiny screen.

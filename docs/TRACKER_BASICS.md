@@ -175,7 +175,8 @@ On the Instrument screen press **LB + Left/Right** to switch pages. The picture 
 | SOUND | type, preset, wave, shape, sub, noise, fm, ratio, chord, tune | `preset`: **A + Left/Right** to audition every ready sound |
 | ENV | attack, decay, sustain, release, pitch env, glide | sustain `00` = pluck, attack `A0` = slow swell |
 | FILTER | filter type, cutoff, resonance, env, drive | cutoff down = darker, resonance up = squelch |
-| MOD | LFO target, rate, depth, fine tune, table | lfo `pitch`, depth `10` = vibrato |
+| LFO | LFO target, rate, depth, fine tune, table | lfo `pitch`, depth `10` = vibrato |
+| MOD | two envelopes/LFOs aimed at volume, cutoff, reso, pitch or pan | `mod1 decay`, `dest1 cutoff` = filter pluck |
 | MIX | volume, pan, reverb, delay | reverb `60` on snares and pads |
 
 **Start** plays the sound at `C 3`, **RB + A + Left/Up/Right** plays it low/middle/high, **RB + A + Down** stops. Change `type` to `sample` to play a WAV file instead.

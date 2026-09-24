@@ -103,6 +103,9 @@ wait 80
 # Motion helper
 route combo.l.right
 wait 100
+expect_screen_text MOD
+route combo.l.right
+wait 100
 expect_screen_text MOTION
 down n
 press k 80

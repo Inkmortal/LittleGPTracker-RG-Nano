@@ -4,6 +4,7 @@
 #include "I_Instrument.h"
 #include "SampleRenderingParams.h"
 #include "SRPUpdaters.h"
+#include "ModSources.h"
 
 #include "SoundSource.h"
 #include "Application/Model/Song.h" 
@@ -148,6 +149,7 @@ private:
 	   Variable *irWet_;
 	   Variable *reverb_;
 	   Variable *delay_;
+	   InstrumentMods mods_;
 	   int suggestedRootNote_;
 
        static bool useDirtyDownsampling_;

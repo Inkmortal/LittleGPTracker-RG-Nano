@@ -6,6 +6,7 @@
 
 #include "I_Instrument.h"
 #include "SRPUpdaters.h"
+#include "ModSources.h"
 #include "Application/Model/Song.h"
 #include "Foundation/Types/Types.h"
 #include "Foundation/Variables/Variable.h"
@@ -132,6 +133,7 @@ struct SynthVoice {
 	LogSpeedRamp legato_ ;
 	LogSpeedRamp pfin_ ;
 	Arp arp_ ;
+	ModSource mods_[MOD_SLOT_COUNT] ;
 	std::vector<I_SRPUpdater *> updaters_ ;
 	std::vector<I_SRPUpdater *> activeUpdaters_ ;
 } ;
@@ -236,6 +238,7 @@ private:
 	Variable *pan_ ;
 	Variable *table_ ;
 	Variable *tableAuto_ ;
+	InstrumentMods mods_ ;
 } ;
 
 #endif
