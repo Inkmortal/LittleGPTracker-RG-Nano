@@ -42,6 +42,15 @@ if (-not $NoBuild) {
   if ($LASTEXITCODE -ne 0) { throw "RG Nano build failed" }
 }
 
+# Run the device's own code under qemu-arm: the Windows simulator can't catch
+# device-only bugs like the Nano's broken libm exp()
+$wslRoot = Convert-ToWslPath $root
+foreach ($check in @("math_check.cpp", "synth_release_check.cpp")) {
+  Write-Host "ARM check: $check"
+  wsl -e bash -lc "set -o pipefail; cd '$wslRoot' && bash tools/dsp-harness/run.sh tools/dsp-harness/$check 2>&1 | grep -v '^\['"
+  if ($LASTEXITCODE -ne 0) { throw "ARM check failed: $check" }
+}
+
 Write-Host "Packaging OPK..."
 # Built-in guide from the wiki, shipped next to the binary (bin:guide.txt)
 python (Join-Path $PSScriptRoot "build_ingame_guide.py") | Out-Host

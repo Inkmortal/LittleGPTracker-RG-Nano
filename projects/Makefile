@@ -432,6 +432,7 @@ RGNANOFILES := \
 	$(DINGUXFILES) \
 	DummyMidi.o \
 	RGNANOSystem.o \
+	RGNANOLibm.o \
 	SDLAudio.o \
 	ALSAAudioCapture.o
 
