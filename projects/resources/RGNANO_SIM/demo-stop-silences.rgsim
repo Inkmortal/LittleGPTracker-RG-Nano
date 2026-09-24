@@ -1,0 +1,36 @@
+# The real Jade Sword demo (synth bass + pad with KILL/RTRG, sample
+# instruments, reverb/delay sends): Start must leave silence behind.
+# Device report: after stopping, the bass/pad stayed stuck in release and
+# played forever.
+wait 1500
+expect_view song
+
+# 1. Short play
+press s 80
+wait 3000
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+# 2. Long play, past the first KILLs on the bass and pad
+press s 80
+wait 16000
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+# 3. Start again right away: the next run must stop cleanly too
+press s 80
+wait 6000
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+expect_no_error
+quit

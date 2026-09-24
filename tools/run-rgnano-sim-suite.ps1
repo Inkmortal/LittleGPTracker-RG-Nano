@@ -133,6 +133,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "demo-stop-silences"
+    Script = "demo-stop-silences.rgsim"
+    Args = @("-OpenDemo=JadeSword")
+  },
+  @{
     Name = "start-stops-everything"
     Script = "start-stops-everything.rgsim"
     Args = @("-ResetLastProject")
@@ -182,7 +187,13 @@ foreach ($case in $suite) {
   # opens console windows that steal focus.
   $caseParams = @{ Script = $scriptPath; ArtifactsDir = $caseArtifacts }
   foreach ($flag in $case.Args) {
-    $caseParams[$flag.TrimStart("-")] = $true
+    # "-Switch" or "-Name=Value"
+    $parts = $flag.TrimStart("-").Split("=", 2)
+    if ($parts.Count -eq 2) {
+      $caseParams[$parts[0]] = $parts[1]
+    } else {
+      $caseParams[$parts[0]] = $true
+    }
   }
   if (-not $Audible) {
     $caseParams["Mute"] = $true

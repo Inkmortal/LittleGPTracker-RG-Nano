@@ -5,6 +5,8 @@ param(
   [switch]$SeedSampleFixture,
   [switch]$SeedLofiFixture,
   [switch]$ResetLastProject,
+  # Copy a shipped demo song (e.g. JadeSword) into the sim and auto-load it
+  [string]$OpenDemo = "",
   [switch]$Mute,
   [switch]$Visible,
   [string]$ArtifactsDir = ""
@@ -209,6 +211,19 @@ if ($ResetLastProject) {
   if (Test-Path -LiteralPath $lastProjectFile) {
     Remove-Item -LiteralPath $lastProjectFile -Force
   }
+}
+
+if ($OpenDemo) {
+  $demoSource = Join-Path $root "projects\resources\demos\lgpt_$OpenDemo"
+  if (-not (Test-Path -LiteralPath $demoSource)) {
+    throw "Demo song not found: $demoSource"
+  }
+  $demoTarget = Join-Path $dataDir "tracks\lgpt_$OpenDemo"
+  if (Test-Path -LiteralPath $demoTarget) {
+    Remove-Item -LiteralPath $demoTarget -Recurse -Force
+  }
+  Copy-Item -LiteralPath $demoSource -Destination $demoTarget -Recurse
+  Set-Content -LiteralPath (Join-Path $exeDir "last_project") -Value "./rgnano-sim-data/tracks/lgpt_$OpenDemo" -NoNewline -Encoding ascii
 }
 
 $args = @()

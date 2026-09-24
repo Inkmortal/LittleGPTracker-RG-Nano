@@ -9,7 +9,9 @@ DEFINES := \
 TOOLPATH=/mingw32/bin
 PREFIX :=
 
-CFLAGS	:= -mthreads -g -Wall $(INCLUDES) $(DEFINES) -I$(PWD)/../sources -I$(PWD)/../sources/Externals
+# Same optimisation and 32-bit SSE floats as the device (-O3, not x87),
+# so optimiser- and float-dependent bugs show up here too
+CFLAGS	:= -mthreads -g -O3 -msse2 -mfpmath=sse -Wall $(INCLUDES) $(DEFINES) -I$(PWD)/../sources -I$(PWD)/../sources/Externals
 CXXFLAGS:= $(CFLAGS) -std=gnu++03
 # GUI subsystem: never opens a console window (which would steal focus)
 LDFLAGS := -L../../libs/Wsdl-mingw -mwindows

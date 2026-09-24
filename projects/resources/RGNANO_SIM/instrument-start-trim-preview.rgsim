@@ -1,4 +1,4 @@
-# Start on Instrument should preview the current sample instrument trim window.
+# Sample trim markers and the preview on the Instrument screen.
 route boot.new_project_random
 expect_view song
 press a 80
@@ -18,52 +18,49 @@ expect_instrument_sample 0 wuxia-guzheng.wav
 expect_screen_text SOURCE
 expect_screen_text PREV:ONCE
 
-# Source sample row quick-trim aliases must not change the assigned sample.
+# A+arrows on the Source row edit the field like upstream; they must not
+# change the assigned sample into a trim edit
 down a
 press d 80
 up a
 wait 120
-expect_screen_text EDIT LSTART
-expect_instrument_sample 0 wuxia-guzheng.wav
-expect_sample_trim_order 0
-down a
-press r 80
-up a
-wait 120
-expect_screen_text EDIT LSTART
 expect_instrument_sample 0 wuxia-guzheng.wav
 expect_sample_trim_order 0
 
-# RB+A+Left/Right is the fast trim nudge on the Source sample row.
-down a
+# LB+Up/Down picks the trim marker
+down m
 press d 80
-up a
+up m
+wait 80
+expect_screen_text EDIT LSTART
+down m
+press d 80
+up m
 wait 80
 expect_screen_text EDIT END
-# Two fast steps left (8 x 1/128 of the sample each) keep an audible window
-down n
+# LB+A+Left/Right nudges it (1/128 of the sample per step)
+down m
 down a
 press l 80
 press l 80
 up a
-up n
+up m
 wait 120
 expect_sample_trim_order 0
 expect_instrument_sample 0 wuxia-guzheng.wav
-down a
-press u 80
-press u 80
-up a
+down m
+press d 80
+up m
 wait 80
 expect_screen_text EDIT START
-down n
+down m
 down a
 press r 80
 press r 80
 press r 80
 press r 80
 up a
-up n
+up m
 wait 120
 expect_sample_trim_order 0
 expect_instrument_sample 0 wuxia-guzheng.wav
@@ -82,17 +79,25 @@ wait 120
 expect_screen_text PREV:ONCE
 expect_player_running no
 
+# RB+A+Up previews the trimmed sample, RB+A+Down stops it
 reset_audio_stats
 start_audio_capture instrument-start-trim-preview.wav
-press s 80
+down n
+down a
+press u 80
+up a
+up n
 wait 500
 expect_player_running yes
 expect_play_mode audition
-expect_screen_text AUDITION
 expect_sample_trim_order 0
 expect_audio_activity 32
 expect_audio_capture_bytes 80000
-press s 80
+down n
+down a
+press d 80
+up a
+up n
 wait 160
 expect_player_running no
 end_audio_capture
