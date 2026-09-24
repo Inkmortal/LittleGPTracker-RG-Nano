@@ -310,10 +310,24 @@ static void logAudioLoad() {
 		if (inst<0 && tail<0) {
 			snprintf(one,sizeof(one),"%d:- ",i);
 		} else {
-			snprintf(one,sizeof(one),"%d:i%02X/t%02X ",i,inst<0?0xFF:inst,tail<0?0xFF:tail);
+			snprintf(one,sizeof(one),"%d:i%02X/t%02X",i,inst<0?0xFF:inst,tail<0?0xFF:tail);
+			voices+=one;
+			// a synth tail: its envelope stage (3 = release) and level
+			int stage=0;
+			float level=0.0f;
+			if (player->GetChannelTailVoice(i,stage,level)) {
+				char more[40];
+				snprintf(more,sizeof(more),"(s%d %s%.4f)",stage,level!=level?"NaN ":"",level!=level?0.0f:level);
+				voices+=more;
+			}
+			one[0]=' ';
+			one[1]=0;
 		}
 		voices+=one;
 	}
+	char broken[32];
+	snprintf(broken,sizeof(broken)," broken=%d",SynthInstrument::BrokenVoiceCount());
+	voices+=broken;
 	bool fxInput=false;
 	int fxTail=0,fxFade=0;
 	SendFX::GetInstance()->GetDebugState(fxInput,fxTail,fxFade);

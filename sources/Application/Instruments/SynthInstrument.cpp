@@ -554,6 +554,17 @@ void SynthInstrument::SetTableState(TableSaveState &state) {
 	memcpy(tableState_.position_,state.position_,sizeof(int)*3) ;
 }
 
+int SynthInstrument::synthBrokenVoices_=0 ;
+
+int SynthInstrument::BrokenVoiceCount() {
+	return synthBrokenVoices_ ;
+}
+
+void SynthInstrument::GetVoiceDebug(int channel,int &stage,float &level) {
+	stage=voices_[channel].active_?voices_[channel].stage_:-1 ;
+	level=voices_[channel].level_ ;
+}
+
 bool SynthInstrument::IsReleasing(int channel) {
 	SynthVoice &v=voices_[channel] ;
 	return v.active_ && v.stage_==SS_RELEASE ;
@@ -1160,7 +1171,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 				break ;
 			case SS_RELEASE:
 				v.level_*=v.fastRelease_?quickReleaseCoef:releaseCoef ;
-				if (v.level_<SYNTH_SILENCE) {
+				if (!(v.level_>=SYNTH_SILENCE)) {  // also ends a NaN level
 					v.level_=0.0f ;
 					v.stage_=SS_OFF ;
 				}
@@ -1231,6 +1242,16 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			}
 		}
 
+		if (sig!=sig || sig>1e6f || sig<-1e6f || v.level_!=v.level_) {
+			// NaN / runaway state (e.g. the filter): silence this voice
+			// instead of letting it ring on forever
+			synthBrokenVoices_++ ;
+			v.stage_=SS_OFF ;
+			v.active_=false ;
+			v.level_=0.0f ;
+			v.ic1eq_=v.ic2eq_=0.0f ;
+			break ;
+		}
 		sig*=v.level_*ampMod ;
 		if (sig>2.0f) sig=2.0f ;
 		if (sig<-2.0f) sig=-2.0f ;

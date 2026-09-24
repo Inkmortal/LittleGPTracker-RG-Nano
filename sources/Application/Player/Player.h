@@ -93,6 +93,8 @@ public:
 	// the one whose release tail is still rendering
 	int GetChannelInstrumentIndex(int channel) ;
 	int GetChannelTailIndex(int channel) ;
+	// Debug: envelope stage/level of the synth voice rendering as a tail
+	bool GetChannelTailVoice(int channel,int &stage,float &level) ;
 	void SetChannelMute(int channel,bool mute) ;
 	bool IsChannelMuted(int channel) ;
 	

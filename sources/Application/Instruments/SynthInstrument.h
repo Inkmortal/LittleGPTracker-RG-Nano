@@ -173,6 +173,10 @@ public:
 	virtual bool IsReleasing(int channel) ;
 	virtual void StopQuickly(int channel) ;
 	virtual void AllNotesOff() ;
+	// Debug: voices shut off because their state went non-finite
+	static int BrokenVoiceCount() ;
+	void GetVoiceDebug(int channel,int &stage,float &level) ;
+	static int synthBrokenVoices_ ;
 
 	void ApplyPreset(int preset) ;
 	void LoadPreset(const char *name) ;

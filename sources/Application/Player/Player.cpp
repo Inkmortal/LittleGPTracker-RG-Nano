@@ -1,3 +1,4 @@
+#include "Application/Instruments/SynthInstrument.h"
 #include "Application/Mixer/SendFX.h"
 #include "Player.h"
 #include "Application/Views/BaseClasses/ViewEvent.h"
@@ -398,6 +399,13 @@ static int instrumentIndexOf(Project *project,I_Instrument *instr) {
 
 int Player::GetChannelInstrumentIndex(int channel) {
 	return instrumentIndexOf(project_,mixer_->GetInstrument(channel)) ;
+}
+
+bool Player::GetChannelTailVoice(int channel,int &stage,float &level) {
+	SynthInstrument *synth=dynamic_cast<SynthInstrument *>(mixer_->GetTailInstrument(channel)) ;
+	if (!synth) return false ;
+	synth->GetVoiceDebug(channel,stage,level) ;
+	return true ;
 }
 
 int Player::GetChannelTailIndex(int channel) {
