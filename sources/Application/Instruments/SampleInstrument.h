@@ -65,7 +65,7 @@ public:
        virtual bool Start(int channel,unsigned char note,bool trigger=true) ;
        virtual void Stop(int channel) ;
        virtual bool Render(int channel,fixed *buffer,int size,bool updateTick) ;
-       void sendToEffects(fixed *buffer,int size) ;
+       void sendToEffects(int channel,fixed *buffer,int size) ;
        virtual void AllNotesOff() ;
        virtual bool IsInitialized() ;
 	   virtual bool IsEmpty() ;

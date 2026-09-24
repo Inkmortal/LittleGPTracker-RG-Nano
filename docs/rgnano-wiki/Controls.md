@@ -90,7 +90,8 @@ The small label at the top right says what is playing: `PLAY:SONG`, `PLAY:CHAIN`
 | **A + Left/Right** on `preset` | browse ready-made sounds |
 | **A + D-pad** | change the focused knob |
 | **B + Left/Right** | previous / next instrument |
-| **Start** | hear the instrument at C3 (press again to stop) |
+| **Start** | play / stop the phrase, same as the Phrase screen |
+| **RB + A + Up** | hear the instrument at C3 |
 | **RB + A + Left/Up/Right** | hear it low / middle / high |
 | **RB + A + Down** | stop the preview |
 

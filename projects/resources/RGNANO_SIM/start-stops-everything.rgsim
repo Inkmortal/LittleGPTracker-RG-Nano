@@ -50,7 +50,7 @@ reset_audio_stats
 wait 2500
 expect_audio_silence 0
 
-# 4. Instrument screen: Start previews the sound
+# 4. Instrument screen: Start plays the phrase, Start stops it
 goto instrument
 press s 80
 wait 1500
@@ -60,8 +60,13 @@ reset_audio_stats
 wait 2500
 expect_audio_silence 0
 
-# 5. Preview on the instrument screen, then play and stop from the song
-press s 80
+# 5. Preview on the instrument screen (RB+A+Up), then play and stop from
+#    the song: the preview must not survive
+down n
+down a
+press u 80
+up a
+up n
 wait 800
 goto song
 press s 80

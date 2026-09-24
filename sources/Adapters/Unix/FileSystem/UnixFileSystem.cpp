@@ -155,6 +155,9 @@ I_File *UnixFileSystem::Open(const char *path,char *mode) {
         case 'w':
             rmode=(char *)"wb" ;
             break ;
+        case 'a':
+            rmode=(char *)"ab" ;
+            break ;
         default:
             Trace::Error("Invalid mode: %s",mode) ;
             return 0 ;

@@ -37,7 +37,9 @@ public:
 
 	// Called by instruments from their Render: frames of stereo float,
 	// 1.0 == 16 bit full scale.
-	void AddSend(const float *stereo,int frames,float reverb,float delay) ;
+	void AddSend(int channel,const float *stereo,int frames,float reverb,float delay) ;
+	// A muted channel must not be heard through the reverb/echo either
+	void SetChannelMuted(int channel,bool muted) ;
 	bool IsActive() ;
 
 	virtual bool Render(fixed *buffer,int samplecount) ;
@@ -79,6 +81,7 @@ private:
 	float delayFeedback_ ;
 	float delayLevel_ ;
 	float delayLp_[2] ;
+	bool muted_[8] ;
 } ;
 
 #endif

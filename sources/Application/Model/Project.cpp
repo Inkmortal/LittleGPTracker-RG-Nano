@@ -356,6 +356,7 @@ void Project::RestoreContent(TiXmlElement *element) {
 
 	// Now loop on all variables
 
+	bool hasScaleKey=false ;
 	TiXmlElement *current=element->FirstChildElement() ;
 	while (current) {
 		const char *name=current->Attribute("NAME") ;
@@ -363,9 +364,18 @@ void Project::RestoreContent(TiXmlElement *element) {
 		Variable *v=FindVariable(name) ;
 		if (v) {
 			v->SetString(value) ;
+			if (v->GetID()==VAR_SCALE_KEY) hasScaleKey=true ;
 		} ;
 		current=current->NextSiblingElement() ;
 	} ;
+	// Upstream songs have no Key: their scale was always rooted at C
+	if (!hasScaleKey) {
+		Variable *scale=FindVariable(VAR_SCALE) ;
+		Variable *key=FindVariable(VAR_SCALE_KEY) ;
+		if (scale && key && scale->GetInt()>0) {
+			key->SetInt(0) ;
+		}
+	}
 };
 
 

@@ -1006,13 +1006,13 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
     }
 
     if (somethingToMix) {
-      sendToEffects(buffer,size) ;
+      sendToEffects(channel,buffer,size) ;
     }
     return somethingToMix ; 
 } ;
 
 // Copy the rendered voice to the shared reverb / echo (SendFX), like synths
-void SampleInstrument::sendToEffects(fixed *buffer,int size) {
+void SampleInstrument::sendToEffects(int channel,fixed *buffer,int size) {
   float reverb=reverb_->GetInt()/255.0f ;
   float delay=delay_->GetInt()/255.0f ;
   if (reverb<=0.0f && delay<=0.0f) return ;
@@ -1021,7 +1021,7 @@ void SampleInstrument::sendToEffects(fixed *buffer,int size) {
   for (int i=0;i<frames*2;i++) {
     send[i]=fp2fl(buffer[i])/32767.0f ;
   }
-  SendFX::GetInstance()->AddSend(send,frames,reverb,delay) ;
+  SendFX::GetInstance()->AddSend(channel,send,frames,reverb,delay) ;
 }
 
 

@@ -1246,7 +1246,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 		}
 	}
 	if (sending && rendered>0) {
-		SendFX::GetInstance()->AddSend(sendBuffer,rendered,reverbSend,delaySend) ;
+		SendFX::GetInstance()->AddSend(channel,sendBuffer,rendered,reverbSend,delaySend) ;
 	}
 	return true ;
 }

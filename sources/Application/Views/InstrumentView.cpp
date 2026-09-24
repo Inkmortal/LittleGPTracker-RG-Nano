@@ -23,6 +23,12 @@
 
 static char *instrumentTypeNames[2]={(char *)"sample",(char *)"synth"} ;
 
+// Upstream c8b71bb: rebuild the fields after importing, so the sample
+// list includes the new files
+static void ImportSampleDialogCallback(View &v, ModalView &dialog) {
+    ((InstrumentView &)v).OnFocus();
+}
+
 InstrumentView::InstrumentView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 
 	project_=data->project_ ;
@@ -961,17 +967,6 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		}
 	}
 
-	if (getInstrumentType()==IT_SYNTH && mask==EPBM_START) {
-		Player *player=Player::GetInstance();
-		if (player && player->IsRunning() && viewData_->playMode_==PM_AUDITION) {
-			player->Stop();
-		} else {
-			auditionSynth(0);
-		}
-		isDirty_=true;
-		return;
-	}
-
 	if (getInstrumentType()==IT_SAMPLE && (mask&EPBM_L) &&
 	    !(mask&(EPBM_A|EPBM_B|EPBM_R|EPBM_START|EPBM_SELECT))) {
 		if (isWaveMarkerPage() && (mask&EPBM_UP)) {
@@ -989,32 +984,6 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		if (mask&EPBM_RIGHT) {
 			switchLabPage(1);
 			return;
-		}
-	}
-
-	if (getInstrumentType()==IT_SAMPLE && isWaveMarkerPage() && (mask&EPBM_A) &&
-	    !(mask&(EPBM_B|EPBM_L|EPBM_START|EPBM_SELECT))) {
-		UIIntVarField *field=(UIIntVarField *)GetFocus();
-		if (field && field->GetVariableID()==SIP_SAMPLE) {
-			if (mask&EPBM_LEFT) {
-				nudgeWaveMarker(-1,(mask&EPBM_R)?8:1);
-				return;
-			}
-			if (mask&EPBM_RIGHT) {
-				nudgeWaveMarker(1,(mask&EPBM_R)?8:1);
-				return;
-			}
-			if (!(mask&EPBM_R) && (mask&EPBM_UP)) {
-				cycleWaveMarker(-1);
-				return;
-			}
-			if (!(mask&EPBM_R) && (mask&EPBM_DOWN)) {
-				cycleWaveMarker(1);
-				return;
-			}
-			if (mask==EPBM_A) {
-				return;
-			}
 		}
 	}
 
@@ -1056,17 +1025,6 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		return;
 	}
 
-	if (getInstrumentType()==IT_SAMPLE && mask==EPBM_START) {
-		Player *player=Player::GetInstance();
-		if (player && player->IsRunning() && viewData_->playMode_==PM_AUDITION) {
-			player->Stop();
-		} else {
-			auditionSamplePitch(0);
-		}
-		isDirty_=true;
-		return;
-	}
-
 	if (getInstrumentType()==IT_SAMPLE && mask==EPBM_SELECT) {
 		UIIntVarField *field=(UIIntVarField *)GetFocus();
 		if (field && field->GetVariableID()==SIP_SAMPLE) {
@@ -1076,7 +1034,7 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 				DoModal(mb) ;
 			} else { ;
 				ImportSampleDialog *isd=new ImportSampleDialog(*this) ;
-				DoModal(isd) ;
+				DoModal(isd, ImportSampleDialogCallback) ;
 			}
 			isDirty_=true;
 			return;
@@ -1114,7 +1072,7 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 						// Go to import sample
 
 						 ImportSampleDialog *isd=new ImportSampleDialog(*this) ;
-						 DoModal(isd) ;
+						 DoModal(isd, ImportSampleDialogCallback) ;
 					}
 					break ;
 				 }
@@ -1192,8 +1150,10 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
                 }
            }
 
-		   // Check if on table
-		   if (GetFocus()==T_SimpleList<UIField>::GetLast()) {
+		   // Check if on table (fields are paged, so match the variable)
+		   UIIntVarField *focusField=(UIIntVarField *)GetFocus();
+		   if (focusField && (focusField->GetVariableID()==SIP_TABLE ||
+		                      focusField->GetVariableID()==MIP_TABLE)) {
 	            int i=viewData_->currentInstrument_ ;
 	            InstrumentBank *bank=viewData_->project_->GetInstrumentBank() ;
 	            I_Instrument *instr=bank->GetInstrument(i) ;

@@ -510,7 +510,7 @@ void View::getHowToSteps(const char **lines) {
 		case VT_INSTRUMENT:
 			lines[0]="Instrument = the sound.";
 			lines[1]="preset: A+Left/Right tries";
-			lines[2]="ready sounds. Start = hear";
+			lines[2]="sounds. RB+A+Up = hear";
 			lines[3]="LB+Left/Right: more pages";
 			lines[4]="ENV: short or long notes";
 			lines[5]="FILTER: dark or bright";

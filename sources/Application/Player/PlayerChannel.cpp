@@ -1,5 +1,6 @@
 
 #include "PlayerChannel.h"
+#include "Application/Mixer/SendFX.h"
 #include "Application/Player/SyncMaster.h"
 #include "Application/Mixer/MixerService.h"
 #include "Application/Model/Mixer.h"
@@ -97,6 +98,7 @@ I_Instrument *PlayerChannel::GetInstrument() {
 
 void PlayerChannel::SetMute(bool muted) {
      muted_=muted ;
+     SendFX::GetInstance()->SetChannelMuted(index_,muted) ;
 }
 
 bool PlayerChannel::IsMuted() {

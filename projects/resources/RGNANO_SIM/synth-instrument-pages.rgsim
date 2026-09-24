@@ -25,12 +25,21 @@ down n
 press k 80
 up n
 screenshot_app synth-page-1-wave.bmp
-press s 80
+# RB+A+Up previews the sound (Start plays the phrase, as upstream)
+down n
+down a
+press u 80
+up a
+up n
 wait 300
 expect_player_running yes
 expect_play_mode audition
 expect_audio_activity 64
-press s 80
+down n
+down a
+press d 80
+up a
+up n
 
 page ENV
 set decay 0x60

@@ -2,6 +2,7 @@
 #include "SDLEventManager.h"
 #include "Application/Application.h"
 #include "Application/AppWindow.h"
+#include "Application/Mixer/SendFX.h"
 #include "Application/Instruments/InstrumentBank.h"
 #include "Application/Instruments/CommandList.h"
 #include "Application/Instruments/SampleInstrument.h"
@@ -263,7 +264,7 @@ static void logSessionStart() {
 static void logAudioLoad() {
 	static Uint32 last=0;
 	Uint32 now=SDL_GetTicks();
-	if (now-last<10000) return;
+	if (now-last<3000) return;
 	last=now;
 	Player *player=Player::GetInstance();
 	if (!player) return;
@@ -298,8 +299,12 @@ static void logAudioLoad() {
 		channels[i]=player->IsChannelPlaying(i)?'1':'0';
 	}
 	channels[SONG_CHANNEL_COUNT]=0;
-	f->Printf("t=%us %s ch=%s load=%d%% peak=%d%% underruns=%lu cpu=%s(%s) %s\n",
+	// out = what the app is sending to the speaker right now; fx = reverb/
+	// echo still ringing. Sound heard while out=0 comes from below the app.
+	f->Printf("t=%us %s ch=%s out=%d%% fx=%d load=%d%% peak=%d%% underruns=%lu cpu=%s(%s) %s\n",
 		(unsigned)(now/1000),player->IsRunning()?"play":"stop",channels,
+		MixerService::GetInstance()->GetMasterPeakPercent(),
+		SendFX::GetInstance()->IsActive()?1:0,
 		AudioDriver::GetRenderLoadPercent(),
 		AudioDriver::TakeRenderLoadPeak(),AudioDriver::GetUnderrunCount(),
 		khz.empty()?"?":khz.c_str(),governor.empty()?"?":governor.c_str(),

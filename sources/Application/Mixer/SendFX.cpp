@@ -36,6 +36,7 @@ SendFX::SendFX() {
 	delayFeedback_=0.4f ;
 	delayLevel_=1.0f ;
 	delayLp_[0]=delayLp_[1]=0.0f ;
+	memset(muted_,0,sizeof(muted_)) ;
 	memset(reverbIn_,0,sizeof(reverbIn_)) ;
 	memset(delayIn_,0,sizeof(delayIn_)) ;
 	for (int c=0;c<2;c++) {
@@ -141,7 +142,12 @@ void SendFX::FadeOut() {
 	fade_=fadeLength_ ;
 }
 
-void SendFX::AddSend(const float *stereo,int frames,float reverb,float delay) {
+void SendFX::SetChannelMuted(int channel,bool muted) {
+	if (channel>=0 && channel<8) muted_[channel]=muted ;
+}
+
+void SendFX::AddSend(int channel,const float *stereo,int frames,float reverb,float delay) {
+	if (channel>=0 && channel<8 && muted_[channel]) return ;
 	if (frames>SENDFX_MAX_FRAMES) frames=SENDFX_MAX_FRAMES ;
 	if (reverb>0.0f) {
 		float *dst=reverbIn_ ;

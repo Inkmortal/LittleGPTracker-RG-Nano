@@ -580,8 +580,12 @@
    previous / next
    instrument
 *Start
+   play / stop the phrase,
+   same as the Phrase
+   screen
+*RB + A + Up
    hear the instrument at
-   C3 (press again to stop)
+   C3
 *RB + A + Left/Up/Right
    hear it low / middle /
    high
@@ -977,7 +981,9 @@
  on preset, so A +
  Left/Right immediately
  flips through sounds and
- Start plays one.
+ RB + A + Up plays one
+ (Start plays the phrase,
+ as everywhere).
  
  Each track plays one synth
  voice at a time. A note
