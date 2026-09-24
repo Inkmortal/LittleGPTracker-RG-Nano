@@ -50,7 +50,7 @@ Neon Drive's song map re-scored for a martial-arts epic, played on **recordings 
 - **Every melody uses only A C D E G** — the pentatonic scale is what makes it sound Chinese.
 - **Sample instruments** — open any of them: each plays one recording, repitched from its `root` note. Erhu and dizi have two recordings each (low and high) so no note is stretched too far.
 - **Grace notes** — a quick step into a melody note (`D4 E4` at the start of a bar) is how erhu and dizi players ornament.
-- **Pipa and guzheng tremolo** — `RTRG 0002` retriggers the note every two ticks.
+- **Pipa and guzheng tremolo** — `RTRG 0004` retriggers the note every four ticks. Smaller numbers are faster; `0002` was too fast to hear as separate notes.
 - **Glissando** — a fast pentatonic run with rising `VOLM` before the chorus.
 - **Opera percussion on one track** — each step picks its own instrument (clapper, small gong, cymbals).
 
