@@ -9,6 +9,7 @@
 #include "ModalView.h"
 #include "Application/Views/ModalDialogs/GuideDialog.h"
 #include "Application/Instruments/CommandList.h"
+#include "Application/Views/ModalDialogs/RenderToSampleDialog.h"
 #include <string.h>
 
 bool View::initPrivate_=false ;
@@ -193,11 +194,15 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 	const char *row3="Song > Chain > Phrase";
 	const char *row4="  |       |       |";
 	const char *row5="Mixer   Table   Instr";
+	const char *row6="  |";
+	const char *row7="  FX";
 	drawOverlayLine(x,y,width,row1,props);
 	drawOverlayLine(x,y+1,width,row2,props);
 	drawOverlayLine(x,y+2,width,row3,props);
 	drawOverlayLine(x,y+3,width,row4,props);
 	drawOverlayLine(x,y+4,width,row5,props);
+	drawOverlayLine(x,y+5,width,row6,props);
+	drawOverlayLine(x,y+6,width,row7,props);
 
 	int hx=x;
 	int hy=y+2;
@@ -230,6 +235,11 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 			hx=x;
 			hy=y+4;
 			label="Mixer";
+			break;
+		case VT_FX:
+			hx=x+2;
+			hy=y+6;
+			label="FX";
 			break;
 		case VT_TABLE:
 			hx=x+8;
@@ -404,16 +414,29 @@ void View::drawContextOverlay() {
 			break;
 		case VT_MIXER:
 			name="MIXER";
-			where="RB+Up Song";
-			edit="Left/Right select ch";
-			field="Meters + master wave";
-			cmd1="Left/Right select ch";
-			cmd2="Start play song";
-			cmd3="RB+Start stop";
-			cmd4="Watch channel meters";
-			cmd5="Master wave below";
-			cmd6="Check level activity";
-			cmd7="RB+Up Song";
+			where="RB+Up Song  RB+Dn FX";
+			edit="A+Up/Down fader";
+			field="Track, FX and master";
+			cmd1="Left/Right pick a strip";
+			cmd2="A+Up/Down big step";
+			cmd3="A+Left/Right fine";
+			cmd4="LB+A mute  RB+A solo";
+			cmd5="C D R = FX returns";
+			cmd6="Start play  RB+Start stop";
+			cmd7="RB+Down FX settings";
+			break;
+		case VT_FX:
+			name="FX";
+			where="RB+Up Mixer";
+			edit="A+Dpad edit value";
+			field="Chorus, echo, reverb";
+			cmd1="Up/Down pick a knob";
+			cmd2="A+Left/Right small step";
+			cmd3="A+Up/Down big step";
+			cmd4="Instruments send to FX";
+			cmd5="Mixer C D R = returns";
+			cmd6="Start play the song";
+			cmd7="RB+Up Mixer";
 			break;
 		default:
 			break;
@@ -540,19 +563,28 @@ void View::getHowToSteps(const char **lines) {
 			lines[0]="Tempo: speed of the song";
 			lines[1]="Key/Scale: notes snap to";
 			lines[2]="the scale while editing";
-			lines[3]="Reverb/Echo: shared FX,";
-			lines[4]="instruments set sends";
+			lines[3]="Master/Drive/Clip: output";
+			lines[4]="FX: Mixer then RB+Down";
 			lines[5]="Render Stereo+Start = WAV";
 			lines[6]="Save Song keeps your work";
 			break;
 		case VT_MIXER:
-			lines[0]="Mixer shows each track's";
-			lines[1]="level while playing.";
-			lines[2]="Too loud? lower instrument";
-			lines[3]="volume or Project Drive.";
-			lines[4]="Start plays the song";
-			lines[5]="RB+Start stops";
-			lines[6]="RB+Up back to Song";
+			lines[0]="Pick a strip: 1-8 tracks,";
+			lines[1]="C chorus D echo R reverb,";
+			lines[2]="M master.";
+			lines[3]="A+Up/Down moves the fader";
+			lines[4]="LB+A mute, RB+A solo";
+			lines[5]="Levels save with the song";
+			lines[6]="RB+Down FX settings";
+			break;
+		case VT_FX:
+			lines[0]="Shared effects for all";
+			lines[1]="instruments. Turn up an";
+			lines[2]="instrument's chorus/delay/";
+			lines[3]="reverb send to use them.";
+			lines[4]="Chorus: speed, depth";
+			lines[5]="Echo: time, repeats";
+			lines[6]="Reverb: size, damp";
 			break;
 		default:
 			break;
@@ -785,6 +817,37 @@ void View::drawMiniWaveform(bool force) {
 #endif
 }
 
+static void renderToSampleCallback(View &v, ModalView &dialog) {
+	RenderToSampleDialog &render=(RenderToSampleDialog &)dialog ;
+	if (dialog.GetReturnCode()>0 && render.GetInstrument()>=0) {
+		v.ShowInstrument(render.GetInstrument()) ;
+	}
+}
+
+void View::ShowInstrument(int instrument) {
+	viewData_->currentInstrument_=instrument ;
+	ViewType vt=VT_INSTRUMENT ;
+	ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
+	SetChanged() ;
+	NotifyObservers(&ve) ;
+}
+
+void View::renderToSample(int mode) {
+	int bars=1 ;
+	if (mode==PM_CHAIN) {
+		// The chain plays its rows from the top until the first empty one
+		unsigned char *data=viewData_->song_->chain_->data_+16*viewData_->currentChain_ ;
+		bars=0 ;
+		while (bars<16 && data[bars]!=0xFF) bars++ ;
+		if (bars==0) {
+			SetNotification("Chain is empty",0) ;
+			return ;
+		}
+		viewData_->chainRow_=0 ;
+	}
+	DoModal(new RenderToSampleDialog(*this,mode,bars),renderToSampleCallback) ;
+}
+
 void View::drawPhraseRoll(int phrase, int x, int y, int w, int h, int playStep,
                           bool active, int cursorStep) {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
@@ -882,6 +945,7 @@ void View::GetGuideTopic(const char *&page, const char *&section) {
 		case VT_GROOVE: section="Groove"; break;
 		case VT_PROJECT: section="Project"; break;
 		case VT_MIXER: section="Mixer"; break;
+		case VT_FX: section="FX"; break;
 		default: page=""; break;
 	}
 }

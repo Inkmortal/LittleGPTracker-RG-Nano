@@ -136,6 +136,9 @@ SampleInstrument::SampleInstrument() {
      delay_ = new Variable("delay", SIP_DELAY, 0);
      Insert(delay_);
 
+     chorus_ = new Variable("chorus", SIP_CHORUS, 0);
+     Insert(chorus_);
+
      mods_.Create(*this);
 
      customName_ = new Variable("name", INSTRUMENT_NAME_ID, "");
@@ -1041,13 +1044,14 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 void SampleInstrument::sendToEffects(int channel,fixed *buffer,int size) {
   float reverb=reverb_->GetInt()/255.0f ;
   float delay=delay_->GetInt()/255.0f ;
-  if (reverb<=0.0f && delay<=0.0f) return ;
+  float chorus=chorus_->GetInt()/255.0f ;
+  if (reverb<=0.0f && delay<=0.0f && chorus<=0.0f) return ;
   static float send[SENDFX_MAX_FRAMES*2] ;
   int frames=size<SENDFX_MAX_FRAMES ? size : SENDFX_MAX_FRAMES ;
   for (int i=0;i<frames*2;i++) {
     send[i]=fp2fl(buffer[i])/32767.0f ;
   }
-  SendFX::GetInstance()->AddSend(channel,send,frames,reverb,delay) ;
+  SendFX::GetInstance()->AddSend(channel,send,frames,reverb,delay,chorus) ;
 }
 
 

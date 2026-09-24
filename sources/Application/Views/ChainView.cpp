@@ -534,7 +534,10 @@ void ChainView::processNormalButtonMask(unsigned short mask) {
             } else {
                 // L Modifier
                 if (mask & EPBM_L) {
-
+                    if (mask & EPBM_START) {
+                        renderToSample(PM_CHAIN);
+                        return;
+                    }
                 } else {
                     // NO modifier
                     if (mask & EPBM_DOWN)
@@ -772,6 +775,8 @@ void ChainView::DrawView() {
 };
 
 void ChainView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
+    View::OnPlayerUpdate(eventType, tick); // an open dialog (render) follows playback
+    if (hasModal()) return;
 
     Player *player = Player::GetInstance();
 

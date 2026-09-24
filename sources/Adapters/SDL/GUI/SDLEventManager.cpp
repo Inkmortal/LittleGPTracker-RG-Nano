@@ -1558,7 +1558,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 	struct Edge { const char *from; int key; const char *to; };
 	static const Edge edges[]={
 		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},
-		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},
+		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},{"mixer",SDLK_d,"fx"},{"fx",SDLK_u,"mixer"},
 		{"chain",SDLK_l,"song"},{"chain",SDLK_r,"phrase"},
 		{"phrase",SDLK_l,"chain"},{"phrase",SDLK_r,"instrument"},
 		{"phrase",SDLK_d,"table"},{"phrase",SDLK_u,"groove"},
@@ -1566,11 +1566,11 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		{"instrument",SDLK_l,"phrase"},{"instrument",SDLK_d,"table"},
 	};
 	const int count=sizeof(edges)/sizeof(Edge);
-	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove"};
-	const int nodeCount=8;
-	int prev[8];
-	int via[8];
-	bool seen[8];
+	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx"};
+	const int nodeCount=9;
+	int prev[9];
+	int via[9];
+	bool seen[9];
 	int start=-1;
 	int goal=-1;
 	for (int i=0;i<nodeCount;i++) {
@@ -1581,7 +1581,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		if (to==nodes[i]) goal=i;
 	}
 	if (start<0 || goal<0) return 0;
-	int queue[8];
+	int queue[9];
 	int head=0;
 	int tail=0;
 	queue[tail++]=start;

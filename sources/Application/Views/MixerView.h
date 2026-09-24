@@ -21,6 +21,10 @@ protected:
     void drawChannelMeters(bool force=false) ;
     void drawChannelWaveform(int bus, int x, int y, int width, int height, bool selected) ;
     void drawWaveform(bool force=false) ;
+    // Mixer strips: the 8 tracks, reverb and delay returns, master
+    int stripLevel(int strip) ;
+    void setStripLevel(int strip,int value) ;
+    void drawStripInfo() ;
 private:
     static const int WAVEFORM_DRAW_COLUMNS = 192 ;
 	const char *song_ ;
@@ -46,5 +50,6 @@ private:
 	int saveY_ ;
 	int saveOffset_ ;
 	bool invertBatt_ ;
+	bool soloOn_ ;
 } ;
 #endif

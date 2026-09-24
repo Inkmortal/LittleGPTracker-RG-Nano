@@ -1,0 +1,42 @@
+{
+  "clap": {
+    "instrument": "drums-808 clap",
+    "pitched": false,
+    "root": "C3"
+  },
+  "cowbell": {
+    "instrument": "drums-808 cowbell",
+    "pitched": false,
+    "root": "C3"
+  },
+  "hat": {
+    "instrument": "drums-808 hat",
+    "pitched": false,
+    "root": "C3"
+  },
+  "kick": {
+    "instrument": "drums-808 kick",
+    "pitched": false,
+    "root": "C3"
+  },
+  "kick-short": {
+    "instrument": "drums-808 kick-short",
+    "pitched": false,
+    "root": "C3"
+  },
+  "openhat": {
+    "instrument": "drums-808 openhat",
+    "pitched": false,
+    "root": "C3"
+  },
+  "rim": {
+    "instrument": "drums-808 rim",
+    "pitched": false,
+    "root": "C3"
+  },
+  "snare": {
+    "instrument": "drums-808 snare",
+    "pitched": false,
+    "root": "C3"
+  }
+}

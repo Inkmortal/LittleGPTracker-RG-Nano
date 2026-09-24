@@ -570,8 +570,8 @@
  
 *LB + Left/Right
    change page (SOUND, ENV,
-   FILTER, MOD, MIX for
-   synths)
+   FILTER, LFO, MOD, MIX
+   for synths)
 *A + Left/Right on preset
    browse ready-made sounds
 *A + D-pad
@@ -807,8 +807,16 @@
  - While playing, the strip
    at the bottom shows each
    track's current note and
-   instrument, with a small
-   level meter.
+   instrument.
+ - The eight thin bars to
+   the right of the grid
+   are level meters, one
+   per track: the track
+   you're on is
+   highlighted, muted
+   tracks go dim, and a bar
+   gets an amber cap when
+   it's close to full.
  
 =Chain
  
@@ -819,9 +827,14 @@
  = up an octave, F4 = down
  an octave).
  
- The meters on the right
- show which tracks are
- making sound.
+ Next to each row is a tiny
+ piano roll of that row's
+ phrase, so you can see the
+ melody or rhythm of every
+ bar without opening it.
+ The row that's playing
+ lights up, with a playhead
+ moving across it.
  
 =Phrase
  
@@ -838,35 +851,90 @@
  3. Command 1 + value
  4. Command 2 + value
  
- Beat rows (00 04 08 0C)
- are highlighted so you can
- see the grid. The line at
- the very bottom is a live
+ Step numbers are one
+ digit, 0-F. Beat rows (0 4
+ 8 C) are highlighted so
+ you can see the grid, and
+ the playing step lights up
+ as a green tab.
+ 
+ Under the grid is a piano
+ roll of the whole bar:
+ each note sits at its
+ pitch, with a thin line
+ until the next note or
+ KILL. A playhead follows
+ playback and an amber mark
+ shows the step your cursor
+ is on. The line at the
+ very bottom is a live
  waveform of the output.
  
 =Instrument (synth)
  
- Five pages, switched with
- LB + Left/Right. The top
- half draws what the page
- does - waveform, envelope,
- filter curve, LFO, levels
- - and shows the preset
- name and the focused value
- in real units (32 ms, 641
- Hz). The knobs are listed
- below. Full details on the
- Synth page.
+ Six pages (SOUND, ENV,
+ FILTER, LFO, MOD, MIX),
+ switched with LB +
+ Left/Right. The top half
+ draws what the page does -
+ waveform, envelope, filter
+ curve, LFO, modulation,
+ levels - and shows the
+ preset name and the
+ focused value in real
+ units (32 ms, 641 Hz). The
+ knobs are listed below.
+ Full details on the Synth
+ page.
  
  The first row, type,
  switches the slot between
  synth and sample.
  
+=Instrument list
+ 
+ RB + Up on the Instrument
+ screen opens every
+ instrument at once:
+ number, type (SMP, SYN,
+ MID, --- for an empty
+ slot), name, and how many
+ phrases use it. A green
+ dot marks instruments that
+ are playing right now, and
+ the box underneath draws
+ the selected sound: a
+ sample's waveform, or a
+ synth's wave shape.
+ 
+*Up / Down
+   pick an instrument
+   (Left/Right or LB +
+   Up/Down jump a page)
+*A
+   open it on the
+   Instrument screen
+*Start
+   hear it; Start again
+   stops
+*Select
+   give it a name with the
+   on-screen keyboard
+   (clear the name to go
+   back to the automatic
+   one)
+*LB + A
+   copy it into the next
+   free slot, to make a
+   variation
+*B
+   back
+ 
 =Instrument (sample)
  
  Sample instruments have
- five pages too: Source,
- Shape, Filter, Loop,
+ six pages too: Source,
+ Shape, Filter, Loop, Mod,
  Motion, with a waveform
  and start/loop/end
  markers. See Samples.
@@ -879,12 +947,14 @@
  own once triggered - by
  TABL in a phrase, or
  automatically by an
- instrument (MOD page,
- table). Use them for
- arpeggios, stutters, pitch
- wobbles and filter wiggles
- you don't want to write
- note by note.
+ instrument (table on the
+ synth LFO page or the
+ sample Motion page). Use
+ them for arpeggios,
+ stutters, pitch wobbles
+ and filter wiggles you
+ don't want to write note
+ by note.
  
 =Groove
  
@@ -896,6 +966,18 @@
  is used by default; the
  GROV command switches a
  track to another groove.
+ 
+ The ruler on the right
+ draws one bar twice: an
+ even grid on top, and this
+ groove underneath with
+ each step as wide as its
+ ticks. Late offbeats are
+ the swing. Under it the
+ feel is named in plain
+ words (straight, swing
+ 58%), and the step that's
+ playing turns green.
  
 =Project
  
@@ -1158,7 +1240,7 @@
    saturation before the
    filter - warmth, grit
  
-=MOD - movement
+=LFO - wobble
  
 *lfo
    what wobbles: pitch
@@ -1176,6 +1258,50 @@
 *auto / table
    an instrument table that
    runs on every note
+ 
+=MOD - envelopes and LFOs
+ 
+ Two slots, mod1 and mod2,
+ each move one part of the
+ sound on every note.
+ Sample instruments have
+ the same page.
+ 
+*mod1 / mod2
+   decay (starts full,
+   falls away) or swell
+   (rises, then holds) -
+   envelopes; sine,
+   triangle, square, saw,
+   random - LFOs
+*dest
+   what it moves: volume,
+   cutoff, reso, pitch, pan
+*amt
+   how far, -127 ... +127;
+   minus goes the other
+   way. On pitch, +127 = 2
+   octaves
+*rate
+   higher is always faster:
+   envelopes 00 = 10 s ...
+   FF = 1 ms, LFOs 00 =
+   0.05 Hz ... FF = 50 Hz
+ 
+ The picture shows both
+ slots over two seconds;
+ the focused knob shows its
+ real value (312 ms, 1.60
+ Hz, +3.0 semitones).
+ Picking a preset switches
+ both slots off.
+ 
+ Try: mod1 decay, dest1
+ cutoff, amt1 +80, rate1 60
+ - a pluck that closes its
+ filter on every note. mod2
+ sine, dest2 pitch, amt2 +4
+ - gentle vibrato.
  
 =MIX - level and space
  
@@ -1565,9 +1691,11 @@
  loop of commands that
  advances one row per tick.
  Point an instrument at it
- (Instrument -> MOD page ->
- table, auto) or start it
- from a phrase with TABL.
+ (Instrument -> synth LFO
+ page or sample Motion page
+ -> table, auto) or start
+ it from a phrase with
+ TABL.
  
  Example - a trance gate on
  a pad:
@@ -1924,7 +2052,7 @@
    gong, cymbals
 *3
    temple block in the
-   verses, pipa tremolo in
+   verses, pipa plucks in
    the second chorus
 *4
    sub bass on the chord
@@ -1933,8 +2061,7 @@
    soft string pad (synth)
 *6
    guzheng - flowing broken
-   chords, glissandos,
-   tremolo
+   chords and glissandos
 *7
    erhu - the chorus melody
 *8
@@ -1960,13 +2087,15 @@
    (D4 E4 at the start of a
    bar) is how erhu and
    dizi players ornament.
- - Pipa and guzheng tremolo
-   - RTRG 0004 retriggers
-   the note every four
-   ticks. Smaller numbers
-   are faster; 0002 was too
-   fast to hear as separate
-   notes.
+ - Soft second plucks - in
+   the break the guzheng
+   plucks its long notes
+   again with VOLM 50, like
+   a player letting the
+   string ring. (Fast RTRG
+   on a recorded instrument
+   stutters, so it's saved
+   for drums.)
  - Glissando - a fast
    pentatonic run with
    rising VOLM before the
@@ -2090,7 +2219,7 @@
 =Sample pages
  
  LB + Left/Right switches
- between the five sample
+ between the six sample
  pages:
  
 *Source
@@ -2108,6 +2237,11 @@
 *Loop
    loop mode, start, loop
    start, end
+*Mod
+   two envelopes/LFOs on
+   volume, cutoff, reso,
+   pitch or pan - see Synth
+   -> MOD
 *Motion
    instrument table,
    feedback

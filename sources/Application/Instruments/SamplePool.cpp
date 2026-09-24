@@ -129,12 +129,14 @@ int SamplePool::GetNameListSize() {
 	return count_ ;
 } ;
 
-bool SamplePool::loadSample(const char *path) {
+bool SamplePool::loadSample(const char *path, bool showStatus) {
 
 	if (count_==MAX_PIG_SAMPLES) return false ;
 
 	Path sPath(path) ;
-    Status::Set("Loading %s",sPath.GetName().c_str()) ;
+	if (showStatus) {
+		Status::Set("Loading %s",sPath.GetName().c_str()) ;
+	}
     Trace::Log("loadSample", "%s", path);
 
     Path wavPath(path);
@@ -216,6 +218,21 @@ int SamplePool::ImportSample(Path &path) {
 	NotifyObservers(&ev) ;
 	return status?(count_-1):-1 ;
 };
+
+int SamplePool::AddProjectSample(const char *name) {
+	std::string alias="samples:" ;
+	alias+=name ;
+	Path path(alias) ;
+	if (!loadSample(path.GetPath().c_str(),false)) {
+		return -1 ;
+	}
+	SetChanged() ;
+	SamplePoolEvent ev ;
+	ev.index_=count_-1 ;
+	ev.type_=SPET_INSERT ;
+	NotifyObservers(&ev) ;
+	return count_-1 ;
+}
 
 bool SamplePool::IsImported(std::string name) {
     std::string dpath="samples:";

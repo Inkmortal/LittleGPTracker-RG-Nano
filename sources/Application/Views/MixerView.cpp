@@ -2,6 +2,8 @@
 #include "MixerView.h"
 #include "Application/Mixer/MixerService.h"
 #include "Application/Model/Mixer.h"
+#include "Application/Model/Project.h"
+#include "UIController.h"
 #include "Application/Utils/char.h"
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 #include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
@@ -14,6 +16,7 @@ MixerView::MixerView(GUIWindow &w,ViewData *viewData):View(w,viewData) {
 	clipboard_.active_=false ;
 	clipboard_.data_=0 ;
 	invertBatt_=false;
+	soloOn_=false;
     lastWaveformDrawMs_=0;
     waveformPrimed_=false;
     for (int i=0; i<SONG_CHANNEL_COUNT; i++) {
@@ -55,11 +58,20 @@ void MixerView::onStop() {
 void MixerView::OnFocus() {
 } ;
 
+// 8 tracks, reverb return, delay return, master
+#define MIXER_STRIPS 12
+#define STRIP_MASTER 11
+static const int stripCol[MIXER_STRIPS]={3,5,7,9,11,13,15,17,20,22,24,27};
+static const char stripName[MIXER_STRIPS]={'1','2','3','4','5','6','7','8','C','D','R','M'};
+// The send-effect returns, in strip order after the tracks
+static const int returnLevel[3]={MIXER_LEVEL_CHORUS,MIXER_LEVEL_DELAY,MIXER_LEVEL_REVERB};
+static const char *returnName[3]={"CHORUS","ECHO","REVERB"};
+
 void MixerView::updateCursor(int dx,int dy) {
 	int x=viewData_->mixerCol_ ;
 	x+=dx ;
 	if (x<0) x=0 ;
-	if (x>7) x=7 ;
+	if (x>=MIXER_STRIPS) x=MIXER_STRIPS-1 ;
 	viewData_->mixerCol_=x ;
 	isDirty_=true;
 }
@@ -119,10 +131,26 @@ void MixerView::processNormalButtonMask(unsigned int mask) {
 	if (mask&EPBM_B) {
 	} else {
 
-	  // A modifier
+	  // A modifier: faders, and mute/solo with a shoulder
 
 	  if (mask&EPBM_A) {
-
+		int strip=viewData_->mixerCol_ ;
+		UIController *controller=UIController::GetInstance() ;
+		if (mask&EPBM_L) {
+			if (strip<SONG_CHANNEL_COUNT) controller->ToggleMute(strip,strip) ;
+		} else if (mask&EPBM_R) {
+			if (strip<SONG_CHANNEL_COUNT) {
+				controller->SwitchSoloMode(strip,strip,!soloOn_) ;
+				soloOn_=!soloOn_ ;
+			}
+		} else {
+			int step=(strip==STRIP_MASTER)?10:0x10 ;
+			if (mask&EPBM_UP) setStripLevel(strip,stripLevel(strip)+step) ;
+			if (mask&EPBM_DOWN) setStripLevel(strip,stripLevel(strip)-step) ;
+			if (mask&EPBM_RIGHT) setStripLevel(strip,stripLevel(strip)+1) ;
+			if (mask&EPBM_LEFT) setStripLevel(strip,stripLevel(strip)-1) ;
+		}
+		isDirty_=true ;
 	  } else {
 
 		  // R Modifier
@@ -133,7 +161,13 @@ void MixerView::processNormalButtonMask(unsigned int mask) {
 					ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
 					SetChanged();
 					NotifyObservers(&ve) ;
-				}	
+				}
+				if (mask&EPBM_DOWN) {
+					ViewType vt=VT_FX;
+					ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
+					SetChanged();
+					NotifyObservers(&ve) ;
+				}
 				if (mask&EPBM_START) {
 				    onStop() ;
                 }
@@ -216,6 +250,7 @@ void MixerView::DrawView() {
 
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     drawChannelMeters(true);
+    drawStripInfo();
     drawWaveform(true);
 #else
 	// Now draw busses
@@ -314,96 +349,126 @@ void MixerView::OnPlayerUpdate(PlayerEventType ,unsigned int tick) {
 
 } ;
 
+int MixerView::stripLevel(int strip) {
+	if (strip==STRIP_MASTER) {
+		return viewData_->project_->GetMasterVolume() ;
+	}
+	return Mixer::GetInstance()->GetLevel(strip<SONG_CHANNEL_COUNT?strip:
+	       returnLevel[strip-SONG_CHANNEL_COUNT]) ;
+}
+
+void MixerView::setStripLevel(int strip,int value) {
+	if (strip==STRIP_MASTER) {
+		Variable *v=viewData_->project_->FindVariable(VAR_MASTERVOL) ;
+		if (v) {
+			if (value<0) value=0 ;
+			if (value>100) value=100 ;
+			v->SetInt(value) ;
+		}
+		return ;
+	}
+	Mixer::GetInstance()->SetLevel(strip<SONG_CHANNEL_COUNT?strip:
+	      returnLevel[strip-SONG_CHANNEL_COUNT],value) ;
+}
+
+// The selected strip in words, and how to use the screen
+void MixerView::drawStripInfo() {
+	GUITextProperties props ;
+	char line[40] ;
+	int strip=viewData_->mixerCol_ ;
+	int level=stripLevel(strip) ;
+	if (strip<SONG_CHANNEL_COUNT) {
+		sprintf(line,"TRACK %d  %02X  %3d%%%s",strip+1,level,(level*100)/MIXER_UNITY,
+		        Player::GetInstance()->IsChannelMuted(strip)?"  muted":"") ;
+	} else if (strip==STRIP_MASTER) {
+		sprintf(line,"MASTER  %3d%%",level) ;
+	} else {
+		sprintf(line,"%s RETURN  %02X  %3d%%",returnName[strip-SONG_CHANNEL_COUNT],level,(level*100)/MIXER_UNITY) ;
+	}
+	SetColor(CD_HILITE1) ;
+	DrawString(1,21,"                            ",props) ;
+	DrawString(1,21,line,props) ;
+	SetColor(CD_MUTE) ;
+	DrawString(1,22,"A+Up/Dn level LB+A mute",props) ;
+	SetColor(CD_NORMAL) ;
+}
+
 void MixerView::drawChannelMeters(bool force) {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     MixerService *mixer = MixerService::GetInstance();
     SDLGUIWindowImp *imp = (SDLGUIWindowImp *)w_.GetImpWindow();
-    const int startX = 24;
-    const int labelRow = 4;
-    const int meterTop = 52;
-    const int meterHeight = 38;
-    const int stripWidth = 24;
-    const int meterWidth = 12;
-    const int scopeY = 96;
-    const int scopeHeight = 14;
-    const int noteRow = 14;
+    Player *player = Player::GetInstance();
+    const int top = 40;
+    const int height = 96;
     GUIColor panel=AppWindow::ThemeColor(CD_BACKGROUND);
-    GUIColor meterLow=AppWindow::ThemeColor(CD_HILITE1);
-    GUIColor meterHot=AppWindow::ThemeColor(CD_HILITE2);
-    GUIColor meterClip=AppWindow::ThemeColor(CD_NORMAL);
-    GUIColor selected=AppWindow::ThemeColor(CD_NORMAL);
-    GUIColor frame=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
+    GUIColor slot=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,35);
+    GUIColor fill=AppWindow::ThemeBlend(CD_BACKGROUND,CD_HILITE2,55);
+    GUIColor fillOn=AppWindow::ThemeColor(CD_HILITE2);
+    GUIColor knob=AppWindow::ThemeColor(CD_NORMAL);
+    GUIColor knobOn=AppWindow::ThemeColor(CD_CURSOR);
+    GUIColor meter=AppWindow::ThemeColor(CD_PLAY);
+    GUIColor hot=AppWindow::ThemeColor(CD_CURSOR);
+    GUIColor muted=AppWindow::ThemeColor(CD_MUTE);
 
     if (force) {
         imp->SetColor(panel);
-        GUIRect area(0, 28, 240, 126);
+        GUIRect area(0, top - 4, 240, top + height + 4);
         imp->DrawRect(area);
     }
 
     GUITextProperties props;
     props.invert_ = false;
-    char label[3];
-    for (int i=0; i<SONG_CHANNEL_COUNT; i++) {
-        int stripX = startX + i * stripWidth;
-        int x = stripX + 6;
-        int bus = Mixer::GetInstance()->GetBus(i);
-        int level = mixer->GetBusPeakPercent(bus);
-        if (level<0) level=0;
-        if (level>100) level=100;
-        bool isSelected = (i == viewData_->mixerCol_);
-        bool isActive = Player::GetInstance()->IsChannelPlaying(i) || level > 0;
-
-        imp->SetColor(isSelected ? selected : frame);
-        GUIRect outline(x, meterTop - 1, x + meterWidth + 1, meterTop + meterHeight + 1);
-        imp->DrawRect(outline);
+    char label[2] = {0, 0};
+    for (int s=0; s<MIXER_STRIPS; s++) {
+        bool selected = (s == viewData_->mixerCol_);
+        bool isMuted = s < SONG_CHANNEL_COUNT && player->IsChannelMuted(s);
+        int x = stripCol[s] * 8 + 1;
+        // Fader: slot, filled up to the level, a knob at the level
+        int value = stripLevel(s);
+        int full = (s == STRIP_MASTER) ? 100 : 0xFF;
+        int h = (value * (height - 4)) / full;
+        imp->SetColor(slot);
+        GUIRect track(x, top, x + 6, top + height);
+        imp->DrawRect(track);
+        imp->SetColor(isMuted ? muted : (selected ? fillOn : fill));
+        GUIRect body(x + 1, top + height - h, x + 5, top + height);
+        imp->DrawRect(body);
+        imp->SetColor(selected ? knobOn : knob);
+        GUIRect cap(x - 1, top + height - h - 2, x + 7, top + height - h + 1);
+        imp->DrawRect(cap);
+        // A tick at unity (C0) on the track and return faders
+        if (s != STRIP_MASTER) {
+            int uy = top + height - (MIXER_UNITY * (height - 4)) / 0xFF;
+            imp->SetColor(slot);
+            GUIRect unity(x + 7, uy, x + 9, uy + 1);
+            imp->DrawRect(unity);
+        }
+        // Live level beside the fader (tracks and master)
+        int level = 0;
+        if (s < SONG_CHANNEL_COUNT) {
+            level = mixer->GetBusPeakPercent(Mixer::GetInstance()->GetBus(s));
+        } else if (s == STRIP_MASTER) {
+            level = mixer->GetMasterPeakPercent();
+        }
+        if (level < 0) level = 0;
+        if (level > 100) level = 100;
+        int m = (level * height) / 100;
         imp->SetColor(panel);
-        GUIRect inner(x + 1, meterTop, x + meterWidth, meterTop + meterHeight);
-        imp->DrawRect(inner);
-
-        int fill = (level * (meterHeight - 2)) / 100;
-        if (fill > 0) {
-            if (level > 92) {
-                imp->SetColor(meterClip);
-            } else if (level > 68) {
-                imp->SetColor(meterHot);
-            } else {
-                imp->SetColor(isActive ? meterLow : frame);
-            }
-            GUIRect bar(x + 2, meterTop + meterHeight - 1 - fill,
-                        x + meterWidth - 1, meterTop + meterHeight - 1);
+        GUIRect clearMeter(x + 9, top, x + 12, top + height);
+        imp->DrawRect(clearMeter);
+        if (m > 0) {
+            imp->SetColor(level > 92 ? hot : meter);
+            GUIRect bar(x + 9, top + height - m, x + 12, top + height);
             imp->DrawRect(bar);
         }
 
-        SetColor(isSelected ? CD_HILITE2 : CD_NORMAL);
-        hex2char(bus, label);
-        DrawString(stripX / 8, labelRow, label, props);
-        drawChannelWaveform(bus, stripX + 4, scopeY, 16, scopeHeight, isSelected);
-
-        SetColor(CD_NORMAL);
-        DrawString(stripX / 8, noteRow, "   ", props);
-        if (Player::GetInstance()->IsRunning() && viewData_->playMode_ != PM_AUDITION) {
-            const char *playedNote = Player::GetInstance()->GetPlayedNote(i);
-            char noteChar = playedNote && playedNote[0] ? playedNote[0] : ' ';
-            const char *playedOctave = Player::GetInstance()->GetPlayedOctive(i);
-            if (noteChar != ' ') {
-                lastChannelNote_[i][0] = noteChar;
-                if (playedOctave && playedOctave[1] && playedOctave[1] != ' ') {
-                    lastChannelNote_[i][1] = playedOctave[1];
-                } else if (playedOctave && playedOctave[0] &&
-                           playedOctave[0] != ' ') {
-                    lastChannelNote_[i][1] = playedOctave[0];
-                } else {
-                    lastChannelNote_[i][1] = '-';
-                }
-            }
-            SetColor(isSelected ? CD_HILITE2 : CD_HILITE1);
-            DrawString(stripX / 8, noteRow, lastChannelNote_[i], props);
-        } else {
-            lastChannelNote_[i][0]='-';
-            lastChannelNote_[i][1]='-';
-            SetColor(CD_NORMAL);
-            DrawString(stripX / 8, noteRow, lastChannelNote_[i], props);
-        }
+        label[0] = stripName[s];
+        SetColor(selected ? CD_CURSOR : (s >= SONG_CHANNEL_COUNT ? CD_HILITE1 : CD_NORMAL));
+        props.invert_ = selected;
+        DrawString(stripCol[s], 18, label, props);
+        props.invert_ = false;
+        SetColor(CD_MUTE);
+        DrawString(stripCol[s], 19, isMuted ? "M" : " ", props);
     }
     SetColor(CD_NORMAL);
 #endif
@@ -475,9 +540,9 @@ void MixerView::drawWaveform(bool force) {
 
     SDLGUIWindowImp *imp = (SDLGUIWindowImp *)w_.GetImpWindow();
     const int x = 24;
-    const int y = 132;
+    const int y = 188;
     const int width = 192;
-    const int height = 56;
+    const int height = 36;
     const int mid = y + (height / 2);
     const int columns = AudioMixer::WAVEFORM_SIZE;
     const int stepPx = 1;

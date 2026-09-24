@@ -1,0 +1,17 @@
+{
+  "horn": {
+    "instrument": "French horn",
+    "pitched": true,
+    "root": "F2"
+  },
+  "trombone": {
+    "instrument": "Tenor trombone",
+    "pitched": true,
+    "root": "D2"
+  },
+  "trumpet": {
+    "instrument": "Trumpet",
+    "pitched": true,
+    "root": "A#3"
+  }
+}

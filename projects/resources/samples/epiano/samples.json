@@ -1,0 +1,42 @@
+{
+  "dom7": {
+    "instrument": "epiano dom7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "maj": {
+    "instrument": "epiano maj",
+    "pitched": true,
+    "root": "A2"
+  },
+  "maj7": {
+    "instrument": "epiano maj7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "maj9": {
+    "instrument": "epiano maj9",
+    "pitched": true,
+    "root": "A2"
+  },
+  "min": {
+    "instrument": "epiano min",
+    "pitched": true,
+    "root": "A2"
+  },
+  "min7": {
+    "instrument": "epiano min7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "min9": {
+    "instrument": "epiano min9",
+    "pitched": true,
+    "root": "A2"
+  },
+  "note": {
+    "instrument": "epiano note",
+    "pitched": true,
+    "root": "A2"
+  }
+}

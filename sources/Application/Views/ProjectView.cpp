@@ -193,7 +193,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
     UIIntVarField *f2=new UIIntVarField(position,*v,"Transpose: %3.2d",-48,48,0x1,0xC) ;
 	T_SimpleList<UIField>::Insert(f2) ;
 
-    // MIX: output level and the shared reverb / echo
+    // MIX: output level (the send effects live on the FX screen)
     position._y += 2;
     headingRow_[2]=position._y ;
     v = project_->FindVariable(VAR_MASTERVOL);
@@ -214,25 +214,6 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
     v = project_->FindVariable(VAR_SOFTCLIP_GAIN);
     position._x += 13;
     field = new UIIntVarField(position, *v, "%s", 0, 1, 1, 1);
-    T_SimpleList<UIField>::Insert(field);
-    position._x -= 13;
-
-    position._y += 1;
-    v = project_->FindVariable(VAR_REVERB_SIZE);
-    field = new UIIntVarField(position, *v, "Reverb: %2.2X", 0, 0xFF, 1, 0x10);
-    T_SimpleList<UIField>::Insert(field);
-    position._x += 13;
-    v = project_->FindVariable(VAR_REVERB_DAMP);
-    field = new UIIntVarField(position, *v, "Damp: %2.2X", 0, 0xFF, 1, 0x10);
-    T_SimpleList<UIField>::Insert(field);
-    position._x -= 13;
-    position._y += 1;
-    v = project_->FindVariable(VAR_DELAY_STEPS);
-    field = new UIIntVarField(position, *v, "Echo: %d/16", 1, 16, 1, 4);
-    T_SimpleList<UIField>::Insert(field);
-    position._x += 13;
-    v = project_->FindVariable(VAR_DELAY_FEEDBACK);
-    field = new UIIntVarField(position, *v, "Fdbk: %2.2X", 0, 0xFF, 1, 0x10);
     T_SimpleList<UIField>::Insert(field);
     position._x -= 13;
 

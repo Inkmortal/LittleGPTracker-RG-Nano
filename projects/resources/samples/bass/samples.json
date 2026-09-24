@@ -1,0 +1,22 @@
+{
+  "finger": {
+    "instrument": "bass finger",
+    "pitched": true,
+    "root": "E1"
+  },
+  "reese": {
+    "instrument": "bass reese",
+    "pitched": true,
+    "root": "A0"
+  },
+  "upright-high": {
+    "instrument": "Upright bass, pizzicato",
+    "pitched": true,
+    "root": "A1"
+  },
+  "upright-low": {
+    "instrument": "Upright bass, pizzicato",
+    "pitched": true,
+    "root": "E1"
+  }
+}

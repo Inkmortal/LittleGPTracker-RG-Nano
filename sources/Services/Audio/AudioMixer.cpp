@@ -1,3 +1,4 @@
+#include "System/Console/Trace.h"
 #include "AudioMixer.h"
 #include "System/System/System.h"
 #include <math.h>
@@ -9,6 +10,9 @@ AudioMixer::AudioMixer(const char *name):
 	T_SimpleList<AudioModule>(false),
 	enableRendering_(0),
 	writer_(0),
+	capture_(0),
+	captureLeft_(0),
+	captureTotal_(0),
 	name_(name)
 {
 	volume_=(i2fp(1)) ;
@@ -145,11 +149,43 @@ bool AudioMixer::Render(fixed *buffer,int samplecount) {
 		} ;
 		writer_->AddBuffer(buffer,samplecount) ;
 	}
+    if (capture_) {
+		if (!gotData) {
+			memset(buffer,0,samplecount*2*sizeof(fixed)) ;
+		}
+		int n=samplecount<captureLeft_?samplecount:captureLeft_ ;
+		capture_->AddBuffer(buffer,n) ;
+		captureLeft_-=n ;
+		if (captureLeft_<=0) {
+			Trace::Log("RENDER","capture complete, %d frames",captureTotal_) ;
+			capture_->Close() ;
+			SAFE_DELETE(capture_) ;
+		}
+	}
      SAFE_FREE(mixBuffer) ;
      return gotData ;
 } ;
 
 void AudioMixer::SetVolume(fixed volume) { volume_ = volume; }
+
+bool AudioMixer::StartCapture(const char *path,int frames) {
+	if (capture_ || frames<=0) return false ;
+	capture_=new WavFileWriter(path) ;
+	captureLeft_=captureTotal_=frames ;
+	return true ;
+}
+
+void AudioMixer::CancelCapture() {
+	if (!capture_) return ;
+	capture_->Close() ;
+	SAFE_DELETE(capture_) ;
+	captureLeft_=0 ;
+}
+
+int AudioMixer::CaptureProgress() {
+	if (captureTotal_<=0) return 0 ;
+	return ((captureTotal_-captureLeft_)*100)/captureTotal_ ;
+}
 
 void AudioMixer::SetSoftclip(int clip, int gain) {
     softclip_ = clip - 1;

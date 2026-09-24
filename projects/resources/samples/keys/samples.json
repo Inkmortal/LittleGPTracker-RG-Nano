@@ -1,0 +1,42 @@
+{
+  "glock": {
+    "instrument": "Glockenspiel",
+    "pitched": true,
+    "root": "C5"
+  },
+  "harp-high": {
+    "instrument": "Harp",
+    "pitched": true,
+    "root": "C4"
+  },
+  "harp-low": {
+    "instrument": "Harp",
+    "pitched": true,
+    "root": "C2"
+  },
+  "marimba": {
+    "instrument": "Marimba",
+    "pitched": true,
+    "root": "C4"
+  },
+  "piano-high": {
+    "instrument": "Upright piano",
+    "pitched": true,
+    "root": "A3"
+  },
+  "piano-low": {
+    "instrument": "Upright piano",
+    "pitched": true,
+    "root": "A1"
+  },
+  "piano-mid": {
+    "instrument": "Upright piano",
+    "pitched": true,
+    "root": "A2"
+  },
+  "piano-soft": {
+    "instrument": "Upright piano, soft",
+    "pitched": true,
+    "root": "A2"
+  }
+}

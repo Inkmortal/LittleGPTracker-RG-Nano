@@ -1,4 +1,5 @@
 #include "Project.h"
+#include "Mixer.h"
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Persistency/PersistencyService.h"
@@ -61,6 +62,10 @@ tempoNudge_(0)
     this->Insert(delaySteps);
     Variable *delayFeedback = new Variable("delay feedback", VAR_DELAY_FEEDBACK, 0x70, 0xFF);
     this->Insert(delayFeedback);
+    Variable *chorusRate = new Variable("chorus rate", VAR_CHORUS_RATE, 0x40, 0xFF);
+    this->Insert(chorusRate);
+    Variable *chorusDepth = new Variable("chorus depth", VAR_CHORUS_DEPTH, 0x70, 0xFF);
+    this->Insert(chorusDepth);
 
 // Reload the midi device list
 
@@ -81,6 +86,7 @@ tempoNudge_(0)
 	TableHolder::GetInstance() ;
 
 	Groove::GetInstance()->Clear() ;
+	Mixer::GetInstance()->Clear() ;
 
 	tempoTapCount_=0 ;
 

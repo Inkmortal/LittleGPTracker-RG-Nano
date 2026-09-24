@@ -278,6 +278,7 @@ AppWindow::AppWindow(I_GUIWindowImp &imp) : GUIWindow(imp) {
     _tableView = 0;
     _nullView = 0;
     _mixerView = 0;
+    _fxView = 0;
     _grooveView = 0;
     _closeProject = 0;
     _loadAfterSaveAsProject = 0;
@@ -614,6 +615,9 @@ void AppWindow::LoadProject(const Path &p) {
     _mixerView = new MixerView((*this), _viewData);
     _mixerView->AddObserver(*this);
 
+    _fxView = new FXView((*this), _viewData);
+    _fxView->AddObserver(*this);
+
     _currentView = _songView;
     _currentView->OnFocus();
 
@@ -790,6 +794,8 @@ const char *AppWindow::GetCurrentViewName() const {
         return "groove";
     if (_currentView == _mixerView)
         return "mixer";
+    if (_currentView == _fxView)
+        return "fx";
     if (_currentView == _nullView)
         return "null";
     return "unknown";
@@ -798,7 +804,8 @@ const char *AppWindow::GetCurrentViewName() const {
 ViewData *AppWindow::GetViewData() const { return _viewData; }
 
 Variable *AppWindow::GetSimFocusedVariable() const {
-    if (_currentView != _instrumentView && _currentView != _projectView) {
+    if (_currentView != _instrumentView && _currentView != _projectView &&
+        _currentView != _fxView) {
         return 0;
     }
     UIField *focus = ((FieldView *)_currentView)->GetFocus();
@@ -998,6 +1005,9 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
             break;
         case VT_MIXER:
             _currentView = _mixerView;
+            break;
+        case VT_FX:
+            _currentView = _fxView;
             break;
         }
         _currentView->SetFocus(*vt);

@@ -40,7 +40,8 @@ enum ViewType {
     VT_TABLE,  // Table screen under phrase
     VT_TABLE2, // Table screen under instrument
     VT_GROOVE,
-    VT_MIXER
+    VT_MIXER,
+    VT_FX      // send effects, under the mixer
 };
 
 enum ViewMode {
@@ -165,6 +166,12 @@ class View : public Observable {
     void drawMiniWaveform(bool force = false);
     // Pixel piano roll of one phrase (16 steps): note heads with a tail to
     // the next note or KILL, dots on the beats, optional playhead column
+    // Render the current phrase (PM_PHRASE) or chain (PM_CHAIN) to a new
+    // sample on a free instrument, then open it
+    void renderToSample(int mode);
+public:
+    void ShowInstrument(int instrument);
+protected:
     void drawPhraseRoll(int phrase, int x, int y, int w, int h, int playStep,
                         bool active, int cursorStep = -1);
     void drawOverlayLine(int x, int y, int width, const char *text,
@@ -181,6 +188,7 @@ class View : public Observable {
     ViewType viewType_;
     bool hasFocus_;
     bool suppressPlaybackScope_;
+    bool hasModal() { return modalView_ != 0; }
 
   private:
     unsigned short mask_;

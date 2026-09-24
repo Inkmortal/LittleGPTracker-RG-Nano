@@ -29,6 +29,13 @@ public:
 	int GetWaveformSample(int index) ;
 	int GetWaveformMin(int index) ;
 	int GetWaveformMax(int index) ;
+	// Write the next 'frames' of this mixer's output to a WAV file, while
+	// playing normally (render to sample)
+	bool StartCapture(const char *path,int frames) ;
+	void CancelCapture() ;
+	bool CaptureActive() { return capture_!=0 ; } ;
+	// 0..100 of the frames asked for
+	int CaptureProgress() ;
 	
 private:
   fixed hardClip(fixed sample);
@@ -37,6 +44,9 @@ private:
   bool enableRendering_;
   std::string renderPath_;
   WavFileWriter *writer_;
+  WavFileWriter *capture_;
+  int captureLeft_;
+  int captureTotal_;
   fixed volume_;
   std::string name_;
   SoftClipData softClipData_[4];

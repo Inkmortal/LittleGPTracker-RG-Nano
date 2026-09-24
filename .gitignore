@@ -58,7 +58,7 @@ dist/
 
 # Chinese instrument samples (tools/fetch_chinese_samples.py)
 exports/chinese-samples/
-!projects/resources/samples/chinese/*.wav
+!projects/resources/samples/*/*.wav
 
 # Runtime copies written by the simulator
 projects/guide.txt
@@ -71,3 +71,6 @@ lgpt-perf.log
 # Build stamp written into the OPK at install time
 projects/opk_build/build-id.txt
 rgnano-sim-crash.txt
+
+# Simulator song-list state
+rgnano-sim-data/tracks/.lgpt-*

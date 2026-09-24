@@ -148,6 +148,21 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "mixer-levels"
+    Script = "mixer-levels.rgsim"
+    Args = @("-OpenDemo=NeonDrive")
+  },
+  @{
+    Name = "fx-screen"
+    Script = "fx-screen.rgsim"
+    Args = @("-OpenDemo=NeonDrive")
+  },
+  @{
+    Name = "render-to-sample"
+    Script = "render-to-sample.rgsim"
+    Args = @("-OpenDemo=NeonDrive")
+  },
+  @{
     Name = "mod-slots"
     Script = "mod-slots.rgsim"
     Args = @("-ResetLastProject")

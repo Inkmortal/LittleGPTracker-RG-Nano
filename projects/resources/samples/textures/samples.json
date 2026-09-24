@@ -1,0 +1,17 @@
+{
+  "riser": {
+    "instrument": "textures riser",
+    "pitched": false,
+    "root": "C3"
+  },
+  "tape-hiss": {
+    "instrument": "textures tape-hiss",
+    "pitched": false,
+    "root": "C3"
+  },
+  "vinyl": {
+    "instrument": "textures vinyl",
+    "pitched": false,
+    "root": "C3"
+  }
+}

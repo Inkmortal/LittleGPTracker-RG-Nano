@@ -12,6 +12,7 @@
 #define SENDFX_ALLPASSES 4
 #define SENDFX_MAX_FRAMES 8192
 #define SENDFX_DELAY_SECONDS 2
+#define SENDFX_CHORUS_MS 40
 
 class Project ;
 
@@ -37,7 +38,8 @@ public:
 
 	// Called by instruments from their Render: frames of stereo float,
 	// 1.0 == 16 bit full scale.
-	void AddSend(int channel,const float *stereo,int frames,float reverb,float delay) ;
+	void AddSend(int channel,const float *stereo,int frames,float reverb,float delay,
+	             float chorus=0.0f) ;
 	// A muted channel must not be heard through the reverb/echo either
 	void SetChannelMuted(int channel,bool muted) ;
 	bool IsActive() ;
@@ -54,6 +56,9 @@ public:
 	// Parameter curves, shared with the Project screen text
 	static float ReverbSizeFromParam(int value) ;
 	static int DelayStepsFromParam(int value) ;
+	// Chorus: LFO speed (0.1 .. 5 Hz) and sweep (0.5 .. 7.5 ms)
+	static float ChorusRateFromParam(int value) ;
+	static float ChorusDepthMsFromParam(int value) ;
 
 private:
 	void updateSettings() ;
@@ -69,6 +74,7 @@ private:
 
 	float reverbIn_[SENDFX_MAX_FRAMES*2] ;
 	float delayIn_[SENDFX_MAX_FRAMES*2] ;
+	float chorusIn_[SENDFX_MAX_FRAMES*2] ;
 
 	SendFXComb combs_[2][SENDFX_COMBS] ;
 	SendFXAllpass allpasses_[2][SENDFX_ALLPASSES] ;
@@ -83,6 +89,14 @@ private:
 	float delayFeedback_ ;
 	float delayLevel_ ;
 	float delayLp_[2] ;
+
+	float *chorusBuffer_ ;
+	int chorusSize_ ;
+	int chorusWrite_ ;
+	float chorusPhase_ ;
+	float chorusInc_ ;
+	float chorusDepth_ ;   // in frames
+	float chorusBase_ ;    // in frames
 	bool muted_[8] ;
 } ;
 

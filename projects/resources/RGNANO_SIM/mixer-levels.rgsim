@@ -1,0 +1,96 @@
+# Mixer screen: per-track faders, effect returns, master, mute. Levels are
+# saved with the song and come back when it is reopened.
+wait 1500
+expect_view song
+goto mixer
+wait 200
+expect_screen_text TRACK 1  C0  100%
+screenshot_app mixer-default.bmp
+# A+Down: one big step down on track 1
+down a
+press d 80
+up a
+wait 100
+expect_screen_text TRACK 1  B0   91%
+# Track 8, then the reverb return and the master
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+expect_screen_text TRACK 8  C0
+press r 80
+expect_screen_text CHORUS RETURN  C0
+press r 80
+expect_screen_text ECHO RETURN  C0
+press r 80
+expect_screen_text REVERB RETURN  C0
+down a
+press u 80
+up a
+expect_screen_text REVERB RETURN  D0
+press r 80
+expect_screen_text MASTER
+# Back to track 1: LB+A mutes it, again unmutes
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+press l 80
+expect_screen_text TRACK 1  B0
+down m
+press a 80
+up m
+wait 100
+expect_screen_text muted
+down m
+press a 80
+up m
+wait 100
+# Plays with the new levels
+press s 80
+wait 1200
+expect_audio_activity 32
+screenshot_app mixer-playing.bmp
+press s 80
+wait 300
+# Save, reopen from the song list, levels are still there
+sim_save_project
+press p 80
+wait 150
+press d 80
+press d 80
+press d 80
+expect_selected_text powerMenu=Song List
+press a 80
+wait 200
+press a 80
+wait 1200
+expect_screen_text YOUR SONGS
+press a 80
+wait 1500
+goto mixer
+wait 200
+expect_screen_text TRACK 1  B0
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+expect_screen_text REVERB RETURN  D0
+goto song
+expect_no_error
+quit

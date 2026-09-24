@@ -1,0 +1,22 @@
+{
+  "hat": {
+    "instrument": "drums-dusty hat",
+    "pitched": false,
+    "root": "C3"
+  },
+  "kick": {
+    "instrument": "drums-dusty kick",
+    "pitched": false,
+    "root": "C3"
+  },
+  "rim": {
+    "instrument": "drums-dusty rim",
+    "pitched": false,
+    "root": "C3"
+  },
+  "snare": {
+    "instrument": "drums-dusty snare",
+    "pitched": false,
+    "root": "C3"
+  }
+}

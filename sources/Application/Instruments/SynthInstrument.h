@@ -71,6 +71,7 @@ enum SynthLfoDest {
 #define SYP_LFOAMT    MAKE_FOURCC('S','Y','L','A')
 #define SYP_REVERB    MAKE_FOURCC('S','Y','R','V')
 #define SYP_DELAY     MAKE_FOURCC('S','Y','D','L')
+#define SYP_CHORUS    MAKE_FOURCC('S','Y','C','O')
 #define SYP_VOLUME    MAKE_FOURCC('V','O','L','M')
 #define SYP_PAN       MAKE_FOURCC('P','A','N','_')
 #define SYP_TABLE     MAKE_FOURCC('T','A','B','L')
@@ -234,6 +235,7 @@ private:
 	Variable *lfoAmt_ ;
 	Variable *reverb_ ;
 	Variable *delay_ ;
+	Variable *chorus_ ;
 	Variable *volume_ ;
 	Variable *pan_ ;
 	Variable *table_ ;

@@ -36,6 +36,24 @@ def run(script: Path, reset: bool) -> None:
         raise SystemExit(f"{script.name} failed; see projects/rgnano-sim.log")
 
 
+def run_demo(name: str, script: Path) -> None:
+    demo = PROJECTS / "resources" / "demos" / f"lgpt_{name}"
+    sim_demo = ROOT / "rgnano-sim-data" / "tracks" / f"lgpt_{name}"
+    if sim_demo.exists():
+        shutil.rmtree(sim_demo)
+    shutil.copytree(demo, sim_demo)
+    last = PROJECTS / "last_project"
+    saved = last.read_text() if last.exists() else None
+    last.write_text(f"./rgnano-sim-data/tracks/lgpt_{name}")
+    try:
+        run(script, reset=False)
+    finally:
+        if saved is None:
+            last.unlink(missing_ok=True)
+        else:
+            last.write_text(saved)
+
+
 def main() -> int:
     IMAGES.mkdir(parents=True, exist_ok=True)
     for old in ROOT.glob("wiki-*.bmp"):
@@ -60,22 +78,9 @@ def main() -> int:
         if parked.exists():
             parked.rename(tracks)
 
-    # Demo screens: open Neon Drive through AUTO_LOAD_LAST
-    demo = PROJECTS / "resources" / "demos" / "lgpt_NeonDrive"
-    sim_demo = ROOT / "rgnano-sim-data" / "tracks" / "lgpt_NeonDrive"
-    if sim_demo.exists():
-        shutil.rmtree(sim_demo)
-    shutil.copytree(demo, sim_demo)
-    last = PROJECTS / "last_project"
-    saved = last.read_text() if last.exists() else None
-    last.write_text("./rgnano-sim-data/tracks/lgpt_NeonDrive")
-    try:
-        run(SCRIPTS / "wiki-shots-demo.rgsim", reset=False)
-    finally:
-        if saved is None:
-            last.unlink(missing_ok=True)
-        else:
-            last.write_text(saved)
+    # Demo screens: open each demo through AUTO_LOAD_LAST
+    for demo_name, script in (("NeonDrive", "wiki-shots-demo.rgsim"), ("Dusk", "wiki-shots-dusk.rgsim")):
+        run_demo(demo_name, SCRIPTS / script)
 
     count = 0
     for bmp in sorted(ROOT.glob("wiki-*.bmp")):

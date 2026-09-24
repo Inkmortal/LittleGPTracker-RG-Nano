@@ -1,0 +1,82 @@
+{
+  "piano-dom7": {
+    "instrument": "chords piano-dom7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "piano-maj": {
+    "instrument": "chords piano-maj",
+    "pitched": true,
+    "root": "A2"
+  },
+  "piano-maj7": {
+    "instrument": "chords piano-maj7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "piano-maj9": {
+    "instrument": "chords piano-maj9",
+    "pitched": true,
+    "root": "A2"
+  },
+  "piano-min": {
+    "instrument": "chords piano-min",
+    "pitched": true,
+    "root": "A2"
+  },
+  "piano-min7": {
+    "instrument": "chords piano-min7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "piano-min9": {
+    "instrument": "chords piano-min9",
+    "pitched": true,
+    "root": "A2"
+  },
+  "soft-dom7": {
+    "instrument": "chords soft-dom7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "soft-maj": {
+    "instrument": "chords soft-maj",
+    "pitched": true,
+    "root": "A2"
+  },
+  "soft-maj7": {
+    "instrument": "chords soft-maj7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "soft-maj9": {
+    "instrument": "chords soft-maj9",
+    "pitched": true,
+    "root": "A2"
+  },
+  "soft-min": {
+    "instrument": "chords soft-min",
+    "pitched": true,
+    "root": "A2"
+  },
+  "soft-min7": {
+    "instrument": "chords soft-min7",
+    "pitched": true,
+    "root": "A2"
+  },
+  "soft-min9": {
+    "instrument": "chords soft-min9",
+    "pitched": true,
+    "root": "A2"
+  },
+  "strings-maj": {
+    "instrument": "chords strings-maj",
+    "pitched": true,
+    "root": "A2"
+  },
+  "strings-min": {
+    "instrument": "chords strings-min",
+    "pitched": true,
+    "root": "A2"
+  }
+}

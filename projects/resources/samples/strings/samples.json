@@ -1,0 +1,32 @@
+{
+  "cello-pizz": {
+    "instrument": "Cello section, pizzicato",
+    "pitched": true,
+    "root": "C3"
+  },
+  "cellos": {
+    "instrument": "Cello section, sustain",
+    "pitched": true,
+    "root": "C3"
+  },
+  "cellos-low": {
+    "instrument": "Cello section, sustain",
+    "pitched": true,
+    "root": "G1"
+  },
+  "violin-pizz": {
+    "instrument": "Violin section, pizzicato",
+    "pitched": true,
+    "root": "A3"
+  },
+  "violins-high": {
+    "instrument": "Violin section, sustain",
+    "pitched": true,
+    "root": "E4"
+  },
+  "violins-low": {
+    "instrument": "Violin section, sustain",
+    "pitched": true,
+    "root": "A3"
+  }
+}

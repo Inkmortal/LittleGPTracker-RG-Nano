@@ -112,8 +112,9 @@ The picture shows both slots over two seconds; the focused knob shows its real v
 | `pan` | `00` left, `7F` centre, `FE` right |
 | `reverb` | send to the shared reverb |
 | `delay` | send to the shared echo |
+| `chorus` | send to the shared chorus (width and shimmer) |
 
-The reverb room and echo time are shared by every instrument and set on the **Project** screen (`Reverb`, `Damp`, `Echo`, `Fdbk`).
+The reverb room, echo time and chorus speed are shared by every instrument and set on the [FX screen](Screens#fx) (Mixer, then **RB + Down**).
 
 <br clear="right">
 
@@ -176,7 +177,7 @@ Start from `init` (or the preset named) and set:
 | **Trap hat roll** | hat; in the phrase `RTRG 0002` on a note |
 | **Reese bass** | wave supersaw, `shape 40`, `tune -24`, `sub 60`, lowpass `cutoff 60`, `drive 40` |
 | **Acid line** | acid; write 16ths, raise `reso`, automate with `FCUT` |
-| **Plucky arp** | pluck; `delay 60` on MIX, Project `Echo 3` |
+| **Plucky arp** | pluck; `delay 60` on MIX, FX `time 3/16` |
 | **Warm pad** | pad; `chord minor`, `attack C0`, `releas C8`, `reverb A0` |
 | **Glassy bell** | bell; `ratio 7`, `env A0`, `reverb 90` |
 | **Flute** | wave sine, `noise 28`, `attack 38`, `lfo pitch`, `rate B0`, `depth 18` |

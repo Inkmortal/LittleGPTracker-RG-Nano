@@ -1108,6 +1108,10 @@ void PhraseView::processNormalButtonMask(unsigned short mask) {
             } else {
                 // L Modifier
                 if (mask & EPBM_L) {
+                    if (mask & EPBM_START) {
+                        renderToSample(PM_PHRASE);
+                        return;
+                    }
                     if (col_ == 0) {
                         if (mask & EPBM_DOWN)
                             updateCursorValue(VUD_DOWN, 0, 0, false);
@@ -1511,6 +1515,8 @@ void PhraseView::DrawView() {
 };
 
 void PhraseView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
+    View::OnPlayerUpdate(eventType, tick); // an open dialog (render) follows playback
+    if (hasModal()) return;
 
     GUITextProperties props;
     View::drawMiniWaveform(eventType == PET_STOP);

@@ -1,0 +1,37 @@
+{
+  "clap": {
+    "instrument": "drums-909 clap",
+    "pitched": false,
+    "root": "C3"
+  },
+  "crash": {
+    "instrument": "drums-909 crash",
+    "pitched": false,
+    "root": "C3"
+  },
+  "hat": {
+    "instrument": "drums-909 hat",
+    "pitched": false,
+    "root": "C3"
+  },
+  "kick": {
+    "instrument": "drums-909 kick",
+    "pitched": false,
+    "root": "C3"
+  },
+  "openhat": {
+    "instrument": "drums-909 openhat",
+    "pitched": false,
+    "root": "C3"
+  },
+  "ride": {
+    "instrument": "drums-909 ride",
+    "pitched": false,
+    "root": "C3"
+  },
+  "snare": {
+    "instrument": "drums-909 snare",
+    "pitched": false,
+    "root": "C3"
+  }
+}

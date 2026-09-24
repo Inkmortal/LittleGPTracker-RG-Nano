@@ -383,6 +383,8 @@ SynthInstrument::SynthInstrument() {
 	Insert(reverb_) ;
 	delay_=new Variable("delay",SYP_DELAY,0) ;
 	Insert(delay_) ;
+	chorus_=new Variable("chorus",SYP_CHORUS,0) ;
+	Insert(chorus_) ;
 	volume_=new Variable("volume",SYP_VOLUME,0x80) ;
 	Insert(volume_) ;
 	pan_=new Variable("pan",SYP_PAN,0x7F) ;
@@ -490,6 +492,7 @@ void SynthInstrument::ApplyPreset(int preset) {
 	mods_.Reset() ;
 	reverb_->SetInt(0) ;
 	delay_->SetInt(0) ;
+	chorus_->SetInt(0) ;
 	volume_->SetInt(0x80) ;
 	pan_->SetInt(0x7F) ;
 
@@ -1105,7 +1108,8 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	static float sendBuffer[SENDFX_MAX_FRAMES*2] ;
 	float reverbSend=reverb_->GetInt()/255.0f ;
 	float delaySend=delay_->GetInt()/255.0f ;
-	bool sending=(reverbSend>0.0f || delaySend>0.0f) ;
+	float chorusSend=chorus_->GetInt()/255.0f ;
+	bool sending=(reverbSend>0.0f || delaySend>0.0f || chorusSend>0.0f) ;
 	int rendered=0 ;
 
 	fixed *out=buffer ;
@@ -1284,7 +1288,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 		}
 	}
 	if (sending && rendered>0) {
-		SendFX::GetInstance()->AddSend(channel,sendBuffer,rendered,reverbSend,delaySend) ;
+		SendFX::GetInstance()->AddSend(channel,sendBuffer,rendered,reverbSend,delaySend,chorusSend) ;
 	}
 	return true ;
 }

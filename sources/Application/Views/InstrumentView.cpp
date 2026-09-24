@@ -193,6 +193,10 @@ void InstrumentView::fillSampleShapePage(SampleInstrument *instrument, GUIPoint 
 	f1=new UIIntVarField(position,*v,"delay  %2.2X",0,0xFF,1,0x10) ;
 	T_SimpleList<UIField>::Insert(f1) ;
 	position._y+=1 ;
+	v=instrument->FindVariable(SIP_CHORUS) ;
+	f1=new UIIntVarField(position,*v,"chorus %2.2X",0,0xFF,1,0x10) ;
+	T_SimpleList<UIField>::Insert(f1) ;
+	position._y+=1 ;
 	v=instrument->FindVariable(SIP_CRUSH);
 	f1=new UIIntVarField(position,*v,"crush  %2.2d",1,0x10,1,4) ;
 	T_SimpleList<UIField>::Insert(f1) ;

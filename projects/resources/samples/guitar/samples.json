@@ -1,0 +1,17 @@
+{
+  "clean": {
+    "instrument": "guitar clean",
+    "pitched": true,
+    "root": "A2"
+  },
+  "mute": {
+    "instrument": "guitar mute",
+    "pitched": true,
+    "root": "E1"
+  },
+  "power-e": {
+    "instrument": "guitar power-e",
+    "pitched": true,
+    "root": "E1"
+  }
+}

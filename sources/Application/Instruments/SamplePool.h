@@ -31,6 +31,8 @@ public:
 	char **GetNameList() ;
 	int GetNameListSize();
     int ImportSample(Path &path);
+    // Load a file already in the project's samples folder (e.g. a render)
+    int AddProjectSample(const char *name);
     bool IsImported(std::string name);
     // int InsertSample(const std::string& sampleName, bool imported, std::string fi);
     int Reassign(std::string name, bool imported);
@@ -38,7 +40,8 @@ public:
 	const char *GetSampleLib() ;
 protected:
   void unload(int i);
-  bool loadSample(const char *path);
+  // showStatus: the full-screen "Loading" line, for song loading only
+  bool loadSample(const char *path, bool showStatus = true);
   bool loadSoundFont(const char *path);
   int getIndexOf(const char *path);
   int count_;

@@ -154,6 +154,7 @@ void InstrumentView::fillSynthParameters() {
 			SYNTH_FIELD(SYP_PAN,"pan    %2.2X",0,0xFE,1,0x10);
 			SYNTH_FIELD(SYP_REVERB,"reverb %2.2X",0,0xFF,1,0x10);
 			SYNTH_FIELD(SYP_DELAY,"delay  %2.2X",0,0xFF,1,0x10);
+			SYNTH_FIELD(SYP_CHORUS,"chorus %2.2X",0,0xFF,1,0x10);
 			break;
 	}
 #undef SYNTH_FIELD
@@ -321,11 +322,15 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 			break;
 		case SYP_REVERB:
 			strcpy(line1,"send to the shared reverb");
-			strcpy(line2,"room size: Project screen");
+			strcpy(line2,"room size: FX screen");
 			break;
 		case SYP_DELAY:
 			strcpy(line1,"send to the shared echo");
-			strcpy(line2,"echo time: Project screen");
+			strcpy(line2,"echo time: FX screen");
+			break;
+		case SYP_CHORUS:
+			strcpy(line1,"send to the shared chorus");
+			strcpy(line2,"speed/depth: FX screen");
 			break;
 		default:
 			getModFieldHelp(id,s,line1,line2,value);
@@ -490,22 +495,25 @@ void InstrumentView::drawSynthVisuals() {
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
 		drawModPlot(s,bx,by,bw,bh);
 	} else {
-		// Mix: level meters for the four knobs
-		const char *names[4]={"VOL","PAN","REV","DLY"};
-		FourCC ids[4]={SYP_VOLUME,SYP_PAN,SYP_REVERB,SYP_DELAY};
-		// Clear the box: four bars aligned to text rows 4,6,8,10
+		// Mix: level and pan, then the three effect sends
+		const char *names[5]={"VOL","PAN","REV","DLY","CHO"};
+		FourCC ids[5]={SYP_VOLUME,SYP_PAN,SYP_REVERB,SYP_DELAY,SYP_CHORUS};
+		const int rows[5]={4,5,8,9,10};
 		GUIColor clearColor2=AppWindow::ThemeColor(CD_BACKGROUND);
 		imp->SetColor(clearColor2);
 		GUIRect clearBox(bx,by,bx+bw,by+bh+4);
 		imp->DrawRect(clearBox);
-		for (int k=0;k<4;k++) {
-			drawPixelLabBar(48,(4+k*2)*8,176,8,synthInt(s,ids[k]),ids[k]==SYP_PAN?254:255,ids[k]==SYP_PAN);
+		for (int k=0;k<5;k++) {
+			drawPixelLabBar(48,rows[k]*8+1,176,6,synthInt(s,ids[k]),ids[k]==SYP_PAN?254:255,ids[k]==SYP_PAN);
 		}
 		// Labels go on the character grid so the text layer keeps them
 		SetColor(CD_NORMAL);
-		for (int k=0;k<4;k++) {
-			DrawString(1,4+k*2,names[k],props);
+		for (int k=0;k<5;k++) {
+			DrawString(1,rows[k],names[k],props);
 		}
+		SetColor(CD_MUTE);
+		DrawString(1,7,"sends",props);
+		SetColor(CD_NORMAL);
 	}
 #endif
 

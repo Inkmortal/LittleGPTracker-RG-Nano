@@ -108,8 +108,6 @@ The ruler on the right draws one bar twice: an even grid on top, and this groove
 | Clip | soft clipper strength (Bypass … Insane) |
 | Transpose | shifts every note in the song |
 | Key / Scale / Notes | note-editing helper and sharp/flat spelling |
-| Reverb / Damp | size and darkness of the shared reverb |
-| Echo / Fdbk | delay time in 16ths (`3` = dotted 8th) and repeats |
 | Song List / Save Song / Save Song As | back to the song list (offers to save first), save, save a copy |
 | Remove unused chains / sounds | tidy up chains, phrases and instruments nothing uses |
 | Quit | leave the app (offers to save first) |
@@ -121,7 +119,31 @@ The ruler on the right draws one bar twice: an even grid on top, and this groove
 
 <img src="images/demo-mixer.png" width="300" align="right" alt="Mixer">
 
-Level meters for the 8 tracks and a live waveform of the master output. Use it to spot the track that's too loud or a mix that's clipping.
+Faders for the 8 tracks, the three effect returns (**C** chorus, **D** echo, **R** reverb) and the master (**M**), each with a live level meter, plus the master waveform. Levels save with the song.
+
+| Input | Does |
+| --- | --- |
+| **Left/Right** | pick a strip |
+| **A + Up/Down** | fader big step (`C0` = unity, up to `FF` for a boost) |
+| **A + Left/Right** | fader fine step |
+| **LB + A** / **RB + A** | mute / solo the track |
+| **RB + Down** | FX screen |
+
+<br clear="right">
+
+## FX
+
+<img src="images/fx.png" width="300" align="right" alt="FX">
+
+The three effects every instrument can send to, each with a picture of what it does:
+
+| Effect | Knobs | Picture |
+| --- | --- | --- |
+| Chorus | `speed` (0.1–5 Hz), `depth` (0.5–7.5 ms) | the left and right delay sweeps |
+| Echo | `time` in 16ths (`3` = dotted 8th), `fdbk` repeats | the dry hit and each echo over two bars |
+| Reverb | `size`, `damp` | the tail over four seconds; the bright line is the highs, which `damp` takes away faster |
+
+Each heading shows the real values (Hz, ms, tail length) and how many sounds send to it. **Up/Down** walks the six knobs, **A + D-pad** edits. Turn up an instrument's `chorus`/`delay`/`reverb` send to hear it; the Mixer's C/D/R faders set how loud each effect comes back.
 
 <br clear="right">
 

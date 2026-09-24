@@ -1,0 +1,1255 @@
+<LITTLEGPTRACKER>
+    <PROJECT VERSION="1">
+        <PARAMETER NAME="tempo" VALUE="82" />
+        <PARAMETER NAME="master" VALUE="100" />
+        <PARAMETER NAME="pregain" VALUE="70" />
+        <PARAMETER NAME="softclip" VALUE="Subtle" />
+        <PARAMETER NAME="softclipGain" VALUE="[unity]" />
+        <PARAMETER NAME="wrap" VALUE="false" />
+        <PARAMETER NAME="transpose" VALUE="0" />
+        <PARAMETER NAME="scaleKey" VALUE="3" />
+        <PARAMETER NAME="scale" VALUE="Ionian mode (major)" />
+        <PARAMETER NAME="noteNames" VALUE="Sharps" />
+        <PARAMETER NAME="renderMode" VALUE="Off" />
+        <PARAMETER NAME="midi" VALUE="(null)" />
+        <PARAMETER NAME="reverb size" VALUE="160" />
+        <PARAMETER NAME="reverb damp" VALUE="150" />
+        <PARAMETER NAME="delay steps" VALUE="3" />
+        <PARAMETER NAME="delay feedback" VALUE="70" />
+    </PROJECT>
+    <SONG>
+        <SONG>
+            <DATA>00000000090005000102030A070006040102030A070C06040102030B080D06040000030A070C06000102030A070C06040102030B080D06040000000009000600</DATA>
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+        </SONG>
+        <CHAINS>
+            <DATA>00000000FFFFFFFFFFFFFFFFFFFFFFFF01010102FFFFFFFFFFFFFFFFFFFFFFFF03030304FFFFFFFFFFFFFFFFFFFFFFFF05050505FFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>06060606FFFFFFFFFFFFFFFFFFFFFFFF07080808FFFFFFFFFFFFFFFFFFFFFFFF08080808FFFFFFFFFFFFFFFFFFFFFFFF090A0B0CFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0D0E0F0AFFFFFFFFFFFFFFFFFFFFFFFF10111213FFFFFFFFFFFFFFFFFFFFFFFF14151617FFFFFFFFFFFFFFFFFFFFFFFF18191A1BFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>1C1D1E1FFFFFFFFFFFFFFFFFFFFFFFFF20212223FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="48" />
+        </CHAINS>
+        <TRANSPOSES>
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="48" />
+        </TRANSPOSES>
+        <NOTES>
+            <DATA>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF3CFFFFFFFFFFFFFFFFFF3CFFFFFFFFFF3CFFFFFFFFFFFFFF3CFF3CFFFFFFFFFFFFFFFFFF3CFFFFFFFFFFFFFF3CFFFFFF</DATA>
+            <DATA>FFFFFFFF3CFFFFFFFFFFFFFF3CFF3C3C3CFF3C3C3CFF3C3C3CFF3C3C3CFF3C3CFFFFFFFFFFFFFFFFFFFF3CFFFFFFFFFF3CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF35FFFFFFFFFFFFFFFFFF35FFFFFFFFFF3AFFFFFFFFFFFFFFFFFF3AFFFFFFFFFF3FFFFFFFFFFFFFFFFFFF3FFFFFFFFFFF</DATA>
+            <DATA>3CFFFFFFFFFFFFFFFFFF3CFFFFFFFFFF38FFFFFFFFFFFFFFFFFF38FFFFFFFFFF37FFFFFFFFFFFFFFFFFF37FFFFFFFFFF3CFFFFFFFFFFFFFFFFFF3CFFFFFFFFFF</DATA>
+            <DATA>35FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF3AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF3CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>29FFFFFFFFFFFFFFFFFF29FFFFFFFFFF2EFFFFFFFFFFFFFFFFFF2EFFFFFF2DFF27FFFFFFFFFFFFFFFFFF27FFFFFF2BFF30FFFFFFFFFFFFFFFFFF30FFFFFF2EFF</DATA>
+            <DATA>2CFFFFFFFFFFFFFFFFFF2CFFFFFFFFFF2BFFFFFFFFFFFFFFFFFF2BFFFFFFFFFF30FFFFFFFFFFFFFFFFFF30FFFFFF32FF2EFFFFFFFFFFFFFFFFFF2EFFFFFF29FF</DATA>
+            <DATA>FFFFFFFF43FF46FFFFFF48FFFFFF46FF43FFFFFFFFFFFFFFFFFF41FFFFFFFFFFFFFFFFFF43FF46FFFFFF4AFF48FFFFFF46FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>48FFFFFF4BFFFFFF4AFFFFFF48FFFFFF46FFFFFFFFFF43FFFFFFFFFFFFFFFFFF43FFFFFF46FFFFFF48FFFFFF4AFFFFFF4BFFFFFFFFFFFFFF4AFFFFFFFFFFFFFF</DATA>
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="48" />
+        </NOTES>
+        <INSTRUMENTS>
+            <DATA>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00FFFFFFFFFFFFFFFFFF00FFFFFFFFFF00FFFFFFFFFFFFFF00FF00FFFFFFFFFFFFFFFFFF01FFFFFFFFFFFFFF01FFFFFF</DATA>
+            <DATA>FFFFFFFF01FFFFFFFFFFFFFF01FF010102FF020202FF020202FF020202FF0202FFFFFFFFFFFFFFFFFFFF0BFFFFFFFFFF0AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF05FFFFFFFFFFFFFFFFFF05FFFFFFFFFF06FFFFFFFFFFFFFFFFFF06FFFFFFFFFF07FFFFFFFFFFFFFFFFFF07FFFFFFFFFF</DATA>
+            <DATA>08FFFFFFFFFFFFFFFFFF08FFFFFFFFFF07FFFFFFFFFFFFFFFFFF07FFFFFFFFFF08FFFFFFFFFFFFFFFFFF08FFFFFFFFFF05FFFFFFFFFFFFFFFFFF05FFFFFFFFFF</DATA>
+            <DATA>05FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF06FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF07FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF08FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>03FFFFFFFFFFFFFFFFFF03FFFFFFFFFF04FFFFFFFFFFFFFFFFFF04FFFFFF04FF03FFFFFFFFFFFFFFFFFF03FFFFFF03FF04FFFFFFFFFFFFFFFFFF04FFFFFF04FF</DATA>
+            <DATA>03FFFFFFFFFFFFFFFFFF03FFFFFFFFFF03FFFFFFFFFFFFFFFFFF03FFFFFFFFFF04FFFFFFFFFFFFFFFFFF04FFFFFF04FF04FFFFFFFFFFFFFFFFFF04FFFFFF03FF</DATA>
+            <DATA>FFFFFFFF09FF09FFFFFF09FFFFFF09FF09FFFFFFFFFFFFFFFFFF09FFFFFFFFFFFFFFFFFF09FF09FFFFFF09FF09FFFFFF09FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>09FFFFFF09FFFFFF09FFFFFF09FFFFFF09FFFFFFFFFF09FFFFFFFFFFFFFFFFFF09FFFFFF09FFFFFF09FFFFFF09FFFFFF09FFFFFFFFFFFFFF09FFFFFFFFFFFFFF</DATA>
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="64" />
+            <DATA VALUE="255" LENGTH="48" />
+        </INSTRUMENTS>
+        <COMMAND1>
+            <DATA>4B494C4C2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D564F4C4D</DATA>
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D</DATA>
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D564F4C4D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D4B494C4C2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA>2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D4B494C4C2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+        </COMMAND1>
+        <PARAM1>
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA>00000000000000000000000000000000000000000000000000000000480048000000000000003800000000000000380000000000000038000000000000003800</DATA>
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000500000000000000000000000</DATA>
+            <DATA>00000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000500000000000000000000000</DATA>
+            <DATA>00000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000500000000000000000000000</DATA>
+            <DATA>00000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000500000000000000000000000</DATA>
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="32" />
+        </PARAM1>
+        <COMMAND2>
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+            <DATA VALUE="45" LENGTH="64" />
+        </COMMAND2>
+        <PARAM2>
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="64" />
+            <DATA VALUE="0" LENGTH="32" />
+        </PARAM2>
+    </SONG>
+    <INSTRUMENTBANK>
+        <INSTRUMENT ID="00" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="drums-dusty-kick.wav" />
+            <PARAM NAME="volume" VALUE="152" />
+            <PARAM NAME="root note" VALUE="60" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="22050" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="01" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="drums-dusty-snare.wav" />
+            <PARAM NAME="volume" VALUE="168" />
+            <PARAM NAME="root note" VALUE="60" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="13230" />
+            <PARAM NAME="reverb" VALUE="48" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="02" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="drums-dusty-hat.wav" />
+            <PARAM NAME="volume" VALUE="112" />
+            <PARAM NAME="root note" VALUE="60" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="3969" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="03" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="bass-upright-low.wav" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="root note" VALUE="40" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="73563" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="04" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="bass-upright-high.wav" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="root note" VALUE="45" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="88200" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="05" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="chords-soft-min9.wav" />
+            <PARAM NAME="volume" VALUE="240" />
+            <PARAM NAME="root note" VALUE="57" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="132300" />
+            <PARAM NAME="mod2 type" VALUE="sine" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="2" />
+            <PARAM NAME="mod2 rate" VALUE="56" />
+            <PARAM NAME="mod1 type" VALUE="decay" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="40" />
+            <PARAM NAME="mod1 rate" VALUE="80" />
+            <PARAM NAME="filter cut" VALUE="192" />
+            <PARAM NAME="reverb" VALUE="80" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="06" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="chords-soft-dom7.wav" />
+            <PARAM NAME="volume" VALUE="240" />
+            <PARAM NAME="root note" VALUE="57" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="132300" />
+            <PARAM NAME="mod2 type" VALUE="sine" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="2" />
+            <PARAM NAME="mod2 rate" VALUE="56" />
+            <PARAM NAME="mod1 type" VALUE="decay" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="40" />
+            <PARAM NAME="mod1 rate" VALUE="80" />
+            <PARAM NAME="filter cut" VALUE="192" />
+            <PARAM NAME="reverb" VALUE="80" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="07" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="chords-soft-maj7.wav" />
+            <PARAM NAME="volume" VALUE="240" />
+            <PARAM NAME="root note" VALUE="57" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="132300" />
+            <PARAM NAME="mod2 type" VALUE="sine" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="2" />
+            <PARAM NAME="mod2 rate" VALUE="56" />
+            <PARAM NAME="mod1 type" VALUE="decay" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="40" />
+            <PARAM NAME="mod1 rate" VALUE="80" />
+            <PARAM NAME="filter cut" VALUE="192" />
+            <PARAM NAME="reverb" VALUE="80" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="08" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="chords-soft-min7.wav" />
+            <PARAM NAME="volume" VALUE="240" />
+            <PARAM NAME="root note" VALUE="57" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="132300" />
+            <PARAM NAME="mod2 type" VALUE="sine" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="2" />
+            <PARAM NAME="mod2 rate" VALUE="56" />
+            <PARAM NAME="mod1 type" VALUE="decay" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="40" />
+            <PARAM NAME="mod1 rate" VALUE="80" />
+            <PARAM NAME="filter cut" VALUE="192" />
+            <PARAM NAME="reverb" VALUE="80" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="09" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="epiano-note.wav" />
+            <PARAM NAME="volume" VALUE="88" />
+            <PARAM NAME="root note" VALUE="57" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="132300" />
+            <PARAM NAME="reverb" VALUE="112" />
+            <PARAM NAME="delay" VALUE="48" />
+            <PARAM NAME="mod1 type" VALUE="sine" />
+            <PARAM NAME="mod1 dest" VALUE="pitch" />
+            <PARAM NAME="mod1 amount" VALUE="2" />
+            <PARAM NAME="mod1 rate" VALUE="64" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="0A" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="textures-vinyl.wav" />
+            <PARAM NAME="volume" VALUE="144" />
+            <PARAM NAME="root note" VALUE="60" />
+            <PARAM NAME="loopmode" VALUE="loop" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="176400" />
+        </INSTRUMENT>
+        <INSTRUMENT ID="0B" TYPE="Sample">
+            <PARAM NAME="sample" VALUE="drums-dusty-rim.wav" />
+            <PARAM NAME="volume" VALUE="96" />
+            <PARAM NAME="root note" VALUE="60" />
+            <PARAM NAME="loopmode" VALUE="none" />
+            <PARAM NAME="start" VALUE="0" />
+            <PARAM NAME="end" VALUE="2205" />
+            <PARAM NAME="reverb" VALUE="64" />
+        </INSTRUMENT>
+    </INSTRUMENTBANK>
+    <TABLES>
+    </TABLES>
+    <GROOVES>
+        <DATA>
+            <DATA>0705FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+            <DATA>0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF0606FFFFFFFFFFFFFFFFFFFFFFFFFFFF</DATA>
+        </DATA>
+    </GROOVES>
+    <MIXER />
+</LITTLEGPTRACKER>

@@ -24,6 +24,8 @@
 #define VAR_REVERB_DAMP MAKE_FOURCC('R', 'V', 'D', 'P')
 #define VAR_DELAY_STEPS MAKE_FOURCC('D', 'L', 'S', 'T')
 #define VAR_DELAY_FEEDBACK MAKE_FOURCC('D', 'L', 'F', 'B')
+#define VAR_CHORUS_RATE MAKE_FOURCC('C', 'H', 'R', 'T')
+#define VAR_CHORUS_DEPTH MAKE_FOURCC('C', 'H', 'D', 'P')
 
 #define PROJECT_NUMBER "1"
 #define PROJECT_RELEASE "6"

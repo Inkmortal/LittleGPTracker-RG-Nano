@@ -1,0 +1,72 @@
+{
+  "bass-drum": {
+    "instrument": "Concert bass drum",
+    "pitched": false,
+    "root": "C3"
+  },
+  "bongo-high": {
+    "instrument": "Bongo, high",
+    "pitched": false,
+    "root": "C3"
+  },
+  "bongo-low": {
+    "instrument": "Bongo, low",
+    "pitched": false,
+    "root": "C3"
+  },
+  "claves": {
+    "instrument": "Claves",
+    "pitched": false,
+    "root": "C3"
+  },
+  "conga-high": {
+    "instrument": "Conga, high",
+    "pitched": false,
+    "root": "C3"
+  },
+  "conga-low": {
+    "instrument": "Conga, low",
+    "pitched": false,
+    "root": "C3"
+  },
+  "crash": {
+    "instrument": "Crash cymbals",
+    "pitched": false,
+    "root": "C3"
+  },
+  "cymbal": {
+    "instrument": "Suspended cymbal",
+    "pitched": false,
+    "root": "C3"
+  },
+  "shaker": {
+    "instrument": "Shaker",
+    "pitched": false,
+    "root": "C3"
+  },
+  "snare": {
+    "instrument": "Snare drum",
+    "pitched": false,
+    "root": "C3"
+  },
+  "snare-old": {
+    "instrument": "Old snare drum",
+    "pitched": false,
+    "root": "C3"
+  },
+  "timpani": {
+    "instrument": "Timpani",
+    "pitched": true,
+    "root": "F#1"
+  },
+  "timpani-2": {
+    "instrument": "Timpani",
+    "pitched": true,
+    "root": "B0"
+  },
+  "triangle": {
+    "instrument": "Triangle, muted",
+    "pitched": false,
+    "root": "C3"
+  }
+}

@@ -315,17 +315,20 @@ class Project:
         self.instruments[slot] = Instrument("Synth", values)
         return slot
 
-    def sample(self, slot: int, wav: Path, root: int | str, volume: int = 0x80, **params: object) -> int:
+    def sample(self, slot: int, wav: Path, root: int | str, volume: int = 0x80,
+               filename: str | None = None, **params: object) -> int:
         """Sample instrument playing a WAV that is copied into the project's
-        samples folder. root is the note the recording plays at (C3 = 60, or
-        a name like "A3"); other params use the save names with '_' for spaces
-        (e.g. reverb=0x60, delay=0x20, loopmode="none")."""
+        samples folder (as `filename` when given, so packs with the same file
+        names can share a song). root is the note the recording plays at
+        (C3 = 60, or a name like "A3"); other params use the save names with
+        '_' for spaces (e.g. reverb=0x60, delay=0x20, loopmode="none")."""
         wav = Path(wav)
+        name = filename or wav.name
         with wave.open(str(wav), "rb") as w:
             frames = w.getnframes()
         root_note = note(root) if isinstance(root, str) else int(root)
         values: dict[str, object] = {
-            "sample": wav.name,
+            "sample": name,
             "volume": volume,
             "root note": root_note,
             "loopmode": "none",
@@ -335,7 +338,7 @@ class Project:
         for k, v in params.items():
             values[k.replace("_", " ")] = v
         self.instruments[slot] = Instrument("Sample", values)
-        self.sample_files[wav.name] = wav
+        self.sample_files[name] = wav
         return slot
 
     def table(self, index: int, rows: Sequence[tuple]) -> int:

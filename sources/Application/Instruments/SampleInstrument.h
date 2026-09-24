@@ -53,6 +53,7 @@ enum SampleInstrumentLoopMode {
 // Shared reverb / echo sends, same as the synth's MIX page
 #define SIP_REVERB MAKE_FOURCC('S', 'R', 'V', 'B')
 #define SIP_DELAY MAKE_FOURCC('S', 'D', 'L', 'Y')
+#define SIP_CHORUS MAKE_FOURCC('S', 'C', 'H', 'O')
 
 #define FB_BUFFER_LENGTH 3500 // (in samples)
 
@@ -149,6 +150,7 @@ private:
 	   Variable *irWet_;
 	   Variable *reverb_;
 	   Variable *delay_;
+	   Variable *chorus_;
 	   InstrumentMods mods_;
 	   Variable *customName_;
 	   int suggestedRootNote_;

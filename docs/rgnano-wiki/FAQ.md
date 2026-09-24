@@ -22,7 +22,7 @@ An empty `--` Song cell makes that track jump back to the top of its block. Give
 A Project `Key`/`Scale` is set, so editing follows the scale. Use **LB + D-pad** for chromatic steps, or set `Key: --`.
 
 **Where is the reverb setting?**
-Two parts: each instrument's **MIX** page sets how much it sends (`reverb`, `delay`); the **Project** screen sets the room (`Reverb`, `Damp`) and echo (`Echo`, `Fdbk`).
+Two parts: each instrument's **MIX** page (samples: **SHAPE**) sets how much it sends (`reverb`, `delay`, `chorus`); the **FX** screen (Mixer, then **RB + Down**) sets the room, the echo and the chorus.
 
 **It's too loud / distorted.**
 Lower instrument volumes (kick and bass eat the most headroom), or `Drive` on the Project screen. Watch the Mixer meters.

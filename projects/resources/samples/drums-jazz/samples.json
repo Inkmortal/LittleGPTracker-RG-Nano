@@ -1,0 +1,27 @@
+{
+  "brush-swish": {
+    "instrument": "drums-jazz brush-swish",
+    "pitched": false,
+    "root": "C3"
+  },
+  "brush-tap": {
+    "instrument": "drums-jazz brush-tap",
+    "pitched": false,
+    "root": "C3"
+  },
+  "kick": {
+    "instrument": "drums-jazz kick",
+    "pitched": false,
+    "root": "C3"
+  },
+  "ride": {
+    "instrument": "drums-jazz ride",
+    "pitched": false,
+    "root": "C3"
+  },
+  "ride-bell": {
+    "instrument": "drums-jazz ride-bell",
+    "pitched": false,
+    "root": "C3"
+  }
+}

@@ -255,10 +255,10 @@ COMMONFILES := \
 	ControlNode.o \
 	I_GUIWindowImp.o \
 	Application.o AppWindow.o SelectProjectDialog.o \
-	NewProjectDialog.o InstrumentListDialog.o GuideDialog.o \
+	NewProjectDialog.o InstrumentListDialog.o RenderToSampleDialog.o GuideDialog.o \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
-	MixerView.o NullView.o \
+	MixerView.o FXView.o NullView.o \
 	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMod.o UIController.o \
 	View.o ModalView.o FieldView.o UIField.o UIIntField.o \
 	UIIntVarOffField.o UIIntVarField.o ViewEvent.o I_Action.o\

@@ -148,11 +148,10 @@ bool MixerService::Clipped() {
 void MixerService::SetPregain(int vol) {
     Mixer *mixer = Mixer::GetInstance();
 
-    fixed masterVolume = fp_mul(i2fp(vol), fl2fp(0.01f));
-
+    // Each track's Mixer level on top of the Project pregain ("Drive")
     for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
-        bus_[i].SetVolume(masterVolume);
-  }
+        bus_[i].SetVolume(fl2fp(vol * 0.01f * mixer->GetGain(i)));
+    }
 };
 
 void MixerService::SetSoftclip(int clip, int gain) {

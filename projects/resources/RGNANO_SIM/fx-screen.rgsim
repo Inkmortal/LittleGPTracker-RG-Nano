@@ -1,0 +1,51 @@
+# FX screen (Mixer, RB+Down): chorus, echo and reverb knobs with their
+# pictures, real units, and how many sounds use each effect. Instruments
+# send to the chorus from their MIX page.
+wait 1500
+expect_view song
+goto fx
+wait 200
+expect_view fx
+expect_screen_text CHORUS
+expect_screen_text 0.3Hz 3.6ms
+expect_screen_text unused
+expect_screen_text ECHO
+expect_screen_text REVERB
+screenshot_app fx-default.bmp
+# Down walks every knob, left column then right
+set speed 0xC0
+expect_screen_text 1.9Hz
+set damp 0x20
+expect_screen_text damp  20
+expect_screen_text how dark the tail gets
+set time 4
+expect_screen_text time  4/16
+# A synth's chorus send, on its MIX page
+goto instrument
+page MIX
+set chorus 0xA0
+expect_screen_text chorus A0
+screenshot_app fx-synth-mix.bmp
+goto fx
+expect_screen_text  1 sound
+screenshot_app fx-edited.bmp
+# Plays through the chorus
+press s 80
+wait 1200
+expect_audio_activity 32
+press s 80
+wait 300
+# The Mixer has the chorus return strip
+goto mixer
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+expect_screen_text CHORUS RETURN  C0
+goto song
+expect_no_error
+quit

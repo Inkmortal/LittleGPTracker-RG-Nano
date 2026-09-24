@@ -1,0 +1,60 @@
+# Render to sample (resampling): LB+Start on a phrase plays it once and
+# records the mix into a new sample on a free instrument.
+wait 1500
+expect_view song
+# The lead track's verse chain
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press d 80
+press d 80
+press d 80
+press d 80
+goto chain
+goto phrase
+wait 200
+down m
+press s 80
+up m
+wait 300
+expect_screen_text RENDER TO SAMPLE
+expect_screen_text rs_01.wav
+screenshot_app render-progress.bmp
+wait 3500
+expect_screen_text saved in instrument
+expect_player_running no
+screenshot_app render-done.bmp
+expect_project_sample rs_01.wav
+# A opens the new instrument, and it plays
+press a 80
+wait 300
+expect_view instrument
+expect_screen_text rs_01.wav
+down n
+down a
+press u 80
+up a
+up n
+wait 400
+expect_audio_activity 32
+down n
+down a
+press d 80
+up a
+up n
+# A second render gets the next name; B cancels and leaves nothing behind
+goto phrase
+down m
+press s 80
+up m
+wait 300
+expect_screen_text rs_02.wav
+press b 80
+wait 300
+expect_player_running no
+expect_view phrase
+goto song
+expect_no_error
+quit

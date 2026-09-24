@@ -1,4 +1,5 @@
 #include "SendFX.h"
+#include "Application/Model/Mixer.h"
 #include "Application/Model/Project.h"
 #include "Application/Player/SyncMaster.h"
 #include "Services/Audio/Audio.h"
@@ -36,6 +37,14 @@ SendFX::SendFX() {
 	delayFeedback_=0.4f ;
 	delayLevel_=1.0f ;
 	delayLp_[0]=delayLp_[1]=0.0f ;
+	chorusBuffer_=0 ;
+	chorusSize_=0 ;
+	chorusWrite_=0 ;
+	chorusPhase_=0.0f ;
+	chorusInc_=0.0f ;
+	chorusDepth_=0.0f ;
+	chorusBase_=0.0f ;
+	memset(chorusIn_,0,sizeof(chorusIn_)) ;
 	memset(muted_,0,sizeof(muted_)) ;
 	memset(reverbIn_,0,sizeof(reverbIn_)) ;
 	memset(delayIn_,0,sizeof(delayIn_)) ;
@@ -60,6 +69,7 @@ SendFX::~SendFX() {
 		for (int i=0;i<SENDFX_ALLPASSES;i++) free(allpasses_[c][i].buffer_) ;
 	}
 	free(delayBuffer_) ;
+	free(chorusBuffer_) ;
 }
 
 void SendFX::SetProject(Project *project) {
@@ -71,6 +81,18 @@ float SendFX::ReverbSizeFromParam(int value) {
 	if (value<0) value=0 ;
 	if (value>255) value=255 ;
 	return value/255.0f ;
+}
+
+float SendFX::ChorusRateFromParam(int value) {
+	if (value<0) value=0 ;
+	if (value>255) value=255 ;
+	return 0.1f*(float)pow(50.0,value/255.0) ;
+}
+
+float SendFX::ChorusDepthMsFromParam(int value) {
+	if (value<0) value=0 ;
+	if (value>255) value=255 ;
+	return 0.5f+7.0f*value/255.0f ;
 }
 
 int SendFX::DelayStepsFromParam(int value) {
@@ -102,6 +124,10 @@ void SendFX::allocate(int sampleRate) {
 	delaySize_=sampleRate*SENDFX_DELAY_SECONDS ;
 	delayBuffer_=(float *)calloc(delaySize_*2,sizeof(float)) ;
 	delayWrite_=0 ;
+	free(chorusBuffer_) ;
+	chorusSize_=sampleRate*SENDFX_CHORUS_MS/1000 ;
+	chorusBuffer_=(float *)calloc(chorusSize_*2,sizeof(float)) ;
+	chorusWrite_=0 ;
 	sampleRate_=sampleRate ;
 	allocated_=true ;
 	Trace::Log("SENDFX","allocated at %d Hz",sampleRate) ;
@@ -119,7 +145,9 @@ void SendFX::Clear() {
 			}
 		}
 		memset(delayBuffer_,0,delaySize_*2*sizeof(float)) ;
+		memset(chorusBuffer_,0,chorusSize_*2*sizeof(float)) ;
 	}
+	memset(chorusIn_,0,sizeof(chorusIn_)) ;
 	memset(reverbIn_,0,sizeof(reverbIn_)) ;
 	memset(delayIn_,0,sizeof(delayIn_)) ;
 	delayLp_[0]=delayLp_[1]=0.0f ;
@@ -146,7 +174,8 @@ void SendFX::SetChannelMuted(int channel,bool muted) {
 	if (channel>=0 && channel<8) muted_[channel]=muted ;
 }
 
-void SendFX::AddSend(int channel,const float *stereo,int frames,float reverb,float delay) {
+void SendFX::AddSend(int channel,const float *stereo,int frames,float reverb,float delay,
+                     float chorus) {
 	if (channel>=0 && channel<8 && muted_[channel]) return ;
 	if (frames>SENDFX_MAX_FRAMES) frames=SENDFX_MAX_FRAMES ;
 	if (reverb>0.0f) {
@@ -162,6 +191,14 @@ void SendFX::AddSend(int channel,const float *stereo,int frames,float reverb,flo
 		const float *src=stereo ;
 		for (int i=0;i<frames*2;i++) {
 			*dst++ += (*src++)*delay ;
+		}
+		hasInput_=true ;
+	}
+	if (chorus>0.0f) {
+		float *dst=chorusIn_ ;
+		const float *src=stereo ;
+		for (int i=0;i<frames*2;i++) {
+			*dst++ += (*src++)*chorus ;
 		}
 		hasInput_=true ;
 	}
@@ -182,6 +219,8 @@ void SendFX::updateSettings() {
 	int damp=0x60 ;
 	int delaySteps=3 ;
 	int delayFeedback=0x70 ;
+	int chorusRate=0x40 ;
+	int chorusDepth=0x70 ;
 	if (project_) {
 		Variable *v=project_->FindVariable(VAR_REVERB_SIZE) ;
 		if (v) size=v->GetInt() ;
@@ -191,10 +230,17 @@ void SendFX::updateSettings() {
 		if (v) delaySteps=v->GetInt() ;
 		v=project_->FindVariable(VAR_DELAY_FEEDBACK) ;
 		if (v) delayFeedback=v->GetInt() ;
+		v=project_->FindVariable(VAR_CHORUS_RATE) ;
+		if (v) chorusRate=v->GetInt() ;
+		v=project_->FindVariable(VAR_CHORUS_DEPTH) ;
+		if (v) chorusDepth=v->GetInt() ;
 	}
 	feedback_=0.7f+ReverbSizeFromParam(size)*0.28f ;
 	damp_=(damp/255.0f)*0.4f ;
 	delayFeedback_=(delayFeedback/255.0f)*0.9f ;
+	chorusInc_=ChorusRateFromParam(chorusRate)/sampleRate_ ;
+	chorusDepth_=ChorusDepthMsFromParam(chorusDepth)*sampleRate_/1000.0f ;
+	chorusBase_=12.0f*sampleRate_/1000.0f ;
 	int tempo=SyncMaster::GetInstance()->GetTempo() ;
 	if (tempo<20) tempo=120 ;
 	// one step is a 16th note
@@ -221,6 +267,8 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 
 	float *rin=reverbIn_ ;
 	float *din=delayIn_ ;
+	float *cin=chorusIn_ ;
+	float chorusReturn=Mixer::GetInstance()->GetGain(MIXER_LEVEL_CHORUS) ;
 	fixed *out=buffer ;
 	float oneMinusDamp=1.0f-damp_ ;
 	// The return sits on the master like a channel bus, so it follows the
@@ -229,6 +277,9 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 	if (project_) {
 		outputGain=project_->GetPregain()/100.0f ;
 	}
+	// Return levels from the Mixer screen
+	float reverbReturn=Mixer::GetInstance()->GetGain(MIXER_LEVEL_REVERB) ;
+	float delayReturn=Mixer::GetInstance()->GetGain(MIXER_LEVEL_DELAY) ;
 	for (int i=0;i<frames;i++) {
 		float wet[2] ;
 
@@ -269,8 +320,27 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 			gain*=(float)fade_/(float)fadeLength_ ;
 			fade_-- ;
 		}
-		wet[0]=(wet[0]+dl)*gain ;
-		wet[1]=(wet[1]+dr)*gain ;
+		// Chorus: each side reads the recent input through its own swept
+		// delay, the two LFOs a quarter cycle apart for width
+		chorusBuffer_[chorusWrite_*2]=cin[0] ;
+		chorusBuffer_[chorusWrite_*2+1]=cin[1] ;
+		float ch[2] ;
+		for (int c=0;c<2;c++) {
+			float lfo=(float)sin(6.28318530718*(chorusPhase_+c*0.25f)) ;
+			float lag=chorusBase_+chorusDepth_*(0.5f+0.5f*lfo) ;
+			float pos=chorusWrite_-lag ;
+			while (pos<0) pos+=chorusSize_ ;
+			int i0=(int)pos ;
+			float frac=pos-i0 ;
+			int i1=(i0+1)%chorusSize_ ;
+			ch[c]=chorusBuffer_[i0*2+c]*(1.0f-frac)+chorusBuffer_[i1*2+c]*frac ;
+		}
+		if (++chorusWrite_>=chorusSize_) chorusWrite_=0 ;
+		chorusPhase_+=chorusInc_ ;
+		if (chorusPhase_>=1.0f) chorusPhase_-=1.0f ;
+
+		wet[0]=(wet[0]*reverbReturn+dl*delayReturn+ch[0]*chorusReturn)*gain ;
+		wet[1]=(wet[1]*reverbReturn+dr*delayReturn+ch[1]*chorusReturn)*gain ;
 		if (wet[0]>2.0f) wet[0]=2.0f ;
 		if (wet[0]<-2.0f) wet[0]=-2.0f ;
 		if (wet[1]>2.0f) wet[1]=2.0f ;
@@ -280,8 +350,10 @@ bool SendFX::Render(fixed *buffer,int samplecount) {
 
 		rin[0]=rin[1]=0.0f ;
 		din[0]=din[1]=0.0f ;
+		cin[0]=cin[1]=0.0f ;
 		rin+=2 ;
 		din+=2 ;
+		cin+=2 ;
 	}
 	for (int i=frames;i<samplecount;i++) {
 		*out++=0 ;

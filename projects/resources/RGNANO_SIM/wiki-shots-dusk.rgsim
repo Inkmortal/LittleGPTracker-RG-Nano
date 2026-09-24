@@ -1,0 +1,32 @@
+# Screenshots for the walkthrough: the Dusk demo (loaded via AUTO_LOAD_LAST).
+wait 1500
+expect_view song
+screenshot_app wiki-dusk-song.bmp
+# Track 5: the chords
+press r 80
+press r 80
+press r 80
+press r 80
+goto chain
+goto phrase
+wait 100
+expect_screen_text I07
+screenshot_app wiki-dusk-chords.bmp
+# Track 6: the hook
+goto chain
+goto song
+press r 80
+goto chain
+goto phrase
+wait 100
+expect_screen_text I08
+screenshot_app wiki-dusk-hook.bmp
+goto chain
+goto song
+goto fx
+wait 200
+expect_screen_text CHORUS
+screenshot_app wiki-fx.bmp
+goto song
+expect_no_error
+quit

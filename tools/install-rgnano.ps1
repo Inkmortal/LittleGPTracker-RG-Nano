@@ -45,7 +45,7 @@ if (-not $NoBuild) {
 # Run the device's own code under qemu-arm: the Windows simulator can't catch
 # device-only bugs like the Nano's broken libm exp()
 $wslRoot = Convert-ToWslPath $root
-foreach ($check in @("math_check.cpp", "synth_release_check.cpp", "mod_check.cpp")) {
+foreach ($check in @("math_check.cpp", "synth_release_check.cpp", "mod_check.cpp", "chorus_check.cpp")) {
   Write-Host "ARM check: $check"
   wsl -e bash -lc "set -o pipefail; cd '$wslRoot' && bash tools/dsp-harness/run.sh tools/dsp-harness/$check 2>&1 | grep -v '^\['"
   if ($LASTEXITCODE -ne 0) { throw "ARM check failed: $check" }
@@ -73,6 +73,14 @@ foreach ($doc in @("RGNANO_USER_MANUAL.md", "RGNANO_INPUT_MAP.md", "TRACKER_BASI
 }
 New-Item -ItemType Directory -Force -Path $tracks | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $applications "Samples") | Out-Null
+# Sample packs: our files are refreshed, anything you added to a pack folder stays
+Get-ChildItem -LiteralPath (Join-Path $projects "resources\samples") -Directory | ForEach-Object {
+  $packDest = Join-Path $applications "Samples\$($_.Name)"
+  New-Item -ItemType Directory -Force -Path $packDest | Out-Null
+  Get-ChildItem -LiteralPath $_.FullName -File | Where-Object { $_.Extension -in ".wav", ".md" } |
+    Copy-Item -Destination $packDest -Force
+}
+Write-Host "  sample packs: $((Get-ChildItem -LiteralPath (Join-Path $projects 'resources\samples') -Directory).Name -join ', ')"
 # Demo songs: a demo you never edited is updated; one you saved over keeps
 # your version. installed.hash remembers what we copied last time.
 function Get-SongHash([string]$folder) {

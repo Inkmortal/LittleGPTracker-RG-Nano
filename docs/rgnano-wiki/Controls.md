@@ -27,7 +27,8 @@ Hold **RB** and press a direction:
 | Table | Instrument table | — | back up | — |
 | Groove | — | — | — | Phrase |
 | Project | — | — | — | Song |
-| Mixer | — | — | Song | — |
+| Mixer | — | — | Song | FX |
+| FX | — | — | Mixer | — |
 
 If a cell is empty, RB + Right tells you to press **A** first.
 
