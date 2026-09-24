@@ -1,0 +1,31 @@
+# A looping sample must also stop: SampleInstrument::Stop() only flips a
+# global flag, so a looped voice has no note-off of its own.
+route boot.new_project_random
+expect_view song
+sim_import_sample_to_instrument 0 lofi-chord.wav
+sim_set_instrument_param 0 loopmode loop
+expect_instrument_param 0 loopmode loop
+press a 80
+goto chain
+press a 80
+goto phrase
+row 00
+press a 80
+
+# The note preview (A) uses the looping sample: it must not run forever
+wait 1000
+reset_audio_stats
+wait 6000
+expect_audio_silence 0
+
+# Play the bar, then stop: silence again
+press s 80
+wait 1500
+press s 80
+wait 1500
+reset_audio_stats
+wait 3000
+expect_audio_silence 0
+
+expect_no_error
+quit

@@ -123,6 +123,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "looping-sample-stops"
+    Script = "looping-sample-stops.rgsim"
+    Args = @("-ResetLastProject", "-SeedLofiFixture")
+  },
+  @{
     Name = "a-press-does-not-climb"
     Script = "a-press-does-not-climb.rgsim"
     Args = @("-ResetLastProject")
