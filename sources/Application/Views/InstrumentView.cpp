@@ -3,6 +3,8 @@
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SynthInstrument.h"
 #include "Application/Instruments/SamplePool.h"
+#include "Application/Instruments/CommandList.h"
+#include "Application/Model/Table.h"
 #include "Application/AppWindow.h"
 #include "Application/Model/Config.h"
 #include "BaseClasses/UIBigHexVarField.h"
@@ -754,23 +756,26 @@ void InstrumentView::drawSampleLabVisuals() {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 		drawSampleWaveform(instrument,10,36,220,52,true);
 		sprintf(line,"EDIT %-5s PREV:%s",getWaveMarkerName(),previewLoop_?"LOOP":"ONCE");
-		drawLabText((40-(int)strlen(line))/2,12,line,props);
+		drawLabText((30-(int)strlen(line))/2,12,line,props);
 		sprintf(line,"S%05X L%05X E%05X",start,loopStart,loopEnd);
-		drawLabText((40-(int)strlen(line))/2,13,line,props);
+		drawLabText((30-(int)strlen(line))/2,13,line,props);
 		if (labPage_==0) {
-			const char *sampleName=GetVarString(instrument,SIP_SAMPLE);
-			char name[25];
-			strncpy(name,sampleName,24);
-			name[24]=0;
-			drawLabText(2,14,name,props);
+			// What the recording is (its name is in the list below)
+			int index=instrument->GetSampleIndex();
+			SamplePool *pool=SamplePool::GetInstance();
+			SoundSource *source=(index>=0 && index<pool->GetNameListSize())?pool->GetSource(index):0;
+			if (source && source->GetSampleRate(-1)>0) {
+				int rate=source->GetSampleRate(-1);
+				float seconds=source->GetSize(-1)/(float)rate;
+				sprintf(line,"%.2f s  %s  %.1f kHz",seconds,
+				        source->GetChannelCount(-1)>1?"stereo":"mono",rate/1000.0f);
+				drawLabText((30-(int)strlen(line))/2,14,line,props);
+			}
 			int suggestedRoot=instrument->GetSuggestedRootNote();
 			if (suggestedRoot>=0) {
 				sprintf(line,"suggest root %03d Sel",suggestedRoot);
 				drawLabText(2,15,line,props);
 			}
-		} else {
-			sprintf(line,"mode %d S%05X L%05X E%05X",GetVarInt(instrument,SIP_LOOPMODE),start,loopStart,loopEnd);
-			drawLabText(2,14,line,props);
 		}
 #else
 		char wave[25];
@@ -823,9 +828,6 @@ void InstrumentView::drawSampleLabVisuals() {
 		SetColor(CD_NORMAL);
 		drawLabText(2,11,"GRIT",props);
 		drawPixelLabBar(barX,88,barW,14,16-GetVarInt(instrument,SIP_CRUSH)+GetVarInt(instrument,SIP_DOWNSMPL)*2,31);
-		SetColor(CD_NORMAL);
-		sprintf(line,"drive %02X down %d interp %d",GetVarInt(instrument,SIP_CRUSHVOL),GetVarInt(instrument,SIP_DOWNSMPL),GetVarInt(instrument,SIP_INTERPOLATION));
-		drawLabText(2,14,line,props);
 #else
 		DrawString(3,5,"VOL",props);
 		drawLabBar(8,5,16,GetVarInt(instrument,SIP_VOLUME),255);
@@ -857,9 +859,6 @@ void InstrumentView::drawSampleLabVisuals() {
 		SetColor(CD_NORMAL);
 		drawLabText(2,11,"TYPE",props);
 		drawPixelLabBar(barX,88,barW,14,GetVarInt(instrument,SIP_FILTMIX),255);
-		SetColor(CD_NORMAL);
-		sprintf(line,"mode %d atten %02X",GetVarInt(instrument,SIP_FILTMODE),GetVarInt(instrument,SIP_ATTENUATE));
-		drawLabText(2,14,line,props);
 #else
 		DrawString(3,5,"CUT",props);
 		drawLabBar(8,5,16,GetVarInt(instrument,SIP_FILTCUTOFF),255);
@@ -885,25 +884,39 @@ void InstrumentView::drawSampleLabVisuals() {
 		}
 	} else {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
-		SetColor(CD_NORMAL);
-		drawLabText(17,5,"TABLE",props);
+		// The instrument's table: 16 steps down three command columns, a
+		// filled cell where a step has a command
 		int table=GetVarInt(instrument,SIP_TABLE);
-		const int motionCount=8;
-		const int motionW=14;
-		const int motionStep=23;
-		const int motionTotal=(motionCount-1)*motionStep+motionW;
-		const int motionStart=(240-motionTotal)/2;
-		for (int step=0; step<8; step++) {
-			int x=motionStart+step*motionStep;
-			int y=48+((step%2)?10:0);
-			drawPixelLabBar(x,y,14,42,(step*37+GetVarInt(instrument,SIP_FBTUNE))&0xFF,255);
+		SetColor(CD_HILITE1);
+		if (table<0 || table>=TABLE_COUNT) {
+			drawLabText(2,6,"no table yet",props);
+			SetColor(CD_NORMAL);
+			drawLabText(2,8,"table: pick one below,",props);
+			drawLabText(2,9,"A on it makes a new one",props);
+		} else {
+			sprintf(line,"TABLE %02X  auto %s",table,GetVarInt(instrument,SIP_TABLEAUTO)?"on":"off");
+			drawLabText(2,5,line,props);
+			Table &t=TableHolder::GetInstance()->GetTable(table);
+			FourCC *lanes[3]={t.cmd1_,t.cmd2_,t.cmd3_};
+			SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
+			GUIColor off=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,40);
+			GUIColor on=AppWindow::ThemeColor(CD_HILITE2);
+			GUIColor beat=AppWindow::ThemeColor(CD_NORMAL);
+			const int cell=13;
+			const int gx=(240-16*cell)/2;
+			for (int lane=0;lane<3;lane++) {
+				int gy=56+lane*14;
+				for (int step=0;step<TABLE_STEPS;step++) {
+					bool used=lanes[lane][step]!=I_CMD_NONE;
+					imp->SetColor(used?((step%4)==0?beat:on):off);
+					GUIRect r(gx+step*cell,gy,gx+step*cell+cell-2,gy+10);
+					imp->DrawRect(r);
+				}
+			}
+			SetColor(CD_NORMAL);
+			drawLabText(2,13,"3 columns, 1 step per tick",props);
 		}
 		SetColor(CD_NORMAL);
-		sprintf(line,"auto %s table %02X",GetVarInt(instrument,SIP_TABLEAUTO)?"on":"off",table<0?0:table);
-		drawLabText(2,13,line,props);
-		SetColor(CD_NORMAL);
-		sprintf(line,"fb tune %02X mix %02X",GetVarInt(instrument,SIP_FBTUNE),GetVarInt(instrument,SIP_FBMIX));
-		drawLabText(2,15,line,props);
 #else
 		DrawString(3,5,"INST TABLE MOTION",props);
 		int table=GetVarInt(instrument,SIP_TABLE);
