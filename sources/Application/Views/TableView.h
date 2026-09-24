@@ -74,7 +74,7 @@ class TableView : public View {
 
     uchar lastPosition_[3];
 
-#ifdef PLATFORM_RGNANO
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     int horizontalScrollOffset_;  // For horizontal scrolling on narrow screens
 #endif
 };

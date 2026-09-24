@@ -4,7 +4,7 @@ Same song map as NEON DRIVE (intro, verse, chorus, break, build, chorus,
 outro) so the two projects can be compared screen by screen. The sounds are
 recordings (projects/resources/samples/chinese, credits in CREDITS.md):
 - guzheng: flowing broken chords and pentatonic glissandos
-- pipa: tremolo picking (RTRG) on the chorus counter-melody
+- pipa: plucked off-beat comping under the second chorus
 - erhu and dizi: the singing lines, with grace notes and trills
 - dagu drum, Beijing-opera clapper drum, small gong, cymbals and the big
   opera gong instead of a drum kit
@@ -75,12 +75,16 @@ def glissando(start: int = 0, first: int = 3) -> Phrase:
     return p
 
 
-def pipa_tremolo(text: str) -> Phrase:
-    """Pipa lunzhi: every note is a fast tremolo."""
+def pipa_pluck(text: str, soft: int = 0x60) -> Phrase:
+    """Pipa plucks on the off-beats, every other one softer, like a hand
+    comping under the melody (no retrigger: on a recording that stutters)."""
     p = Phrase.parse(text, PIPA)
+    k = 0
     for i, s in enumerate(p.steps):
         if s.note != 0xFF:
-            p.command(i, "RTRG", 0x0004)
+            if k % 2:
+                p.command(i, "VOLM", soft)
+            k += 1
     return p
 
 
@@ -111,7 +115,7 @@ def build() -> Project:
     p.sample(NAOBO, SAMPLES / "naobo.wav", "C3", volume=0x80, reverb=0x50)
     p.sample(WOOD, SAMPLES / "woodblock.wav", "C3", volume=0x90, pan=0x50, reverb=0x30)
     p.sample(GUZHENG, SAMPLES / "guzheng.wav", "A2", volume=0xB0, pan=0x60, reverb=0x70, delay=0x28)
-    p.sample(PIPA, SAMPLES / "pipa.wav", "A3", volume=0xB0, pan=0x98, reverb=0x60)
+    p.sample(PIPA, SAMPLES / "pipa.wav", "A3", volume=0x90, pan=0x98, reverb=0x60)
     p.sample(ERHU, SAMPLES / "erhu.wav", "D4", volume=0x88, reverb=0x70, delay=0x30)
     p.sample(ERHU_LOW, SAMPLES / "erhu-low.wav", "D3", volume=0x88, reverb=0x70, delay=0x30)
     p.sample(DIZI, SAMPLES / "dizi.wav", "E4", volume=0x98, reverb=0x80, delay=0x40)
@@ -151,7 +155,7 @@ def build() -> Project:
     wood_v = p.chain([wood] * 4)
     opera_v = p.chain([luogu_verse] * 4)
     opera_c = p.chain([luogu_chorus, luogu_chorus, luogu_chorus, luogu_run])
-    opera_build = p.chain([luogu_verse, luogu_verse, luogu_run, luogu_run])
+    opera_build = p.chain([luogu_verse, luogu_verse, luogu_chorus, luogu_run])
 
     gong_hit = Phrase.parse("C3 . . . . . . . . . . . . . . .", GONG)
     gong_chorus = p.chain([gong_hit, rest(), rest(), rest()])
@@ -198,22 +202,24 @@ def build() -> Project:
         erhu("D4 E4 . . D4 . E4 . G4 . . . E4 . D4 ."),
         erhu("C4 . . D4 . . G3 A3 . . . . - . . ."),
     ])
-    # Pipa tremolo counter-melody under the second chorus
+    # Pipa comping under the second chorus: chord tones on the off-beats
     pipa_c = p.chain([
-        pipa_tremolo("A3 . . . . . . . C4 . . . . . . ."),
-        pipa_tremolo("D4 . . . . . . . E4 . . . . . . ."),
-        pipa_tremolo("G3 . . . . . . . E3 . . . . . . ."),
-        pipa_tremolo("A3 . . . . . . . . . . . - . . ."),
+        pipa_pluck(". . A3 . . . C4 . . . A3 . . . C4 ."),   # F
+        pipa_pluck(". . G3 . . . D4 . . . G3 . . . D4 ."),   # G
+        pipa_pluck(". . E3 . . . G3 . . . E3 . . . G3 ."),   # Em
+        pipa_pluck(". . A3 . . . C4 . . . E4 . - . . ."),    # Am
     ])
-    # Break: guzheng alone with tremolo on the long notes, erhu from afar
-    trem = Phrase.parse("A3 . . C4 . . E4 . . . . . . . . .", GUZHENG)
-    trem.command(6, "RTRG", 0x0004)
-    trem2 = Phrase.parse("D4 . . . . . . . C4 . . . A3 . . .", GUZHENG)
-    trem2.command(0, "RTRG", 0x0004)
-    trem3 = Phrase.parse("E4 . . . . . . . D4 . C4 . . . . .", GUZHENG)
-    trem3.command(0, "RTRG", 0x0004)
-    trem4 = Phrase.parse("A3 . . . . . . . . . . . . . . .", GUZHENG)
-    trem4.command(0, "RTRG", 0x0006)
+    # Break: guzheng alone, each long note plucked again softly as it fades,
+    # erhu from afar
+    def zheng_line(text: str, echoes: dict[int, int]) -> Phrase:
+        ph = Phrase.parse(text, GUZHENG)
+        for step, vol in echoes.items():
+            ph.command(step, "VOLM", vol)
+        return ph
+    trem = zheng_line("A3 . . C4 . . E4 . . . E4 . . . . .", {10: 0x50})
+    trem2 = zheng_line("D4 . . . D4 . . . C4 . . . A3 . . .", {4: 0x50})
+    trem3 = zheng_line("E4 . . . E4 . . . D4 . C4 . . . . .", {4: 0x50})
+    trem4 = zheng_line("A3 . . . . . . . A3 . . . . . . .", {8: 0x40})
     zheng_break = p.chain([trem, trem2, trem3, trem4])
     erhu_break = p.chain([rest(),
                           erhu(". . . . . . . . G3:50 A3:50 . . . . . ."),

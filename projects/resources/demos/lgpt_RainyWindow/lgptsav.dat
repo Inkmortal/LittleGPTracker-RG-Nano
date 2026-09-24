@@ -1124,11 +1124,22 @@
             <PARAM NAME="volume" VALUE="112" />
         </INSTRUMENT>
         <INSTRUMENT ID="05" TYPE="Synth">
-            <PARAM NAME="preset" VALUE="bell" />
-            <PARAM NAME="fm amount" VALUE="64" />
-            <PARAM NAME="reverb" VALUE="144" />
-            <PARAM NAME="delay" VALUE="96" />
-            <PARAM NAME="volume" VALUE="72" />
+            <PARAM NAME="preset" VALUE="lead" />
+            <PARAM NAME="wave" VALUE="sine" />
+            <PARAM NAME="attack" VALUE="72" />
+            <PARAM NAME="decay" VALUE="176" />
+            <PARAM NAME="sustain" VALUE="152" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="glide" VALUE="24" />
+            <PARAM NAME="cutoff" VALUE="144" />
+            <PARAM NAME="reso" VALUE="0" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="156" />
+            <PARAM NAME="lfo amount" VALUE="5" />
+            <PARAM NAME="reverb" VALUE="128" />
+            <PARAM NAME="delay" VALUE="56" />
+            <PARAM NAME="volume" VALUE="80" />
         </INSTRUMENT>
         <INSTRUMENT ID="06" TYPE="Synth">
             <PARAM NAME="preset" VALUE="init" />

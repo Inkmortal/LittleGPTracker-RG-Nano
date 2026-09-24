@@ -97,7 +97,7 @@ void PhraseView::updateCursor(int dx, int dy) {
             row_ = 0;
         }
     }
-    GUIPoint anchor = GetAnchor();
+    GUIPoint anchor = gridAnchor();
     GUIPoint p(anchor);
     switch (col_) {
     case 3:
@@ -1274,6 +1274,30 @@ void PhraseView::setTextProps(GUITextProperties &props, int row, int col,
     }
 };
 
+// Top-left of the note column; every part of the grid (edit field, play
+// position) must use this so they line up
+GUIPoint PhraseView::gridAnchor() {
+    GUIPoint anchor = GetAnchor();
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+    // Shift entire phrase view left by 1 to prevent rightmost column cutoff
+    anchor._x -= 1;
+#endif
+    return anchor;
+}
+
+void PhraseView::drawRowNumber(int row, int color, bool invert) {
+    GUIPoint anchor = gridAnchor();
+    GUITextProperties props;
+    props.invert_ = invert;
+    // A phrase is always 16 steps, so one hex digit is enough; the space
+    // after it keeps the notes readable and lights up with the digit when
+    // that step is playing
+    static const char digits[] = "0123456789ABCDEF";
+    char buffer[3] = {digits[row & 0xF], ' ', 0};
+    SetColor((ColorDefinition)color);
+    DrawString(anchor._x - 2, anchor._y + row, buffer, props);
+}
+
 void PhraseView::DrawView() {
 
     Clear();
@@ -1292,23 +1316,13 @@ void PhraseView::DrawView() {
 
     // Compute song grid location
 
-    GUIPoint anchor = GetAnchor();
-
-#ifdef PLATFORM_RGNANO
-    // Shift entire phrase view left by 1 to prevent rightmost column cutoff
-    anchor._x -= 1;
-#endif
+    GUIPoint anchor = gridAnchor();
 
     // Display row numbers
 
     char buffer[6];
-    pos = anchor;
-    pos._x -= 3;
     for (int j = 0; j < 16; j++) {
-        ((j / altRowNumber_) % 2) ? SetColor(CD_ROW) : SetColor(CD_ROW2);
-        hex2char(j, buffer);
-        DrawString(pos._x, pos._y, buffer, props);
-        pos._y++;
+        drawRowNumber(j, ((j / altRowNumber_) % 2) ? CD_ROW : CD_ROW2, false);
     }
 
     SetColor(CD_NORMAL);
@@ -1485,43 +1499,44 @@ void PhraseView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
     drawNotes();
     View::drawMiniWaveform(eventType == PET_STOP);
 
-    GUIPoint anchor = GetAnchor();
+    GUIPoint anchor = gridAnchor();
     GUIPoint pos = anchor;
     pos._x -= 1;
 
-    SetColor(CD_NORMAL);
-
-    pos._y = anchor._y + lastPlayingPos_;
+    // The playing step is shown by lighting up its row number, so nothing
+    // is drawn next to (or over) the notes
+    GUIPoint rowPos(anchor._x - 2, anchor._y + lastPlayingPos_);
     if (!commandSelectorModalActive_ ||
-        !CommandSelectorCommon::popupContainsPoint(anchor, pos._x, pos._y)) {
-        DrawString(pos._x, pos._y, " ", props);
+        !CommandSelectorCommon::popupContainsPoint(anchor, rowPos._x,
+                                                   rowPos._y)) {
+        drawRowNumber(lastPlayingPos_,
+                      ((lastPlayingPos_ / altRowNumber_) % 2) ? CD_ROW
+                                                              : CD_ROW2,
+                      false);
     }
+    SetColor(CD_NORMAL);
 
     Player *player = Player::GetInstance();
 
     if (eventType != PET_STOP) {
-
-        // Clear current position if needed
 
         for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
             if (player->IsChannelPlaying(i)) {
                 if (viewData_->currentPlayPhrase_[i] ==
                         viewData_->currentPhrase_ &&
                     viewData_->playMode_ != PM_AUDITION) {
-                    pos._y = anchor._y + viewData_->phrasePlayPos_[i];
+                    int playRow = viewData_->phrasePlayPos_[i];
+                    rowPos._y = anchor._y + playRow;
                     if (!commandSelectorModalActive_ ||
                         !CommandSelectorCommon::popupContainsPoint(
-                            anchor, pos._x, pos._y)) {
-                        if (!player->IsChannelMuted(i)) {
-                            SetColor(CD_PLAY);
-                            DrawString(pos._x, pos._y, ">", props);
-                        } else {
-                            SetColor(CD_MUTE);
-                            DrawString(pos._x, pos._y, "-", props);
-                        }
+                            anchor, rowPos._x, rowPos._y)) {
+                        drawRowNumber(playRow,
+                                      player->IsChannelMuted(i) ? CD_MUTE
+                                                                : CD_PLAY,
+                                      true);
                     }
                     SetColor(CD_NORMAL);
-                    lastPlayingPos_ = viewData_->phrasePlayPos_[i];
+                    lastPlayingPos_ = playRow;
                     break;
                 }
             }

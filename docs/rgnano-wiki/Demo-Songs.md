@@ -39,10 +39,10 @@ Neon Drive's song map re-scored for a martial-arts epic, played on **recordings 
 | --- | --- |
 | 1 | dagu (big drum) with rim hits |
 | 2 | Beijing-opera percussion: bangu clapper drum, small gong, cymbals |
-| 3 | temple block in the verses, pipa tremolo in the second chorus |
+| 3 | temple block in the verses, pipa plucks in the second chorus |
 | 4 | sub bass on the chord roots (synth) |
 | 5 | soft string pad (synth) |
-| 6 | guzheng — flowing broken chords, glissandos, tremolo |
+| 6 | guzheng — flowing broken chords and glissandos |
 | 7 | erhu — the chorus melody |
 | 8 | dizi flute in the verses, the big opera gong on section starts |
 
@@ -50,7 +50,7 @@ Neon Drive's song map re-scored for a martial-arts epic, played on **recordings 
 - **Every melody uses only A C D E G** — the pentatonic scale is what makes it sound Chinese.
 - **Sample instruments** — open any of them: each plays one recording, repitched from its `root` note. Erhu and dizi have two recordings each (low and high) so no note is stretched too far.
 - **Grace notes** — a quick step into a melody note (`D4 E4` at the start of a bar) is how erhu and dizi players ornament.
-- **Pipa and guzheng tremolo** — `RTRG 0004` retriggers the note every four ticks. Smaller numbers are faster; `0002` was too fast to hear as separate notes.
+- **Soft second plucks** — in the break the guzheng plucks its long notes again with `VOLM 50`, like a player letting the string ring. (Fast `RTRG` on a recorded instrument stutters, so it's saved for drums.)
 - **Glissando** — a fast pentatonic run with rising `VOLM` before the chorus.
 - **Opera percussion on one track** — each step picks its own instrument (clapper, small gong, cymbals).
 

@@ -123,7 +123,7 @@ ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 		position._x = 1;
 	}
 
-#ifdef PLATFORM_RGNANO
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	// Shift menu up by 2 lines for consistency with instrument menu
 	position._y -= 2;
 #endif

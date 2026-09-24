@@ -82,6 +82,7 @@ class SongView : public View {
     bool needClear_;
     bool canDeepClone_;
     void nudgeTempo(int direction);
+    void drawSideMeters(bool force);
     uint8_t jumpLength_; // When jumping columns with B
 };
 

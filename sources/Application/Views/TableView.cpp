@@ -35,7 +35,7 @@ TableView::TableView(GUIWindow &w, ViewData *viewData)
     clipboard_.width_ = 0;
     clipboard_.height_ = 0;
 
-#ifdef PLATFORM_RGNANO
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     horizontalScrollOffset_ = 0;
 #endif
 }
@@ -46,7 +46,7 @@ void TableView::OnFocus() {
     clipboard_.active_ = false;
     viewMode_ = VM_NORMAL;
     lastPosition_[0] = lastPosition_[1] = lastPosition_[2] = 0;
-#ifdef PLATFORM_RGNANO
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     horizontalScrollOffset_ = 0;  // Reset scroll position when entering view
 #endif
     updateCursor(0, 0);
@@ -365,7 +365,7 @@ void TableView::updateCursor(int dx, int dy) {
         break;
     };
 
-#ifdef PLATFORM_RGNANO
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     // Auto-scroll horizontally - only scroll when reaching rightmost column
     // Scroll by 1 column (4 chars) at a time
     // Columns 0-3: offset 0 (show cmd1, param1, cmd2, param2, and start of cmd3)
@@ -875,7 +875,7 @@ void TableView::DrawView() {
 
     GUIPoint anchor = GetAnchor();
 
-#ifdef PLATFORM_RGNANO
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     // Apply horizontal scroll offset for narrow screens
     anchor._x += horizontalScrollOffset_;
 #endif

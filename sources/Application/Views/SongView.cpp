@@ -7,6 +7,11 @@
 #include "System/Console/Trace.h"
 #include "System/System/System.h"
 #include "UIController.h"
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+#include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
+#include "Application/AppWindow.h"
+#include <SDL/SDL.h>
+#endif
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
@@ -1043,7 +1048,7 @@ void SongView::DrawView() {
 
     drawMap();
     drawNotes();
-    drawMiniMeters();
+    drawSideMeters(true);
     drawMiniWaveform(true);
 
     if (player->IsRunning()) {
@@ -1187,8 +1192,81 @@ void SongView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
         DrawString(pos._x, pos._y, strbuffer, props);
     }
     drawNotes();
-    drawMiniMeters();
+    drawSideMeters(eventType == PET_STOP);
 };
+
+// Level meters in the strip right of the grid: one thin bar per track,
+// like a mixer's meter bridge. Empty slots stay visible when stopped.
+void SongView::drawSideMeters(bool force) {
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+    if (!ultraCompactLayout_) {
+        return;
+    }
+    static int shown[SONG_CHANNEL_COUNT];
+    static unsigned int lastDrawMs = 0;
+    unsigned int now = SDL_GetTicks();
+    if (!force && lastDrawMs != 0 && now - lastDrawMs < 33) {
+        return;
+    }
+    lastDrawMs = now;
+
+    GUIPoint anchor = GetAnchor();
+    const int barWidth = 3;
+    const int step = 4;
+    // Right after the last track's two-digit column
+    const int x0 = (anchor._x + SONG_CHANNEL_COUNT * 3 - 1) * 8;
+    const int top = anchor._y * 8 + 1;
+    const int bottom = (anchor._y + View::songRowCount_) * 8 - 2;
+    if (x0 + SONG_CHANNEL_COUNT * step > w_.GetRect().Width()) {
+        return;
+    }
+
+    SDLGUIWindowImp *imp = (SDLGUIWindowImp *)w_.GetImpWindow();
+    Player *player = Player::GetInstance();
+    MixerService *mixer = MixerService::GetInstance();
+    bool live = player->IsRunning() && viewData_->playMode_ != PM_AUDITION;
+    GUIColor slot = AppWindow::ThemeBlend(CD_BACKGROUND, CD_BORDER, 30);
+    GUIColor level = AppWindow::ThemeColor(CD_PLAY);
+    GUIColor current = AppWindow::ThemeColor(CD_HILITE2);
+    GUIColor hot = AppWindow::ThemeColor(CD_CURSOR);
+    GUIColor muted = AppWindow::ThemeColor(CD_MUTE);
+
+    for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
+        int target = 0;
+        if (live && player->IsChannelPlaying(i)) {
+            target = mixer->GetBusPeakPercent(i);
+        }
+        // Fast attack, slow fall so the bars read smoothly
+        shown[i] = (target > shown[i]) ? target : shown[i] - 4;
+        if (shown[i] < 0) {
+            shown[i] = 0;
+        }
+        int x = x0 + i * step;
+        imp->SetColor(slot);
+        GUIRect slotRect(x, top, x + barWidth, bottom);
+        imp->DrawRect(slotRect);
+        int h = ((bottom - top) * shown[i]) / 100;
+        if (h <= 0) {
+            continue;
+        }
+        GUIColor fill = level;
+        if (player->IsChannelMuted(i)) {
+            fill = muted;
+        } else if (i == viewData_->songX_) {
+            fill = current;
+        }
+        imp->SetColor(fill);
+        GUIRect fillRect(x, bottom - h, x + barWidth, bottom);
+        imp->DrawRect(fillRect);
+        // Amber cap near full scale
+        if (shown[i] >= 90) {
+            imp->SetColor(hot);
+            GUIRect capRect(x, bottom - h, x + barWidth, bottom - h + 2);
+            imp->DrawRect(capRect);
+        }
+    }
+#endif
+}
 
 void SongView::nudgeTempo(int direction) {
     ApplicationCommandDispatcher *dispatcher =

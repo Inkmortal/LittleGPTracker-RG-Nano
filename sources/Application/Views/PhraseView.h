@@ -61,6 +61,8 @@ class PhraseView : public View {
     bool commandSelectorModalActive_;
     Phrase *phrase_;
     int lastPlayingPos_;
+    GUIPoint gridAnchor();
+    void drawRowNumber(int row, int color, bool invert);
     Variable cmdEdit_;
     UIBigHexVarField *cmdEditField_;
     void printHelpLegend(FourCC command, GUITextProperties props);

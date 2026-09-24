@@ -124,7 +124,7 @@ void InstrumentView::fillSampleParameters() {
 		position._x = 1;
 	}
 
-#ifdef PLATFORM_RGNANO
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	// Shift menu up by 3 lines to fit more fields on screen
 	position._y -= 3;
 #endif

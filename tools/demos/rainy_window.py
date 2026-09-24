@@ -10,7 +10,7 @@ Teaching points:
 from lgpt_composer import Phrase, Project
 from _patterns import chord_bar, rest, voice_progression
 
-KICK, SNARE, HAT, BASS, KEYS, BELL, VINYL, RIM = range(8)
+KICK, SNARE, HAT, BASS, KEYS, FLUTE, VINYL, RIM = range(8)
 
 PROG = ["Gm7", "C7", "Fmaj7", "Dm7"]
 PROG_B = ["Bbmaj7", "Am7", "Gm7", "C7"]
@@ -40,7 +40,10 @@ def build() -> Project:
     p.synth(HAT, "hat", cutoff=0xB0, decay=0x60, volume=0xD0)
     p.synth(BASS, "subbass", volume=0x44)
     p.synth(KEYS, "keys", cutoff=0xB0, reverb=0x70, lfo_amount=0x18, volume=0x70)
-    p.synth(BELL, "bell", fm_amount=0x40, reverb=0x90, delay=0x60, volume=0x48)
+    # Soft breathy lead: plain sine, slow attack, a little vibrato
+    p.synth(FLUTE, "lead", wave="sine", attack=0x48, decay=0xB0, sustain=0x98, release=0xA0,
+            glide=0x18, cutoff=0x90, reso=0, env_amount=0, lfo_dest="pitch", lfo_rate=0x9C,
+            lfo_amount=0x05, reverb=0x80, delay=0x38, volume=0x50)
     p.synth(VINYL, "init", wave="noise", shape=0xF0, sub=0, attack=0x80, decay=0xFF,
             sustain=0xFF, release=0xA0, filter="highpass", cutoff=0xB0, env_amount=0, volume=0x18)
     p.synth(RIM, "perc", volume=0x60, reverb=0x50)
@@ -82,22 +85,22 @@ def build() -> Project:
     ])
 
     melody_a = p.chain([
-        Phrase.parse(". . . . D4 . F4 . . . G4 . . . . .", BELL),
-        Phrase.parse("E4 . . . . . . . . . . . . . . .", BELL),
-        Phrase.parse(". . . . C4 . D4 . . . E4 . . . . .", BELL),
-        Phrase.parse("A3 . . . . . . . . . . . - . . .", BELL),
+        Phrase.parse(". . . . D4 . F4 . . . G4 . . . . .", FLUTE),
+        Phrase.parse("E4 . . . . . . . . . . . . . . .", FLUTE),
+        Phrase.parse(". . . . C4 . D4 . . . E4 . . . . .", FLUTE),
+        Phrase.parse("A3 . . . . . . . . . . . - . . .", FLUTE),
     ])
     melody_a2 = p.chain([
-        Phrase.parse(". . . . D4 . F4 . . . A4 . G4 . . .", BELL),
-        Phrase.parse("E4 . . . . . G4 . . . E4 . . . . .", BELL),
-        Phrase.parse(". . . . C4 . D4 . . . E4 . C4 . . .", BELL),
-        Phrase.parse("D4 . . . . . . . . . - . . . . .", BELL),
+        Phrase.parse(". . . . D4 . F4 . . . A4 . G4 . . .", FLUTE),
+        Phrase.parse("E4 . . . . . G4 . . . E4 . . . . .", FLUTE),
+        Phrase.parse(". . . . C4 . D4 . . . E4 . C4 . . .", FLUTE),
+        Phrase.parse("D4 . . . . . . . . . - . . . . .", FLUTE),
     ])
     melody_b = p.chain([
-        Phrase.parse("D4 . . . F4 . . . A4 . . . . . . .", BELL),
-        Phrase.parse("G4 . . . . . E4 . . . C4 . . . . .", BELL),
-        Phrase.parse("D4 . . . . . F4 . . . . . . . . .", BELL),
-        Phrase.parse("E4 . . . . . . . . . - . . . . .", BELL),
+        Phrase.parse("D4 . . . F4 . . . A4 . . . . . . .", FLUTE),
+        Phrase.parse("G4 . . . . . E4 . . . C4 . . . . .", FLUTE),
+        Phrase.parse("D4 . . . . . F4 . . . . . . . . .", FLUTE),
+        Phrase.parse("E4 . . . . . . . . . - . . . . .", FLUTE),
     ])
 
     rows = [
