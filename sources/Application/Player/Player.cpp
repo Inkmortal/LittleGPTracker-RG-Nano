@@ -216,6 +216,9 @@ void Player::Start(PlayMode mode,bool forceSongMode) {
 
  }
 
+// Longest a preview note sounds before it releases itself
+#define AUDITION_MAX_SECONDS 4.0
+
 void Player::AuditionInstrument(int instrument,int note) {
 	if (!project_ || !viewData_) {
 		return;
@@ -245,6 +248,8 @@ void Player::AuditionInstrument(int instrument,int note) {
 		mixer_->StartChannel(channel);
 		mixer_->StopInstrument(channel);
 		mixer_->StartInstrument(channel,instr,(unsigned char)note,true);
+		// The preview's own clock: it releases itself after a few seconds
+		startTime_=mixer_->GetAudioOut()->GetStreamTime();
 		isRunning_=true;
 		SetChanged();
 		PlayerEvent pe(PET_START);
@@ -380,6 +385,10 @@ void Player::OnStartButton(PlayMode origin,unsigned int from,bool startFromPrevi
 			if (isRunning_ && viewData_->playMode_ != PM_AUDITION) {
 				Stop() ;
 			} else {
+				// Silence a preview before playing, so it cannot hang on
+				if (isRunning_) {
+					Stop() ;
+				}
 				for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
         			liveQueueingMode_[i]=QM_NONE ;
 				} ;
@@ -409,6 +418,9 @@ void Player::OnSongStartButton(unsigned int from,unsigned int to,bool requestSto
 					retrigAllImmediate_=true ;
 				}
 			} else {
+				if (isRunning_) {
+					Stop() ;  // a preview was still sounding
+				}
 				for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
         			liveQueueingMode_[i]=QM_NONE ;
 				} ;
@@ -589,8 +601,13 @@ void Player::Update(Observable &o,I_ObservableData *d) {
 				retrigAllImmediate_=false ;
 			}
 			// Don't advance in audition mode
-			if (viewData_->playMode_ != PM_AUDITION)
+			if (viewData_->playMode_ != PM_AUDITION) {
 				moveToNextStep() ;
+			} else if (GetPlayTime() > AUDITION_MAX_SECONDS) {
+				// A preview note has no note-off of its own: end it here,
+				// or a pad or held sample would ring until the app quits
+				Stop() ;
+			}
 			if (triggerLiveChains_) {
 				triggerLiveChains() ;
 			} ;

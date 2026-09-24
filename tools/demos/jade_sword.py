@@ -49,6 +49,11 @@ def dizi(text: str) -> Phrase:
     return line(text, DIZI, DIZI_HIGH, "G4")
 
 
+def breathe(p: Phrase, step: int = 14) -> Phrase:
+    """Release the note before the bar ends, so nothing drones on forever."""
+    return p.command(step, "KILL", 0)
+
+
 def zheng_flow(voicing) -> Phrase:
     """8th-note broken chord that rises and falls, like a zither hand."""
     tones = [voicing[0] - 12, voicing[0], voicing[1], voicing[2], voicing[0] + 12]
@@ -75,7 +80,7 @@ def pipa_tremolo(text: str) -> Phrase:
     p = Phrase.parse(text, PIPA)
     for i, s in enumerate(p.steps):
         if s.note != 0xFF:
-            p.command(i, "RTRG", 0x0002)
+            p.command(i, "RTRG", 0x0004)
     return p
 
 
@@ -118,8 +123,10 @@ def build() -> Project:
 
     # --- synth bed ------------------------------------------------------------
     p.synth(BASS, "subbass", volume=0x50)
-    p.synth(STRINGS, "pad", shape=0x40, attack=0xB0, cutoff=0x68, glide=0x04, reverb=0xA0,
-            lfo_dest="pitch", lfo_rate=0x98, lfo_amount=0x06, volume=0x34)
+    # sustain/release kept short so each chord fades instead of droning
+    p.synth(STRINGS, "pad", shape=0x40, attack=0xA0, sustain=0xB0, release=0x9C,
+            cutoff=0x68, glide=0x04, reverb=0xA0,
+            lfo_dest="pitch", lfo_rate=0x98, lfo_amount=0x06, volume=0x38)
 
     # --- drums ----------------------------------------------------------------
     drum_verse = Phrase.merge(Phrase.drums("x.......x...x...", DRUM),
@@ -152,7 +159,7 @@ def build() -> Project:
 
     # --- bass: sub notes on the roots ------------------------------------------
     def roots(names, rhythm):
-        return [Phrase.parse(rhythm.replace("R", n), BASS) for n in names]
+        return [breathe(Phrase.parse(rhythm.replace("R", n), BASS)) for n in names]
     verse_bass = p.chain(roots(["A2", "F2", "C3", "G2"], "R . . . . . . . . . R . . . . ."))
     chorus_bass = p.chain(roots(["F2", "G2", "E2", "A2"], "R . . . . . R . . . R . . . . ."))
     held_bass = p.chain(roots(["A2", "F2", "C3", "G2"], "R . . . . . . . . . . . . . . ."))
@@ -160,8 +167,8 @@ def build() -> Project:
     # --- pad and guzheng ----------------------------------------------------------
     verse_v = voice_progression(VERSE, "E3")
     chorus_v = voice_progression(CHORUS, "E3")
-    strings_v = p.chain([chord_bar(v, STRINGS) for v in verse_v])
-    strings_c = p.chain([chord_bar(v, STRINGS) for v in chorus_v])
+    strings_v = p.chain([breathe(chord_bar(v, STRINGS), 15) for v in verse_v])
+    strings_c = p.chain([breathe(chord_bar(v, STRINGS), 15) for v in chorus_v])
     strings_out = p.chain([chord_bar(verse_v[0], STRINGS, ("VOLM", 0x6000)), Phrase(), Phrase(), rest()])
 
     zheng_v = voice_progression(VERSE, "C3")
@@ -200,13 +207,13 @@ def build() -> Project:
     ])
     # Break: guzheng alone with tremolo on the long notes, erhu from afar
     trem = Phrase.parse("A3 . . C4 . . E4 . . . . . . . . .", GUZHENG)
-    trem.command(6, "RTRG", 0x0002)
+    trem.command(6, "RTRG", 0x0004)
     trem2 = Phrase.parse("D4 . . . . . . . C4 . . . A3 . . .", GUZHENG)
-    trem2.command(0, "RTRG", 0x0002)
+    trem2.command(0, "RTRG", 0x0004)
     trem3 = Phrase.parse("E4 . . . . . . . D4 . C4 . . . . .", GUZHENG)
-    trem3.command(0, "RTRG", 0x0002)
+    trem3.command(0, "RTRG", 0x0004)
     trem4 = Phrase.parse("A3 . . . . . . . . . . . . . . .", GUZHENG)
-    trem4.command(0, "RTRG", 0x0003)
+    trem4.command(0, "RTRG", 0x0006)
     zheng_break = p.chain([trem, trem2, trem3, trem4])
     erhu_break = p.chain([rest(),
                           erhu(". . . . . . . . G3:50 A3:50 . . . . . ."),

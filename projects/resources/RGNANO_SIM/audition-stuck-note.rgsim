@@ -1,0 +1,53 @@
+# A preview note (A on a phrase step) must never keep sounding.
+# Reported on the device: "the first sound that plays just plays indefinitely
+# ... pressing start DOESN'T STOP that note". A kick decays on its own, so
+# this uses the pad (instrument 07), which sustains.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+row 00
+press a 80
+
+# Move to the instrument column and pick 07 PAD
+press r 80
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+expect_screen_text PAD
+press l 80
+
+# Tap A to preview: it must fade out once the button is released
+press a 80
+wait 800
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+# Hold A: the preview releases itself instead of ringing forever
+down a
+wait 6000
+up a
+reset_audio_stats
+wait 2000
+expect_audio_silence 0
+
+# Preview, then play, then stop: nothing may be left sounding
+press a 80
+wait 600
+press s 80
+wait 1500
+press s 80
+wait 2000
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+expect_no_error
+quit

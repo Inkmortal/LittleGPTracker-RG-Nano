@@ -823,6 +823,10 @@ void PhraseView::OnFocus() {
 void PhraseView::ProcessButtonMask(unsigned short mask, bool pressed) {
 
     if (!pressed) {
+        // Let go of A and the preview note stops
+        if (!(mask & EPBM_A)) {
+            stopAudition();
+        }
         if (viewMode_ == VM_MUTEON) {
             if (mask & EPBM_R) {
                 toggleMute();

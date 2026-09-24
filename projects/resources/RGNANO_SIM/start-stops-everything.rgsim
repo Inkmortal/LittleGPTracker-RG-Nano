@@ -1,0 +1,76 @@
+# Start must always silence what it started, on every screen, with a
+# sustaining sound (the pad). Reported: "the first sound that plays just
+# plays indefinitely ... pressing start DOESNT STOP that note", without
+# ever pressing A.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+row 00
+press a 80
+press r 80
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+route combo.a.right
+expect_screen_text PAD
+press l 80
+
+# 1. Phrase screen: Start plays the bar, Start stops it
+press s 80
+wait 1500
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+# 2. Song screen
+goto song
+press s 80
+wait 1500
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+# 3. Chain screen
+goto chain
+press s 80
+wait 1500
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+# 4. Instrument screen: Start previews the sound
+goto instrument
+press s 80
+wait 1500
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+# 5. Preview on the instrument screen, then play and stop from the song
+press s 80
+wait 800
+goto song
+press s 80
+wait 1500
+press s 80
+wait 1500
+reset_audio_stats
+wait 2500
+expect_audio_silence 0
+
+expect_no_error
+quit
