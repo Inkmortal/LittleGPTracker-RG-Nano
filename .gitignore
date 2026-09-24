@@ -70,3 +70,4 @@ lgpt-perf.log
 
 # Build stamp written into the OPK at install time
 projects/opk_build/build-id.txt
+rgnano-sim-crash.txt
