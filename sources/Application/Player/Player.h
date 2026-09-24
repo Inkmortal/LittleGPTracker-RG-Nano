@@ -89,6 +89,10 @@ public:
 	// Channel data
 	
 	bool IsChannelPlaying(int channel) ;
+	// Debug: instrument number still attached to a channel (-1 none), and
+	// the one whose release tail is still rendering
+	int GetChannelInstrumentIndex(int channel) ;
+	int GetChannelTailIndex(int channel) ;
 	void SetChannelMute(int channel,bool mute) ;
 	bool IsChannelMuted(int channel) ;
 	

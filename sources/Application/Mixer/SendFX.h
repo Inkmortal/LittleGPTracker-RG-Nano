@@ -41,6 +41,8 @@ public:
 	// A muted channel must not be heard through the reverb/echo either
 	void SetChannelMuted(int channel,bool muted) ;
 	bool IsActive() ;
+	// Debug: input seen this buffer, frames of tail left, fade frames left
+	void GetDebugState(bool &input,int &tail,int &fade) ;
 
 	virtual bool Render(fixed *buffer,int samplecount) ;
 

@@ -301,10 +301,26 @@ static void logAudioLoad() {
 	channels[SONG_CHANNEL_COUNT]=0;
 	// out = what the app is sending to the speaker right now; fx = reverb/
 	// echo still ringing. Sound heard while out=0 comes from below the app.
-	f->Printf("t=%us %s ch=%s out=%d%% fx=%d load=%d%% peak=%d%% underruns=%lu cpu=%s(%s) %s\n",
+	// voices: per channel "i<nn>" instrument attached, "t<nn>" release tail
+	std::string voices;
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		char one[16];
+		int inst=player->GetChannelInstrumentIndex(i);
+		int tail=player->GetChannelTailIndex(i);
+		if (inst<0 && tail<0) {
+			snprintf(one,sizeof(one),"%d:- ",i);
+		} else {
+			snprintf(one,sizeof(one),"%d:i%02X/t%02X ",i,inst<0?0xFF:inst,tail<0?0xFF:tail);
+		}
+		voices+=one;
+	}
+	bool fxInput=false;
+	int fxTail=0,fxFade=0;
+	SendFX::GetInstance()->GetDebugState(fxInput,fxTail,fxFade);
+	f->Printf("t=%us %s ch=%s out=%d%% fx=%d(in%d tail%d fade%d) voices=[%s] load=%d%% peak=%d%% underruns=%lu cpu=%s(%s) %s\n",
 		(unsigned)(now/1000),player->IsRunning()?"play":"stop",channels,
 		MixerService::GetInstance()->GetMasterPeakPercent(),
-		SendFX::GetInstance()->IsActive()?1:0,
+		SendFX::GetInstance()->IsActive()?1:0,fxInput?1:0,fxTail,fxFade,voices.c_str(),
 		AudioDriver::GetRenderLoadPercent(),
 		AudioDriver::TakeRenderLoadPeak(),AudioDriver::GetUnderrunCount(),
 		khz.empty()?"?":khz.c_str(),governor.empty()?"?":governor.c_str(),

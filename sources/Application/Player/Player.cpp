@@ -387,6 +387,23 @@ SequencerMode Player::GetSequencerMode() {
 	return sequencerMode_ ;
 } ;
 
+static int instrumentIndexOf(Project *project,I_Instrument *instr) {
+	if (!project || !instr) return -1 ;
+	InstrumentBank *bank=project->GetInstrumentBank() ;
+	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
+		if (bank->GetInstrument(i)==instr) return i ;
+	}
+	return -2 ;
+}
+
+int Player::GetChannelInstrumentIndex(int channel) {
+	return instrumentIndexOf(project_,mixer_->GetInstrument(channel)) ;
+}
+
+int Player::GetChannelTailIndex(int channel) {
+	return instrumentIndexOf(project_,mixer_->GetTailInstrument(channel)) ;
+}
+
 bool Player::IsChannelPlaying(int channel) {
 	return mixer_->IsChannelPlaying(channel) ;
 } ;

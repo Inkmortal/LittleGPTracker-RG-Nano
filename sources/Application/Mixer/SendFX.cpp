@@ -167,6 +167,12 @@ void SendFX::AddSend(int channel,const float *stereo,int frames,float reverb,flo
 	}
 }
 
+void SendFX::GetDebugState(bool &input,int &tail,int &fade) {
+	input=hasInput_ ;
+	tail=tail_ ;
+	fade=fade_ ;
+}
+
 bool SendFX::IsActive() {
 	return hasInput_ || tail_>0 ;
 }
