@@ -148,6 +148,10 @@ void PlayerMixer::StopInstrument(int channel) {
     notes_[channel]=0xFF ;
 }
 
+I_Instrument *PlayerMixer::GetTailInstrument(int channel) {
+    return channel_[channel]->GetTail();
+}
+
 I_Instrument *PlayerMixer::GetInstrument(int channel) {
     return channel_[channel]->GetInstrument();
 }

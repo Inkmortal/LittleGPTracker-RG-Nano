@@ -60,6 +60,9 @@ public:
 	  // Transport stop: end the note within a few tens of ms instead of
 	  // playing its full release
 	  virtual void StopQuickly(int channel) { Stop(channel) ; } ;
+	  // Transport stop / project change: drop every voice this instrument
+	  // still holds, on every channel, right now
+	  virtual void AllNotesOff() {} ;
 
 };
 #endif

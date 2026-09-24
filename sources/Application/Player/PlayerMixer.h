@@ -34,6 +34,7 @@ public:
 	int GetChannelNote(int Channel) ;
 
 	I_Instrument *GetInstrument(int channel) ;
+	I_Instrument *GetTailInstrument(int channel) ;
 
 	I_Instrument *GetLastInstrument(int channel) ;
 	

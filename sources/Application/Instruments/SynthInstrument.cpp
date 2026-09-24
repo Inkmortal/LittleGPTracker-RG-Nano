@@ -658,6 +658,17 @@ void SynthInstrument::Stop(int channel) {
 	v.stage_=SS_RELEASE ;
 }
 
+void SynthInstrument::AllNotesOff() {
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		SynthVoice &v=voices_[i] ;
+		v.active_=false ;
+		v.pendingStart_=false ;
+		v.level_=0.0f ;
+		v.stage_=SS_OFF ;
+		v.fastRelease_=false ;
+	}
+}
+
 void SynthInstrument::StopQuickly(int channel) {
 	SynthVoice &v=voices_[channel] ;
 	if (!v.active_) return ;

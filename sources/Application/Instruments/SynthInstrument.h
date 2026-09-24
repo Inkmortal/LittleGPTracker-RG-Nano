@@ -172,6 +172,7 @@ public:
 	virtual void SetTableState(TableSaveState &state) ;
 	virtual bool IsReleasing(int channel) ;
 	virtual void StopQuickly(int channel) ;
+	virtual void AllNotesOff() ;
 
 	void ApplyPreset(int preset) ;
 	void LoadPreset(const char *name) ;

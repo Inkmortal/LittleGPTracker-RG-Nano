@@ -273,7 +273,26 @@ void Player::Stop() {
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		mixer_->StopChannelQuickly(i) ;
 	}
-	// Stop means stop: reverb and echo fade out instead of ringing on
+	// Stop means stop: anything still holding a voice that no channel is
+	// fading out gets dropped, so nothing can outlive the transport
+	if (project_) {
+		InstrumentBank *bank=project_->GetInstrumentBank() ;
+		for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
+			I_Instrument *instr=bank->GetInstrument(i) ;
+			if (!instr) continue ;
+			bool fading=false ;
+			for (int c=0;c<SONG_CHANNEL_COUNT;c++) {
+				if (mixer_->GetTailInstrument(c)==instr) {
+					fading=true ;
+				}
+			}
+			if (!fading) {
+				instr->AllNotesOff() ;
+			}
+		}
+	}
+
+	// reverb and echo fade out instead of ringing on
 	SendFX::GetInstance()->FadeOut() ;
 	MidiService::GetInstance()->OnPlayerStop() ;
 	mixer_->OnPlayerStop() ;

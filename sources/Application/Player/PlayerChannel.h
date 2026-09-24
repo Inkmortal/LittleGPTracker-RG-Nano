@@ -16,6 +16,8 @@ public:
 	// Transport stop: notes and ringing tails fade within ~0.1 s
 	void StopQuickly() ;
 	I_Instrument *GetInstrument() ;
+	// The instrument whose release tail is still being rendered, if any
+	I_Instrument *GetTail() { return tail_ ; } ;
 	void SetMute(bool muted) ;
 	bool IsMuted() ;
 	void SetMixBus(int i) ;

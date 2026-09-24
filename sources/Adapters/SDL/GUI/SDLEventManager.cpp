@@ -266,7 +266,9 @@ static void logAudioLoad() {
 	if (now-last<10000) return;
 	last=now;
 	Player *player=Player::GetInstance();
-	if (!player || !player->IsRunning()) return;
+	if (!player) return;
+	// Logged while stopped too: a voice still sounding after Stop shows up
+	// here as a channel that is still playing
 	Path log=Path("root:").Descend("lgpt-perf.log");
 	I_File *f=FileSystem::GetInstance()->Open(log.GetPath().c_str(),(char *)"a");
 	if (!f) return;
@@ -290,8 +292,15 @@ static void logAudioLoad() {
 			}
 		}
 	}
-	f->Printf("t=%us load=%d%% peak=%d%% underruns=%lu cpu=%s(%s) %s\n",
-		(unsigned)(now/1000),AudioDriver::GetRenderLoadPercent(),
+	// One digit per channel: still making sound or not
+	char channels[SONG_CHANNEL_COUNT+1];
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		channels[i]=player->IsChannelPlaying(i)?'1':'0';
+	}
+	channels[SONG_CHANNEL_COUNT]=0;
+	f->Printf("t=%us %s ch=%s load=%d%% peak=%d%% underruns=%lu cpu=%s(%s) %s\n",
+		(unsigned)(now/1000),player->IsRunning()?"play":"stop",channels,
+		AudioDriver::GetRenderLoadPercent(),
 		AudioDriver::TakeRenderLoadPeak(),AudioDriver::GetUnderrunCount(),
 		khz.empty()?"?":khz.c_str(),governor.empty()?"?":governor.c_str(),
 		xruns.empty()?"xruns ?":xruns.c_str());

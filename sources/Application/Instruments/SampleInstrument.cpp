@@ -394,6 +394,14 @@ void SampleInstrument::Stop(int channel) {
 	 running_=false ;
 }
 
+void SampleInstrument::AllNotesOff() {
+	// Mark every voice finished: Stop() only flips the shared running_ flag
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		renderParams_[i].finished_=true ;
+	}
+	running_=false ;
+}
+
 void SampleInstrument::doTickUpdate(int channel) {
 
   // Process updaters
