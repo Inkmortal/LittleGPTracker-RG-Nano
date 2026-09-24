@@ -255,7 +255,7 @@ COMMONFILES := \
 	ControlNode.o \
 	I_GUIWindowImp.o \
 	Application.o AppWindow.o SelectProjectDialog.o \
-	NewProjectDialog.o GuideDialog.o \
+	NewProjectDialog.o InstrumentListDialog.o GuideDialog.o \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
 	MixerView.o NullView.o \

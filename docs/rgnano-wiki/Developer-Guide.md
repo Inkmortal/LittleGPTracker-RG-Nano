@@ -96,5 +96,5 @@ Demo songs live in `tools/demos/*.py`.
 The guide source is `docs/rgnano-wiki/*.md` (plain Markdown, also valid as a GitHub wiki).
 
 - `python tools/build_guide_site.py` renders it into a static site in `build/guide-site`.
-- `python tools\publish_guide_site.py --gh-user <account>` builds it and publishes to GitHub Pages (`gh-pages` branch): https://inkmortal.github.io/LittleGPTracker-RG-Nano-Audio-In-Sampling/
+- `python tools\publish_guide_site.py --gh-user <account>` builds it and publishes to GitHub Pages (`gh-pages` branch): https://inkmortal.github.io/LittleGPTracker-RG-Nano/
 - `tools\publish-wiki.ps1` mirrors the same pages into a GitHub wiki, if the repository uses one.

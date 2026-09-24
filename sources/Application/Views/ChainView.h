@@ -40,8 +40,8 @@ class ChainView : public View {
     void processSelectionButtonMask(unsigned short mask);
     void setTextProps(GUITextProperties &props, int row, int col, bool restore);
 
-    // RG Nano: Channel meters in sidebar
-    void drawChannelMeters(int x, int y);
+    // RG Nano: a small piano roll of each row's phrase, right of the grid
+    void drawRowRoll(int row, int playStep);
 
   private:
     bool updatingPhrase_;      // .Tells if we're in the middle
@@ -51,6 +51,7 @@ class ChainView : public View {
     unsigned char lastPhrase_; // .Clipboard for phrase
     int lastPlayingPos_;
     int lastQueuedPos_;
+    int lastRollRow_; // row whose roll shows the playhead
 
     struct ChainClip {
         bool active_;

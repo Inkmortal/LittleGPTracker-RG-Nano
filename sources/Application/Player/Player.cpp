@@ -246,6 +246,10 @@ void Player::AuditionInstrument(int instrument,int note) {
 	}
 	I_Instrument *instr=project_->GetInstrumentBank()->GetInstrument(instrument);
 	if (instr) {
+		// A preview plays no phrase: its channel must not run the commands
+		// of whatever phrase that channel played last
+		viewData_->currentPlayPhrase_[channel]=0xFF;
+		viewData_->phrasePlayPos_[channel]=0;
 		mixer_->StartChannel(channel);
 		mixer_->StopInstrument(channel);
 		mixer_->StartInstrument(channel,instr,(unsigned char)note,true);

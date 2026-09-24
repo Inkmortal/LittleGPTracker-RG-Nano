@@ -1,0 +1,39 @@
+# Preview from the instrument list right after a song loads (nothing has
+# played yet): used to crash, the preview read phrase commands at garbage
+# play positions. The playing instrument gets a dot.
+wait 1500
+expect_view song
+goto chain
+goto phrase
+goto instrument
+down n
+press u 80
+up n
+wait 300
+expect_screen_text 00 SMP drum.wav
+expect_screen_text sample, in 4 phrases
+press s 80
+wait 500
+expect_play_mode audition
+expect_audio_activity 32
+press s 80
+wait 200
+expect_player_running no
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+expect_screen_text synth, in 6 phrases
+press s 80
+wait 500
+expect_audio_activity 32
+press s 80
+press b 80
+wait 200
+expect_view instrument
+goto song
+expect_no_error
+quit

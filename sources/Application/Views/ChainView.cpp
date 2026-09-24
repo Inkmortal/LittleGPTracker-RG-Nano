@@ -9,6 +9,7 @@ ChainView::ChainView(GUIWindow &w, ViewData *viewData) : View(w, viewData) {
     lastPhrase_ = 0;
     lastPlayingPos_ = 0;
     lastQueuedPos_ = 0;
+    lastRollRow_ = -1;
 
     clipboard_.active_ = false;
     clipboard_.width_ = 0;
@@ -757,9 +758,12 @@ void ChainView::DrawView() {
     drawNotes();
     drawMiniMeters();
 
-    // RG Nano: Draw channel meters in sidebar
+    // RG Nano: each row's phrase as a small piano roll
     if (ultraCompactLayout_) {
-        drawChannelMeters(anchor._x + 9, anchor._y);
+        for (int j = 0; j < 16; j++) {
+            drawRowRoll(j, -1);
+        }
+        lastRollRow_ = -1;
     }
 
     if (player->IsRunning()) {
@@ -788,6 +792,11 @@ void ChainView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
     pos._y = anchor._y + lastQueuedPos_;
     DrawString(pos._x, pos._y, " ", props);
 
+    if (eventType == PET_STOP && lastRollRow_ >= 0) {
+        drawRowRoll(lastRollRow_, -1);
+        lastRollRow_ = -1;
+    }
+
     if (eventType != PET_STOP) {
 
         // Loop on all channels to see if one of them is playing current chain
@@ -808,6 +817,14 @@ void ChainView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
                         SetColor(CD_NORMAL);
                     }
                     lastPlayingPos_ = viewData_->chainPlayPos_[i];
+                    if (ultraCompactLayout_) {
+                        int playRow = viewData_->chainPlayPos_[i];
+                        if (lastRollRow_ >= 0 && lastRollRow_ != playRow) {
+                            drawRowRoll(lastRollRow_, -1);
+                        }
+                        drawRowRoll(playRow, viewData_->phrasePlayPos_[i]);
+                        lastRollRow_ = playRow;
+                    }
                     break;
                 }
             }
@@ -849,63 +866,14 @@ void ChainView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
 */
 }
 
-// RG Nano: Draw channel meters in sidebar
-void ChainView::drawChannelMeters(int x, int y) {
-    Player *player = Player::GetInstance();
-    GUITextProperties props;
-    GUIPoint pos(x, y);
-
-    // Level meter per track; the track being edited is lit
-    for (int i = 0; i < 8; i++) {
-        char channelLabel[4];
-        sprintf(channelLabel, "%d", i + 1);
-        SetColor(i == viewData_->songX_ ? CD_HILITE2 : CD_MUTE);
-        DrawString(pos._x, pos._y, channelLabel, props);
-        SetColor(CD_MUTE);
-
-        // Meter visualization
-        pos._x += 1;
-
-        bool isPlaying = player->IsChannelPlaying(i);
-        bool isMuted = player->IsChannelMuted(i);
-        int level = MixerService::GetInstance()->GetBusPeakPercent(i);
-        int masterLevel = MixerService::GetInstance()->GetMasterPeakPercent();
-        if (isPlaying && level < masterLevel) {
-            level = masterLevel;
-        }
-        int width = 0;
-        if (level > 4) width = 1;
-        if (level > 18) width = 2;
-        if (level > 32) width = 3;
-        if (level > 46) width = 4;
-        if (level > 62) width = 5;
-        if (level > 78) width = 6;
-
-        if (isMuted) {
-            // Muted: show dashes
-            DrawString(pos._x, pos._y, "------", props);
-        } else if (isPlaying) {
-            if (level > 62) {
-                SetColor(CD_PLAY);
-            } else {
-                SetColor(CD_HILITE1);
-            }
-            if (width==0) DrawString(pos._x, pos._y, "......", props);
-            else if (width==1) DrawString(pos._x, pos._y, "#.....", props);
-            else if (width==2) DrawString(pos._x, pos._y, "##....", props);
-            else if (width==3) DrawString(pos._x, pos._y, "###...", props);
-            else if (width==4) DrawString(pos._x, pos._y, "####..", props);
-            else if (width==5) DrawString(pos._x, pos._y, "#####.", props);
-            else DrawString(pos._x, pos._y, "######", props);
-            SetColor(CD_MUTE);
-        } else {
-            // Silent: show empty meter
-            DrawString(pos._x, pos._y, "......", props);
-        }
-
-        // Next row
-        pos._y++;
-        pos._x = x;
-    }
-    SetColor(CD_NORMAL);
+// RG Nano: the phrase on this row as a small piano roll beside it
+void ChainView::drawRowRoll(int row, int playStep) {
+    GUIPoint anchor = GetAnchor();
+    unsigned char phrase =
+        viewData_->song_->chain_->data_[16 * viewData_->currentChain_ + row];
+    int x = (anchor._x + 9) * 8;
+    int y = (anchor._y + row) * 8;
+    int w = 16 * ((w_.GetRect().Width() - 4 - x) / 16);
+    drawPhraseRoll(phrase == 0xFF ? -1 : phrase, x, y, w, 7, playStep,
+                   playStep >= 0);
 };

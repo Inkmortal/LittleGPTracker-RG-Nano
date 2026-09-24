@@ -1,7 +1,7 @@
 param(
   # gh account whose token pushes the wiki (leave empty to use git's own credentials)
   [string]$GitHubUser = "",
-  [string]$Repo = "Inkmortal/LittleGPTracker-RG-Nano-Audio-In-Sampling",
+  [string]$Repo = "Inkmortal/LittleGPTracker-RG-Nano",
   [string]$Message = "Update wiki from docs/rgnano-wiki"
 )
 

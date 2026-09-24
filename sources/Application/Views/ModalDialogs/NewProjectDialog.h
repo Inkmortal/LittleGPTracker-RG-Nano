@@ -27,6 +27,10 @@ public:
                                        const char *&cmd7);
 
   std::string GetName();
+  std::string GetTypedName() { return name_; }
+  // Reuse the keyboard to rename something else (an instrument): shows
+  // 'title', starts from 'current' and skips the song-folder checks
+  void SetRename(const char *title, const std::string &current);
 
 protected:
   virtual void drawGraphics();
@@ -46,5 +50,7 @@ private:
   int col_;
   bool lower_;     // letter grid types lowercase
   bool suggested_; // name is an untouched random pick; typing replaces it
+  bool renaming_;
+  const char *title_;
 };
 #endif

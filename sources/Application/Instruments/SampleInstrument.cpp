@@ -138,6 +138,9 @@ SampleInstrument::SampleInstrument() {
 
      mods_.Create(*this);
 
+     customName_ = new Variable("name", INSTRUMENT_NAME_ID, "");
+     Insert(customName_);
+
      // Initalize instrument's voices update list
 
      for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
@@ -1707,6 +1710,10 @@ const char *SampleInstrument::GetFileName() {
 const char *SampleInstrument::GetName() {
     if (IsEmpty()) {
         return "EMPTY SAMPLE";
+    }
+    const char *custom = customName_->GetString();
+    if (custom && custom[0]) {
+        return custom;
     }
     Variable *v = FindVariable(SIP_SAMPLE);
     const char *src = v->GetString();

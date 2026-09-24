@@ -85,10 +85,19 @@ page ENV
 screenshot_app wiki-synth-2-env.bmp
 page FILTER
 screenshot_app wiki-synth-3-filter.bmp
+page LFO
+screenshot_app wiki-synth-4-lfo.bmp
 page MOD
-screenshot_app wiki-synth-4-mod.bmp
+set mod1 decay
+set dest1 cutoff
+set amt1 80
+set rate1 0x60
+set mod2 sine
+set amt2 6
+focus rate1
+screenshot_app wiki-synth-5-mod.bmp
 page MIX
-screenshot_app wiki-synth-5-mix.bmp
+screenshot_app wiki-synth-6-mix.bmp
 page SOUND
 goto phrase
 goto table

@@ -70,11 +70,20 @@ static int keyCenter(int row, int col) {
 
 NewProjectDialog::NewProjectDialog(View &view, Path currentPath)
     : ModalView(view), currentPath_(currentPath), cursor_(0), row_(0),
-      col_(0), lower_(false), suggested_(false) {}
+      col_(0), lower_(false), suggested_(false), renaming_(false),
+      title_("NEW SONG") {}
+
+void NewProjectDialog::SetRename(const char *title, const std::string &current) {
+    renaming_ = true;
+    title_ = title;
+    name_ = current.substr(0, MAX_NAME_LENGTH);
+}
 
 NewProjectDialog::~NewProjectDialog() {}
 
 bool NewProjectDialog::nameTaken() {
+    if (renaming_)
+        return false;
     return !name_.empty() && currentPath_.Descend(GetName()).Exists();
 }
 
@@ -86,7 +95,7 @@ void NewProjectDialog::DrawView() {
     char buffer[2] = {0, 0};
 
     SetColor(CD_HILITE1);
-    DrawString((DIALOG_WIDTH - 8) / 2, 0, "NEW SONG", props);
+    DrawString((DIALOG_WIDTH - (int)strlen(title_)) / 2, 0, title_, props);
 
     SetColor(CD_NORMAL);
     DrawString(0, NAME_Y, "NAME", props);
@@ -201,7 +210,12 @@ void NewProjectDialog::OnPlayerUpdate(PlayerEventType,
                                       unsigned int currentTick) {};
 
 void NewProjectDialog::OnFocus() {
-    randomName();
+    if (renaming_) {
+        cursor_ = name_.size();
+        suggested_ = false;
+    } else {
+        randomName();
+    }
     // Land on DONE: a beginner can press A once and start making music.
     // Down from here wraps straight to the first row of letters.
     row_ = ACTION_ROW;
@@ -218,10 +232,10 @@ void NewProjectDialog::CustomizeContextOverlay(
     const char *&field, const char *&cmd1, const char *&cmd2,
     const char *&cmd3, const char *&cmd4, const char *&cmd5,
     const char *&cmd6, const char *&cmd7) {
-	name="NEW SONG";
+	name=title_;
 	where="Name keys buttons";
 	edit="A types or runs";
-	field="Name a new song";
+	field=renaming_?"Rename":"Name a new song";
 	cmd1="Dpad pick a key";
 	cmd2="A type the key";
 	cmd3="B erase, empty=back";
@@ -261,13 +275,14 @@ void NewProjectDialog::erase() {
 void NewProjectDialog::randomName() {
     do {
         name_ = getRandomName();
-    } while (currentPath_.Descend(GetName()).Exists());
+    } while (!renaming_ && currentPath_.Descend(GetName()).Exists());
     cursor_ = name_.size();
     suggested_ = true;
 }
 
 void NewProjectDialog::confirm() {
-    if (name_.empty()) {
+    // An empty rename is allowed: it brings back the automatic name
+    if (name_.empty() && !renaming_) {
         View::SetNotification("Type a name first", -6);
     } else if (nameTaken()) {
         View::SetNotification("Name taken", -6);

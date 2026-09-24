@@ -19,7 +19,11 @@ public:
 
 	virtual void ProcessButtonMask(unsigned short mask,bool pressed) ;
 	virtual void DrawView() ;
-	virtual void OnPlayerUpdate(PlayerEventType,unsigned int) {} ;
+	// Passes updates on to an open dialog (the instrument list shows what
+	// is playing)
+	virtual void OnPlayerUpdate(PlayerEventType type,unsigned int tick) {
+		View::OnPlayerUpdate(type,tick) ;
+	} ;
 	virtual void OnFocus() ;
 	virtual void CustomizeContextOverlay(const char *&name, const char *&where,
 	                                     const char *&edit, const char *&field,
@@ -60,6 +64,7 @@ protected:
 	InstrumentType getInstrumentType() ;
 public:
 	virtual void GetGuideTopic(const char *&page, const char *&section) ;
+	void OpenInstrument(int instrument) ;
 protected:
 	void drawSampleLabVisuals() ;
 	void drawLabText(int x, int y, const char *text, GUITextProperties &props) ;

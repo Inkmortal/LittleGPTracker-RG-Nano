@@ -8,6 +8,7 @@
 #include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
 #include "ModalView.h"
 #include "Application/Views/ModalDialogs/GuideDialog.h"
+#include "Application/Instruments/CommandList.h"
 #include <string.h>
 
 bool View::initPrivate_=false ;
@@ -513,8 +514,8 @@ void View::getHowToSteps(const char **lines) {
 			lines[2]="sounds. RB+A+Up = hear";
 			lines[3]="LB+Left/Right: more pages";
 			lines[4]="ENV: short or long notes";
-			lines[5]="FILTER: dark or bright";
-			lines[6]="MIX: reverb and echo";
+			lines[5]="FILTER dark/bright, MOD";
+			lines[6]="sweeps+wobbles, MIX space";
 			break;
 		case VT_TABLE:
 		case VT_TABLE2:
@@ -780,6 +781,90 @@ void View::drawMiniWaveform(bool force) {
 		GUIRect wave(x + col, top, x + col + 1, bottom + 1);
 		imp->DrawRect(wave);
 		prevY = waveY;
+	}
+#endif
+}
+
+void View::drawPhraseRoll(int phrase, int x, int y, int w, int h, int playStep,
+                          bool active, int cursorStep) {
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
+	GUIColor background=AppWindow::ThemeColor(CD_BACKGROUND);
+	imp->SetColor(background);
+	GUIRect clear(x,y,x+w,y+h);
+	imp->DrawRect(clear);
+	if (phrase<0 || phrase>=PHRASE_COUNT) {
+		return;
+	}
+	Phrase *ph=viewData_->song_->phrase_;
+	unsigned char *notes=ph->note_+16*phrase;
+	FourCC *cmd1=ph->cmd1_+16*phrase;
+	FourCC *cmd2=ph->cmd2_+16*phrase;
+	const int cell=w/16;
+	if (cell<2) {
+		return;
+	}
+
+	if (playStep>=0 && playStep<16) {
+		GUIColor head=AppWindow::ThemeBlend(CD_BACKGROUND,CD_PLAY,30);
+		imp->SetColor(head);
+		GUIRect col(x+playStep*cell,y,x+playStep*cell+cell,y+h);
+		imp->DrawRect(col);
+	}
+
+	// Edit cursor: a mark along the bottom under its step
+	if (cursorStep>=0 && cursorStep<16) {
+		GUIColor cursor=AppWindow::ThemeColor(CD_CURSOR);
+		imp->SetColor(cursor);
+		GUIRect mark(x+cursorStep*cell,y+h-2,x+cursorStep*cell+cell-1,y+h);
+		imp->DrawRect(mark);
+	}
+
+	// Beat dots along the bottom
+	GUIColor dots=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45);
+	imp->SetColor(dots);
+	for (int step=0;step<16;step+=4) {
+		GUIRect dot(x+step*cell,y+h-1,x+step*cell+1,y+h);
+		imp->DrawRect(dot);
+	}
+
+	int lo=255,hi=-1;
+	for (int i=0;i<16;i++) {
+		if (notes[i]==0xFF) continue;
+		if (notes[i]<lo) lo=notes[i];
+		if (notes[i]>hi) hi=notes[i];
+	}
+	if (hi<0) {
+		return;
+	}
+	// Keep at least an octave of range so a repeated note sits in the middle
+	if (hi-lo<12) {
+		int mid=(hi+lo)/2;
+		lo=mid-6;
+		hi=mid+6;
+	}
+	const int noteH=(h>=24)?3:2;
+	const int span=h-noteH-2;
+	// Quiet when idle so it never competes with the numbers being edited;
+	// the playing phrase lights up
+	GUIColor head=active?AppWindow::ThemeColor(CD_HILITE2)
+	                    :AppWindow::ThemeBlend(CD_BACKGROUND,CD_NORMAL,60);
+	GUIColor tail=AppWindow::ThemeBlend(CD_BACKGROUND,active?CD_HILITE2:CD_NORMAL,active?45:30);
+	for (int i=0;i<16;i++) {
+		if (notes[i]==0xFF) continue;
+		int ny=y+span-((notes[i]-lo)*span)/(hi-lo);
+		int end=i+1;
+		while (end<16 && notes[end]==0xFF && cmd1[end]!=I_CMD_KILL && cmd2[end]!=I_CMD_KILL) {
+			end++;
+		}
+		if (end>i+1) {
+			imp->SetColor(tail);
+			GUIRect t(x+i*cell+cell-1,ny+noteH/2,x+end*cell-1,ny+noteH/2+1);
+			imp->DrawRect(t);
+		}
+		imp->SetColor(head);
+		GUIRect n(x+i*cell,ny,x+i*cell+cell-1,ny+noteH);
+		imp->DrawRect(n);
 	}
 #endif
 }

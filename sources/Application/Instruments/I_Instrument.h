@@ -5,6 +5,9 @@
 #include "Foundation/Observable.h"
 #include "Application/Utils/fixed.h"
 
+// Optional name typed on the instrument list; empty = automatic name
+#define INSTRUMENT_NAME_ID MAKE_FOURCC('I','N','A','M')
+
 #include "Application/Player/TablePlayback.h"
 
 enum InstrumentType {

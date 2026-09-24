@@ -62,6 +62,7 @@ class PhraseView : public View {
     Phrase *phrase_;
     int lastPlayingPos_;
     GUIPoint gridAnchor();
+    void drawRollPanel(int playStep);
     void drawRowNumber(int row, int color, bool invert);
     Variable cmdEdit_;
     UIBigHexVarField *cmdEditField_;

@@ -15,6 +15,21 @@ screenshot_app wiki-demo-chain.bmp
 goto phrase
 wait 100
 screenshot_app wiki-demo-phrase-melody.bmp
+press s 80
+wait 700
+screenshot_app wiki-demo-phrase-playing.bmp
+press s 80
+wait 200
+goto instrument
+wait 100
+down n
+press u 80
+up n
+wait 300
+screenshot_app wiki-demo-instrument-list.bmp
+press b 80
+wait 100
+goto phrase
 goto chain
 goto song
 press l 80

@@ -392,6 +392,8 @@ SynthInstrument::SynthInstrument() {
 	tableAuto_=new Variable("table automation",SYP_TABLEAUTO,false) ;
 	Insert(tableAuto_) ;
 	mods_.Create(*this) ;
+	customName_=new Variable("name",INSTRUMENT_NAME_ID,"") ;
+	Insert(customName_) ;
 
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		SynthVoice &v=voices_[i] ;
@@ -517,6 +519,10 @@ void SynthInstrument::LoadPreset(const char *name) {
 
 const char *SynthInstrument::GetName() {
 	static char name[Variable::MAX_NAME_LENGTH+1] ;
+	const char *custom=customName_->GetString() ;
+	if (custom && custom[0]) {
+		return custom ;
+	}
 	const char *preset=preset_->GetString() ;
 	const char *wave=wave_->GetString() ;
 	if (preset_->GetInt()==0) {

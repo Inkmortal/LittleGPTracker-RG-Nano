@@ -142,12 +142,14 @@ void InstrumentView::drawModPlot(I_Instrument *instr, int bx, int by, int bw, in
 		imp->DrawRect(dot);
 	}
 
+	bool any=false;
 	for (int s=MOD_SLOT_COUNT-1;s>=0;s--) {
 		int type=modInt(instr,modIds[s][0]);
 		int amount=modInt(instr,modIds[s][2]);
 		if (type==MT_OFF || amount==0) {
 			continue;
 		}
+		any=true;
 		int rate=modInt(instr,modIds[s][3]);
 		float a=(amount<0)?-0.9f:0.9f;
 		GUIColor color=AppWindow::ThemeColor(s==0?CD_HILITE2:CD_PLAY);
@@ -188,6 +190,13 @@ void InstrumentView::drawModPlot(I_Instrument *instr, int bx, int by, int bw, in
 			imp->DrawRect(r);
 			prev=y;
 		}
+	}
+	if (!any) {
+		GUITextProperties props;
+		SetColor(CD_HILITE1);
+		DrawString(6,(by+bh/2)/8-1,"mod1/mod2 are off",props);
+		DrawString(6,(by+bh/2)/8,"pick decay or an LFO",props);
+		SetColor(CD_NORMAL);
 	}
 #endif
 }

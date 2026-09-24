@@ -1298,6 +1298,23 @@ void PhraseView::drawRowNumber(int row, int color, bool invert) {
     DrawString(anchor._x - 2, anchor._y + row, buffer, props);
 }
 
+// Piano roll of this phrase under the grid, playhead on the playing step
+void PhraseView::drawRollPanel(int playStep) {
+    if (!ultraCompactLayout_) {
+        return;
+    }
+    GUIPoint anchor = gridAnchor();
+    int x = (anchor._x - 2) * 8 + 2;
+    int y = (anchor._y + 16) * 8 + 6;
+    int bottom = w_.GetRect().Height() - 16 - 4; // above the scope
+    int w = 16 * ((w_.GetRect().Width() - 4 - x) / 16);
+    if (bottom - y < 12) {
+        return;
+    }
+    drawPhraseRoll(viewData_->currentPhrase_, x, y, w, bottom - y, playStep,
+                   playStep >= 0, row_);
+}
+
 void PhraseView::DrawView() {
 
     Clear();
@@ -1479,7 +1496,7 @@ void PhraseView::DrawView() {
     }
 
     drawMap();
-    drawNotes();
+    drawRollPanel(-1);
     View::drawMiniWaveform(true);
 
     Player *player = Player::GetInstance();
@@ -1496,7 +1513,6 @@ void PhraseView::DrawView() {
 void PhraseView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
 
     GUITextProperties props;
-    drawNotes();
     View::drawMiniWaveform(eventType == PET_STOP);
 
     GUIPoint anchor = gridAnchor();
@@ -1518,14 +1534,20 @@ void PhraseView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
 
     Player *player = Player::GetInstance();
 
+    if (eventType == PET_STOP) {
+        drawRollPanel(-1);
+    }
+
     if (eventType != PET_STOP) {
 
+        int rollStep = -1;
         for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
             if (player->IsChannelPlaying(i)) {
                 if (viewData_->currentPlayPhrase_[i] ==
                         viewData_->currentPhrase_ &&
                     viewData_->playMode_ != PM_AUDITION) {
                     int playRow = viewData_->phrasePlayPos_[i];
+                    rollStep = playRow;
                     rowPos._y = anchor._y + playRow;
                     if (!commandSelectorModalActive_ ||
                         !CommandSelectorCommon::popupContainsPoint(
@@ -1541,6 +1563,8 @@ void PhraseView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
                 }
             }
         }
+
+        drawRollPanel(rollStep);
 
         // clear any live indicator
         pos._y = anchor._y;

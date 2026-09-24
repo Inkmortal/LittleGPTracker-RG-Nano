@@ -11,6 +11,7 @@
 #include "BaseClasses/UIStaticField.h"
 #include "Foundation/Variables/Variable.h"
 #include "ModalDialogs/ImportSampleDialog.h"
+#include "ModalDialogs/InstrumentListDialog.h"
 #include "ModalDialogs/MessageBox.h"
 #include "System/System/System.h"
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
@@ -719,7 +720,7 @@ void InstrumentView::drawSampleLabVisuals() {
 	char line[40];
 	SetColor(CD_HILITE2);
 	sprintf(line,"<LB %d/%d %s LB>",labPage_+1,INSTRUMENT_PAGE_COUNT,getLabPageName());
-	DrawString((40-(int)strlen(line))/2,2,line,props);
+	DrawString((30-(int)strlen(line))/2,2,line,props);
 	SetColor(CD_NORMAL);
 
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
@@ -916,6 +917,19 @@ void InstrumentView::drawSampleLabVisuals() {
 	}
 }
 
+
+static void InstrumentListCallback(View &v, ModalView &dialog) {
+	if (dialog.GetReturnCode()>0) {
+		InstrumentListDialog &list=(InstrumentListDialog &)dialog ;
+		((InstrumentView &)v).OpenInstrument(list.GetSelection()) ;
+	}
+}
+
+void InstrumentView::OpenInstrument(int instrument) {
+	viewData_->currentInstrument_=instrument ;
+	onInstrumentChange() ;
+	isDirty_=true ;
+}
 
 void InstrumentView::warpToNext(int offset) {
 	int instrument=viewData_->currentInstrument_+offset ;
@@ -1203,6 +1217,13 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
                     NotifyObservers(&ve);
                 }
 
+                if (mask & EPBM_UP) {
+                    InstrumentListDialog *list = new InstrumentListDialog(
+                        *this, viewData_->currentInstrument_);
+                    DoModal(list, InstrumentListCallback);
+                    return;
+                }
+
                 if (mask & EPBM_DOWN) {
 
                     // Go to table view
@@ -1298,6 +1319,11 @@ void InstrumentView::DrawView() {
         drawSampleLabVisuals();
     } else if (getInstrumentType()==IT_SYNTH) {
         drawSynthVisuals();
+    }
+    if (ultraCompactLayout_) {
+        SetColor(CD_MUTE);
+        DrawString(12,26,"RB+Up: all sounds",props);
+        SetColor(CD_NORMAL);
     }
 
     FieldView::Redraw();

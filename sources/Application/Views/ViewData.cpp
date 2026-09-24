@@ -21,6 +21,15 @@ ViewData::ViewData(Project *project) {
     renderMode_ = 0;
     isRendering_ = false;
     playMode_ = PM_SONG;
+    // Nothing is playing yet: the player reads these before the first Start
+    // (a preview on a freshly loaded song used to index phrases with garbage)
+    for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
+        songPlayPos_[i] = 0;
+        currentPlayChain_[i] = 0xFF;
+        chainPlayPos_[i] = 0;
+        currentPlayPhrase_[i] = 0xFF;
+        phrasePlayPos_[i] = 0;
+    }
 } ;
 
 ViewData::~ViewData() {

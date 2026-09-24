@@ -10,7 +10,8 @@ The arrangement. Columns are the 8 tracks, rows are time. Each cell holds a chai
 
 - Everything on one row starts together.
 - Rows play top to bottom; each track loops back to the top of its block when it reaches `--`.
-- While playing, the strip at the bottom shows each track's current note and instrument, with a small level meter.
+- While playing, the strip at the bottom shows each track's current note and instrument.
+- The eight thin bars to the right of the grid are level meters, one per track: the track you're on is highlighted, muted tracks go dim, and a bar gets an amber cap when it's close to full.
 
 <br clear="right">
 
@@ -20,7 +21,7 @@ The arrangement. Columns are the 8 tracks, rows are time. Each cell holds a chai
 
 One track's playlist of bars. Left column: phrase number. Right column: transpose in semitones (`0C` = up an octave, `F4` = down an octave).
 
-The meters on the right show which tracks are making sound.
+Next to each row is a tiny piano roll of that row's phrase, so you can see the melody or rhythm of every bar without opening it. The row that's playing lights up, with a playhead moving across it.
 
 <br clear="right">
 
@@ -35,7 +36,11 @@ One bar, 16 steps. Columns:
 3. **Command 1** + value
 4. **Command 2** + value
 
-Beat rows (`00 04 08 0C`) are highlighted so you can see the grid. The line at the very bottom is a live waveform of the output.
+Step numbers are one digit, `0`–`F`. Beat rows (`0 4 8 C`) are highlighted so you can see the grid, and the playing step lights up as a green tab.
+
+<img src="images/demo-phrase-playing.png" width="300" align="right" alt="Phrase playing">
+
+Under the grid is a piano roll of the whole bar: each note sits at its pitch, with a thin line until the next note or `KILL`. A playhead follows playback and an amber mark shows the step your cursor is on. The line at the very bottom is a live waveform of the output.
 
 <br clear="right">
 
@@ -45,12 +50,30 @@ Beat rows (`00 04 08 0C`) are highlighted so you can see the grid. The line at t
 <img src="images/synth-1-sound.png" width="190" alt="SOUND">
 <img src="images/synth-2-env.png" width="190" alt="ENV">
 <img src="images/synth-3-filter.png" width="190" alt="FILTER">
-<img src="images/synth-5-mix.png" width="190" alt="MIX">
+<img src="images/synth-5-mod.png" width="190" alt="MOD">
+<img src="images/synth-6-mix.png" width="190" alt="MIX">
 </p>
 
 Six pages (SOUND, ENV, FILTER, LFO, MOD, MIX), switched with **LB + Left/Right**. The top half draws what the page does — waveform, envelope, filter curve, LFO, modulation, levels — and shows the preset name and the focused value in real units (`32 ms`, `641 Hz`). The knobs are listed below. Full details on the **[Synth](Synth)** page.
 
 The first row, `type`, switches the slot between **synth** and **sample**.
+
+## Instrument list
+
+<img src="images/demo-instrument-list.png" width="300" align="right" alt="Instrument list">
+
+**RB + Up** on the Instrument screen opens every instrument at once: number, type (`SMP`, `SYN`, `MID`, `---` for an empty slot), name, and how many phrases use it. A green dot marks instruments that are playing right now, and the box underneath draws the selected sound: a sample's waveform, or a synth's wave shape.
+
+| Button | Does |
+| --- | --- |
+| Up / Down | pick an instrument (Left/Right or LB + Up/Down jump a page) |
+| A | open it on the Instrument screen |
+| Start | hear it; Start again stops |
+| Select | give it a name with the on-screen keyboard (clear the name to go back to the automatic one) |
+| LB + A | copy it into the next free slot, to make a variation |
+| B | back |
+
+<br clear="right">
 
 ## Instrument (sample)
 
@@ -69,6 +92,8 @@ Three command columns that step one row per tick and loop. Tables run on their o
 <img src="images/groove.png" width="300" align="right" alt="Groove">
 
 How many ticks each step lasts, cycling. `06 06` is straight. `07 05` swings (long-short). `08 04` shuffles hard. Groove `00` is used by default; the `GROV` command switches a track to another groove.
+
+The ruler on the right draws one bar twice: an even grid on top, and this groove underneath with each step as wide as its ticks. Late offbeats are the swing. Under it the feel is named in plain words (`straight`, `swing 58%`), and the step that's playing turns green.
 
 <br clear="right">
 

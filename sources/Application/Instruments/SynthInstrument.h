@@ -239,6 +239,7 @@ private:
 	Variable *table_ ;
 	Variable *tableAuto_ ;
 	InstrumentMods mods_ ;
+	Variable *customName_ ;
 } ;
 
 #endif

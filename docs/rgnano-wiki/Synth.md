@@ -87,6 +87,8 @@ Times are exponential: `00` = 1 ms, `40` = 10 ms, `80` = 100 ms, `C0` = 1 s, `FF
 
 ### MOD — envelopes and LFOs
 
+<img src="images/synth-5-mod.png" width="280" align="right">
+
 Two slots, **mod1** and **mod2**, each move one part of the sound on every note. Sample instruments have the same page.
 
 | Knob | Does |
@@ -102,7 +104,7 @@ The picture shows both slots over two seconds; the focused knob shows its real v
 
 ### MIX — level and space
 
-<img src="images/synth-5-mix.png" width="280" align="right">
+<img src="images/synth-6-mix.png" width="280" align="right">
 
 | Knob | Does |
 | --- | --- |

@@ -20,7 +20,7 @@ from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parent
 ROOT = TOOLS.parent
-REPO = "Inkmortal/LittleGPTracker-RG-Nano-Audio-In-Sampling"
+REPO = "Inkmortal/LittleGPTracker-RG-Nano"
 NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 sys.path.insert(0, str(TOOLS))

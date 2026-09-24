@@ -273,6 +273,8 @@ unsigned short InstrumentBank::Clone(unsigned short i) {
 			dstV->CopyFrom(srcV) ;
 		}
 	}
+	// A sample instrument picks up its sound from the copied sample index
+	dst->Init() ;
 	return next ;
 
 }

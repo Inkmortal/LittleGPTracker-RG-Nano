@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs" / "rgnano-wiki"
 DEFAULT_OUT = ROOT / "build" / "guide-site"
 
-REPO_URL = "https://github.com/Inkmortal/LittleGPTracker-RG-Nano-Audio-In-Sampling"
+REPO_URL = "https://github.com/Inkmortal/LittleGPTracker-RG-Nano"
 
 CSS = r"""
 :root {

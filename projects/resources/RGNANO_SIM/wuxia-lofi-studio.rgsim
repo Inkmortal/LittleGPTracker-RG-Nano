@@ -159,7 +159,8 @@ end_audio_capture
 route song.to_chain
 wait 120
 expect_view chain
-expect_screen_text 1#
+# The chain rows are drawn as piano rolls now; still playing
+expect_player_running yes
 screenshot wuxia-lofi-studio-playing.bmp
 expect_size 240 240
 expect_colors 3

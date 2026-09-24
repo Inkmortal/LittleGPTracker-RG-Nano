@@ -21,7 +21,7 @@ expect_selected_text Your First Song
 press d 80
 expect_selected_text Controls
 press a 80
-wait 80
+wait 300
 screenshot_app start-guide-page.bmp
 expect_screen_text Controls
 expect_screen_text held + a D-pad direction

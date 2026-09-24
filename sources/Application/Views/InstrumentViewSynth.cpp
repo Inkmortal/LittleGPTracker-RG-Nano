@@ -459,6 +459,11 @@ void InstrumentView::drawSynthVisuals() {
 			ys[x]=top+(int)((18.0f-db)/54.0f*(bottom-top));
 		}
 		synthPlot(imp,ys,plotW,bx+2,top,bottom,false);
+		if (type==SFT_OFF) {
+			SetColor(CD_HILITE1);
+			DrawString(8,6,"filter is off",props);
+			SetColor(CD_NORMAL);
+		}
 		if (type!=SFT_OFF) {
 			int cx=bx+2+(int)(log(cut/20.0f)/log(1000.0f)*(plotW-1));
 			GUIColor hot=synthHot();
@@ -472,6 +477,11 @@ void InstrumentView::drawSynthVisuals() {
 		float rate=SynthInstrument::LfoRateFromParam(synthInt(s,SYP_LFORATE));
 		float cycles=rate<2.0f?2.0f:(rate>12.0f?12.0f:rate);
 		float depth=(float)sqrt(synthInt(s,SYP_LFOAMT)/255.0f);
+		if (depth<=0.0f) {
+			SetColor(CD_HILITE1);
+			DrawString(7,6,"depth 00 = no LFO",props);
+			SetColor(CD_NORMAL);
+		}
 		for (int x=0;x<plotW;x++) {
 			float v=(float)sin(6.2831853f*cycles*x/plotW)*depth;
 			ys[x]=mid-(int)(v*(bottom-top)/2);

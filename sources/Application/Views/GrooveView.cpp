@@ -2,6 +2,11 @@
 #include "GrooveView.h"
 #include "Application/Model/Groove.h"
 #include "Application/Utils/char.h"
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+#include "Application/AppWindow.h"
+#include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
+#endif
+#include <stdio.h>
 
 GrooveView::GrooveView(GUIWindow &w,ViewData *viewData):View(w,viewData) {
 	position_=0 ;
@@ -177,6 +182,7 @@ void GrooveView::DrawView() {
 
 	drawMap() ;
 	drawNotes() ;
+	drawTimingRuler(-1) ;
 } ;
 
 void GrooveView::OnPlayerUpdate(PlayerEventType ,unsigned int tick) {
@@ -206,6 +212,7 @@ void GrooveView::OnPlayerUpdate(PlayerEventType ,unsigned int tick) {
         SetColor(CD_PLAY);
         DrawString(pos._x,pos._y,">",props);
         SetColor(CD_NORMAL);
+		drawTimingRuler(groovepos) ;
 	} ;
 
     drawNotes() ;
@@ -213,3 +220,84 @@ void GrooveView::OnPlayerUpdate(PlayerEventType ,unsigned int tick) {
 
 void GrooveView::OnFocus() {
 } ;
+
+// Right of the list: a bar of 16 steps as blocks whose width is their tick
+// count, over an even grid, so swing and shuffle show as late offbeats.
+void GrooveView::drawTimingRuler(int playEntry) {
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+	if (!ultraCompactLayout_) {
+		return ;
+	}
+	unsigned char *data=Groove::GetInstance()->GetGrooveData(viewData_->currentGroove_) ;
+	int seq[16] ;
+	int count=0 ;
+	while (count<16 && data[count]!=NO_GROOVE_DATA) {
+		seq[count]=data[count] ;
+		count++ ;
+	}
+
+	GUIPoint anchor=GetAnchor() ;
+	const int x=(anchor._x+4)*8 ;
+	const int w=w_.GetRect().Width()-6-x ;
+	const int evenY=(anchor._y+1)*8 ;
+	const int grooveY=(anchor._y+4)*8 ;
+	const int barH=10 ;
+	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow() ;
+	GUIColor background=AppWindow::ThemeColor(CD_BACKGROUND) ;
+	imp->SetColor(background) ;
+	GUIRect clear(x,evenY-2,x+w+2,grooveY+barH+2) ;
+	imp->DrawRect(clear) ;
+
+	GUITextProperties props ;
+	SetColor(CD_HILITE1) ;
+	DrawString(anchor._x+4,anchor._y,"even",props) ;
+	DrawString(anchor._x+4,anchor._y+3,"this groove",props) ;
+	SetColor(CD_NORMAL) ;
+	if (count==0) {
+		DrawString(anchor._x+4,anchor._y+6,"empty: add tick counts",props) ;
+		return ;
+	}
+
+	int total=0 ;
+	for (int i=0;i<16;i++) total+=seq[i%count] ;
+	if (total<=0) total=1 ;
+
+	GUIColor even=AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45) ;
+	GUIColor on=AppWindow::ThemeColor(CD_NORMAL) ;
+	GUIColor beat=AppWindow::ThemeColor(CD_HILITE2) ;
+	GUIColor play=AppWindow::ThemeColor(CD_PLAY) ;
+	int acc=0 ;
+	for (int i=0;i<16;i++) {
+		// Even grid: 16 equal cells
+		int ex0=x+(i*w)/16 ;
+		int ex1=x+((i+1)*w)/16-1 ;
+		imp->SetColor(even) ;
+		GUIRect e(ex0,evenY,ex1,evenY+barH) ;
+		imp->DrawRect(e) ;
+		// Groove: cell widths follow the ticks
+		int gx0=x+(acc*w)/total ;
+		acc+=seq[i%count] ;
+		int gx1=x+(acc*w)/total-1 ;
+		bool playing=(playEntry>=0 && (i%count)==playEntry) ;
+		imp->SetColor(playing?play:((i%4)==0?beat:on)) ;
+		GUIRect g(gx0,grooveY,gx1,grooveY+barH) ;
+		imp->DrawRect(g) ;
+	}
+
+	// Plain words for the feel
+	char line[32] ;
+	const char *feel="straight" ;
+	if (count>=2 && seq[0]!=seq[1]) {
+		feel=(seq[0]>seq[1])?"swing":"push" ;
+	}
+	int pair=(count>=2)?seq[0]+seq[1]:seq[0]*2 ;
+	int percent=(pair>0)?(seq[0]*100)/pair:50 ;
+	sprintf(line,"%s %d%%",feel,percent) ;
+	SetColor(CD_HILITE2) ;
+	DrawString(anchor._x+4,anchor._y+6,line,props) ;
+	SetColor(CD_NORMAL) ;
+	DrawString(anchor._x+4,anchor._y+8,"ticks per step",props) ;
+	DrawString(anchor._x+4,anchor._y+9,"06 06 = even",props) ;
+	DrawString(anchor._x+4,anchor._y+10,"07 05 = swing",props) ;
+#endif
+}

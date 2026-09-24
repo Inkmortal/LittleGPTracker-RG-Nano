@@ -21,6 +21,7 @@ protected:
 	void warpGroove(int dir) ;
 	void processNormalButtonMask(unsigned short mask) ;
 	void processSelectionButtonMask(unsigned short mask) ;
+	void drawTimingRuler(int playEntry) ;
 
 private:
 	int position_ ;

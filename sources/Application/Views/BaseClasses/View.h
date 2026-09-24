@@ -163,6 +163,10 @@ class View : public Observable {
     void drawNotes();
     void drawMiniMeters();
     void drawMiniWaveform(bool force = false);
+    // Pixel piano roll of one phrase (16 steps): note heads with a tail to
+    // the next note or KILL, dots on the beats, optional playhead column
+    void drawPhraseRoll(int phrase, int x, int y, int w, int h, int playStep,
+                        bool active, int cursorStep = -1);
     void drawOverlayLine(int x, int y, int width, const char *text,
                          GUITextProperties &props);
     void drawContextMap(int x, int y, int width, GUITextProperties &props);

@@ -257,6 +257,7 @@ const char *Variable::GetString() {
 void Variable::CopyFrom(Variable &other) {
     type_ = other.type_;
     value_ = other.value_;
+    stringValue_ = other.stringValue_;
     list_ = other.list_;
     listSize_ = other.listSize_;
     onChange();

@@ -150,6 +150,7 @@ private:
 	   Variable *reverb_;
 	   Variable *delay_;
 	   InstrumentMods mods_;
+	   Variable *customName_;
 	   int suggestedRootNote_;
 
        static bool useDirtyDownsampling_;
