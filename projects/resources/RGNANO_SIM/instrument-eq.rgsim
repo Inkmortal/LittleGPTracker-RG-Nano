@@ -1,0 +1,145 @@
+# Every instrument's own EQ (the last instrument page), on a sample and a
+# synth: flat in an older song, knobs in dB / Hz with the curve drawn, and
+# a cut really takes the level down when you hear it.
+wait 1500
+expect_view song
+# An older song has no EQ settings: every instrument EQ is flat
+expect_instrument_param 0 eq_low_gain 128
+expect_instrument_param 0 eq_mid_freq 128
+expect_instrument_param 6 eq_high_gain 128
+expect_instrument_param 6 eq_high_freq 144
+
+goto instrument
+instrument 00
+expect_instrument_type 0 Sample
+page EQ
+expect_screen_text 7/7 EQ
+expect_screen_text flat: gains at 80
+expect_screen_text l.gain 80
+screenshot_app ieq-sample-flat.bmp
+
+# Heard flat (A+Start), then with all three bands cut 12 dB and spread
+# over the whole range (bass shelf up to 400 Hz, treble shelf down to
+# 1.5 kHz, the bell between): about a quarter of the level
+reset_audio_stats
+down a
+press s 80
+up a
+wait 700
+expect_audio_activity 4000
+down a
+press s 80
+up a
+wait 300
+set l.gain 0x00
+expect_screen_text -12.0 dB
+set l.freq 0xFF
+expect_screen_text 400 Hz
+set m.gain 0x00
+set m.freq 0x80
+set h.gain 0x00
+set h.freq 0x00
+expect_instrument_param 0 eq_low_gain 0
+expect_instrument_param 0 eq_high_gain 0
+screenshot_app ieq-sample-cut.bmp
+reset_audio_stats
+down a
+press s 80
+up a
+wait 700
+expect_audio_peak_max 4000
+down a
+press s 80
+up a
+wait 300
+# B+A: a knob back to flat
+focus l.gain
+down b
+press a 80
+up b
+wait 100
+expect_instrument_param 0 eq_low_gain 128
+expect_screen_text +0.0 dB
+# The helper explains the page and the focused knob; A opens the guide there
+down n
+press k 80
+up n
+wait 100
+expect_screen_text INSTR EQ
+expect_screen_text Its own low/mid/high EQ
+expect_screen_text boost or cut the bass
+press d 80
+wait 80
+expect_screen_text l/m/h gain: 80 = flat
+screenshot_app ieq-sample-helper.bmp
+press a 80
+wait 200
+expect_log GUIDE] open samples / Instrument EQ
+press b 80
+press b 80
+wait 150
+
+# Synth instrument: same page. (Keys pressed here once turned the synth
+# into a sampler: the hidden type field still held instrument 00's type.)
+instrument 06
+expect_instrument_type 6 Synth
+expect_screen_text 7/7 EQ
+set h.gain 0xC0
+expect_instrument_type 6 Synth
+expect_screen_text +6.0 dB
+set h.freq 0x00
+expect_screen_text 1.5 kHz
+set l.gain 0x50
+set l.freq 0x40
+expect_instrument_param 6 eq_high_gain 192
+expect_instrument_param 6 eq_low_gain 80
+screenshot_app ieq-synth.bmp
+reset_audio_stats
+down a
+press s 80
+up a
+wait 700
+expect_audio_activity 64
+down a
+press s 80
+up a
+wait 300
+# B+A flat, undo brings the boost back
+focus h.gain
+down b
+press a 80
+up b
+wait 100
+expect_screen_text +0.0 dB
+down b
+press k 80
+up b
+wait 150
+expect_instrument_param 6 eq_high_gain 192
+
+# The helper explains the focused knob
+down n
+press k 80
+up n
+wait 100
+expect_screen_text SYNTH EQ
+down n
+press k 80
+up n
+wait 100
+
+# Picking a preset starts clean: the EQ goes flat
+page SOUND
+set preset keys
+expect_instrument_param 6 eq_high_gain 128
+expect_instrument_param 6 eq_low_gain 128
+
+# The song still plays with the EQs in
+goto song
+press s 80
+wait 1000
+expect_audio_activity 64
+press s 80
+wait 200
+expect_no_error
+quit

@@ -29,6 +29,13 @@ struct renderParams {
 	fixed baseVolume_ ;  // Base volume the instrument was triggered with
 	fixed volume_ ;     // Current volume
 	bool reverse_ ;     // true if we we go backwards in stream
+	int loopMode_ ;     // play mode of this voice (latched at note start, PLAY changes it)
+	int markStart_ ;    // S, L, E of this voice (a slice when sliced)
+	int markLoop_ ;
+	int markEnd_ ;
+	int sampleSize_ ;   // frames in the voice's sample
+	float noteFactor_ ; // speed factor of the note (pitch, fine tune)
+	bool fresh_ ;       // started this tick: a PLAY on the note repositions it
 
 	bool retrig_ ;       // true if we're retriggering
 	int retrigLoop_ ;   // number of ticks before retrig
@@ -78,7 +85,8 @@ struct renderParams {
 	ModSource mods_[MOD_SLOT_COUNT] ;
 	float modVolScale_ ;          // MOD envelopes on volume
 	float modExtra_[RUX_LAST] ;   // MOD drive/crush/start/loop/sends
-	int baseLoopStart_ ;          // loop start before MOD moves it
+	int baseLoopStart_ ;          // L mark before MOD moves it
+	bool loopModded_ ;            // MOD moved L (put it back when it stops)
 	bool releasing_ ;             // note-off while an ADSR fades the volume
 
 	bool couldClick_ ;

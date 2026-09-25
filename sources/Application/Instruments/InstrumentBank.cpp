@@ -132,6 +132,23 @@ void InstrumentBank::SaveContent(TiXmlNode *node) {
 	}
 } ;
 
+// One saved PARAM onto an instrument, translating names older songs used
+void InstrumentBank::RestoreParam(I_Instrument *instr,const char *name,const char *value) {
+	if (!instr || !name || !value) return ;
+	if (instr->GetType()==IT_SAMPLE && !strcmp(name,"loopmode")) {
+		// "none", "ping pong", "oscillator", "looper sync" were renamed
+		// when the reverse play modes came in
+		value=SampleInstrument::CanonicalLoopModeName(value) ;
+	}
+	IteratorPtr<Variable> it(instr->GetIterator()) ;
+	for (it->Begin();!it->IsDone();it->Next()) {
+		Variable &v=it->CurrentItem() ;
+		if (!strcmp(v.GetName(),name)) {
+			v.SetString(value) ;
+		} ;
+	}
+}
+
 void InstrumentBank::RestoreContent(TiXmlElement *element) {
 
 	TiXmlElement *current=element->FirstChildElement() ;
@@ -205,13 +222,7 @@ void InstrumentBank::RestoreContent(TiXmlElement *element) {
             }
           }
 
-					IteratorPtr<Variable> it(instr->GetIterator()) ;
-					for (it->Begin();!it->IsDone();it->Next()) {
-						Variable &v=it->CurrentItem() ;
-						if (!strcmp(v.GetName(),name)) {
-							v.SetString(value) ;
-						} ;
-					}
+					RestoreParam(instr,name,value) ;
 					param=param->NextSiblingElement() ;
 				}
 				if (mods) {

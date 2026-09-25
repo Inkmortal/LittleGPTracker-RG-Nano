@@ -42,7 +42,8 @@ enum ViewType {
     VT_GROOVE,
     VT_MIXER,
     VT_FX,     // send effects, under the mixer
-    VT_EQ      // master EQ, right of FX
+    VT_EQ,     // master EQ, right of FX
+    VT_LIMIT   // master limiter, right of EQ
 };
 
 enum ViewMode {
@@ -158,6 +159,7 @@ class View : public Observable {
     // Lets a screen rewrite its how-to lines (e.g. per page)
     virtual void CustomizeHowToSteps(const char **lines) {}
     int getMoreKeys(const char **lines, int max);
+    InstrumentType currentInstrumentType();
     // Dialogs override: they are not the screen underneath
     virtual bool IsModal() { return false; }
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,

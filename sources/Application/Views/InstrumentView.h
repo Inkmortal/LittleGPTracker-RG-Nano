@@ -8,9 +8,11 @@
 
 // View-owned "type" field (sample/synth) shown first on page 1
 #define INSTRUMENT_TYPE_FIELD MAKE_FOURCC('I','T','Y','P')
-// Pages per instrument (sample and synth both have six, MOD is the 5th)
-#define INSTRUMENT_PAGE_COUNT 6
+// Pages per instrument (sample and synth both have seven: MOD is the 5th,
+// EQ the last)
+#define INSTRUMENT_PAGE_COUNT 7
 #define INSTRUMENT_MOD_PAGE 4
+#define INSTRUMENT_EQ_PAGE 6
 // View-owned "slot" field (1..4) on the MOD page
 #define INSTRUMENT_MOD_SLOT_FIELD MAKE_FOURCC('I','M','S','L')
 
@@ -69,6 +71,10 @@ protected:
 	                         const char *&cmd1, const char *&cmd2, const char *&cmd3,
 	                         const char *&cmd4, const char *&cmd5, const char *&cmd6,
 	                         const char *&cmd7) ;
+	void fillEQPage(I_Instrument *instr, GUIPoint position) ;
+	bool isEQField(FourCC id) ;
+	void getEQFieldHelp(FourCC id, I_Instrument *instr, char *line1, char *line2, char *value) ;
+	void drawEQPlot(I_Instrument *instr, int bx, int by, int bw, int bh) ;
 	void customizeSynthOverlay(const char *&name, const char *&where,
 	                           const char *&edit, const char *&field,
 	                           const char *&cmd1, const char *&cmd2,
@@ -89,6 +95,10 @@ protected:
 	void drawSampleWaveform(class SampleInstrument *instrument, int x, int y,
 	                        int width, int height, bool showMarkers) ;
 	void drawMarkerLine(int x, int y, int height, ColorDefinition color, FourCC marker) ;
+	// Under the waveform: the way a note travels for the play mode (first
+	// pass, then the loop), arrows pointing the direction
+	void drawPlayPath(class SampleInstrument *instrument, int x, int y, int width) ;
+	void openSampleEditor() ;
 	void normalizeWaveMarkers(class SampleInstrument *instrument, FourCC changedMarker) ;
 	void cycleWaveMarker(int offset) ;
 	void nudgeWaveMarker(int offset, int multiplier=1) ;

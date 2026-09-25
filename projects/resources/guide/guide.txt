@@ -557,7 +557,8 @@
    + Start records it into
    a new sample (render to
    sample). Play it
-   backwards or slice it
+   backwards (play reverse,
+   play modes) or slice it
    for a fill.
  - Open the other Demo
    Songs and see how
@@ -638,8 +639,8 @@
    this screen's special
    tool: command picker,
    Live mode, sample
-   import/root, rename,
-   sort
+   import/root/editor,
+   rename, sort
 *B + Select / LB + Select
    undo / redo any change,
    on every screen (hold B
@@ -719,8 +720,13 @@
    RB + Up: Mixer
    RB + Down: -
 *EQ
-   -
+   Limit
    RB + Left: FX
+   RB + Up: -
+   RB + Down: -
+*Limit
+   -
+   RB + Left: EQ
    RB + Up: -
    RB + Down: -
  
@@ -938,8 +944,8 @@
  
 *LB + Left/Right
    change page (SOUND, ENV,
-   FILTER, LFO, MOD, MIX
-   for synths)
+   FILTER, LFO, MOD, MIX,
+   EQ for synths)
 *LB + Up/Down on the MOD pa
    pick the slot (1-4) the
    settings edit
@@ -971,15 +977,19 @@
    up
  
  Sample instruments have
- their own pages and trim
- controls - see Samples.
+ their own pages, play
+ modes, trim controls and a
+ sample editor (Select on
+ the Source or Loop page) -
+ see Samples.
  
-=Mixer, FX and EQ
+=Mixer, FX, EQ and Limit
  
 *Left/Right
    pick a strip (Mixer)
 *Up/Down
-   pick a knob (FX, EQ)
+   pick a knob (FX, EQ,
+   Limit)
 *A + Up/Down / A + Left/Rig
    big / small step
 *B + A
@@ -1286,16 +1296,16 @@
  
 =Instrument (synth)
  
- Six pages (SOUND, ENV,
- FILTER, LFO, MOD, MIX),
- switched with LB +
+ Seven pages (SOUND, ENV,
+ FILTER, LFO, MOD, MIX,
+ EQ), switched with LB +
  Left/Right. The top half
  draws what the page does -
  waveform, envelope, filter
  curve, LFO, modulation,
- levels - and shows the
- preset name and the
- focused value in real
+ levels, EQ curve - and
+ shows the preset name and
+ the focused value in real
  units (32 ms, 641 Hz). The
  knobs are listed below.
  Full details on the Synth
@@ -1346,11 +1356,12 @@
 =Instrument (sample)
  
  Sample instruments have
- six pages too: Source,
+ seven pages too: Source,
  Shape, Filter, Loop, Mod,
- Motion, with a waveform
- and start/loop/end
- markers. See Samples.
+ Motion, EQ, with a
+ waveform and
+ start/loop/end markers.
+ See Samples.
  
 =Table
  
@@ -1432,7 +1443,14 @@
  (M), each with a live
  level meter, plus the
  master waveform. Levels
- save with the song.
+ save with the song. When
+ the limiter is on, a white
+ line hangs from the top of
+ the master meter as long
+ as it is limiting (12 dB =
+ half the meter), and the
+ master line reads LIM
+ -3.2dB.
  
 *Left/Right
    pick a strip
@@ -1526,6 +1544,80 @@
  for weight, mid 3 dB at
  400 Hz to clear mud, high
  +2 dB at 8 kHz for air.
+ 
+ RB + Right goes on to the
+ limiter. Every instrument
+ also has an EQ of its own,
+ on its EQ page.
+ 
+=Limit
+ 
+ The master limiter, RB +
+ Right from EQ (like the
+ M8's LIM): it keeps the
+ whole mix under a ceiling,
+ so you can make it louder
+ without it clipping. It
+ comes after the EQ; the
+ Project's clip (soft clip)
+ and master volume come
+ after it.
+ 
+*drive
+   pushes the mix into the
+   limiter
+   Values: 00 = off (the
+   default), 01 = 0 dB ..
+   FF = +25.4 dB
+*ceil
+   the loudest the mix may
+   get
+   Values: 00 = 25.5 dB ..
+   FF = 0 dB, default FC =
+   0.3 dB
+*attk
+   how far it looks ahead:
+   the gain is already down
+   when a peak arrives
+   Values: 0.1-10 ms,
+   default 80 = 1 ms
+*rels
+   how fast it lets go
+   afterwards
+   Values: 00 = auto
+   (100-900 ms: slower the
+   harder it works), 01 = 4
+   ms .. FF = 1 s
+ 
+ Under the knobs, the red
+ GR bar shows how many dB
+ it is taking off right
+ now, with the peak going
+ in (after drive) and
+ coming out. The scope
+ below scrolls the last few
+ seconds: the mix level
+ rises from the bottom, the
+ limiting hangs from the
+ top in red, the dotted
+ line is the ceiling.
+ 
+ Up/Down picks a knob, A +
+ D-pad edits, B + A puts a
+ knob back (drive back to
+ off), RB + Left returns to
+ EQ. With drive 00 the mix
+ passes untouched; switched
+ on, it delays the whole
+ mix by the look-ahead (1
+ ms by default).
+ 
+ Try: drive +3 to +6 dB
+ with rels on auto. A few
+ dB of GR on the loudest
+ hits is transparent; if it
+ pumps, lower drive or
+ lengthen rels.
  
 =Helper (RB + Select)
  
@@ -1998,6 +2090,53 @@
  and set on the FX screen
  (Mixer, then RB + Down).
  
+=EQ - its own tone
+ 
+ Every instrument has its
+ own three-band EQ, like
+ the M8's instrument EQ:
+ the same low shelf, mid
+ bell and high shelf as the
+ master EQ, but only on
+ this sound (before its pan
+ and its effect sends).
+ Sample instruments have
+ the same page.
+ 
+*l.gain / l.freq
+   bass shelf: everything
+   below l.freq (30-400 Hz)
+   up or down
+*m.gain / m.freq
+   a wide bell around
+   m.freq (150 Hz-6 kHz)
+*h.gain / h.freq
+   treble shelf: everything
+   above h.freq (1.5-16
+   kHz)
+ 
+ Gains: 80 = flat, 12 ...
+ +12 dB (about 0.1 dB a
+ step). The curve shows the
+ result from 20 Hz to 20
+ kHz, with a mark at the
+ focused band; the focused
+ knob shows its real value
+ (+4.5 dB, 94 Hz). B + A
+ puts a knob back. A flat
+ band costs nothing, so
+ leave what you don't need
+ at 80. Picking a preset
+ sets the EQ flat again.
+ 
+ Try: on a bass, l.gain +4
+ dB for weight and h.gain 6
+ dB to keep it out of the
+ hats' way; on a pad,
+ m.gain 4 dB around 400 Hz
+ to leave room for the
+ lead.
+ 
 =Chords with CHRD
  
  How it works - two parts:
@@ -2365,6 +2504,19 @@
  
 =Samples only
  
+*PLAY
+   00bb
+   Does: play mode for this
+   note: 00 forward, 01
+   reverse, 02 loop, 03
+   rev-loop, 04 pingpong,
+   05 rev-pingpong, 06-08
+   osc, 09 loop-sync (play
+   modes). With a note: the
+   note starts over in that
+   mode (reverse from E);
+   without: the sound turns
+   around from where it is
 *PLOF
    aabb
    Does: jump to position
@@ -3123,12 +3275,12 @@
 =Sample pages
  
  LB + Left/Right switches
- between the six sample
+ between the seven sample
  pages:
  
 *Source
-   sample, root note,
-   detune, slices
+   sample, play mode, root
+   note, detune, slices
 *Shape
    volume, pan, reverb,
    delay and chorus sends
@@ -3139,8 +3291,8 @@
    cutoff, resonance,
    filter type and mode
 *Loop
-   loop mode, start, loop
-   start, end
+   play mode, slices,
+   start, loop start, end
 *Mod
    four slots
    (ADSR/AHD/drum
@@ -3154,6 +3306,116 @@
 *Motion
    instrument table,
    feedback
+*EQ
+   the instrument's own low
+   / mid / high EQ, drawn
+   as a curve - see
+   Instrument EQ
+ 
+=Instrument EQ
+ 
+ The last page. Each sample
+ instrument has its own
+ three-band EQ, the same as
+ a synth's (Synth -> EQ):
+ l.gain/l.freq a bass shelf
+ (30-400 Hz), m.gain/m.freq
+ a bell (150 Hz-6 kHz),
+ h.gain/h.freq a treble
+ shelf (1.5-16 kHz). Gains
+ 80 = flat, 12 ... +12 dB.
+ It shapes only this sound,
+ before its effect sends;
+ flat bands cost nothing.
+ The curve above the knobs
+ shows the result, and the
+ focused knob's value is
+ shown in dB or Hz.
+ 
+ Try: thin a loop with
+ l.gain 8 dB so the kick
+ has the bottom to itself,
+ or brighten a dull vocal
+ chop with h.gain +4 dB.
+ 
+=Play modes
+ 
+ play (on Source and Loop)
+ picks the direction and
+ whether the sample loops,
+ the same choices as the
+ M8's sampler. S, L and E
+ are the start, loop start
+ and end markers (see
+ Trimming).
+ 
+*forward
+   S to E, once (the
+   default)
+*reverse
+   E back to S, once
+*loop
+   S to E, then L to E
+   again and again
+*rev-loop
+   E back to L, again and
+   again
+*pingpong
+   S to E, then back and
+   forth between E and L
+*rev-pingpong
+   E back to L, then back
+   and forth
+*osc
+   L..E is one wave cycle,
+   pitched like a synth
+   (single-cycle waveforms)
+*osc-rev / osc-pingpong
+   the cycle backwards /
+   there and back
+*loop-sync
+   L..E stretched to one
+   bar at the song tempo
+   (drum loops that follow
+   the tempo)
+ 
+ Under the waveform a green
+ line with arrows shows the
+ first pass and which way
+ it goes; a second line
+ shows the part that loops
+ (arrows both ways for
+ ping-pong). With slices,
+ every slice plays its own
+ part in the chosen mode,
+ so reverse plays each
+ slice backwards.
+ 
+ A single note can use
+ another mode with the PLAY
+ command: PLAY 0001 on a
+ step with a note plays
+ that note in reverse while
+ the instrument stays
+ forward (the number is the
+ mode's place in the list
+ above: 00 forward, 01
+ reverse, 02 loop, 03
+ rev-loop, 04 pingpong, 05
+ rev-pingpong, 06 osc, 07
+ osc-rev, 08 osc-pingpong,
+ 09 loop-sync). On a step
+ without a note it turns
+ the sound that is already
+ playing around from where
+ it is.
+ 
+ Songs made before these
+ modes open unchanged: none
+ is now forward, ping pong
+ is pingpong, oscillator is
+ osc, looper sync is
+ loop-sync.
  
 =Trimming
  
@@ -3174,7 +3436,84 @@
 *RB + Start
    switch that preview
    between once and loop
-   (PREV: on screen)
+   (PREV: on screen), in
+   the play mode's
+   direction
+*Select
+   open the sample editor
+   (on sample: import; on
+   root: find the root)
+ 
+=Sample editing
+ 
+ Like the M8's sample
+ editor, with the same
+ processes. On the Source
+ or Loop page press Select
+ (anywhere but on sample
+ and root). The editor
+ works on the part between
+ S and E, shaded in the
+ pictures: BEFORE is the
+ sample now, AFTER what the
+ edit will make.
+ 
+*normalize
+   makes S..E as loud as it
+   can be without clipping
+*crop to S..E
+   keeps only S..E (L moves
+   with the sound)
+*fade in S..E
+   S..E rises from silence
+*fade out S..E
+   S..E falls to silence
+*reverse S..E
+   S..E plays backwards
+*trim silence
+   cuts the quiet start and
+   end of the whole sample
+ 
+*Up / Down
+   pick an edit
+*A
+   make it
+*Start
+   hear the sample (again:
+   stop)
+*B
+   back to the instrument
+ 
+ Nothing is overwritten: A
+ writes a new file next to
+ the original (kick.wav
+ becomes kick_nrm.wav,
+ kick_crop.wav,
+ kick_rev.wav ...), puts it
+ on the instrument and
+ keeps your markers where
+ they were in the sound.
+ Edits chain: crop, then
+ normalize the result.
+ Changed your mind? Close
+ the editor and press B +
+ Select: the instrument
+ goes back to the previous
+ file (the new file stays
+ in the song's samples
+ folder, unused). To fade
+ only the last bit of a
+ sound, move S there first
+ (LB + Up/Down, LB + A +
+ Left/Right), fade out,
+ then move S back.
+ 
+ If an edit would change
+ nothing the editor says
+ why instead (already as
+ loud as it gets, move S or
+ E in first, no silence at
+ the ends).
  
 =Root note
  
@@ -3200,9 +3539,11 @@
  opens the new instrument;
  B cancels and leaves
  nothing behind. Chop it
- with slices, reverse it
- with a table, or stack it
- again.
+ with slices, play it
+ backwards with play
+ reverse, trim and
+ normalize it in the sample
+ editor, or stack it again.
  
 =Slices
  
@@ -3576,7 +3917,7 @@
    Chain, Phrase,
    Instrument, Table,
    Groove, Project, Mixer,
-   FX, EQ, Helper
+   FX, EQ, Limit, Helper
 *Synth
    The built-in synth:
    every knob, every
@@ -3648,7 +3989,9 @@
    notes, fills, shuffles
    and the RAND/CHNC
    commands, plus a master
-   EQ to finish the mix.
+   EQ and limiter to finish
+   the mix, and an EQ on
+   every instrument.
  - Tested like a product. A
    desktop simulator drives
    the real app with
@@ -3781,10 +4124,12 @@
  expect_song_chain,
  expect_phrase_row_count, e
  xpect_instrument_type/name
- /param, expect_size 240
- 240, expect_no_error, and
- more - see
- docs/RGNANO_SIM.md.
+ /param,
+ expect_audio_peak_max,
+ expect_limiter_gr,
+ expect_size 240 240,
+ expect_no_error, and more
+ - see docs/RGNANO_SIM.md.
  
  State setup for long
  scenarios: sim_set_synth,
@@ -4011,6 +4356,30 @@
 *Shared reverb / echo
    sources/Application/Mixe
    r/SendFX.*
+*Master EQ, instrument EQ d
+   sources/Application/Mixe
+   r/ThreeBandEQ.*,
+   MasterEQ.*
+*Master limiter (look-ahead
+   sources/Application/Mixe
+   r/MasterLimiter.*,
+   screen
+   Views/LimiterView.cpp
+*Instrument EQ (per voice)
+   sources/Application/Inst
+   ruments/InstrumentEQ.*,
+   page Views/InstrumentVie
+   wEQ.cpp
+*Sampler play modes (forwar
+   sources/Application/Inst
+   ruments/SampleInstrument
+   .* (setupVoicePlayback,
+   Render)
+*Sample editor (normalize, 
+   sources/Application/Inst
+   ruments/SampleProcessor.
+   *, Views/ModalDialogs/Sa
+   mpleEditDialog.*
 *Instrument bank, type swit
    sources/Application/Inst
    ruments/InstrumentBank.c

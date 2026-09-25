@@ -151,6 +151,24 @@ The reverb room, echo time and chorus speed are shared by every instrument and s
 
 <br clear="right">
 
+### EQ — its own tone
+
+<img src="images/synth-7-eq.png" width="280" align="right">
+
+Every instrument has its own three-band EQ, like the M8's instrument EQ: the same low shelf, mid bell and high shelf as the [master EQ](Screens#eq), but only on this sound (before its pan and its effect sends). Sample instruments have the same page.
+
+| Knob | Does |
+| --- | --- |
+| `l.gain` / `l.freq` | bass shelf: everything below `l.freq` (30–400 Hz) up or down |
+| `m.gain` / `m.freq` | a wide bell around `m.freq` (150 Hz–6 kHz) |
+| `h.gain` / `h.freq` | treble shelf: everything above `h.freq` (1.5–16 kHz) |
+
+Gains: `80` = flat, −12 … +12 dB (about 0.1 dB a step). The curve shows the result from 20 Hz to 20 kHz, with a mark at the focused band; the focused knob shows its real value (`+4.5 dB`, `94 Hz`). **B + A** puts a knob back. A flat band costs nothing, so leave what you don't need at `80`. Picking a preset sets the EQ flat again.
+
+**Try:** on a bass, `l.gain` `+4 dB` for weight and `h.gain` `−6 dB` to keep it out of the hats' way; on a pad, `m.gain` `−4 dB` around 400 Hz to leave room for the lead.
+
+<br clear="right">
+
 ## Chords with CHRD
 
 **How it works — two parts:**

@@ -14,7 +14,7 @@ expect_screen_text Instrument 00 SYNTH
 # Synth, slot 1: an ADSR closing the filter
 set preset pad
 page MOD
-expect_screen_text 5/6 MOD
+expect_screen_text 5/7 MOD
 expect_screen_text >1 off
 expect_screen_text slot 1 is off
 set type adsr
@@ -146,7 +146,7 @@ page SOUND
 set type sample
 expect_instrument_type 1 Sample
 page MOD
-expect_screen_text 5/6 MOD
+expect_screen_text 5/7 MOD
 set slot 1
 set type ahd
 set dest start
@@ -161,7 +161,7 @@ expect_instrument_param 1 mod1_amount -60
 expect_instrument_param 1 mod1_p2 8
 screenshot_app mod-sample.bmp
 page MOTION
-expect_screen_text 6/6 MOTION
+expect_screen_text 6/7 MOTION
 
 goto song
 expect_no_error

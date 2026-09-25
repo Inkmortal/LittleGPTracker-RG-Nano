@@ -7,6 +7,7 @@
 #include "I_Instrument.h"
 #include "SRPUpdaters.h"
 #include "ModSources.h"
+#include "InstrumentEQ.h"
 #include "Application/Model/Song.h"
 #include "Foundation/Types/Types.h"
 #include "Foundation/Variables/Variable.h"
@@ -246,6 +247,7 @@ private:
 	Variable *table_ ;
 	Variable *tableAuto_ ;
 	InstrumentMods mods_ ;
+	InstrumentEQ eq_ ;
 	Variable *customName_ ;
 } ;
 

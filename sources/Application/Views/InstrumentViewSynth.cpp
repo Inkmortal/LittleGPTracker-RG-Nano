@@ -1,4 +1,4 @@
-// Synth pages of the Instrument screen: SOUND, ENV, FILTER, LFO, MOD, MIX.
+// Synth pages of the Instrument screen: SOUND, ENV, FILTER, LFO, MOD, MIX, EQ.
 // Each page draws a live picture of what its knobs do, plus a plain-English
 // explanation of the focused knob with real units (ms, Hz, semitones).
 
@@ -45,6 +45,7 @@ const char *InstrumentView::getSynthPageName() {
 		case 2: return "FILTER";
 		case 3: return "LFO";
 		case INSTRUMENT_MOD_PAGE: return "MOD";
+		case INSTRUMENT_EQ_PAGE: return "EQ";
 		default: return "MIX";
 	}
 }
@@ -148,6 +149,9 @@ void InstrumentView::fillSynthParameters() {
 			break;
 		case INSTRUMENT_MOD_PAGE:
 			fillModPage(s,position);
+			break;
+		case INSTRUMENT_EQ_PAGE:
+			fillEQPage(s,position);
 			break;
 		default:
 			SYNTH_FIELD(SYP_VOLUME,"volume %2.2X",0,0xFF,1,0x10);
@@ -333,7 +337,11 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 			strcpy(line2,"speed/depth: FX screen");
 			break;
 		default:
-			getModFieldHelp(id,s,line1,line2,value);
+			if (isEQField(id)) {
+				getEQFieldHelp(id,s,line1,line2,value);
+			} else {
+				getModFieldHelp(id,s,line1,line2,value);
+			}
 			break;
 	}
 }
@@ -498,6 +506,8 @@ void InstrumentView::drawSynthVisuals() {
 			ys[x]=mid-(int)(v*(bottom-top)/2);
 		}
 		synthPlot(imp,ys,plotW,bx+2,top,bottom,false);
+	} else if (labPage_==INSTRUMENT_EQ_PAGE) {
+		drawEQPlot(s,bx,by,bw,bh);
 	} else {
 		// Mix: level and pan, then the three effect sends
 		const char *names[5]={"VOL","PAN","REV","DLY","CHO"};
@@ -595,6 +605,12 @@ void InstrumentView::customizeSynthOverlay(const char *&name, const char *&where
 		case INSTRUMENT_MOD_PAGE:
 			name="SYNTH MOD";
 			customizeModOverlay(field,where,edit,cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7);
+			break;
+		case INSTRUMENT_EQ_PAGE:
+			name="SYNTH EQ";
+			field="Its own low/mid/high EQ";
+			cmd1="gain 80 = flat, +-12 dB";
+			cmd6="A+Start hear  B+A flat";
 			break;
 		default:
 			name="SYNTH MIX";

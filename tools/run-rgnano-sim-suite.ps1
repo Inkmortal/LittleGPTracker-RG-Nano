@@ -128,6 +128,11 @@ $suite = @(
     Args = @("-ResetLastProject", "-SeedLofiFixture")
   },
   @{
+    Name = "sample-processing"
+    Script = "sample-processing.rgsim"
+    Args = @("-ResetLastProject", "-SeedLofiFixture")
+  },
+  @{
     Name = "a-press-does-not-climb"
     Script = "a-press-does-not-climb.rgsim"
     Args = @("-ResetLastProject")
@@ -156,6 +161,16 @@ $suite = @(
     Name = "eq-screen"
     Script = "eq-screen.rgsim"
     Args = @("-OpenDemo=NeonDrive")
+  },
+  @{
+    Name = "master-limiter"
+    Script = "master-limiter.rgsim"
+    Args = @("-OpenDemo=NeonDrive")
+  },
+  @{
+    Name = "instrument-eq"
+    Script = "instrument-eq.rgsim"
+    Args = @("-OpenDemo=JadeSword")
   },
   @{
     Name = "random-tools"

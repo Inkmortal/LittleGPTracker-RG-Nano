@@ -33,6 +33,11 @@
 #define VAR_EQ_MID_FREQ MAKE_FOURCC('E', 'Q', 'M', 'F')
 #define VAR_EQ_HIGH_GAIN MAKE_FOURCC('E', 'Q', 'H', 'G')
 #define VAR_EQ_HIGH_FREQ MAKE_FOURCC('E', 'Q', 'H', 'F')
+// Master limiter (LIMIT screen, right of EQ); drive 00 = off
+#define VAR_LIM_DRIVE MAKE_FOURCC('L', 'I', 'M', 'D')
+#define VAR_LIM_CEILING MAKE_FOURCC('L', 'I', 'M', 'C')
+#define VAR_LIM_ATTACK MAKE_FOURCC('L', 'I', 'M', 'A')
+#define VAR_LIM_RELEASE MAKE_FOURCC('L', 'I', 'M', 'R')
 
 #define PROJECT_NUMBER "1"
 #define PROJECT_RELEASE "6"

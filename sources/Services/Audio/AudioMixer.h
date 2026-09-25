@@ -37,8 +37,13 @@ public:
 	bool CaptureActive() { return capture_!=0 ; } ;
 	// 0..100 of the frames asked for
 	int CaptureProgress() ;
-	// Runs on the summed output before volume and clipping (0 = none)
-	void SetInsert(AudioInsert *insert) { insert_=insert ; } ;
+	// Effects run in order on the summed output, before volume and
+	// clipping (master EQ, then the limiter). SetInsert replaces them all.
+	void SetInsert(AudioInsert *insert) { insertCount_=0 ; AddInsert(insert) ; } ;
+	void AddInsert(AudioInsert *insert) {
+		if (insert && insertCount_<MAX_INSERTS) inserts_[insertCount_++]=insert ;
+	} ;
+	static const int MAX_INSERTS = 4 ;
 	
 private:
   fixed hardClip(fixed sample);
@@ -47,7 +52,8 @@ private:
   bool enableRendering_;
   std::string renderPath_;
   WavFileWriter *writer_;
-  AudioInsert *insert_;
+  AudioInsert *inserts_[MAX_INSERTS];
+  int insertCount_;
   WavFileWriter *capture_;
   int captureLeft_;
   int captureTotal_;

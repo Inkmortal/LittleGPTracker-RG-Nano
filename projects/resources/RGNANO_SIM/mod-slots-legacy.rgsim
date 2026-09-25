@@ -23,7 +23,7 @@ goto phrase
 goto instrument
 instrument 05
 page MOD
-expect_screen_text 5/6 MOD
+expect_screen_text 5/7 MOD
 expect_screen_text >1 decay cutoff  +40
 expect_screen_text 2 lfo   pitch   +2
 set slot 2
