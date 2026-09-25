@@ -206,6 +206,7 @@ protected:
 
   public:
     static int margin_;
+    static bool undoGesture_; // an A-hold of edits in progress (one undo step)
     static int songRowCount_;
     static bool miniLayout_;
     static bool ultraCompactLayout_;  // For RG Nano 240x240

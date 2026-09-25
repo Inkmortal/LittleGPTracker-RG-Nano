@@ -75,7 +75,7 @@ C  ----       KILL 0000
 
 - **Add a note:** move to the step and press **A**. It copies the last note and instrument you used.
 - **Change it:** hold **A** and press **Left/Right** (a semitone, or a scale step while the Key is set) or **Up/Down** (an octave).
-- **Delete:** **B + A**.
+- **Delete:** **B + A**. Made a mistake? **B + Select** undoes it (**LB + Select** redoes).
 - **Commands:** move **Right** to the command column, press **Select**, pick the command, then hold **A**: **Left/Right** picks a digit, **Up/Down** changes it.
 
 The steps you leave empty are silence (or the last note ringing on).

@@ -13,6 +13,7 @@ public:
 	bool IsUsed(uchar i) { return isUsed_[i] ; } ;
 	void SetUsed(uchar c) ;
 	void ClearAllocation() ;
+	bool *UsedFlags() { return isUsed_ ; } ; // for undo snapshots
 
 	uchar *note_ ;
 	uchar *instr_ ;

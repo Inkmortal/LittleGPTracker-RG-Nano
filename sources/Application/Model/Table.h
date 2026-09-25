@@ -36,6 +36,9 @@ public:
 	int Clone(int table) ;
 	virtual void SaveContent(TiXmlNode *node) ;
 	virtual void RestoreContent(TiXmlElement *element);
+	// Raw storage, for undo snapshots
+	Table *Tables() { return table_ ; } ;
+	bool *Allocation() { return allocation_ ; } ;
 
 private:
 	Table table_[TABLE_COUNT] ;

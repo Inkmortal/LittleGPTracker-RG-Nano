@@ -20,6 +20,7 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
 | **B + LB** | start a selection (again: grow it to whole rows, then the whole block). In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
 | **Select** | this screen's special tool: command picker, Live mode, sample import/root, rename, sort |
+| **B + Select** / **LB + Select** | undo / redo any change, on every screen (hold B or LB first) |
 | **RB + Select** | the helper, on every screen |
 
 Nothing is mapped twice on a screen, and a combo never fires two actions at once.
@@ -54,7 +55,8 @@ If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a di
 | --- | --- |
 | **Start** | play / stop (what plays depends on the screen, see below) |
 | **RB + Start** | play / stop the whole song from a Chain, Phrase, Table, Groove or Instrument screen |
-| **RB + Select** | helper: **Down/Up** flips map → commands → how-to, **RB + Select** closes |
+| **RB + Select** | helper: **Down/Up** flips map → commands → how-to, **A** opens the full guide, **RB + Select** closes |
+| **B + Select** / **LB + Select** | undo / redo (32 steps; one A-hold of edits is one step) |
 | **A + RB** | solo the track (Song, Chain, Phrase, Mixer) |
 | **B + RB** | mute the track (Song, Chain, Phrase, Mixer) |
 | **B + LB** | start a selection; **B** copies it, **A + LB** pastes |

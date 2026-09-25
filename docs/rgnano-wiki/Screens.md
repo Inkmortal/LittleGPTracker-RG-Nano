@@ -165,8 +165,8 @@ Each heading shows the real values (Hz, ms, tail length) and how many sounds sen
 
 Available on every screen, including dialogs. **Down/Up** flips between:
 
-1. **Map** — where you are and where RB + direction goes
-2. **Commands** — the buttons for this screen. On the synth pages it also explains the knob under the cursor.
+1. **Map** — where you are and where RB + direction goes, plus the undo keys
+2. **Commands** — the buttons for this screen, then **MORE KEYS** with the rest. On the synth pages it also explains the knob under the cursor.
 3. **How to** — a short walkthrough for this screen
 
 On any page, **A** opens the built-in guide at the section for the current screen.

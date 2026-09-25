@@ -1,6 +1,6 @@
 # LittleGPTracker (LGPT) - Legacy UX/UI Notes
 
-> RG Nano note: this file is older project analysis and may describe pre-fork controls. For current user-facing RG Nano behavior, use [docs/RGNANO_USER_MANUAL.md](docs/RGNANO_USER_MANUAL.md) and [docs/RGNANO_INPUT_MAP.md](docs/RGNANO_INPUT_MAP.md). Those documents include the current `R + Select` helper, playback-scope labels, and tested RG Nano navigation.
+> RG Nano note: this file is older project analysis and may describe pre-fork controls. For current user-facing RG Nano behavior, use the guide in [docs/rgnano-wiki](docs/rgnano-wiki/Home.md) (also the in-app Help and the website).
 
 **Platform**: RG Nano (Miyoo Mini compatible)
 **Date**: 2025-10-05

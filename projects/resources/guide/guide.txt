@@ -153,7 +153,10 @@
    step while the Key is
    set) or Up/Down (an
    octave).
- - Delete: B + A.
+ - Delete: B + A. Made a
+   mistake? B + Select
+   undoes it (LB + Select
+   redoes).
  - Commands: move Right to
    the command column,
    press Select, pick the
@@ -626,6 +629,10 @@
    Live mode, sample
    import/root, rename,
    sort
+*B + Select / LB + Select
+   undo / redo any change,
+   on every screen (hold B
+   or LB first)
 *RB + Select
    the helper, on every
    screen
@@ -722,8 +729,13 @@
 *RB + Select
    helper: Down/Up flips
    map -> commands ->
-   how-to, RB + Select
+   how-to, A opens the full
+   guide, RB + Select
    closes
+*B + Select / LB + Select
+   undo / redo (32 steps;
+   one A-hold of edits is
+   one step)
 *A + RB
    solo the track (Song,
    Chain, Phrase, Mixer)
@@ -1437,12 +1449,15 @@
  
  1. Map - where you are and
     where RB + direction
-    goes
+    goes, plus the undo
+    keys
  2. Commands - the buttons
-    for this screen. On the
-    synth pages it also
-    explains the knob under
-    the cursor.
+    for this screen, then
+    MORE KEYS with the
+    rest. On the synth
+    pages it also explains
+    the knob under the
+    cursor.
  3. How to - a short
     walkthrough for this
     screen
@@ -3011,6 +3026,19 @@
  for chromatic steps, or
  set Key: --.
  
+ I deleted or changed
+ something by accident.
+ Hold B and press Select to
+ undo; do it again to go
+ further back (up to 32
+ steps). LB + Select
+ redoes. Holding A while
+ you edit counts as one
+ step, so one undo takes
+ back the whole tweak.
+ Loading another song
+ starts a fresh history.
+ 
  Where is the reverb
  setting?
  Two parts: each
@@ -3076,14 +3104,15 @@
 | lgpt-rgnano.opk          
 |the app
 | Tracks/                  
-|demo songs
-|    lgpt_NeonDrive
-|    lgpt_JadeSword
-|    lgpt_RainyWindow
-|    lgpt_PixelQuest
-| TRACKER_BASICS.md
-| RGNANO_USER_MANUAL.md
-| RGNANO_INPUT_MAP.md
+|demo songs (lgpt_Dusk, lgp
+|t_NeonDrive, ... one per g
+|enre)
+| Samples/                 
+|sample packs (keys, string
+|s, drums-808, ...)
+| LGPT-Guide/              
+|this guide, as Markdown fi
+|les
  
  Put them on the SD card
  like this:
@@ -3093,8 +3122,15 @@
    games/lgpt-rgnano.opk
 *Tracks/lgpt_* folders
    Applications/Tracks/
-*your own .wav files (optio
+*Samples/ pack folders
    Applications/Samples/
+   (add your own .wav files
+   there too)
+*LGPT-Guide/
+   Applications/LGPT-Guide/
+   (optional: the same
+   guide is built into the
+   app under Help)
  
  Create Applications/Tracks
  and Applications/Samples
@@ -3174,3 +3210,546 @@
 *Diagnostic log
    Applications/lgpt-rgnano
    .log
+@about|About this app
+ LGPT for RG Nano
+ 
+ A pocket tracker
+ workstation for the
+ Anbernic RG Nano.
+ Eight tracks, built-in
+ synths, sample packs,
+ chorus, echo and reverb,
+ live mode, WAV export - on
+ a 1.54" screen.
+ 
+ ---
+ 
+ This is a fork of
+ LittleGPTracker / Little
+ Piggy Tracker rebuilt for
+ the RG Nano's 240x240
+ screen and tiny buttons,
+ with the spirit of the
+ Dirtywave M8: everything
+ you need to write a full
+ song lives in your pocket,
+ and the screen stays quiet
+ so the music does the
+ talking.
+ 
+ Never used a tracker? Go
+ straight to Your First
+ Song. In about half an
+ hour you build Dusk, a
+ full song with jazzy
+ chords, a bouncing bass
+ and an echoing hook, from
+ the synths every new song
+ starts with.
+ 
+=Start here
+ 
+*1
+   Install
+   What you get: Put the
+   app and demo songs on
+   your RG Nano
+*2
+   Controls
+   What you get: The few
+   key rules every screen
+   follows, and every combo
+*3
+   How Trackers Work
+   What you get: The four
+   ideas behind every
+   tracker
+*4
+   Your First Song
+   What you get: Build a
+   whole song, step by step
+*5
+   Demo Songs
+   What you get: Fifteen
+   finished songs, one for
+   every major genre, to
+   open, play and pull
+   apart
+ 
+=Reference
+ 
+*Screens
+   Song (and Live mode),
+   Chain, Phrase,
+   Instrument, Table,
+   Groove, Project, Mixer,
+   FX, Helper
+*Synth
+   The built-in synth:
+   every knob, every
+   preset, sound recipes
+*Commands
+   All phrase/table
+   commands with examples
+*Music Theory Cheat Sheet
+   Scales, chords,
+   progressions and drum
+   patterns that just work
+*Samples
+   The built-in sample
+   packs, your own WAVs,
+   render to sample
+*Export
+   Bounce your song to WAV
+   (stereo or stems)
+*FAQ
+   Common "why did that
+   happen?" answers
+*Developer Guide
+   Simulator, tests, song
+   composer, build and
+   install scripts
+ 
+=What makes this fork diffe
+ 
+ - Makes sound instantly.
+   New projects come with a
+   16-instrument synth kit:
+   kick, snare, hats, clap,
+   bass, lead, pad, pluck,
+   keys, bell, acid, sub,
+   chip, tom, perc.
+ - M8-style synth engine.
+   Seven waveforms, sub
+   oscillator, noise,
+   2-operator FM, one-note
+   chords, envelopes,
+   resonant filter, drive,
+   LFO, glide - plus shared
+   reverb and tempo-synced
+   echo.
+ - Designed for 240x240.
+   Each instrument page
+   draws what its knobs do.
+   Explanations only appear
+   when you ask for them
+   with RB + Select.
+ - A song in every genre.
+   Sample packs of real
+   instruments (piano,
+   strings, brass, drums,
+   guitar, Chinese
+   instruments and more)
+   and a demo song for each
+   style.
+ - Play it live. Live mode
+   turns the Song screen
+   into a clip launcher;
+   the Mixer and FX screens
+   mix it.
+ - Forgiving. One key
+   grammar on every screen,
+   and B + Select undoes
+   any change.
+ - Tested like a product. A
+   desktop simulator drives
+   the real app with
+   scripted button presses,
+   checks the screens and
+   measures the audio
+   before anything goes on
+   the device.
+ 
+*Tip: On any screen, RB +
+*Select opens the helper: a
+*map of where you are, the
+*buttons for this screen,
+*and a short how-to. A in
+*the helper opens this
+*whole guide inside the
+*app. Press RB + Select
+*again to close.
+@developer|Developer Guide
+ Everything runs on Windows
+ with MSYS2 (MinGW32) for
+ the simulator and WSL
+ (Ubuntu) for the RG Nano
+ cross-build. All tools are
+ in tools/.
+ 
+=Build
+ 
+*Desktop simulator
+   .\run.ps1 -Task dev (or 
+   tools\build-rgnano-sim.p
+   s1)
+   Output: projects/lgpt-rg
+   nano-sim.exe
+*RG Nano
+   cd projects; make
+   PLATFORM=RGNANO inside
+   WSL with the FunKey SDK
+   in sdk/FunKey-sdk-DrUm78
+   Output:
+   projects/lgpt-rgnano.elf
+*RG Nano + install
+   tools\install-rgnano.ps1
+   Output: builds, packages
+   the OPK and copies app,
+   docs and demos to a
+   connected RG Nano
+ 
+ CI (.github/workflows/buil
+ d-rgnano.yml) builds the
+ ELF, the OPK and a zip
+ with the demo songs and
+ docs.
+ 
+=Simulator
+ 
+ lgpt-rgnano-sim.exe is the
+ real app with a 240x240
+ SDL surface, the RG Nano
+ key layout and a script
+ runner.
+ 
+|.\tools\run-rgnano-sim.ps1
+|                    # inte
+|ractive, with the device s
+|kin
+|.\tools\run-rgnano-sim.ps1
+| -Script x.rgsim    # head
+|less: hidden window, no fo
+|cus stealing
+|.\tools\run-rgnano-sim.ps1
+| -Script x.rgsim -Mute -Vi
+|sible
+|.\tools\run-rgnano-sim-sui
+|te.ps1              # ever
+|y regression case, muted a
+|nd headless
+ 
+ Scripted runs render into
+ a window that is never
+ shown, so nothing appears
+ on screen. Screenshots,
+ screen-text checks and
+ audio capture still work.
+ -Mute sends silence to the
+ sound card while still
+ measuring and capturing
+ the real output.
+ 
+=Script language
+ 
+ Low level: press a 80,
+ down n / up n (hold), wait
+ 500, screenshot_app x.bmp.
+ 
+ Goal commands - say what
+ you want; the simulator
+ reads the live state and
+ presses the keys:
+ 
+|goto instrument        # s
+|hortest RB+D-pad route
+|row 0C                 # c
+|ursor row on Song/Chain/Ph
+|rase
+|page FILTER            # i
+|nstrument page
+|focus cutoff           # f
+|ield cursor to a label
+|set cutoff 0x80        # f
+|ocus + edit until the valu
+|e matches
+|set preset bell        # l
+|ist values by name
+|instrument 0A          # B
+|+D-pad to an instrument sl
+|ot
+ 
+ Each goal logs => reached
+ in N steps and fails with
+ a clear message if an
+ input changes nothing.
+ 
+ Assertions: expect_view,
+ expect_screen_text,
+ expect_selected_text,
+ expect_player_running,
+ expect_play_mode,
+ expect_audio_activity,
+ expect_song_chain,
+ expect_phrase_row_count, e
+ xpect_instrument_type/name
+ /param, expect_size 240
+ 240, expect_no_error, and
+ more - see
+ docs/RGNANO_SIM.md.
+ 
+ State setup for long
+ scenarios: sim_set_synth,
+ sim_set_instrument_param,
+ sim_set_song_chain,
+ sim_set_chain_phrase,
+ sim_set_phrase_note,
+ sim_set_phrase_command,
+ sim_set_tempo.
+ 
+=When the simulator crashes
+ 
+ It writes
+ rgnano-sim-crash.txt.
+ python
+ tools\symbolize_crash.py
+ turns it into function
+ names and source lines.
+ 
+=Song composer
+ 
+ tools/lgpt_composer.py
+ writes real lgptsav.dat
+ projects from Python, with
+ helpers for note names,
+ chord voicing (smooth
+ inversions that fit one
+ CHRD), drum pattern
+ strings and phrase text:
+ 
+|from pathlib import Path
+|from lgpt_composer import 
+|Phrase, Project
+|from _patterns import chor
+|d_bar, voice_progression
+|
+|p = Project("MySong", temp
+|o=100)
+|p.synth(0, "kick")
+|p.synth(5, "pad", reverb=0
+|x90)
+|kick = p.chain([Phrase.dru
+|ms("x...x...x...x...", 0)]
+| * 4)
+|pads = p.chain([chord_bar(
+|v, 5) for v in voice_progr
+|ession(["Am", "F", "C", "G
+|"], "E3")])
+|p.row(0, [kick, None, None
+|, None, None, pads, None, 
+|None])
+|p.save(Path("rgnano-sim-da
+|ta/tracks"))
+ 
+ Demo songs live in
+ tools/demos/*.py.
+ 
+=Listening without ears
+ 
+*python tools\render_demos.
+   builds each demo,
+   bounces it with the
+   app's own Stereo render,
+   writes WAV + JSON +
+   spectrogram PNG to
+   sim-artifacts-demos;
+   --stems prints per-track
+   levels for mixing
+*python tools\audio_report.
+   peak, RMS, crest,
+   clipping, silent
+   seconds, band energy,
+   pitch classes
+*python tools\capture_wiki_
+   regenerates every
+   screenshot on this wiki
+ 
+=Control design rules
+ 
+ Every screen follows the
+ key grammar in Controls.
+ When adding a combo, check
+ it against these (from
+ game-controller UX
+ practice: Nielsen's
+ heuristics, the Game
+ Accessibility Guidelines,
+ Xbox accessibility
+ guideline 107, Swink's
+ *Game Feel*):
+ 
+ - Act on press. Nothing
+   waits for a release; B
+   backs out the instant it
+   is pressed.
+ - Feedback on every press,
+   drawn by the next frame;
+   an action that can't
+   happen says why (Empty:
+   press A for a chain)
+   instead of doing
+   nothing.
+ - Cost matches frequency.
+   Move, add a note, play:
+   one button. Copy, jump,
+   big steps: one modifier
+   + one button. Never
+   three buttons for
+   something routine.
+ - One meaning per combo
+   per screen, and the same
+   meaning on every screen.
+   A combo never fires two
+   actions.
+ - No timing tricks. No
+   double-tap windows; live
+   cues wait for the bar,
+   not for a precise press.
+ - B is always the way out
+   of a dialog, without
+   side effects.
+ - Everything is undoable.
+   UndoHistory snapshots
+   the song, chains,
+   phrases, tables,
+   grooves, mixer, project
+   settings and the current
+   instrument before every
+   press and keeps it if
+   the press changed
+   something (one A-hold =
+   one step, 32 steps). New
+   editing code needs
+   nothing extra; new data
+   outside those needs
+   adding to
+   UndoHistory::Capture.
+ - Show the mode
+   (Song/Live, selection,
+   playing) on screen; the
+   helper (RB + Select)
+   lists every combo of the
+   current screen.
+ - Key repeat: 250 ms
+   before repeating, then
+   66 ms (KEYDELAY,
+   KEYREPEAT in
+   config.xml); holding A +
+   a direction speeds up to
+   40 ms after 6 repeats
+   (KEYREPEATFAST) for long
+   value sweeps. The cursor
+   itself never
+   accelerates, so it
+   doesn't overshoot.
+ - Every change is guarded
+   by a sim test
+   (key-grammar, live-mode,
+   mixer-levels).
+ 
+=Crashes and logs
+ 
+ On the device the app
+ writes Applications/lgpt-r
+ gnano.log (the previous
+ run is kept as .log.prev,
+ capped at 1 MB with
+ rotation to .log.old).
+ Every 30 s a [HEARTBEAT]
+ line records uptime and
+ memory, so slow growth
+ shows up. [TRAIL] lines
+ are the recent keys,
+ screens, dialogs and
+ play/stop.
+ 
+ A crash (SIGSEGV, SIGBUS,
+ SIGILL, SIGFPE, SIGABRT)
+ appends a report to Applic
+ ations/lgpt-rgnano-crash.t
+ xt: the commit, signal,
+ fault address, pc/lr,
+ return addresses found on
+ the stack and the last 48
+ actions. The installer
+ archives each build's ELF
+ as build/elf/.elf, and
+ 
+|python tools/nano_crash_re
+|port.py        # card moun
+|ted as D:
+ 
+ names the functions and
+ lines and prints the last
+ heartbeats and log lines.
+ 
+ Soak test for crashes and
+ leaks: python
+ tools/make_soak_script.py
+ --minutes 15 --seed 1
+ writes a random-play
+ script; run it with
+ tools/run-rgnano-sim.ps1
+ -Script projects/resources
+ /RGNANO_SIM/soak.rgsim
+ -Mute -OpenDemo Dusk and
+ read the [HEARTBEAT]
+ lines. The simulator's own
+ crash handler writes
+ rgnano-sim-crash.txt with
+ the same action trail.
+ 
+ DUMPEVENT in config.xml
+ logs every player tick and
+ key: keep it NO on the
+ device.
+ 
+=Code map
+ 
+*Synth engine and presets
+   sources/Application/Inst
+   ruments/SynthInstrument.
+   *
+*Shared reverb / echo
+   sources/Application/Mixe
+   r/SendFX.*
+*Instrument bank, type swit
+   sources/Application/Inst
+   ruments/InstrumentBank.c
+   pp
+*Synth screen
+   sources/Application/View
+   s/InstrumentViewSynth.cp
+   p
+*Helper overlay
+   sources/Application/View
+   s/BaseClasses/View.cpp
+*Simulator script runner
+   sources/Adapters/SDL/GUI
+   /SDLEventManager.cpp
+*Simulator boot / headless
+   sources/Adapters/RGNANO_
+   SIM/
+ 
+=Publishing this guide
+ 
+ The guide source is
+ docs/rgnano-wiki/*.md
+ (plain Markdown, also
+ valid as a GitHub wiki).
+ 
+ - python tools/build_guide
+   _site.py renders it into
+   a static site in
+   build/guide-site.
+ - python tools\publish_gui
+   de_site.py --gh-user
+   builds it and publishes
+   to GitHub Pages
+   (gh-pages branch): https
+   ://inkmortal.github.io/L
+   ittleGPTracker-RG-Nano/
+ - tools\publish-wiki.ps1
+   mirrors the same pages
+   into a GitHub wiki, if
+   the repository uses one.

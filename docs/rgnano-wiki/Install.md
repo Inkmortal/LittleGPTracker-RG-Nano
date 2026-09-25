@@ -13,14 +13,9 @@ The zip contains:
 ```text
 lgpt-rgnano/
 ├── lgpt-rgnano.opk          the app
-├── Tracks/                  demo songs
-│   ├── lgpt_NeonDrive
-│   ├── lgpt_JadeSword
-│   ├── lgpt_RainyWindow
-│   └── lgpt_PixelQuest
-├── TRACKER_BASICS.md
-├── RGNANO_USER_MANUAL.md
-└── RGNANO_INPUT_MAP.md
+├── Tracks/                  demo songs (lgpt_Dusk, lgpt_NeonDrive, ... one per genre)
+├── Samples/                 sample packs (keys, strings, drums-808, ...)
+└── LGPT-Guide/              this guide, as Markdown files
 ```
 
 Put them on the SD card like this:
@@ -29,7 +24,8 @@ Put them on the SD card like this:
 | --- | --- |
 | `lgpt-rgnano.opk` | `Native games/lgpt-rgnano.opk` |
 | `Tracks/lgpt_*` folders | `Applications/Tracks/` |
-| your own `.wav` files (optional) | `Applications/Samples/` |
+| `Samples/` pack folders | `Applications/Samples/` (add your own `.wav` files there too) |
+| `LGPT-Guide/` | `Applications/LGPT-Guide/` (optional: the same guide is built into the app under **Help**) |
 
 Create `Applications/Tracks` and `Applications/Samples` if they don't exist.
 

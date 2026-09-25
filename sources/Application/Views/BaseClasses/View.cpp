@@ -1,3 +1,5 @@
+#include "Application/Utils/UndoHistory.h"
+#include "Application/Instruments/InstrumentBank.h"
 #include "System/Console/CrashLog.h"
 #include "View.h"
 #include "System/Console/Trace.h"
@@ -16,6 +18,7 @@
 bool View::initPrivate_=false ;
 
 int View::margin_=0 ;
+bool View::undoGesture_=false ;
 int View::songRowCount_; //=21 sets screen height among other things
 bool View::miniLayout_=false ;
 bool View::ultraCompactLayout_=false ;
@@ -463,6 +466,8 @@ void View::drawContextOverlay() {
 		drawOverlayLine(innerX,y+14,innerW,edit,props);
 		SetColor(CD_HILITE2);
 		drawOverlayLine(innerX,y+16,innerW,"Down: command list",props);
+		SetColor(CD_NORMAL);
+		drawOverlayLine(innerX,y+17,innerW,"B+Sel undo  LB+Sel redo",props);
 	} else if (contextOverlayPage_ == 2) {
 		const char *steps[7];
 		getHowToSteps(steps);
@@ -1126,6 +1131,39 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 		return;
 	}
 
+	// Undo / redo: B+Select steps back, LB+Select forward again
+	// (no song loaded yet on the start screen: nothing to snapshot)
+	bool haveSong=viewData_ && viewData_->project_ && viewData_->song_ ;
+	if (haveSong && pressed && !modalView_ &&
+	    (mask==(EPBM_B|EPBM_SELECT) || mask==(EPBM_L|EPBM_SELECT))) {
+		bool undo=(mask&EPBM_B)!=0 ;
+		const char *what=undo?UndoHistory::Undo(viewData_->project_,viewData_->song_)
+		                     :UndoHistory::Redo(viewData_->project_,viewData_->song_) ;
+		static char message[48] ;
+		if (what) {
+			snprintf(message,sizeof(message),"%s %s",undo?"Undone:":"Redone:",what) ;
+		} else {
+			snprintf(message,sizeof(message),"%s",undo?"Nothing to undo":"Nothing to redo") ;
+		}
+		CrashLog::Note("%s",message) ;
+		SetNotification(message) ;
+		undoGesture_=false ;
+		isDirty_=true ;
+		((AppWindow &)w_).SetDirty() ;
+		return ;
+	}
+	if (!pressed && !(mask&EPBM_A)) {
+		undoGesture_=false ;  // an A-hold of edits ends when A is let go
+	}
+	// Every press may change the song: keep what it was, in case it did
+	UndoHistory::Snapshot before ;
+	if (pressed && haveSong) {
+		VariableContainer *instrument=viewData_->project_->GetInstrumentBank()
+			->GetInstrument(viewData_->currentInstrument_) ;
+		UndoHistory::Capture(viewData_->project_,viewData_->song_,instrument,
+		                     ((AppWindow &)w_).GetCurrentViewName(),before) ;
+	}
+
 	if (modalView_) {
 		modalView_->ProcessButton(mask,pressed);
 		modalView_->isDirty_;
@@ -1144,6 +1182,13 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 		if (pressed && (mask & EPBM_START)) {
 			isDirty_=true;
 		}
+	}
+	if (pressed && haveSong && viewData_->project_ && viewData_->song_) {
+		// Holding A while editing is one step, however many values it moved
+		// (the hold only joins steps once it has changed something itself)
+		bool merge=undoGesture_ && (mask&EPBM_A) ;
+		bool changed=UndoHistory::Record(viewData_->project_,viewData_->song_,before,merge) ;
+		undoGesture_=(mask&EPBM_A) && (changed || merge) ;
 	}
 	if (isDirty_) ((AppWindow &)w_).SetDirty() ;
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)

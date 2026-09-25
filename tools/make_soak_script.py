@@ -28,8 +28,8 @@ def combo(rng: random.Random, hold: str, key: str) -> list[str]:
 
 def action(rng: random.Random) -> list[str]:
     kind = rng.choices(
-        ["move", "screen", "edit", "play", "helper", "select", "back", "bnav", "lb", "wait"],
-        weights=[30, 14, 14, 6, 4, 4, 6, 6, 4, 12])[0]
+        ["move", "screen", "edit", "play", "helper", "select", "back", "bnav", "lb", "wait", "undo"],
+        weights=[30, 14, 14, 6, 4, 4, 6, 6, 4, 12, 6])[0]
     d = rng.choice(DIRS)
     if kind == "move":
         return [f"press {d} 60", f"wait {rng.randint(40, 200)}"]
@@ -55,6 +55,10 @@ def action(rng: random.Random) -> list[str]:
         return combo(rng, "b", d)
     if kind == "lb":
         return combo(rng, "m", rng.choice(DIRS + "s"))
+    if kind == "undo":
+        # B+Select undo, LB+Select redo, sometimes several in a row
+        hold = rng.choice("bbm")
+        return combo(rng, hold, "k") * rng.randint(1, 3)
     return [f"wait {rng.randint(500, 4000)}"]
 
 

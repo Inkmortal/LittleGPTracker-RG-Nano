@@ -21,6 +21,9 @@ An empty `--` Song cell makes that track jump back to the top of its block. Give
 **Notes jump by more than one semitone when I edit them.**
 A Project `Key`/`Scale` is set, so editing follows the scale. Use **LB + D-pad** for chromatic steps, or set `Key: --`.
 
+**I deleted or changed something by accident.**
+Hold **B** and press **Select** to undo; do it again to go further back (up to 32 steps). **LB + Select** redoes. Holding A while you edit counts as one step, so one undo takes back the whole tweak. Loading another song starts a fresh history.
+
 **Where is the reverb setting?**
 Two parts: each instrument's **MIX** page (samples: **SHAPE**) sets how much it sends (`reverb`, `delay`, `chorus`); the **FX** screen (Mixer, then **RB + Down**) sets the room, the echo and the chorus.
 

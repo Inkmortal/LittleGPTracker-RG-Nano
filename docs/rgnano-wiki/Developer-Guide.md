@@ -89,6 +89,7 @@ Every screen follows the key grammar in [Controls](Controls). When adding a comb
 - **One meaning per combo per screen**, and the same meaning on every screen. A combo never fires two actions.
 - **No timing tricks.** No double-tap windows; live cues wait for the bar, not for a precise press.
 - **B is always the way out** of a dialog, without side effects.
+- **Everything is undoable.** `UndoHistory` snapshots the song, chains, phrases, tables, grooves, mixer, project settings and the current instrument before every press and keeps it if the press changed something (one A-hold = one step, 32 steps). New editing code needs nothing extra; new data outside those needs adding to `UndoHistory::Capture`.
 - **Show the mode** (Song/Live, selection, playing) on screen; the helper (RB + Select) lists every combo of the current screen.
 - **Key repeat**: 250 ms before repeating, then 66 ms (`KEYDELAY`, `KEYREPEAT` in `config.xml`); holding A + a direction speeds up to 40 ms after 6 repeats (`KEYREPEATFAST`) for long value sweeps. The cursor itself never accelerates, so it doesn't overshoot.
 - **Every change is guarded by a sim test** (`key-grammar`, `live-mode`, `mixer-levels`).

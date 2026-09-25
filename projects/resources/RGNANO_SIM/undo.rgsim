@@ -1,0 +1,79 @@
+# Undo / redo: B+Select steps back, LB+Select forward again. One A-hold of
+# edits is one step; deletes, faders and knob resets undo too.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+# Step 1: add a note (tap A); step 2: hold A and raise it twice
+press a 80
+wait 100
+expect_screen_text 0 C  3I00
+down a
+press r 80
+press r 80
+up a
+wait 100
+expect_screen_text 0 D  3I00
+# One undo takes back the whole A-hold
+down b
+press k 80
+up b
+wait 150
+expect_screen_text Undone: phrase
+expect_screen_text 0 C  3I00
+# Undo again: the note is gone; redo brings it back
+down b
+press k 80
+up b
+wait 150
+expect_screen_text 0 ----I--
+down m
+press k 80
+up m
+wait 150
+expect_screen_text Redone: phrase
+expect_screen_text 0 C  3I00
+# A delete (B+A) undoes too
+down b
+press a 80
+up b
+wait 100
+expect_screen_text 0 ----I--
+down b
+press k 80
+up b
+wait 150
+expect_screen_text 0 C  3I00
+# Knob reset on an instrument (B+A), then undo
+goto instrument
+page MIX
+set pan 0x20
+down b
+press a 80
+up b
+wait 100
+expect_instrument_param 0 pan 127
+down b
+press k 80
+up b
+wait 150
+expect_instrument_param 0 pan 32
+# Mixer fader
+goto mixer
+expect_screen_text TRACK 1  C0
+down a
+press d 80
+up a
+wait 100
+expect_screen_text TRACK 1  B0
+down b
+press k 80
+up b
+wait 150
+expect_screen_text TRACK 1  C0
+# Nothing left, it says so
+goto song
+expect_no_error
+quit

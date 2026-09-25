@@ -12,6 +12,7 @@ public:
 	bool IsUsed(unsigned char i) { return isUsed_[i] ; } ;
 	void SetUsed(unsigned char c) ;
 	void ClearAllocation() ;
+	bool *UsedFlags() { return isUsed_ ; } ; // for undo snapshots
 
 	unsigned char *data_ ;
 	unsigned char *transpose_ ;

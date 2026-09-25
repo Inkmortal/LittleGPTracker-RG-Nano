@@ -153,6 +153,11 @@ $suite = @(
     Args = @("-OpenDemo=NeonDrive")
   },
   @{
+    Name = "undo"
+    Script = "undo.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "key-grammar"
     Script = "key-grammar.rgsim"
     Args = @("-ResetLastProject")

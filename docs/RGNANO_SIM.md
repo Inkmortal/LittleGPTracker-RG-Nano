@@ -184,7 +184,7 @@ In skin mode, these controls can also be clicked directly on the device shell.
 
 This target is intended for automated UI, project, sample, and audio-output smoke tests before moving a build to the physical RG Nano.
 
-The source-derived control and navigation map lives in [RGNANO_INPUT_MAP.md](RGNANO_INPUT_MAP.md). Use that map as the authority for simulator workflows: LGPT handles held button masks, so tests should use real combos instead of treating buttons as isolated clicks.
+The controls are documented in the guide ([Controls](rgnano-wiki/Controls.md)) and guarded by the `key-grammar` sim test. Use them as the authority for simulator workflows: LGPT handles held button masks, so tests should use real combos instead of treating buttons as isolated clicks.
 
 ## Scripted Smoke Tests
 

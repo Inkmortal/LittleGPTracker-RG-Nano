@@ -1,3 +1,4 @@
+#include "Application/Utils/UndoHistory.h"
 #include "System/Console/CrashLog.h"
 #include "AppWindow.h"
 #include "Application/Utils/RecentSongs.h"
@@ -550,6 +551,7 @@ void AppWindow::LoadProject(const Path &p) {
     Trace::Log("LoadProject", "%s\n", p.GetPath().c_str());
     // The song list can show recently opened songs first
     RecentSongs::Touch(Path(p).GetName());
+    UndoHistory::Clear(); // another song: the old steps don't apply
     CrashLog::Note("load song %s", Path(p).GetName().c_str());
     _root = p;
 

@@ -73,9 +73,18 @@ if ($LASTEXITCODE -ne 0) { throw "mksquashfs failed" }
 Write-Host "Installing..."
 Copy-Item -LiteralPath $opkOut -Destination (Join-Path $nativeGames "lgpt-rgnano.opk") -Force
 Copy-Item -LiteralPath (Join-Path $projects "resources\RGNANO\lgpt.png") -Destination (Join-Path $nativeGames "lgpt-rgnano.png") -Force
-foreach ($doc in @("RGNANO_USER_MANUAL.md", "RGNANO_INPUT_MAP.md", "TRACKER_BASICS.md")) {
-  Copy-Item -LiteralPath (Join-Path $root "docs\$doc") -Destination (Join-Path $applications $doc) -Force
+# The guide: the same pages as the website and the in-app Help, readable on
+# a computer from the card. The old separate manuals are replaced by it.
+foreach ($old in @("RGNANO_USER_MANUAL.md", "RGNANO_INPUT_MAP.md", "TRACKER_BASICS.md")) {
+  $stale = Join-Path $applications $old
+  if (Test-Path -LiteralPath $stale) { Remove-Item -LiteralPath $stale -Force }
 }
+$guideDest = Join-Path $applications "LGPT-Guide"
+New-Item -ItemType Directory -Force -Path (Join-Path $guideDest "images") | Out-Null
+$wiki = Join-Path (Join-Path $root "docs") "rgnano-wiki"
+Get-ChildItem -LiteralPath $wiki -Filter *.md |
+  Where-Object { -not $_.Name.StartsWith("_") } | Copy-Item -Destination $guideDest -Force
+Copy-Item -Path (Join-Path (Join-Path $wiki "images") "*") -Destination (Join-Path $guideDest "images") -Force
 New-Item -ItemType Directory -Force -Path $tracks | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $applications "Samples") | Out-Null
 # Sample packs: our files are refreshed, anything you added to a pack folder stays
