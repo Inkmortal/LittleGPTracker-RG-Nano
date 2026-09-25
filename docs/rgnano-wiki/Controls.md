@@ -9,8 +9,9 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **A + D-pad** | change the value (Left/Right small step, Up/Down big step) |
 | **B + A** | delete it, or put a knob back to its default |
 | **A + Start** | hear the instrument (on a phrase, **A** on a note already previews it) |
-| **B + D-pad** | jump to the neighbouring item that way (chain, phrase, instrument, table, groove; 16 rows on the Song, a page in lists) |
-| **B** | back / close, in dialogs |
+| **B + D-pad** | jump to the neighbouring item that way (chain, phrase, instrument, table, groove; 16 rows on the Song) |
+| **B** | back / close, in dialogs (right away) |
+| **Left/Right** in a list | a page at a time (where Left/Right pick a button instead: **LB + Up/Down**) |
 | **RB + D-pad** | go to the screen that way on the map |
 | **Start** | play / stop what this screen shows |
 | **RB + Start** | play / stop the whole song (on the Song screen in Live mode: stop this track) |

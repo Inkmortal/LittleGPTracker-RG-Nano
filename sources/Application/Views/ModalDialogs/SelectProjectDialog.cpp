@@ -200,7 +200,7 @@ void SelectProjectDialog::CustomizeContextOverlay(
 	edit="A runs the button";
 	field="Choose/create song";
 	cmd1="Up/Down choose song";
-	cmd2="B+Up/Dn page list";
+	cmd2="LB+Up/Dn page list";
 	cmd3="Left/Right button";
 	cmd4="A run button";
 	cmd5="Delete asks first";
@@ -259,8 +259,8 @@ void SelectProjectDialog::runAction() {
 void SelectProjectDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (!pressed) return ;
 
-    if (mask & EPBM_B) {
-        // (Deleting is the Delete button, which asks first)
+    if (mask & EPBM_L) {
+        // LB+Up/Down: a page (Left/Right pick the button)
         if (mask & EPBM_UP)
             warpToNextProject(-LIST_SIZE);
         if (mask & EPBM_DOWN)

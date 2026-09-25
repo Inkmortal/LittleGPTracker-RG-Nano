@@ -19,6 +19,8 @@ public:
 private:
 	GUIWindow *window_ ;	
 	static int keyRepeat_ ;
+	static int keyRepeatFast_ ;  // value edits (A held) after a few repeats
+	int repeatCount_ ;
 	static int keyDelay_ ;
 	unsigned int eventMask_ ;
 	unsigned int repeatMask_ ;

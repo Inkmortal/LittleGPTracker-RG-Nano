@@ -74,7 +74,7 @@ The first row, `type`, switches the slot between **synth** and **sample**.
 
 | Button | Does |
 | --- | --- |
-| Up / Down | pick an instrument (**B + Up/Down** jump a page) |
+| Up / Down | pick an instrument (**Left/Right** jump a page) |
 | A | open it on the Instrument screen |
 | Start | hear it; Start again stops |
 | Select | give it a name with the on-screen keyboard (clear the name to go back to the automatic one) |

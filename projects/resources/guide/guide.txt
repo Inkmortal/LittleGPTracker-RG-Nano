@@ -40,7 +40,7 @@
  whole guide is built into
  the app. Up/Down picks a
  topic, A opens it. Inside
- a page Up/Down scrolls, B
+ a page Up/Down scrolls, LB
  + Up/Down turns a page,
  Left/Right jumps between
  sections, B goes back to
@@ -579,10 +579,14 @@
    item that way (chain,
    phrase, instrument,
    table, groove; 16 rows
-   on the Song, a page in
-   lists)
+   on the Song)
 *B
    back / close, in dialogs
+   (right away)
+*Left/Right in a list
+   a page at a time (where
+   Left/Right pick a button
+   instead: LB + Up/Down)
 *RB + D-pad
    go to the screen that
    way on the map
@@ -1262,8 +1266,8 @@
  synth's wave shape.
  
 *Up / Down
-   pick an instrument (B +
-   Up/Down jump a page)
+   pick an instrument
+   (Left/Right jump a page)
 *A
    open it on the
    Instrument screen

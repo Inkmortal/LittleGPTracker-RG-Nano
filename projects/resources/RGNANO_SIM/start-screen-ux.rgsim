@@ -24,7 +24,7 @@ press a 80
 wait 300
 screenshot_app start-guide-page.bmp
 expect_screen_text Controls
-expect_screen_text held + a D-pad direction
+expect_screen_text combos mean the same thing
 # Right jumps to the next section heading
 press r 80
 wait 60

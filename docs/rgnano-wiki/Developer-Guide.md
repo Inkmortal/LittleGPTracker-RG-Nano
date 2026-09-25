@@ -79,6 +79,20 @@ Demo songs live in `tools/demos/*.py`.
 | `python tools\audio_report.py file.wav --png out.png` | peak, RMS, crest, clipping, silent seconds, band energy, pitch classes |
 | `python tools\capture_wiki_screens.py` | regenerates every screenshot on this wiki |
 
+## Control design rules
+
+Every screen follows the key grammar in [Controls](Controls). When adding a combo, check it against these (from game-controller UX practice: Nielsen's heuristics, the Game Accessibility Guidelines, Xbox accessibility guideline 107, Swink's *Game Feel*):
+
+- **Act on press.** Nothing waits for a release; B backs out the instant it is pressed.
+- **Feedback on every press**, drawn by the next frame; an action that can't happen says why (`Empty: press A for a chain`) instead of doing nothing.
+- **Cost matches frequency.** Move, add a note, play: one button. Copy, jump, big steps: one modifier + one button. Never three buttons for something routine.
+- **One meaning per combo per screen**, and the same meaning on every screen. A combo never fires two actions.
+- **No timing tricks.** No double-tap windows; live cues wait for the bar, not for a precise press.
+- **B is always the way out** of a dialog, without side effects.
+- **Show the mode** (Song/Live, selection, playing) on screen; the helper (RB + Select) lists every combo of the current screen.
+- **Key repeat**: 250 ms before repeating, then 66 ms (`KEYDELAY`, `KEYREPEAT` in `config.xml`); holding A + a direction speeds up to 40 ms after 6 repeats (`KEYREPEATFAST`) for long value sweeps. The cursor itself never accelerates, so it doesn't overshoot.
+- **Every change is guarded by a sim test** (`key-grammar`, `live-mode`, `mixer-levels`).
+
 ## Crashes and logs
 
 On the device the app writes `Applications/lgpt-rgnano.log` (the previous run is kept as `.log.prev`, capped at 1 MB with rotation to `.log.old`). Every 30 s a `[HEARTBEAT]` line records uptime and memory, so slow growth shows up. `[TRAIL]` lines are the recent keys, screens, dialogs and play/stop.

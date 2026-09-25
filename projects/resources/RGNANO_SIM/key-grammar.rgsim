@@ -1,5 +1,5 @@
-# The shared key rules hold on every screen: B+Down = forward 16 / a page,
-# B tapped alone = back / close, B+RB mutes on the Mixer as elsewhere.
+# The shared key rules hold on every screen: B+Down = forward 16, B =
+# back / close right away, big list jumps with Left/Right or LB, B+RB mutes.
 route boot.new_project_random
 expect_view song
 press a 80
@@ -41,34 +41,32 @@ press a 80
 up b
 wait 100
 expect_instrument_param 0 pan 127
-# The instrument list: B+Down pages, B tapped closes
+# The instrument list: Right pages, B closes
 down n
 press u 80
 up n
 wait 200
 expect_screen_text INSTRUMENTS
 expect_screen_text 00/8F
-down b
-press d 80
-up b
+press r 80
 wait 100
 expect_screen_text 0C/8F
 press b 80
 wait 200
 expect_view instrument
-# The guide from the helper: B+Down pages, B back to topics, B closes
+# The guide from the helper: LB+Down pages, B back to topics, B closes
 down n
 press k 80
 up n
 wait 150
 press a 80
 wait 300
-expect_screen_text B topics  B+Up/Dn page
-down b
+expect_screen_text B topics  LB+Up/Dn page
+down m
 press d 80
-up b
+up m
 wait 100
-expect_screen_text B topics  B+Up/Dn page
+expect_screen_text B topics  LB+Up/Dn page
 press b 80
 wait 150
 press b 80

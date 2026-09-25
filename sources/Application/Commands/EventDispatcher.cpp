@@ -9,6 +9,11 @@
 
 int EventDispatcher::keyRepeat_=30 ;
 int EventDispatcher::keyDelay_=500 ;
+int EventDispatcher::keyRepeatFast_=0 ;
+
+// Holding A + a direction speeds up after this many repeats, so a long
+// value sweep is quick while the cursor keeps a steady, predictable pace
+#define KEY_REPEAT_ACCEL_AFTER 6
 
 Uint32 OnTimer(Uint32 interval) {
 	return EventDispatcher::GetInstance()->OnTimerTick() ;
@@ -30,6 +35,12 @@ EventDispatcher::EventDispatcher() {
 	if (s) {
 		keyRepeat_=atoi(s) ;
 	}
+	keyRepeatFast_=keyRepeat_ ;
+	s=config->GetValue("KEYREPEATFAST") ;
+	if (s) {
+		keyRepeatFast_=atoi(s) ;
+	}
+	repeatCount_=0 ;
 
 	repeatMask_=0 ;
 	repeatMask_|=(1<<EPBT_LEFT) ;
@@ -101,6 +112,7 @@ void EventDispatcher::Execute(FourCC id,float value) {
 
 
 		if (eventMask_&repeatMask_) {
+			repeatCount_=0 ;
 			timer_->SetPeriod(float(keyDelay_)) ;
 			timer_->Start() ;
 		} else {
@@ -134,6 +146,10 @@ unsigned int EventDispatcher::OnTimerTick() {
 			sendMask>>=1 ;
 			current++ ;
 		}		
+		repeatCount_++ ;
+		if ((eventMask_&(1<<EPBT_A)) && repeatCount_>=KEY_REPEAT_ACCEL_AFTER) {
+			return keyRepeatFast_ ;
+		}
 		return keyRepeat_ ;
 	}
 	return 0 ;

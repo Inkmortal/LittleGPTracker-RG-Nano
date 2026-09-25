@@ -18,7 +18,8 @@
 	<!-- Match the RG Nano OS: FN/Select sends KEY_K. MENU/Power is separate. -->
 	<KEY_SELECT value="k"/>
 	<KEY_POWER value="p"/>
-	<KEYDELAY value="200"/>
-	<KEYREPEAT value="100"/>
+	<KEYDELAY value="250"/>  <!-- hold this long before a key repeats -->
+	<KEYREPEAT value="66"/>  <!-- then every 66 ms (about 15 per second) -->
+	<KEYREPEATFAST value="40"/>  <!-- A + direction held: faster after 6 repeats -->
 	<FONTTYPE value="0"/>
 </CONFIG>

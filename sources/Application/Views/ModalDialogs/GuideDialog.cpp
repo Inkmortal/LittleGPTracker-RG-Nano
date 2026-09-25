@@ -197,7 +197,7 @@ void GuideDialog::DrawView() {
 
     SetColor(CD_MUTE);
     DrawString(0, FOOTER_Y, "Up/Dn scroll  L/R section", props);
-    DrawString(0, FOOTER_Y + 1, "B topics  B+Up/Dn page", props);
+    DrawString(0, FOOTER_Y + 1, "B topics  LB+Up/Dn page", props);
     SetColor(CD_NORMAL);
 }
 
@@ -215,16 +215,17 @@ void GuideDialog::CustomizeContextOverlay(
     cmd1 = "Up/Down pick/scroll";
     cmd2 = "A open / page down";
     cmd3 = "Left/Right section";
-    cmd4 = "B+Up/Down page";
+    cmd4 = "LB+Up/Down page";
     cmd5 = "B back to topics";
     cmd6 = "START close guide";
     cmd7 = "RB+Select helper";
 }
 
 void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
-    // B tapped: back to the topics, or close from the topics. B+Up/Down
-    // pages, as in every list.
-    if (backTapped(mask, pressed)) {
+    if (!pressed)
+        return;
+    // B: back to the topics, or close from the topics (right away)
+    if (mask == EPBM_B) {
         if (reading_ && !guidePages.empty()) {
             reading_ = false;
             isDirty_ = true;
@@ -233,8 +234,6 @@ void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
         }
         return;
     }
-    if (!pressed)
-        return;
     if (mask == EPBM_START || guidePages.empty()) {
         if (mask == EPBM_START)
             EndModal(0);
@@ -268,10 +267,11 @@ void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
     case EPBM_DOWN:
         scrollTo(top_ + 1);
         break;
-    case EPBM_B | EPBM_DOWN:
+    // LB+Up/Down: a page, the bigger move as everywhere
+    case EPBM_L | EPBM_DOWN:
         scrollTo(top_ + TEXT_ROWS - 1);
         break;
-    case EPBM_B | EPBM_UP:
+    case EPBM_L | EPBM_UP:
         scrollTo(top_ - (TEXT_ROWS - 1));
         break;
     case EPBM_LEFT: {
