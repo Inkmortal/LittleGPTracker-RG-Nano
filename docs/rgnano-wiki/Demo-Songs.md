@@ -80,6 +80,12 @@ The recordings are CC0 and CC BY 4.0 from Freesound; `CREDITS.md` in the song fo
 - **Drums from basic waves** — a triangle with a pitch drop for the kick, crunchy noise for snare and hats.
 - **Echo lead** — track 7 plays the same melody with `DLAY 0003` and a delay send: a cheap stereo double.
 
+## Engine Room — the stress test
+
+`lgpt_EngineRoom` · A minor · 100 BPM · 0:38 loop
+
+Every heavy sound at once, on all 8 tracks the whole time: Macro Synth drums, FM4 bass, a HyperSynth pad (a six-note chord of detuned saws), FM4 e-piano chords (`CHRD` makes four FM voices per note), a HyperSynth lead and sampled piano, with chorus, echo, reverb, the master EQ and the limiter all working. If this plays cleanly, anything you write will. The device log's `[HEARTBEAT]` lines show the audio engine's `load peak` while it plays.
+
 ## A song for every genre
 
 Each one is played on recorded instruments from the [sample packs](Samples#sample-packs), and each teaches the thing that makes its genre sound like itself. The song folder's `CREDITS.md` lists the recordings.

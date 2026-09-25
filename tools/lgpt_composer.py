@@ -315,6 +315,14 @@ class Project:
         self.instruments[slot] = Instrument("Synth", values)
         return slot
 
+    def macro(self, slot: int, preset: str, **params: object) -> int:
+        """Macro Synth (Braids shapes) instrument from a preset plus overrides."""
+        values: dict[str, object] = {"preset": preset}
+        for k, v in params.items():
+            values[k.replace("_", " ")] = v
+        self.instruments[slot] = Instrument("Macro", values)
+        return slot
+
     def sample(self, slot: int, wav: Path, root: int | str, volume: int = 0x80,
                filename: str | None = None, **params: object) -> int:
         """Sample instrument playing a WAV that is copied into the project's
