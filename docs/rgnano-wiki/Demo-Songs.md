@@ -1,6 +1,6 @@
 # Demo Songs
 
-Finished songs to open, play and pull apart: synth-only songs, a walkthrough song you can build yourself, and a song for every major genre played on real recorded instruments from the built-in [sample packs](Samples#sample-packs). Open them from the project list (they're in `Applications/Tracks` after [Install](Install)), press **Start** on the Song screen, then go poke around. Every idea in the other wiki pages is used somewhere in here.
+A handful of finished songs to open, play and pull apart: the walkthrough song you can build yourself, synthwave, a wuxia epic on real Chinese instruments, chiptune, house, and a stress test that runs every engine at once. Open them from the project list (they're in `Applications/Tracks` after [Install](Install)), press **Start** on the Song screen, then go poke around. Every idea in the other wiki pages is used somewhere in here.
 
 <p>
 <img src="images/demo-song-playing.png" width="240" alt="Neon Drive playing">
@@ -62,15 +62,6 @@ Neon Drive's song map re-scored for a martial-arts epic, played on **recordings 
 
 The recordings are CC0 and CC BY 4.0 from Freesound; `CREDITS.md` in the song folder lists every author.
 
-## Rainy Window — lo-fi hip-hop
-
-`lgpt_RainyWindow` · F major · 78 BPM with swing · 1:38
-
-**Look at:**
-- **Groove `07 05`** — every other 16th is late: that's the lazy swing.
-- **Jazz chords** — `CHRD 037A` (min7), `047A` (dom7), `047B` (maj7) on the keys, re-hit on step `0A` at lower volume.
-- **Vinyl hiss** — track 7 is a noise synth holding one very quiet note for the whole song.
-
 ## Pixel Quest — chiptune
 
 `lgpt_PixelQuest` · C major · 140 BPM · 1:02
@@ -86,22 +77,16 @@ The recordings are CC0 and CC BY 4.0 from Freesound; `CREDITS.md` in the song fo
 
 Every heavy sound at once, on all 8 tracks the whole time: Macro Synth drums, FM4 bass, a HyperSynth pad (a six-note chord of detuned saws), FM4 e-piano chords (`CHRD` makes four FM voices per note), a HyperSynth lead and sampled piano, with chorus, echo, reverb, the master EQ and the limiter all working. If this plays cleanly, anything you write will. The device log's `[HEARTBEAT]` lines show the audio engine's `load peak` while it plays.
 
-## A song for every genre
+## Sunset Club — house
 
-Each one is played on recorded instruments from the [sample packs](Samples#sample-packs), and each teaches the thing that makes its genre sound like itself. The song folder's `CREDITS.md` lists the recordings.
+`lgpt_SunsetClub` · A minor · 124 BPM · 1:02
 
-| Song | Genre | Key · tempo | Look at |
-| --- | --- | --- | --- |
-| `lgpt_LateLibrary` | lo-fi hip-hop | Eb · 82, swing | one-shot piano chords (the note picks the root); a slow pitch LFO on the MOD page = tape wobble; looping vinyl crackle |
-| `lgpt_CornerStore` | boom bap | C minor · 90 | two snares layered on two tracks; piano and trumpet chopped into stabs with `KILL`; a stumbling kick |
-| `lgpt_BlueHour` | jazz | Bb · 136 | groove `08 04` swing; walking bass, one note per beat; the ride's "ding, ding-da"; Charleston piano comping |
-| `lgpt_GlassTower` | trap | C minor · 140 | the 808 is the bass (a tuned sample); `RTRG 0003` hat rolls; half-time clap on step `08` |
-| `lgpt_SunsetClub` | house | A minor · 124 | four on the floor, offbeat open hats; chopped min7/maj7 piano stabs; bass between the kicks |
-| `lgpt_LiquidRain` | drum & bass | D minor · 174 | the two-step break with ghost snares; a Reese bass breathing with a MOD LFO |
-| `lgpt_DawnOverMountains` | orchestral | D · 84 | an orchestra in layers: cellos, string chords, violins, horn, harp, glock, timpani rolls with `RTRG` + `VOLM` |
-| `lgpt_PaperPlanes` | pop | C · 108 | `C G Am F`; eighth-note piano with `VOLM` accents; glock doubling the hook |
-| `lgpt_GarageAnthem` | rock | E · 128 | palm mutes and power chords on one track (instrument per step); bass doubling the roots |
-| `lgpt_Tidepools` | ambient | F Lydian · 66 | long reverb and echo; e-piano 9th chords over a cello drone; a slow volume LFO like waves |
+Played on the [sample packs](Samples#sample-packs): 909 drums, piano chords and a finger bass.
+
+**Look at:**
+- **Four on the floor** — the kick on every beat (steps `0 4 8 C`), the clap on 2 and 4, the open hat on every offbeat (`2 6 A E`).
+- **House piano** — one-shot min7/maj7 chords chopped into syncopated stabs, each cut short with `KILL`.
+- **The bass between the kicks** — it plays the offbeats, so bass and kick never fight.
 
 ## Make them yours
 
