@@ -223,7 +223,11 @@ if ($ResetLastProject) {
 if ($OpenDemo) {
   $demoSource = Join-Path $root "projects\resources\demos\lgpt_$OpenDemo"
   if (-not (Test-Path -LiteralPath $demoSource)) {
-    throw "Demo song not found: $demoSource"
+    # Songs kept only for tests (e.g. saved in an old format)
+    $demoSource = Join-Path $root "projects\resources\RGNANO_SIM\fixtures\lgpt_$OpenDemo"
+  }
+  if (-not (Test-Path -LiteralPath $demoSource)) {
+    throw "Demo song not found: $OpenDemo (projects/resources/demos or RGNANO_SIM/fixtures)"
   }
   $demoTarget = Join-Path $dataDir "tracks\lgpt_$OpenDemo"
   if (Test-Path -LiteralPath $demoTarget) {

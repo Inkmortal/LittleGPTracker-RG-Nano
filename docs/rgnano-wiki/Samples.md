@@ -26,7 +26,7 @@ The install puts a set of packs in `Applications/Samples`, one folder each. Melo
 | `textures` | vinyl crackle, tape hiss, a riser |
 | `chinese` | guzheng, erhu, dizi, pipa, dagu and opera percussion |
 
-The orchestral recordings come from the Versilian Studios Community Edition (CC0). The Chinese instruments are CC0 and CC BY 4.0 recordings from Freesound. The drums, guitar, bass, e-piano, chords and textures are synthesized for this project. Each folder's `CREDITS.md` has the details. The [genre demo songs](Demo-Songs#a-song-for-every-genre) use every pack.
+The orchestral recordings come from the Versilian Studios Community Edition (CC0). The Chinese instruments are CC0 and CC BY 4.0 recordings from Freesound. The drums, guitar, bass, e-piano, chords and textures are synthesized for this project. Each folder's `CREDITS.md` has the details. [Sunset Club](Demo-Songs#sunset-club--house) and [Jade Sword](Demo-Songs#jade-sword--wuxia--donghua) show them in songs.
 
 ## Turn a slot into a sampler
 

@@ -3922,17 +3922,18 @@
  See them all put together
  in the Demo Songs.
 @demos|Demo Songs
- Finished songs to open,
- play and pull apart:
- synth-only songs, a
+ A handful of finished
+ songs to open, play and
+ pull apart: the
  walkthrough song you can
- build yourself, and a song
- for every major genre
- played on real recorded
- instruments from the
- built-in sample packs.
- Open them from the project
- list (they're in
+ build yourself, synthwave,
+ a wuxia epic on real
+ Chinese instruments,
+ chiptune, house, and a
+ stress test that runs
+ every engine at once. Open
+ them from the project list
+ (they're in
  Applications/Tracks after
  Install), press Start on
  the Song screen, then go
@@ -4091,25 +4092,6 @@
  CREDITS.md in the song
  folder lists every author.
  
-=Rainy Window - lo-fi hip-h
- 
- lgpt_RainyWindow  F major
- 78 BPM with swing  1:38
- 
- Look at:
- - Groove 07 05 - every
-   other 16th is late:
-   that's the lazy swing.
- - Jazz chords - CHRD 037A
-   (min7), 047A (dom7),
-   047B (maj7) on the keys,
-   re-hit on step 0A at
-   lower volume.
- - Vinyl hiss - track 7 is
-   a noise synth holding
-   one very quiet note for
-   the whole song.
- 
 =Pixel Quest - chiptune
  
  lgpt_PixelQuest  C major
@@ -4154,97 +4136,31 @@
  show the audio engine's
  load peak while it plays.
  
-=A song for every genre
+=Sunset Club - house
  
- Each one is played on
- recorded instruments from
- the sample packs, and each
- teaches the thing that
- makes its genre sound like
- itself. The song folder's
- CREDITS.md lists the
- recordings.
+ lgpt_SunsetClub  A minor
+ 124 BPM  1:02
  
-*lgpt_LateLibrary
-   lo-fi hip-hop
-   Key  tempo: Eb  82,
-   swing
-   Look at: one-shot piano
-   chords (the note picks
-   the root); a slow pitch
-   LFO on the MOD page =
-   tape wobble; looping
-   vinyl crackle
-*lgpt_CornerStore
-   boom bap
-   Key  tempo: C minor  90
-   Look at: two snares
-   layered on two tracks;
-   piano and trumpet
-   chopped into stabs with
-   KILL; a stumbling kick
-*lgpt_BlueHour
-   jazz
-   Key  tempo: Bb  136
-   Look at: groove 08 04
-   swing; walking bass, one
-   note per beat; the
-   ride's "ding, ding-da";
-   Charleston piano comping
-*lgpt_GlassTower
-   trap
-   Key  tempo: C minor  140
-   Look at: the 808 is the
-   bass (a tuned sample);
-   RTRG 0003 hat rolls;
-   half-time clap on step
-   08
-*lgpt_SunsetClub
-   house
-   Key  tempo: A minor  124
-   Look at: four on the
-   floor, offbeat open
-   hats; chopped min7/maj7
-   piano stabs; bass
-   between the kicks
-*lgpt_LiquidRain
-   drum & bass
-   Key  tempo: D minor  174
-   Look at: the two-step
-   break with ghost snares;
-   a Reese bass breathing
-   with a MOD LFO
-*lgpt_DawnOverMountains
-   orchestral
-   Key  tempo: D  84
-   Look at: an orchestra in
-   layers: cellos, string
-   chords, violins, horn,
-   harp, glock, timpani
-   rolls with RTRG + VOLM
-*lgpt_PaperPlanes
-   pop
-   Key  tempo: C  108
-   Look at: C G Am F;
-   eighth-note piano with
-   VOLM accents; glock
-   doubling the hook
-*lgpt_GarageAnthem
-   rock
-   Key  tempo: E  128
-   Look at: palm mutes and
-   power chords on one
-   track (instrument per
-   step); bass doubling the
-   roots
-*lgpt_Tidepools
-   ambient
-   Key  tempo: F Lydian  66
-   Look at: long reverb and
-   echo; e-piano 9th chords
-   over a cello drone; a
-   slow volume LFO like
-   waves
+ Played on the sample
+ packs: 909 drums, piano
+ chords and a finger bass.
+ 
+ Look at:
+ - Four on the floor - the
+   kick on every beat
+   (steps 0 4 8 C), the
+   clap on 2 and 4, the
+   open hat on every
+   offbeat (2 6 A E).
+ - House piano - one-shot
+   min7/maj7 chords chopped
+   into syncopated stabs,
+   each cut short with
+   KILL.
+ - The bass between the
+   kicks - it plays the
+   offbeats, so bass and
+   kick never fight.
  
 =Make them yours
  
@@ -4360,8 +4276,9 @@
  synthesized for this
  project. Each folder's
  CREDITS.md has the
- details. The genre demo
- songs use every pack.
+ details. Sunset Club and
+ Jade Sword show them in
+ songs.
  
 =Turn a slot into a sampler
  
@@ -5021,11 +4938,9 @@
    whole song, step by step
 *5
    Demo Songs
-   What you get: Fifteen
-   finished songs, one for
-   every major genre, to
-   open, play and pull
-   apart
+   What you get: Finished
+   songs to open, play and
+   pull apart
  
 =Reference
  
@@ -5085,14 +5000,11 @@
    Explanations only appear
    when you ask for them
    with RB + Select.
- - A song in every genre.
-   Sample packs of real
-   instruments (piano,
-   strings, brass, drums,
-   guitar, Chinese
-   instruments and more)
-   and a demo song for each
-   style.
+ - Real instruments. Sample
+   packs of piano, strings,
+   brass, drums, guitar,
+   Chinese instruments and
+   more, ready to import.
  - Play it live. Live mode
    turns the Song screen
    into a clip launcher;

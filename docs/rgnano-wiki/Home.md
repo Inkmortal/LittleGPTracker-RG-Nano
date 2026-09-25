@@ -23,7 +23,7 @@ This is a fork of [LittleGPTracker / Little Piggy Tracker](https://github.com/dj
 | 2 | **[Controls](Controls)** | The few key rules every screen follows, and every combo |
 | 3 | **[How Trackers Work](How-Trackers-Work)** | The four ideas behind every tracker |
 | 4 | **[Your First Song](Your-First-Song)** | Build a whole song, step by step |
-| 5 | **[Demo Songs](Demo-Songs)** | Fifteen finished songs, one for every major genre, to open, play and pull apart |
+| 5 | **[Demo Songs](Demo-Songs)** | Finished songs to open, play and pull apart |
 
 ## Reference
 
@@ -43,7 +43,7 @@ This is a fork of [LittleGPTracker / Little Piggy Tracker](https://github.com/dj
 - **Makes sound instantly.** New projects come with a 16-instrument synth kit: kick, snare, hats, clap, bass, lead, pad, pluck, keys, bell, acid, sub, chip, tom, perc.
 - **M8-style synth engine.** Seven waveforms, sub oscillator, noise, 2-operator FM, one-note chords, envelopes, resonant filter, drive, LFO, glide — plus shared reverb and tempo-synced echo.
 - **Designed for 240×240.** Each instrument page draws what its knobs do. Explanations only appear when you ask for them with **RB + Select**.
-- **A song in every genre.** Sample packs of real instruments (piano, strings, brass, drums, guitar, Chinese instruments and more) and a demo song for each style.
+- **Real instruments.** Sample packs of piano, strings, brass, drums, guitar, Chinese instruments and more, ready to import.
 - **Play it live.** Live mode turns the Song screen into a clip launcher; the Mixer and FX screens mix it.
 - **Forgiving.** One key grammar on every screen, and **B + Select** undoes any change.
 - **Happy accidents.** Random notes, fills, shuffles and the `RAND`/`CHNC` commands, plus a master EQ and limiter to finish the mix, and an EQ on every instrument.
