@@ -1,0 +1,31 @@
+# Song tools persistence: the bookmark and the moved track survive a restart
+# (song-tools-create saved them)
+wait 1200
+expect_view song
+expect_bookmark 6 yes
+expect_bookmark 8 no
+expect_song_chain 0 0 01
+expect_song_chain 0 1 00
+expect_song_chain 4 1 02
+expect_song_chain 8 1 03
+expect_song_chain 6 0 FF
+expect_mixer_level 0 C0
+expect_mixer_level 1 80
+expect_screen_text Song
+screenshot_app song-reopen.bmp
+# The bookmark still stops LB + Down
+row 00
+press r 80
+down m
+press d 80
+up m
+wait 60
+expect_screen_text Section 04
+down m
+press d 80
+up m
+wait 60
+expect_screen_text Bookmark 06
+expect_size 240 240
+expect_no_error
+quit

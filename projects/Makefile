@@ -259,7 +259,7 @@ COMMONFILES := \
 	NewProjectDialog.o InstrumentListDialog.o RenderToSampleDialog.o SampleEditDialog.o GuideDialog.o \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
-	MixerView.o FXView.o EQView.o LimiterView.o NullView.o \
+	MixerView.o FXView.o EQView.o LimiterView.o ScaleView.o NullView.o \
 	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMacro.o InstrumentViewMod.o InstrumentViewEQ.o UIController.o \
 	View.o ModalView.o FieldView.o UIField.o UIIntField.o \
 	UIIntVarOffField.o UIIntVarField.o ViewEvent.o I_Action.o\

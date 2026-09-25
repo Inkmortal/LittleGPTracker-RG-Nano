@@ -43,6 +43,26 @@
 // CHNC 00bb plays the note with probability bb/FF
 #define I_CMD_RAND MAKE_FOURCC('R','A','N','D')
 #define I_CMD_CHNC MAKE_FOURCC('C','H','N','C')
+// Sequencer commands after the M8's (handled by the Player, so they work
+// with every instrument type):
+// ROLL xy  re-strike the note every y ticks, volume moving by x each hit
+//          (1-7 quieter, 9-F louder); y=0: one re-strike after x ticks (RET)
+// VIBR xy  vibrato, speed x, depth y (PVB)
+// SEED --bb  restart this track's random numbers from seed bb (SED)
+// NTH  --xy  the note plays on pass x of every y passes of its phrase;
+//          x=0: on every pass but the y-th (NTH / trig conditions)
+// TICK --bb  the track's table moves one row every bb ticks (TIC)
+// THOP --0b  the track's table jumps to row b (THO)
+// TRSP --bb  transpose the whole song by bb semitones (signed) (TSP)
+// SCAL aabb  song Key aa (0C = off) and Scale bb (SCG)
+#define I_CMD_ROLL MAKE_FOURCC('R','O','L','L')
+#define I_CMD_VIBR MAKE_FOURCC('V','I','B','R')
+#define I_CMD_SEED MAKE_FOURCC('S','E','E','D')
+#define I_CMD_NTH_ MAKE_FOURCC('N','T','H',' ')
+#define I_CMD_TICK MAKE_FOURCC('T','I','C','K')
+#define I_CMD_THOP MAKE_FOURCC('T','H','O','P')
+#define I_CMD_TRSP MAKE_FOURCC('T','R','S','P')
+#define I_CMD_SCAL MAKE_FOURCC('S','C','A','L')
 // Macro synth: timbre / color to bb at speed aa (like FCUT)
 #define I_CMD_TIMB MAKE_FOURCC('T','I','M','B')
 #define I_CMD_COLR MAKE_FOURCC('C','O','L','R')

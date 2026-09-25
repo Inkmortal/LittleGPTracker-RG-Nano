@@ -57,3 +57,14 @@ void UIController::SwitchSoloMode(int from,int to,bool soloing) {
 		} ;
 	}
 } ;
+
+// Track reorder: tracks a and b trade places, mute and solo state with them
+void UIController::SwapTracks(int a,int b) {
+	Player *player=Player::GetInstance() ;
+	bool muteA=player->IsChannelMuted(a) ;
+	player->SetChannelMute(a,player->IsChannelMuted(b)) ;
+	player->SetChannelMute(b,muteA) ;
+	bool solo=soloMask_[a] ;
+	soloMask_[a]=soloMask_[b] ;
+	soloMask_[b]=solo ;
+} ;

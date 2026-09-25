@@ -108,6 +108,26 @@ $suite = @(
     Args = @("-Skin")
   },
   @{
+    Name = "song-tools-create"
+    Script = "song-tools-create.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "song-tools-reopen"
+    Script = "song-tools-reopen.rgsim"
+    Args = @()
+  },
+  @{
+    Name = "scale-editor"
+    Script = "scale-editor.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "sequencer-commands"
+    Script = "sequencer-commands.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "power-menu-input-isolation"
     Script = "power-menu-input-isolation.rgsim"
     Args = @("-ResetLastProject", "-Skin")
@@ -190,6 +210,11 @@ $suite = @(
   @{
     Name = "help-topics"
     Script = "help-topics.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "command-selector-workflow"
+    Script = "command-selector-workflow.rgsim"
     Args = @("-ResetLastProject")
   },
   @{

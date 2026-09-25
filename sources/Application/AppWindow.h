@@ -8,6 +8,7 @@
 #include "Application/Views/FXView.h"
 #include "Application/Views/EQView.h"
 #include "Application/Views/LimiterView.h"
+#include "Application/Views/ScaleView.h"
 #include "Application/Views/InstrumentView.h"
 #include "Application/Views/MixerView.h"
 #include "Application/Views/NullView.h"
@@ -123,6 +124,7 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     FXView *_fxView;
     EQView *_eqView;
     LimiterView *_limiterView;
+    ScaleView *_scaleView;
     NullView *_nullView;
     MixerView *_mixerView;
 

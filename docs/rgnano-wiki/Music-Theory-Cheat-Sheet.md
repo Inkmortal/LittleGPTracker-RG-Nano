@@ -6,6 +6,8 @@ Just enough theory to make things sound right. Everything here is in **A minor /
 
 Project screen → `Key: A`, `Scale: Aeolian mode (minor)`. Now **A + Left/Right** on a note only steps through notes that fit. **LB + D-pad** steps outside the scale when you want a "wrong" note on purpose.
 
+To see the scale on a keyboard, or make your own, press **RB + Right** on Project ([Scale screen](Screens#scale)): **A** on a key puts that note in or out. Five notes you like, say A C D E G, and every edit and every `RAND` stays on them.
+
 ## Scales
 
 | Scale | Notes from A | Feels | Genres |

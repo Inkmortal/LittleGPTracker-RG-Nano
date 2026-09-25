@@ -84,6 +84,12 @@ public:
 #ifdef PLATFORM_RGNANO_SIM
 	std::string GetSimStreamingPath() const ;
 	bool IsSimStreaming() const ;
+	// Sequencer state for sim checks: notes (started on the track),
+	// last_note, pass (of the playing phrase), roll_volume, vibrato,
+	// table_tick, table_row; -1 unknown name
+	int GetSimValue(const std::string &name,int channel) ;
+	// The last 2*period notes started on the track repeat with that period
+	bool SimNotesRepeat(int channel,int period) ;
 #endif
 
 	// Channel data
@@ -130,6 +136,19 @@ protected:
 	void moveToNextStep() ;
 	void moveToNextPhrase(int channel,int hop=-1) ;
 	void moveToNextChain(int channel,int hop) ;
+	// Per-tick sequencer effects (ROLL, VIBR)
+	void updateTrackEffects() ;
+	void startRoll(int channel,ushort param,int volume) ;
+	void stopVibrato(int channel) ;
+	// A note just started on the track (count it, cancel ROLL)
+	void onNoteStarted(int channel,unsigned char note,bool newInstrument) ;
+	// Time a phrase starts on a track (NTH counts passes)
+	void countPhrasePass(int channel) ;
+	int nextRandom(int channel) ;
+	int randomUpTo(int channel,int range) ;
+	int randomNoteOffset(int channel,int note,int range) ;
+	void seedRandom(int channel,int seed) ;
+	void resetTrackEffects() ;
 
     void triggerLiveChains() ;
     
@@ -169,6 +188,20 @@ private:
 
 	bool retrigAllImmediate_ ;
 	unsigned char retrigPos_ ;
+
+	// Per-track sequencer state
+	unsigned int randomState_[SONG_CHANNEL_COUNT] ;   // RAND, CHNC, SEED
+	int rollTicks_[SONG_CHANNEL_COUNT] ;    // ROLL: ticks between hits, 0 off
+	int rollCount_[SONG_CHANNEL_COUNT] ;    //       ticks to the next hit
+	int rollVolume_[SONG_CHANNEL_COUNT] ;   //       volume of the last hit
+	int rollStep_[SONG_CHANNEL_COUNT] ;     //       volume change per hit
+	bool rollOnce_[SONG_CHANNEL_COUNT] ;    //       a single re-strike
+	int vibratoSpeed_[SONG_CHANNEL_COUNT] ; // VIBR, 0 off
+	int vibratoDepth_[SONG_CHANNEL_COUNT] ;
+	unsigned int vibratoPhase_[SONG_CHANNEL_COUNT] ;
+	unsigned short phrasePass_[SONG_CHANNEL_COUNT][PHRASE_COUNT] ; // NTH
+	unsigned int notesStarted_[SONG_CHANNEL_COUNT] ;
+	unsigned char noteHistory_[SONG_CHANNEL_COUNT][32] ;
 
 #ifdef PLATFORM_RGNANO_SIM
 	bool simStreaming_ ;

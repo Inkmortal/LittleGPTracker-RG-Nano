@@ -142,4 +142,4 @@ Everything the [Synth](Synth) understands — `VOLM` `PAN_` `FCUT` `FRES` `FLTR`
 
 ## CPU
 
-The shape runs at 96 kHz and is resampled, yet a macro voice costs no more than a synth voice: in the ARM check (`tools/dsp-harness/macro_check.cpp`, device build under qemu) eight macro voices take 0.6× to 0.9× the time of eight synth `pad` voices, the heaviest shape being `HARM`. Eight voices of any shape fit on the RG Nano.
+The shape runs at 96 kHz and is resampled, yet a macro voice costs no more than a synth voice: in the ARM check (`tools/dsp-harness/macro_check.cpp`, device build under qemu) eight macro voices take 0.7× to 1.0× the time of eight synth `pad` voices, the heaviest shape being `HARM`. Eight voices of any shape fit on the RG Nano.

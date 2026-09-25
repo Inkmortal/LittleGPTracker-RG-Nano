@@ -1,0 +1,193 @@
+# The M8's sequencer commands on our engine (Commands.md "From the M8"):
+# ROLL, NTH, SEED, VIBR, TICK, THOP, TRSP, SCAL and HOP --FF, each checked
+# on the player's own state while the phrase loops (Start on the Phrase).
+route boot.new_project_random
+expect_view song
+sim_set_tempo 240
+sim_set_song_chain 0 0 0
+sim_set_chain_phrase 0 0 0 0
+sim_set_phrase_note 0 0 60 0
+goto phrase
+expect_view phrase
+
+# The picker lists them, with a legend
+sim_set_phrase_command 0 0 1 ROLL 0003
+press r 80
+press r 80
+press k 80
+wait 100
+expect_screen_text ROLL:xy re-strike
+screenshot_app seq-picker.bmp
+press b 80
+wait 60
+press l 80
+press l 80
+screenshot_app seq-roll.bmp
+
+# ROLL 0003: the note is struck again every 3 ticks (one note, many hits)
+press s 80
+wait_player pass 0 2
+press s 80
+wait 100
+expect_player notes 0 >=20
+
+# ROLL 0403 with VOLM 0080: each hit 0x20 quieter; silent after 4 hits,
+# then the roll stops by itself
+sim_set_phrase_command 0 0 1 ROLL 0043
+sim_set_phrase_command 0 0 2 VOLM 0080
+press s 80
+wait 400
+press s 80
+wait 100
+expect_player roll 0 0
+expect_player notes 0 4
+expect_player roll_volume 0 0x20
+
+# ROLL 00F2 from VOLM 0010: louder every 2 ticks up to FF
+sim_set_phrase_command 0 0 1 ROLL 00F2
+sim_set_phrase_command 0 0 2 VOLM 0010
+press s 80
+wait 400
+press s 80
+wait 100
+expect_player roll_volume 0 0xFF
+
+# ROLL 0050: a single re-strike 5 ticks later (a flam)
+sim_set_phrase_command 0 0 1 ROLL 0050
+sim_set_phrase_command 0 0 2 ---- 0000
+press s 80
+wait_player pass 0 3
+wait 200
+press s 80
+wait 100
+expect_player notes 0 6
+
+# NTH 0012: the note plays on passes 1, 3, 5...
+sim_set_phrase_command 0 0 1 NTH 0012
+press s 80
+wait_player pass 0 4
+wait 200
+press s 80
+wait 100
+expect_player notes 0 2
+# NTH 0004: every pass but the 4th
+sim_set_phrase_command 0 0 1 NTH 0004
+press s 80
+wait_player pass 0 4
+wait 200
+press s 80
+wait 100
+expect_player notes 0 3
+sim_set_phrase_command 0 0 1 ---- 0000
+
+# VIBR 0048: vibrato speed 4, depth 8 on the track; VIBR 0000 ends it
+sim_set_phrase_command 0 0 1 VIBR 0048
+press s 80
+wait 300
+press s 80
+wait 100
+expect_player vibrato 0 0x48
+expect_no_error
+
+# TICK / THOP: table 0 on the track, rows held 255 ticks, then THOP 0005
+# on step 4 sends it to row 5
+sim_set_table_command 0 0 1 VOLM 0080
+sim_set_table_command 0 5 1 VOLM 0040
+sim_set_phrase_command 0 0 1 TABL 0000
+sim_set_phrase_command 0 0 2 TICK 00FF
+press s 80
+wait 150
+expect_player table_tick 0 255
+expect_player table_row 0 0
+press s 80
+wait 100
+sim_set_phrase_command 0 4 1 THOP 0005
+press s 80
+wait_player pass 0 1
+wait 350
+press s 80
+wait 100
+expect_player table_row 0 5
+sim_set_phrase_command 0 4 1 ---- 0000
+sim_set_phrase_command 0 0 2 ---- 0000
+
+# HOP 00FF on step 4: the track stops there
+sim_set_phrase_command 0 0 1 ---- 0000
+sim_set_phrase_command 0 4 1 HOP 00FF
+press s 80
+wait 800
+expect_player playing 0 0
+expect_player notes 0 1
+press s 80
+wait 100
+sim_set_phrase_command 0 4 1 ---- 0000
+# SCAL 0215: Key D, Scale 21 (major)
+sim_set_phrase_command 0 0 1 SCAL 0215
+press s 80
+wait 150
+press s 80
+wait 100
+expect_project_param scaleKey 2
+expect_project_param scale 21
+sim_set_phrase_command 0 0 1 ---- 0000
+
+# TRSP 00F4: the whole song an octave down (Project transpose -12)
+sim_set_phrase_command 0 0 1 TRSP 00F4
+sim_set_phrase_note 0 2 60 0
+press s 80
+wait 300
+press s 80
+wait 100
+expect_project_param transpose -12
+expect_player last_note 0 48
+sim_set_project_param transpose 0
+
+# SEED: RAND on every step gives the same 16 notes every pass...
+sim_set_phrase_note 0 1 60 0
+sim_set_phrase_note 0 2 60 0
+sim_set_phrase_note 0 3 60 0
+sim_set_phrase_note 0 4 60 0
+sim_set_phrase_note 0 5 60 0
+sim_set_phrase_note 0 6 60 0
+sim_set_phrase_note 0 7 60 0
+sim_set_phrase_note 0 8 60 0
+sim_set_phrase_note 0 9 60 0
+sim_set_phrase_note 0 10 60 0
+sim_set_phrase_note 0 11 60 0
+sim_set_phrase_note 0 12 60 0
+sim_set_phrase_note 0 13 60 0
+sim_set_phrase_note 0 14 60 0
+sim_set_phrase_note 0 15 60 0
+sim_set_phrase_command 0 0 1 RAND 000C
+sim_set_phrase_command 0 1 1 RAND 000C
+sim_set_phrase_command 0 2 1 RAND 000C
+sim_set_phrase_command 0 3 1 RAND 000C
+sim_set_phrase_command 0 4 1 RAND 000C
+sim_set_phrase_command 0 5 1 RAND 000C
+sim_set_phrase_command 0 6 1 RAND 000C
+sim_set_phrase_command 0 7 1 RAND 000C
+sim_set_phrase_command 0 8 1 RAND 000C
+sim_set_phrase_command 0 9 1 RAND 000C
+sim_set_phrase_command 0 10 1 RAND 000C
+sim_set_phrase_command 0 11 1 RAND 000C
+sim_set_phrase_command 0 12 1 RAND 000C
+sim_set_phrase_command 0 13 1 RAND 000C
+sim_set_phrase_command 0 14 1 RAND 000C
+sim_set_phrase_command 0 15 1 RAND 000C
+sim_set_phrase_command 0 0 2 SEED 0007
+press s 80
+wait_player notes 0 40
+press s 80
+wait 100
+expect_notes_repeat 0 16 yes
+# ...and without it, a new melody each pass
+sim_set_phrase_command 0 0 2 ---- 0000
+press s 80
+wait_player notes 0 40
+press s 80
+wait 100
+expect_notes_repeat 0 16 no
+
+expect_size 240 240
+expect_no_error
+quit
