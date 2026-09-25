@@ -48,6 +48,7 @@ InstrumentView::InstrumentView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	markerFocus_=SIP_START ;
 	previewLoop_=false ;
 	typeVar_=new Variable("type",INSTRUMENT_TYPE_FIELD,instrumentTypeNames,3,0) ;
+	shownEngine_=-1 ;
 	modSlotVar_=new Variable("slot",INSTRUMENT_MOD_SLOT_FIELD,1) ;
 	modFieldsType_=-1 ;
 	modFieldsSlot_=-1 ;
@@ -81,6 +82,8 @@ void InstrumentView::onInstrumentChange() {
 		old->RemoveObserver(*this) ;
 	} ;
 	T_SimpleList<UIField>::Empty() ;
+	shownEngine_=-1 ;
+	nearestColumn_=false ;
 
 	InstrumentType it=getInstrumentType() ;
 	// The type field mirrors this instrument from now on. It is only shown
@@ -1135,7 +1138,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			Variable &v=focus->GetVariable();
 			FourCC id=focus->GetVariableID();
 			bool special=(id==SIP_SAMPLE || id==SIP_TABLE || id==MIP_TABLE ||
-			              !strcmp(v.GetName(),"preset") || !strcmp(v.GetName(),"type"));
+			              !strcmp(v.GetName(),"preset") || !strcmp(v.GetName(),"type") ||
+			              id==SYP_ENGINE);
 			if (resetModField()) {
 				return;
 			}
@@ -1332,6 +1336,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (syncModPage(modInstrumentBefore,modSlotBefore,modTypeBefore)) {
 		return ;
 	}
+	// A new synth engine brings its own SOUND page
+	syncSynthEngine() ;
 
     Player *player=Player::GetInstance() ;
 	// B Modifier
@@ -1471,6 +1477,7 @@ void InstrumentView::syncReplacedInstrument() {
 void InstrumentView::DrawView() {
 
 	syncReplacedInstrument() ;
+	syncSynthEngine() ;
 	refreshStaleModFields() ;
 
 	Clear() ;
@@ -1486,7 +1493,13 @@ void InstrumentView::DrawView() {
     const char *kind = "";
     switch (getInstrumentType()) {
         case IT_SAMPLE: kind = " SAMPLE"; break;
-        case IT_SYNTH: kind = " SYNTH"; break;
+        case IT_SYNTH: {
+            int engine=((SynthInstrument *)viewData_->project_->GetInstrumentBank()
+                        ->GetInstrument(viewData_->currentInstrument_))->GetEngine();
+            kind = engine==SE_FM4 ? " FM4 SYNTH" : (engine==SE_HYPER ? " HYPERSYNTH" :
+                   (engine==SE_WAV ? " WAVSYNTH" : " SYNTH"));
+            break;
+        }
         case IT_MACRO: kind = " MACRO"; break;
         case IT_MIDI: kind = " MIDI"; break;
         default: break;
@@ -1537,7 +1550,7 @@ void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
 		}
 	} else {
 		page="synth";
-		section=(labPage_==INSTRUMENT_EQ_PAGE)?"EQ - its own tone":"";
+		section=(labPage_==INSTRUMENT_EQ_PAGE)?"EQ - its own tone":getEngineGuideSection();
 	}
 }
 

@@ -33,6 +33,7 @@ Player::Player() {
 
 	isRunning_=false ;
 	viewData_=0 ;
+	project_=0 ;
 	mixer_=new PlayerMixer() ;
 
 	lastSongPos_=0 ;

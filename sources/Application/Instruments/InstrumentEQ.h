@@ -42,6 +42,18 @@ public:
 		}
 		return (float)y ;
 	}
+	// One stereo sample of a voice (the synth's stereo engines)
+	inline void TickStereo(int channel,float &left,float &right) {
+		double l=left,r=right ;
+		double (*z)[2][2]=state_[channel] ;
+		for (int k=0;k<activeCount_;k++) {
+			int b=active_[k] ;
+			l=ThreeBandEQ::Step(coeffs_[b],z[b][0],l) ;
+			r=ThreeBandEQ::Step(coeffs_[b],z[b][1],r) ;
+		}
+		left=(float)l ;
+		right=(float)r ;
+	}
 	// A rendered stereo voice buffer (the sampler)
 	void ProcessStereo(int channel,fixed *buffer,int frames) ;
 

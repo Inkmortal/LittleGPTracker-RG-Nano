@@ -116,6 +116,8 @@ Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 
 | --- | --- |
 | Synth engine and presets | `sources/Application/Instruments/SynthInstrument.*` |
 | Macro synth (voice, resampler, presets) | `sources/Application/Instruments/MacroInstrument.*`; its oscillator (Braids port, MIT) in `sources/Externals/Braids`; pages in `sources/Application/Views/InstrumentViewMacro.cpp`; ARM check `tools/dsp-harness/macro_check.cpp` |
+| FM4 / HYPER / WAV engines (DSP) | `sources/Application/Instruments/SynthEngines.*` (ARM check: `tools/dsp-harness/synth_engines_check.cpp`) |
+| Engine SOUND pages (grid, pictures, help) | `sources/Application/Views/InstrumentViewEngines.cpp` |
 | Shared reverb / echo | `sources/Application/Mixer/SendFX.*` |
 | Master EQ, instrument EQ design (shared biquads) | `sources/Application/Mixer/ThreeBandEQ.*`, `MasterEQ.*` |
 | Master limiter (look-ahead) | `sources/Application/Mixer/MasterLimiter.*`, screen `Views/LimiterView.cpp` |

@@ -591,7 +591,8 @@ int View::getMoreKeys(const char **lines,int max) {
 		"LB+Start render to sample","RB+Up Groove RB+Dn Table"};
 	static const char *instrument[]={"B+Dpad other instrument","B+A clear sample/table",
 		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song",
-		"MOD page: LB+Up/Dn slot"};
+		"MOD page: LB+Up/Dn slot",
+		"Grids: Up/Dn keep column","FM ratio: A+Up/Dn whole"};
 	static const char *sampler[]={"B+Dpad other instrument","B+A clear sample/table",
 		"Sel on SOURCE/LOOP: edit","  normalize crop fade rev","PLAY cmd: mode per note",
 		"RB+Up list of all sounds","RB+Down instrument table",

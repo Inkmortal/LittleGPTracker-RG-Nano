@@ -143,8 +143,9 @@ Didn't like it? **B + Select** undoes.
 | --- | --- |
 | **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX, EQ for synths) |
 | **LB + Up/Down** on the MOD page | pick the slot (1–4) the settings edit |
-| **A + Left/Right** on `preset` | browse ready-made sounds |
+| **A + Left/Right** on `preset` | browse ready-made sounds (of the synth's `engine`) |
 | **A + D-pad** | change the focused knob |
+| **Up/Down** in a grid (FM4 operators, hyper notes) | stay in the column; **Left/Right** move across (see [Engines](Synth#engines)) |
 | **B + Left/Right** | previous / next instrument (**B + Down/Up**: 16 forward / back) |
 | **B + A** | put the knob back to its default (on `sample`: remove the sample; on `table`: clear it) |
 | **RB + Up** | the list of all sounds |

@@ -260,7 +260,7 @@ COMMONFILES := \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
 	MixerView.o FXView.o EQView.o LimiterView.o ScaleView.o NullView.o \
-	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMacro.o InstrumentViewMod.o InstrumentViewEQ.o UIController.o \
+	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewEngines.o InstrumentViewMacro.o InstrumentViewMod.o InstrumentViewEQ.o UIController.o \
 	View.o ModalView.o FieldView.o UIField.o UIIntField.o \
 	UIIntVarOffField.o UIIntVarField.o ViewEvent.o I_Action.o\
 	UITempoField.o UIActionField.o \
@@ -271,7 +271,7 @@ COMMONFILES := \
 	char.o n_assert.o fixed.o wildcard.o RecentSongs.o UndoHistory.o\
 	SyncMaster.o TablePlayback.o Player.o \
 	Table.o TableView.o\
-	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SampleProcessor.o SynthInstrument.o MacroInstrument.o ModSources.o InstrumentEQ.o SamplePool.o CommandList.o FxPrinter.o \
+	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SampleProcessor.o SynthInstrument.o SynthEngines.o MacroInstrument.o ModSources.o InstrumentEQ.o SamplePool.o CommandList.o FxPrinter.o \
 	PersistencyService.o Persistent.o \
 	Observable.o SingletonRegistry.o \
 	Audio.o AudioMixer.o AudioOutDriver.o AudioDriver.o \

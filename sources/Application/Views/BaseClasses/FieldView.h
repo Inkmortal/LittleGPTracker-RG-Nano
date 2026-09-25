@@ -17,7 +17,11 @@ public:
 	void ClearFocus() ;
 	int GetFocusIndex() ;
 	void SetSize(int size) ;
+protected:
+	// Up/Down keep the cursor's column on rows with several fields
+	bool nearestColumn_ ;
 private:
+	UIField *nearestInRow(UIField *target) ;
 	T_SimpleList<UIField> fieldList_ ;
 	UIField *focus_ ;
 } ;
