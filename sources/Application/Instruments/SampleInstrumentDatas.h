@@ -1,8 +1,11 @@
 #define SEMITONE_FREQ_INTERVAL 1.0594630943592952645618252949461F
 
-char *loopTypes[SILM_LAST] = {"none", "loop", "ping pong", "oscillator",
-                              //	"oscillator fine",
-                              "looper sync"};
+// Saved in songs by name: single words, so scripts and the sim can type
+// them. Old names live on in SampleInstrument::CanonicalLoopModeName.
+char *loopTypes[SILM_LAST] = {"forward",  "reverse",      "loop",
+                              "rev-loop", "pingpong",     "rev-pingpong",
+                              "osc",      "osc-rev",      "osc-pingpong",
+                              "loop-sync"};
 
 char *interpolationTypes[] = {
 	"linear",

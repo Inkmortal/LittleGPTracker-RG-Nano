@@ -74,6 +74,10 @@ protected:
 	void drawSampleWaveform(class SampleInstrument *instrument, int x, int y,
 	                        int width, int height, bool showMarkers) ;
 	void drawMarkerLine(int x, int y, int height, ColorDefinition color, FourCC marker) ;
+	// Under the waveform: the way a note travels for the play mode (first
+	// pass, then the loop), arrows pointing the direction
+	void drawPlayPath(class SampleInstrument *instrument, int x, int y, int width) ;
+	void openSampleEditor() ;
 	void normalizeWaveMarkers(class SampleInstrument *instrument, FourCC changedMarker) ;
 	void cycleWaveMarker(int offset) ;
 	void nudgeWaveMarker(int offset, int multiplier=1) ;

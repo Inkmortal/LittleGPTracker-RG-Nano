@@ -116,6 +116,8 @@ Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 
 | --- | --- |
 | Synth engine and presets | `sources/Application/Instruments/SynthInstrument.*` |
 | Shared reverb / echo | `sources/Application/Mixer/SendFX.*` |
+| Sampler play modes (forward, reverse, loops, ping-pong, osc) | `sources/Application/Instruments/SampleInstrument.*` (`setupVoicePlayback`, `Render`) |
+| Sample editor (normalize, crop, fades, reverse, trim) | `sources/Application/Instruments/SampleProcessor.*`, `Views/ModalDialogs/SampleEditDialog.*` |
 | Instrument bank, type switching, starter kit | `sources/Application/Instruments/InstrumentBank.cpp` |
 | Synth screen | `sources/Application/Views/InstrumentViewSynth.cpp` |
 | Helper overlay | `sources/Application/Views/BaseClasses/View.cpp` |

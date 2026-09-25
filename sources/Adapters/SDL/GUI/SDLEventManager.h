@@ -145,6 +145,8 @@ private:
 	bool SimSetPhraseNote(int phrase, int row, int note, int instrument);
 	bool SimSetSynth(int instrument, const std::string &preset);
 	bool SimSetInstrumentParam(int instrument, const std::string &name, const std::string &value);
+	bool SimLoadInstrumentParam(int instrument, const std::string &name, const std::string &value);
+	bool ExpectSimSampleStats(const std::string &sampleName, const std::string &framesText, int minPeak, int maxPeak);
 	bool ExpectSimInstrumentType(int instrument, const std::string &type);
 	bool ExpectSimInstrumentName(int instrument, const std::string &name);
 	bool ExpectSimInstrumentParam(int instrument, const std::string &name, const std::string &value);

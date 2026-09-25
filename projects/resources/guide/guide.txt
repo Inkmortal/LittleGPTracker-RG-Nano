@@ -557,7 +557,8 @@
    + Start records it into
    a new sample (render to
    sample). Play it
-   backwards or slice it
+   backwards (play reverse,
+   play modes) or slice it
    for a fill.
  - Open the other Demo
    Songs and see how
@@ -637,8 +638,8 @@
    this screen's special
    tool: command picker,
    Live mode, sample
-   import/root, rename,
-   sort
+   import/root/editor,
+   rename, sort
 *B + Select / LB + Select
    undo / redo any change,
    on every screen (hold B
@@ -967,8 +968,11 @@
    up
  
  Sample instruments have
- their own pages and trim
- controls - see Samples.
+ their own pages, play
+ modes, trim controls and a
+ sample editor (Select on
+ the Source or Loop page) -
+ see Samples.
  
 =Mixer, FX and EQ
  
@@ -2195,6 +2199,19 @@
  
 =Samples only
  
+*PLAY
+   00bb
+   Does: play mode for this
+   note: 00 forward, 01
+   reverse, 02 loop, 03
+   rev-loop, 04 pingpong,
+   05 rev-pingpong, 06-08
+   osc, 09 loop-sync (play
+   modes). With a note: the
+   note starts over in that
+   mode (reverse from E);
+   without: the sound turns
+   around from where it is
 *PLOF
    aabb
    Does: jump to position
@@ -2957,8 +2974,8 @@
  pages:
  
 *Source
-   sample, root note,
-   detune, slices
+   sample, play mode, root
+   note, detune, slices
 *Shape
    volume, pan, reverb,
    delay and chorus sends
@@ -2969,8 +2986,8 @@
    cutoff, resonance,
    filter type and mode
 *Loop
-   loop mode, start, loop
-   start, end
+   play mode, slices,
+   start, loop start, end
 *Mod
    two envelopes/LFOs on
    volume, cutoff, reso,
@@ -2979,6 +2996,85 @@
 *Motion
    instrument table,
    feedback
+ 
+=Play modes
+ 
+ play (on Source and Loop)
+ picks the direction and
+ whether the sample loops,
+ the same choices as the
+ M8's sampler. S, L and E
+ are the start, loop start
+ and end markers (see
+ Trimming).
+ 
+*forward
+   S to E, once (the
+   default)
+*reverse
+   E back to S, once
+*loop
+   S to E, then L to E
+   again and again
+*rev-loop
+   E back to L, again and
+   again
+*pingpong
+   S to E, then back and
+   forth between E and L
+*rev-pingpong
+   E back to L, then back
+   and forth
+*osc
+   L..E is one wave cycle,
+   pitched like a synth
+   (single-cycle waveforms)
+*osc-rev / osc-pingpong
+   the cycle backwards /
+   there and back
+*loop-sync
+   L..E stretched to one
+   bar at the song tempo
+   (drum loops that follow
+   the tempo)
+ 
+ Under the waveform a green
+ line with arrows shows the
+ first pass and which way
+ it goes; a second line
+ shows the part that loops
+ (arrows both ways for
+ ping-pong). With slices,
+ every slice plays its own
+ part in the chosen mode,
+ so reverse plays each
+ slice backwards.
+ 
+ A single note can use
+ another mode with the PLAY
+ command: PLAY 0001 on a
+ step with a note plays
+ that note in reverse while
+ the instrument stays
+ forward (the number is the
+ mode's place in the list
+ above: 00 forward, 01
+ reverse, 02 loop, 03
+ rev-loop, 04 pingpong, 05
+ rev-pingpong, 06 osc, 07
+ osc-rev, 08 osc-pingpong,
+ 09 loop-sync). On a step
+ without a note it turns
+ the sound that is already
+ playing around from where
+ it is.
+ 
+ Songs made before these
+ modes open unchanged: none
+ is now forward, ping pong
+ is pingpong, oscillator is
+ osc, looper sync is
+ loop-sync.
  
 =Trimming
  
@@ -2999,7 +3095,84 @@
 *RB + Start
    switch that preview
    between once and loop
-   (PREV: on screen)
+   (PREV: on screen), in
+   the play mode's
+   direction
+*Select
+   open the sample editor
+   (on sample: import; on
+   root: find the root)
+ 
+=Sample editing
+ 
+ Like the M8's sample
+ editor, with the same
+ processes. On the Source
+ or Loop page press Select
+ (anywhere but on sample
+ and root). The editor
+ works on the part between
+ S and E, shaded in the
+ pictures: BEFORE is the
+ sample now, AFTER what the
+ edit will make.
+ 
+*normalize
+   makes S..E as loud as it
+   can be without clipping
+*crop to S..E
+   keeps only S..E (L moves
+   with the sound)
+*fade in S..E
+   S..E rises from silence
+*fade out S..E
+   S..E falls to silence
+*reverse S..E
+   S..E plays backwards
+*trim silence
+   cuts the quiet start and
+   end of the whole sample
+ 
+*Up / Down
+   pick an edit
+*A
+   make it
+*Start
+   hear the sample (again:
+   stop)
+*B
+   back to the instrument
+ 
+ Nothing is overwritten: A
+ writes a new file next to
+ the original (kick.wav
+ becomes kick_nrm.wav,
+ kick_crop.wav,
+ kick_rev.wav ...), puts it
+ on the instrument and
+ keeps your markers where
+ they were in the sound.
+ Edits chain: crop, then
+ normalize the result.
+ Changed your mind? Close
+ the editor and press B +
+ Select: the instrument
+ goes back to the previous
+ file (the new file stays
+ in the song's samples
+ folder, unused). To fade
+ only the last bit of a
+ sound, move S there first
+ (LB + Up/Down, LB + A +
+ Left/Right), fade out,
+ then move S back.
+ 
+ If an edit would change
+ nothing the editor says
+ why instead (already as
+ loud as it gets, move S or
+ E in first, no silence at
+ the ends).
  
 =Root note
  
@@ -3025,9 +3198,11 @@
  opens the new instrument;
  B cancels and leaves
  nothing behind. Chop it
- with slices, reverse it
- with a table, or stack it
- again.
+ with slices, play it
+ backwards with play
+ reverse, trim and
+ normalize it in the sample
+ editor, or stack it again.
  
 =Slices
  
@@ -3836,6 +4011,16 @@
 *Shared reverb / echo
    sources/Application/Mixe
    r/SendFX.*
+*Sampler play modes (forwar
+   sources/Application/Inst
+   ruments/SampleInstrument
+   .* (setupVoicePlayback,
+   Render)
+*Sample editor (normalize, 
+   sources/Application/Inst
+   ruments/SampleProcessor.
+   *, Views/ModalDialogs/Sa
+   mpleEditDialog.*
 *Instrument bank, type swit
    sources/Application/Inst
    ruments/InstrumentBank.c
