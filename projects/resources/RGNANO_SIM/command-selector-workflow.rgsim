@@ -18,7 +18,8 @@ wait 120
 screenshot_app command-selector-phrase.bmp
 expect_screen_text ARPG
 expect_screen_text ARPeGgio
-press k 80
+# A chooses (Select opens the picker, A confirms, B cancels)
+press a 80
 wait 120
 expect_phrase_command 0 0 1 ARPG
 

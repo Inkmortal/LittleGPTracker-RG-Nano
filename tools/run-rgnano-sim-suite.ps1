@@ -203,6 +203,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "command-selector-workflow"
+    Script = "command-selector-workflow.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "undo"
     Script = "undo.rgsim"
     Args = @("-ResetLastProject")
