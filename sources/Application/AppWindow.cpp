@@ -540,11 +540,21 @@ void AppWindow::Flush() {
     GUIWindow::Flush();
     Unlock();
     {
+        // The busiest the audio engine got since the last heartbeat, so a
+        // heavy sound (FM4 chords, HyperSynth) shows up in the device log
+        static int peakLoad = 0;
         Player *player = Player::GetInstance();
-        char state[48];
-        snprintf(state, sizeof(state), "view %s player %s", GetCurrentViewName(),
-                 player && player->IsRunning() ? "on" : "off");
-        CrashLog::Heartbeat(state);
+        bool running = player && player->IsRunning();
+        if (running) {
+            int load = player->GetPlayedBufferPercentage();
+            if (load > peakLoad) peakLoad = load;
+        }
+        char state[64];
+        snprintf(state, sizeof(state), "view %s player %s load peak %d%%", GetCurrentViewName(),
+                 running ? "on" : "off", peakLoad);
+        if (CrashLog::Heartbeat(state)) {
+            peakLoad = 0;
+        }
     }
     memcpy(_preScreen, _charScreen, 1200);
     memcpy(_preScreenProp, _charScreenProp, 1200);

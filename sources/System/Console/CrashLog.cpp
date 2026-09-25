@@ -73,14 +73,15 @@ int CrashLog::MemoryKB() {
 #endif
 }
 
-void CrashLog::Heartbeat(const char *state) {
+bool CrashLog::Heartbeat(const char *state) {
 	static bool started = false;
 	static unsigned long last = 0;
 	unsigned long now = UptimeSeconds();
-	if (started && now - last < HEARTBEAT_SECONDS) return;
+	if (started && now - last < HEARTBEAT_SECONDS) return false;
 	started = true;
 	last = now;
 	Trace::Log("HEARTBEAT", "up %lus mem %dKB %s", now, MemoryKB(), state ? state : "");
+	return true;
 }
 
 static void writeText(int fd, const char *text) {

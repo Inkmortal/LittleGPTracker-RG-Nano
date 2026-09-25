@@ -8,7 +8,8 @@
 class CrashLog {
 public:
 	static void Note(const char *fmt, ...);
-	static void Heartbeat(const char *state);
+	// Returns true when it wrote a line (every 30 s)
+	static bool Heartbeat(const char *state);
 	// Async-signal-safe: plain write() calls, no allocation
 	static void Dump(int fd);
 	// Resident memory of the process in KB, -1 if unknown
