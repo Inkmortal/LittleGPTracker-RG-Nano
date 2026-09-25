@@ -1,11 +1,21 @@
 #include "ModalView.h"
 
 ModalView::ModalView(View &v)
-    : View(v.w_, v.viewData_), finished_(false), returnCode_(0){
+    : View(v.w_, v.viewData_), finished_(false), returnCode_(0), bTap_(false){
     suppressPlaybackScope_ = true;
 };
 
 ModalView::~ModalView(){};
+
+bool ModalView::backTapped(unsigned short mask, bool pressed) {
+    if (pressed) {
+        bTap_ = (mask == EPBM_B);
+        return false;
+    }
+    bool tapped = bTap_ && !(mask & EPBM_B);
+    bTap_ = false;
+    return tapped;
+}
 
 int ModalView::GetReturnCode() { return returnCode_; };
 

@@ -83,6 +83,13 @@ void FXView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		isDirty_=true ;
 		return ;
 	}
+	if (mask==(EPBM_B|EPBM_A)) {
+		// B+A: this knob back to its default, as everywhere
+		UIIntVarField *focus=(UIIntVarField *)GetFocus() ;
+		if (focus) focus->GetVariable().ResetToDefault() ;
+		isDirty_=true ;
+		return ;
+	}
 	FieldView::ProcessButtonMask(mask) ;
 	if (mask&EPBM_R) {
 		if (mask&EPBM_UP) {

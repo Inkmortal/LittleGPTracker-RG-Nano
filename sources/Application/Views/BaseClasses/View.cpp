@@ -419,7 +419,7 @@ void View::drawContextOverlay() {
 			cmd1="Left/Right pick a strip";
 			cmd2="A+Up/Down big step";
 			cmd3="A+Left/Right fine";
-			cmd4="LB+A mute  RB+A solo";
+			cmd4="B+RB mute  A+RB solo";
 			cmd5="C D R = FX returns";
 			cmd6="Start play/stop song";
 			cmd7="RB+Down FX settings";
@@ -530,7 +530,7 @@ int View::getMoreKeys(const char **lines,int max) {
 	static const char *groove[]={"B+Left/Right other groove","B+A clear the step",
 		"RB+Start play the song"};
 	static const char *project[]={"Start play/stop the song","B on Tempo: tap tempo"};
-	static const char *mixer[]={"LB+A mute  RB+A solo","A+Left/Right fine step",
+	static const char *mixer[]={"B+RB mute  A+RB solo","A+Left/Right fine step","RB+LB unmute all",
 		"C/D/R = FX returns M=master","RB+Down FX settings"};
 	static const char *fx[]={"Up/Down next knob","A+Left/Right small step",
 		"A+Up/Down big step","Start play/stop the song"};
@@ -593,7 +593,7 @@ void View::getHowToSteps(const char **lines) {
 		case VT_INSTRUMENT:
 			lines[0]="Instrument = the sound.";
 			lines[1]="preset: A+Left/Right tries";
-			lines[2]="sounds. RB+A+Up = hear";
+			lines[2]="sounds. A+Start = hear";
 			lines[3]="LB+Left/Right: more pages";
 			lines[4]="ENV: short or long notes";
 			lines[5]="FILTER dark/bright, MOD";
@@ -632,7 +632,7 @@ void View::getHowToSteps(const char **lines) {
 			lines[1]="C chorus D echo R reverb,";
 			lines[2]="M master.";
 			lines[3]="A+Up/Down moves the fader";
-			lines[4]="LB+A mute, RB+A solo";
+			lines[4]="B+RB mute, A+RB solo";
 			lines[5]="Levels save with the song";
 			lines[6]="RB+Down FX settings";
 			break;

@@ -82,22 +82,18 @@ expect_player_running no
 # RB+A+Up previews the trimmed sample, RB+A+Down stops it
 reset_audio_stats
 start_audio_capture instrument-start-trim-preview.wav
-down n
 down a
-press u 80
+press s 80
 up a
-up n
 wait 500
 expect_player_running yes
 expect_play_mode audition
 expect_sample_trim_order 0
 expect_audio_activity 32
 expect_audio_capture_bytes 80000
-down n
 down a
-press d 80
+press s 80
 up a
-up n
 wait 160
 expect_player_running no
 end_audio_capture

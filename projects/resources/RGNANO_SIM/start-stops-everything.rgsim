@@ -62,11 +62,9 @@ expect_audio_silence 0
 
 # 5. Preview on the instrument screen (RB+A+Up), then play and stop from
 #    the song: the preview must not survive
-down n
 down a
-press u 80
+press s 80
 up a
-up n
 wait 800
 goto song
 press s 80

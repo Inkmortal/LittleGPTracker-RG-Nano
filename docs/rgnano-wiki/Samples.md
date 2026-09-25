@@ -58,7 +58,7 @@ Source and Loop show the waveform with three markers: **S** start, **L** loop st
 | --- | --- |
 | **LB + Up/Down** | pick the marker |
 | **LB + A + Left/Right** | nudge it |
-| **RB + A + Up** | hear the sample from S to E (**Left/Right**: an octave down/up) |
+| **A + Start** | hear the sample from S to E (**RB + A + Left/Right**: an octave down/up) |
 | **RB + Start** | switch that preview between once and loop (`PREV:` on screen) |
 
 ## Root note

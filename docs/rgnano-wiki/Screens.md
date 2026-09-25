@@ -74,7 +74,7 @@ The first row, `type`, switches the slot between **synth** and **sample**.
 
 | Button | Does |
 | --- | --- |
-| Up / Down | pick an instrument (Left/Right or LB + Up/Down jump a page) |
+| Up / Down | pick an instrument (**B + Up/Down** jump a page) |
 | A | open it on the Instrument screen |
 | Start | hear it; Start again stops |
 | Select | give it a name with the on-screen keyboard (clear the name to go back to the automatic one) |
@@ -134,7 +134,7 @@ Faders for the 8 tracks, the three effect returns (**C** chorus, **D** echo, **R
 | **Left/Right** | pick a strip |
 | **A + Up/Down** | fader big step (`C0` = unity, up to `FF` for a boost) |
 | **A + Left/Right** | fader fine step |
-| **LB + A** / **RB + A** | mute / solo the track |
+| **B + RB** / **A + RB** | mute / solo the track (**RB + LB** unmutes all) |
 | **RB + Down** | FX screen |
 
 <br clear="right">

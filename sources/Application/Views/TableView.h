@@ -40,6 +40,7 @@ class TableView : public View {
     void warpToNeighbour(int dir);
 
     GUIRect getSelectionRect();
+    void updateSelectionValue(int offset);
 
   private:
     int row_;

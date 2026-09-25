@@ -197,7 +197,7 @@ void GuideDialog::DrawView() {
 
     SetColor(CD_MUTE);
     DrawString(0, FOOTER_Y, "Up/Dn scroll  L/R section", props);
-    DrawString(0, FOOTER_Y + 1, "B topics  LB/RB page", props);
+    DrawString(0, FOOTER_Y + 1, "B topics  B+Up/Dn page", props);
     SetColor(CD_NORMAL);
 }
 
@@ -215,17 +215,28 @@ void GuideDialog::CustomizeContextOverlay(
     cmd1 = "Up/Down pick/scroll";
     cmd2 = "A open / page down";
     cmd3 = "Left/Right section";
-    cmd4 = "LB/RB page up/down";
+    cmd4 = "B+Up/Down page";
     cmd5 = "B back to topics";
     cmd6 = "START close guide";
     cmd7 = "RB+Select helper";
 }
 
 void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
+    // B tapped: back to the topics, or close from the topics. B+Up/Down
+    // pages, as in every list.
+    if (backTapped(mask, pressed)) {
+        if (reading_ && !guidePages.empty()) {
+            reading_ = false;
+            isDirty_ = true;
+        } else {
+            EndModal(0);
+        }
+        return;
+    }
     if (!pressed)
         return;
     if (mask == EPBM_START || guidePages.empty()) {
-        if (mask == EPBM_START || mask == EPBM_B)
+        if (mask == EPBM_START)
             EndModal(0);
         return;
     }
@@ -242,9 +253,6 @@ void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
         case EPBM_A:
             openPage(page_, 0);
             break;
-        case EPBM_B:
-            EndModal(0);
-            return;
         default:
             return;
         }
@@ -260,10 +268,10 @@ void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
     case EPBM_DOWN:
         scrollTo(top_ + 1);
         break;
-    case EPBM_R:
+    case EPBM_B | EPBM_DOWN:
         scrollTo(top_ + TEXT_ROWS - 1);
         break;
-    case EPBM_L:
+    case EPBM_B | EPBM_UP:
         scrollTo(top_ - (TEXT_ROWS - 1));
         break;
     case EPBM_LEFT: {
@@ -284,9 +292,6 @@ void GuideDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
         }
         break;
     }
-    case EPBM_B:
-        reading_ = false;
-        break;
     default:
         return;
     }

@@ -33,7 +33,7 @@ up a
 expect_screen_text REVERB RETURN  D0
 press r 80
 expect_screen_text MASTER
-# Back to track 1: LB+A mutes it, again unmutes
+# Back to track 1: B+RB mutes it, again unmutes
 press l 80
 press l 80
 press l 80
@@ -46,14 +46,14 @@ press l 80
 press l 80
 press l 80
 expect_screen_text TRACK 1  B0
-down m
-press a 80
-up m
+down b
+press n 80
+up b
 wait 100
 expect_screen_text muted
-down m
-press a 80
-up m
+down b
+press n 80
+up b
 wait 100
 # Plays with the new levels
 press s 80

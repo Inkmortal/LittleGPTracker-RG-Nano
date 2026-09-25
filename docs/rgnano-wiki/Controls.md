@@ -1,14 +1,27 @@
 # Controls
 
-The RG Nano has few buttons, so almost everything is **a button held + a D-pad direction**. Three rules cover most of it:
+The RG Nano has few buttons, so the same few combos mean the same thing on every screen. Learn these rules once:
 
-| Hold | + D-pad does |
+| Keys | Always means |
 | --- | --- |
-| **A** | change the value under the cursor (Left/Right small step, Up/Down big step) |
-| **RB** | jump to another screen |
-| **B** | jump to the neighbouring chain / phrase / instrument (on Song: 16 rows up/down) |
+| **D-pad** | move the cursor |
+| **A** | add / paste / press the thing under the cursor |
+| **A + D-pad** | change the value (Left/Right small step, Up/Down big step) |
+| **B + A** | delete it, or put a knob back to its default |
+| **A + Start** | hear the instrument (on a phrase, **A** on a note already previews it) |
+| **B + D-pad** | jump to the neighbouring item that way (chain, phrase, instrument, table, groove; 16 rows on the Song, a page in lists) |
+| **B** | back / close, in dialogs |
+| **RB + D-pad** | go to the screen that way on the map |
+| **Start** | play / stop what this screen shows |
+| **RB + Start** | play / stop the whole song (on the Song screen in Live mode: stop this track) |
+| **LB + Start** | capture or launch: record this bar/chain into a sample, or on the Song launch the row live |
+| **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, song section) |
+| **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
+| **B + LB** | start a selection (again: grow it to whole rows, then the whole block). In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
+| **Select** | this screen's special tool: command picker, Live mode, sample import/root, rename, sort |
+| **RB + Select** | the helper, on every screen |
 
-**Start** plays and stops. **RB + Select** opens the helper on every screen.
+Nothing is mapped twice on a screen, and a combo never fires two actions at once.
 
 > On the RG Nano, **Select** is the `FN` button. **LB/RB** are the shoulder buttons. The Menu/Power button opens the app menu: **Volume** and **Brightness** (Left/Right), **Save and quit**, **Quit, don't save** (asks first) and **Debug tools**. Holding power to switch off saves your song first.
 
@@ -41,11 +54,9 @@ If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a di
 | **Start** | play / stop (what plays depends on the screen, see below) |
 | **RB + Start** | play / stop the whole song from a Chain, Phrase, Table, Groove or Instrument screen |
 | **RB + Select** | helper: **Down/Up** flips map → commands → how-to, **RB + Select** closes |
-| **A + RB** | solo the track (Song, Chain, Phrase) |
-| **B + RB** | mute the track (Song, Chain, Phrase); on the Mixer it's **LB + A** / **RB + A** |
+| **A + RB** | solo the track (Song, Chain, Phrase, Mixer) |
+| **B + RB** | mute the track (Song, Chain, Phrase, Mixer) |
 | **B + LB** | start a selection; **B** copies it, **A + LB** pastes |
-
-Each combo does one thing on a screen: nothing is mapped twice, and a combo never fires two actions at once.
 
 The small label at the top right says what is playing: `PLAY:SONG`, `PLAY:CHAIN`, `PLAY:PHR`, `PLAY:LIVE`, `AUDITION` or `STOP`.
 
@@ -113,13 +124,12 @@ A cued cell blinks in green until it starts. A track keeps looping its chain unt
 | **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX for synths) |
 | **A + Left/Right** on `preset` | browse ready-made sounds |
 | **A + D-pad** | change the focused knob |
-| **B + Left/Right** | previous / next instrument (**B + Up/Down**: 16 at a time) |
-| **B + A** | on `sample`: remove the sample; on `table`: clear it |
+| **B + Left/Right** | previous / next instrument (**B + Down/Up**: 16 forward / back) |
+| **B + A** | put the knob back to its default (on `sample`: remove the sample; on `table`: clear it) |
 | **RB + Up** | the list of all sounds |
 | **Start** | play / stop the phrase, same as the Phrase screen |
-| **RB + A + Up** | hear the instrument at C3 |
-| **RB + A + Left/Up/Right** | hear it low / middle / high |
-| **RB + A + Down** | stop the preview |
+| **A + Start** | hear the instrument (synth at C3, sample at its root); again to stop |
+| **RB + A + Left/Right** | hear it an octave down / up |
 
 Sample instruments have their own pages and trim controls — see [Samples](Samples).
 
@@ -130,7 +140,8 @@ Sample instruments have their own pages and trim controls — see [Samples](Samp
 | **Left/Right** | pick a strip (Mixer) |
 | **Up/Down** | pick a knob (FX) |
 | **A + Up/Down** / **A + Left/Right** | big / small step |
-| **LB + A** / **RB + A** | mute / solo the track (Mixer) |
+| **B + A** | back to default (fader to `C0`, master to 100, knob to its default) |
+| **B + RB** / **A + RB** | mute / solo the track (Mixer); **RB + LB** unmutes all |
 | **Start** | play / stop the song |
 
 ## Naming a new song

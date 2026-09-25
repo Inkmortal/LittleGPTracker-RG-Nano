@@ -418,6 +418,26 @@ void TableView::warpToNeighbour(int dir) {
     isDirty_ = true;
 }
 
+// Every value (not command) cell in the selection moves by offset: the
+// cursor's digit editor only holds the cursor cell, so change each directly
+void TableView::updateSelectionValue(int offset) {
+    Table &table =
+        TableHolder::GetInstance()->GetTable(viewData_->currentTable_);
+    ushort *params[3] = {table.param1_, table.param2_, table.param3_};
+    GUIRect r = getSelectionRect();
+    for (int c = r.Left(); c <= r.Right(); c++) {
+        if (c % 2 == 0)
+            continue; // command columns keep their commands
+        for (int j = r.Top(); j <= r.Bottom(); j++) {
+            int v = params[c / 2][j] + offset;
+            if (v < 0) v = 0;
+            if (v > 0xFFFF) v = 0xFFFF;
+            params[c / 2][j] = (ushort)v;
+        }
+    }
+    isDirty_ = true;
+}
+
 void TableView::updateCursorValue(int offset) {
 
     unsigned char *c = 0;
@@ -667,10 +687,10 @@ void TableView::processNormalButtonMask(unsigned short mask) {
             warpToNeighbour(-1);
         if (mask & EPBM_RIGHT)
             warpToNeighbour(+1);
-        if (mask & EPBM_DOWN)
-            warpToNeighbour(-16);
-        if (mask & EPBM_UP)
+        if (mask & EPBM_DOWN) // down the list, like the Song
             warpToNeighbour(16);
+        if (mask & EPBM_UP)
+            warpToNeighbour(-16);
         if (mask & EPBM_A)
             cutPosition();
         if (mask & EPBM_L)
@@ -777,7 +797,15 @@ void TableView::processSelectionButtonMask(unsigned short mask) {
         if (mask & EPBM_A) {
             if (mask & EPBM_L)
                 cutSelection();
-            //		if (mask&EPBM_R) switchSoloMode() ;
+            // A+arrows change every selected value, as on Chain and Phrase
+            if (mask & EPBM_DOWN)
+                updateSelectionValue(-0x10);
+            if (mask & EPBM_UP)
+                updateSelectionValue(0x10);
+            if (mask & EPBM_LEFT)
+                updateSelectionValue(-0x01);
+            if (mask & EPBM_RIGHT)
+                updateSelectionValue(0x01);
         } else {
 
             // R Modifier

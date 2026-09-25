@@ -240,15 +240,18 @@ void ImportSampleDialog::import(Path &element) {
 
 void ImportSampleDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
 
+	// B tapped alone leaves (like every other dialog); B+Up/Down pages. So
+	// leaving waits for B to be let go without an arrow in between.
+	if (backTapped(mask,pressed)) {
+		endPreview() ;
+		EndModal(0) ;
+		return ;
+	}
 	if (!pressed) return ;
 
 	if (mask&EPBM_B) {  
 		if (mask&EPBM_UP) warpToNextSample(-LIST_SIZE) ;
 		if (mask&EPBM_DOWN) warpToNextSample(LIST_SIZE) ;
-		if (mask==EPBM_B) { // leave, like every other dialog
-			endPreview() ;
-			EndModal(0) ;
-		}
 	} else if (mask==EPBM_A) {
 		// (Browsing while listening is Start+Up/Down)
 		Path *element = getImportElement();

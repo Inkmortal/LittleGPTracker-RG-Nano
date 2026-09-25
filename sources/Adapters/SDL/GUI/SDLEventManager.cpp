@@ -1669,8 +1669,8 @@ int SDLEventManager::StepSimGoal(SDLGUIWindowImp *window, SimCommand &command)
 		int current=viewData->currentInstrument_;
 		if (current==target) return 0;
 		int delta=target-current;
-		if (delta>=16) PressSimCombo(window,SDLK_b,SDLK_u);
-		else if (delta<=-16) PressSimCombo(window,SDLK_b,SDLK_d);
+		if (delta>=16) PressSimCombo(window,SDLK_b,SDLK_d);
+		else if (delta<=-16) PressSimCombo(window,SDLK_b,SDLK_u);
 		else PressSimCombo(window,SDLK_b,delta>0?SDLK_r:SDLK_l);
 		return 1;
 	}

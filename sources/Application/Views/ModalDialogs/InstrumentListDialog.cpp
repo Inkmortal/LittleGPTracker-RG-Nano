@@ -363,6 +363,10 @@ void InstrumentListDialog::Rename(const std::string &name) {
 
 void InstrumentListDialog::ProcessButtonMask(unsigned short mask,
                                              bool pressed) {
+    if (backTapped(mask, pressed)) {
+        EndModal(0);
+        return;
+    }
     if (!pressed)
         return;
     if (mask == (EPBM_L | EPBM_A)) {
@@ -373,14 +377,12 @@ void InstrumentListDialog::ProcessButtonMask(unsigned short mask,
         move(-1);
     } else if (mask == EPBM_DOWN) {
         move(1);
-    } else if (mask == EPBM_LEFT) {
+    } else if (mask == (EPBM_B | EPBM_UP)) {
         move(-LIST_ROWS);
-    } else if (mask == EPBM_RIGHT) {
+    } else if (mask == (EPBM_B | EPBM_DOWN)) {
         move(LIST_ROWS);
     } else if (mask == EPBM_A) {
         EndModal(1);
-    } else if (mask == EPBM_B) {
-        EndModal(0);
     } else if (mask == EPBM_START) {
         audition();
     } else if (mask == EPBM_SELECT) {
@@ -415,7 +417,7 @@ void InstrumentListDialog::CustomizeContextOverlay(
     where = "RB+Up on Instrument";
     edit = "B back";
     field = "Every sound at a glance";
-    cmd1 = "Up/Down pick, L/R page";
+    cmd1 = "Up/Down pick, B+U/D page";
     cmd2 = "A open that instrument";
     cmd3 = "START hear it, again stop";
     cmd4 = "SEL give it a name";

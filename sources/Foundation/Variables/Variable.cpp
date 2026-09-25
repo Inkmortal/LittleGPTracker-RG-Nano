@@ -273,6 +273,11 @@ int Variable::GetListSize() {
     return listSize_;
 }
 
+void Variable::ResetToDefault() {
+    Reset();
+    onChange();
+}
+
 void Variable::Reset() {
     switch (type_) {
     case FLOAT:

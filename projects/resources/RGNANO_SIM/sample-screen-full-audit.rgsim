@@ -35,20 +35,16 @@ press k 80
 wait 120
 screenshot_app sample-full-04-root-accepted.bmp
 
-down n
 down a
-press u 80
+press s 80
 up a
-up n
 wait 160
 expect_player_running yes
 expect_play_mode audition
 screenshot_app sample-full-05-source-audition.bmp
-down n
 down a
-press d 80
+press s 80
 up a
-up n
 wait 120
 expect_player_running no
 

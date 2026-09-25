@@ -40,7 +40,8 @@
  whole guide is built into
  the app. Up/Down picks a
  topic, A opens it. Inside
- a page Up/Down scrolls,
+ a page Up/Down scrolls, B
+ + Up/Down turns a page,
  Left/Right jumps between
  sections, B goes back to
  the topics.
@@ -552,28 +553,83 @@
    nearby.
 @controls|Controls
  The RG Nano has few
- buttons, so almost
- everything is a button
- held + a D-pad direction.
- Three rules cover most of
- it:
+ buttons, so the same few
+ combos mean the same thing
+ on every screen. Learn
+ these rules once:
  
+*D-pad
+   move the cursor
 *A
-   change the value under
-   the cursor (Left/Right
-   small step, Up/Down big
-   step)
-*RB
-   jump to another screen
-*B
+   add / paste / press the
+   thing under the cursor
+*A + D-pad
+   change the value
+   (Left/Right small step,
+   Up/Down big step)
+*B + A
+   delete it, or put a knob
+   back to its default
+*A + Start
+   hear the instrument (on
+   a phrase, A on a note
+   already previews it)
+*B + D-pad
    jump to the neighbouring
-   chain / phrase /
-   instrument (on Song: 16
-   rows up/down)
+   item that way (chain,
+   phrase, instrument,
+   table, groove; 16 rows
+   on the Song, a page in
+   lists)
+*B
+   back / close, in dialogs
+*RB + D-pad
+   go to the screen that
+   way on the map
+*Start
+   play / stop what this
+   screen shows
+*RB + Start
+   play / stop the whole
+   song (on the Song screen
+   in Live mode: stop this
+   track)
+*LB + Start
+   capture or launch:
+   record this bar/chain
+   into a sample, or on the
+   Song launch the row live
+*LB + D-pad
+   the finer or alternate
+   move (chromatic note,
+   instrument page, trim
+   marker, song section)
+*B + RB / A + RB
+   mute / solo the track;
+   RB + LB unmutes all
+*B + LB
+   start a selection
+   (again: grow it to whole
+   rows, then the whole
+   block). In a selection B
+   copies, A + LB cuts, A +
+   D-pad changes every
+   selected value; without
+   one, A + LB pastes
+*Select
+   this screen's special
+   tool: command picker,
+   Live mode, sample
+   import/root, rename,
+   sort
+*RB + Select
+   the helper, on every
+   screen
  
- Start plays and stops. RB
- + Select opens the helper
- on every screen.
+ Nothing is mapped twice on
+ a screen, and a combo
+ never fires two actions at
+ once.
  
 *On the RG Nano, Select is
 *the FN button. LB/RB are
@@ -666,21 +722,13 @@
    closes
 *A + RB
    solo the track (Song,
-   Chain, Phrase)
+   Chain, Phrase, Mixer)
 *B + RB
    mute the track (Song,
-   Chain, Phrase); on the
-   Mixer it's LB + A / RB +
-   A
+   Chain, Phrase, Mixer)
 *B + LB
    start a selection; B
    copies it, A + LB pastes
- 
- Each combo does one thing
- on a screen: nothing is
- mapped twice, and a combo
- never fires two actions at
- once.
  
  The small label at the top
  right says what is
@@ -841,26 +889,26 @@
    change the focused knob
 *B + Left/Right
    previous / next
-   instrument (B + Up/Down:
-   16 at a time)
+   instrument (B + Down/Up:
+   16 forward / back)
 *B + A
-   on sample: remove the
-   sample; on table: clear
-   it
+   put the knob back to its
+   default (on sample:
+   remove the sample; on
+   table: clear it)
 *RB + Up
    the list of all sounds
 *Start
    play / stop the phrase,
    same as the Phrase
    screen
-*RB + A + Up
-   hear the instrument at
-   C3
-*RB + A + Left/Up/Right
-   hear it low / middle /
-   high
-*RB + A + Down
-   stop the preview
+*A + Start
+   hear the instrument
+   (synth at C3, sample at
+   its root); again to stop
+*RB + A + Left/Right
+   hear it an octave down /
+   up
  
  Sample instruments have
  their own pages and trim
@@ -874,9 +922,14 @@
    pick a knob (FX)
 *A + Up/Down / A + Left/Rig
    big / small step
-*LB + A / RB + A
+*B + A
+   back to default (fader
+   to C0, master to 100,
+   knob to its default)
+*B + RB / A + RB
    mute / solo the track
-   (Mixer)
+   (Mixer); RB + LB unmutes
+   all
 *Start
    play / stop the song
  
@@ -1209,8 +1262,7 @@
  synth's wave shape.
  
 *Up / Down
-   pick an instrument
-   (Left/Right or LB +
+   pick an instrument (B +
    Up/Down jump a page)
 *A
    open it on the
@@ -1330,8 +1382,9 @@
    boost)
 *A + Left/Right
    fader fine step
-*LB + A / RB + A
+*B + RB / A + RB
    mute / solo the track
+   (RB + LB unmutes all)
 *RB + Down
    FX screen
  
@@ -1409,10 +1462,10 @@
  phrase; the cursor lands
  on preset, so A +
  Left/Right immediately
- flips through sounds and
- RB + A + Up plays one
- (Start plays the phrase,
- as everywhere).
+ flips through sounds and A
+ + Start plays one (Start
+ plays the phrase, as
+ everywhere).
  
  Each track plays one synth
  voice at a time. A note
@@ -2801,10 +2854,11 @@
    pick the marker
 *LB + A + Left/Right
    nudge it
-*RB + A + Up
+*A + Start
    hear the sample from S
-   to E (Left/Right: an
-   octave down/up)
+   to E (RB + A +
+   Left/Right: an octave
+   down/up)
 *RB + Start
    switch that preview
    between once and loop

@@ -73,11 +73,11 @@ void GrooveView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			if (mask&EPBM_RIGHT) {
 				warpGroove(1) ;
 			}
-			if (mask&EPBM_DOWN) {
-				warpGroove(-0x10) ;
+			if (mask&EPBM_DOWN) { // down the list, like the Song
+				warpGroove(0x10) ;
 			}
 			if (mask&EPBM_UP) {
-				warpGroove(0x10) ;
+				warpGroove(-0x10) ;
 			}
 			if (mask&EPBM_A) {
 				clearCursorValue() ;

@@ -10,7 +10,7 @@ Launching the app shows **Your Songs**. **Up/Down** picks a song, **Left/Right**
 
 <img src="images/boot.png" width="300" alt="Your Songs list">
 
-Not sure what anything means? Pick **Help**: this whole guide is built into the app. **Up/Down** picks a topic, **A** opens it. Inside a page **Up/Down** scrolls, **Left/Right** jumps between sections, **B** goes back to the topics.
+Not sure what anything means? Pick **Help**: this whole guide is built into the app. **Up/Down** picks a topic, **A** opens it. Inside a page **Up/Down** scrolls, **B + Up/Down** turns a page, **Left/Right** jumps between sections, **B** goes back to the topics.
 
 <img src="images/start-guide-topics.png" width="240" alt="Guide topics"> <img src="images/start-guide-page.png" width="240" alt="A guide page">
 

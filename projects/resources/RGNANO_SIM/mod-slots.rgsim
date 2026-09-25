@@ -29,19 +29,15 @@ focus rate2
 expect_screen_text 1.60 Hz
 screenshot_app mod-synth.bmp
 # RB+A+Up previews it
-down n
 down a
-press u 80
+press s 80
 up a
-up n
 wait 400
 expect_play_mode audition
 expect_audio_activity 64
-down n
 down a
-press d 80
+press s 80
 up a
-up n
 wait 300
 
 # A preset starts clean: picking one switches both slots off

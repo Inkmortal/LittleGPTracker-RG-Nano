@@ -32,20 +32,16 @@ expect_instrument_sample 0 wuxia-guzheng.wav
 
 expect_screen_text SOURCE
 screenshot_app sample-lab-source.bmp
-down n
 down a
-press u 80
+press s 80
 up a
-up n
 wait 160
 expect_player_running yes
 expect_play_mode audition
 screenshot_app sample-lab-source-audition.bmp
-down n
 down a
-press d 80
+press s 80
 up a
-up n
 wait 120
 expect_player_running no
 route combo.l.down

@@ -32,18 +32,14 @@ press a 80
 wait 300
 expect_view instrument
 expect_screen_text rs_01.wav
-down n
 down a
-press u 80
+press s 80
 up a
-up n
 wait 400
 expect_audio_activity 32
-down n
 down a
-press d 80
+press s 80
 up a
-up n
 # A second render gets the next name; B cancels and leaves nothing behind
 goto phrase
 down m

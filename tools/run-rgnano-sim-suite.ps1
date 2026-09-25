@@ -153,6 +153,11 @@ $suite = @(
     Args = @("-OpenDemo=NeonDrive")
   },
   @{
+    Name = "key-grammar"
+    Script = "key-grammar.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
     Args = @("-OpenDemo=Dusk")

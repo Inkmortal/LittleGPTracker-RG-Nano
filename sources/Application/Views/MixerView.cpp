@@ -130,17 +130,25 @@ void MixerView::processNormalButtonMask(unsigned int mask) {
 
 	// B Modifier
 
+	// Same as Song/Chain/Phrase: B+RB mutes, A+RB solos
+	int strip=viewData_->mixerCol_ ;
+	UIController *controller=UIController::GetInstance() ;
 	if (mask&EPBM_B) {
+		if ((mask&EPBM_R) && strip<SONG_CHANNEL_COUNT) {
+			controller->ToggleMute(strip,strip) ;
+			isDirty_=true ;
+		}
+		if (mask==(EPBM_B|EPBM_A)) {
+			// Back to unity, like B+A resets a knob anywhere
+			setStripLevel(strip,strip==STRIP_MASTER?100:MIXER_UNITY) ;
+			isDirty_=true ;
+		}
 	} else {
 
-	  // A modifier: faders, and mute/solo with a shoulder
+	  // A modifier: faders, and solo with RB
 
 	  if (mask&EPBM_A) {
-		int strip=viewData_->mixerCol_ ;
-		UIController *controller=UIController::GetInstance() ;
-		if (mask&EPBM_L) {
-			if (strip<SONG_CHANNEL_COUNT) controller->ToggleMute(strip,strip) ;
-		} else if (mask&EPBM_R) {
+		if (mask&EPBM_R) {
 			if (strip<SONG_CHANNEL_COUNT) {
 				controller->SwitchSoloMode(strip,strip,!soloOn_) ;
 				soloOn_=!soloOn_ ;
@@ -158,6 +166,10 @@ void MixerView::processNormalButtonMask(unsigned int mask) {
 		  // R Modifier
 
           	if (mask&EPBM_R) {
+				if (mask&EPBM_L) {
+					controller->UnMuteAll() ;  // RB+LB, as on the other screens
+					isDirty_=true ;
+				}
 				if (mask&EPBM_UP) {
 					ViewType vt=VT_SONG;
 					ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
@@ -388,7 +400,7 @@ void MixerView::drawStripInfo() {
 	DrawString(1,21,"                            ",props) ;
 	DrawString(1,21,line,props) ;
 	SetColor(CD_MUTE) ;
-	DrawString(1,22,"A+Up/Dn level LB+A mute",props) ;
+	DrawString(1,22,"A+Up/Dn level B+RB mute",props) ;
 	SetColor(CD_NORMAL) ;
 }
 

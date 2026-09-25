@@ -565,7 +565,7 @@ void InstrumentView::customizeSynthOverlay(const char *&name, const char *&where
 	cmd3="A+Up/Down big step";
 	cmd4="LB+Left/Right page";
 	cmd5="Start play the phrase";
-	cmd6="RB+A L/U/R low/mid/high";
+	cmd6="A+Start hear  B+A reset";
 	cmd7="B+Left/Right other instr";
 	switch(labPage_) {
 		case 0:

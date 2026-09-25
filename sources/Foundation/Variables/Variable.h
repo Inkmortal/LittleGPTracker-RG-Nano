@@ -45,6 +45,8 @@ public:
   int GetListSize();
   char **GetListPointer();
   void Reset();
+  // Reset and tell the observers (a knob put back to its default)
+  void ResetToDefault();
   static const int MAX_NAME_LENGTH = 25;
 
 protected:

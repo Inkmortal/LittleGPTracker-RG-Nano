@@ -993,23 +993,46 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		}
 	}
 
+	// A+Start: hear this instrument (again: stop), like the M8's EDIT+PLAY.
+	// RB+A+Left/Right hear it an octave down / up.
+	if (mask==(EPBM_A|EPBM_START) &&
+	    (getInstrumentType()==IT_SYNTH || getInstrumentType()==IT_SAMPLE)) {
+		Player *player=Player::GetInstance();
+		if (player->IsRunning() && viewData_->playMode_==PM_AUDITION) {
+			player->Stop();
+			isDirty_=true;
+		} else if (getInstrumentType()==IT_SYNTH) {
+			auditionSynth(0);
+		} else {
+			auditionSamplePitch(0);
+		}
+		return;
+	}
+	// B+A on a knob: back to its default (like the M8's EDIT+OPTION); the
+	// sample and table fields keep their own B+A (remove / clear) below
+	if (mask==(EPBM_B|EPBM_A)) {
+		UIIntVarField *focus=(UIIntVarField *)GetFocus();
+		if (focus) {
+			Variable &v=focus->GetVariable();
+			FourCC id=focus->GetVariableID();
+			bool special=(id==SIP_SAMPLE || id==SIP_TABLE || id==MIP_TABLE ||
+			              !strcmp(v.GetName(),"preset") || !strcmp(v.GetName(),"type"));
+			if (!special) {
+				v.ResetToDefault();
+				isDirty_=true;
+				return;
+			}
+		}
+	}
+
 	if (getInstrumentType()==IT_SYNTH && (mask&EPBM_R) && (mask&EPBM_A) &&
 	    !(mask&(EPBM_B|EPBM_L|EPBM_START|EPBM_SELECT))) {
 		if (mask&EPBM_LEFT) {
 			auditionSynth(-12);
 			return;
 		}
-		if (mask&EPBM_UP) {
-			auditionSynth(0);
-			return;
-		}
 		if (mask&EPBM_RIGHT) {
 			auditionSynth(12);
-			return;
-		}
-		if (mask&EPBM_DOWN) {
-			Player::GetInstance()->Stop();
-			isDirty_=true;
 			return;
 		}
 	}
@@ -1052,17 +1075,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			auditionSamplePitch(-12);
 			return;
 		}
-		if (mask&EPBM_UP) {
-			auditionSamplePitch(0);
-			return;
-		}
 		if (mask&EPBM_RIGHT) {
 			auditionSamplePitch(12);
-			return;
-		}
-		if (mask&EPBM_DOWN) {
-			Player::GetInstance()->Stop();
-			isDirty_=true;
 			return;
 		}
 	}
@@ -1189,8 +1203,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
         if (mask&EPBM_A) mask&=~(EPBM_LEFT|EPBM_RIGHT|EPBM_UP|EPBM_DOWN) ;
         if (mask&EPBM_LEFT) warpToNext(-1) ;
 		if (mask&EPBM_RIGHT) warpToNext(+1);
-		if (mask&EPBM_DOWN) warpToNext(-16) ;
-		if (mask&EPBM_UP) warpToNext(+16);
+		if (mask&EPBM_DOWN) warpToNext(+16) ;  // down the list, like the Song
+		if (mask&EPBM_UP) warpToNext(-16);
 		if (mask&EPBM_A) { // Allow cut instrument
 		   if (getInstrumentType()==IT_SAMPLE) {
                 UIIntVarField *focusField=(UIIntVarField *)GetFocus() ;
@@ -1392,7 +1406,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 	cmd1="Dpad choose field";
 	cmd3="A+Dpad edit value";
 	cmd4="LB+Left/Right page";
-	cmd5="RB+A L/U/R audition";
+	cmd5="A+Start hear  B+A reset";
 	cmd6="RB+Left Phrase";
 	cmd7="RB+Select close";
 	if (labPage_==0) {
@@ -1403,7 +1417,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd3="Sel on root: suggest/use";
 		cmd4="LB+UD pick Start/Loop/End";
 		cmd5="LB+A+LR nudge marker";
-		cmd6="RB+A+Up hear it";
+		cmd6="A+Start hear it";
 		cmd7="RB+Start once/loop";
 	} else if (labPage_==1) {
 		field="Shape: level/pan/grit";
@@ -1412,7 +1426,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd2="A+LR coarse/fine edit";
 		cmd3="A+UD larger changes";
 		cmd4="LB+Left/Right page";
-		cmd5="RB+A L/U/R audition";
+		cmd5="A+Start hear  B+A reset";
 	} else if (labPage_==2) {
 		field="Filter: cutoff/reso";
 		edit="Tone shaping";
@@ -1420,7 +1434,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd2="A+Dpad edit value";
 		cmd3="Cut/res/type/mode";
 		cmd4="LB+Left/Right page";
-		cmd5="RB+A L/U/R audition";
+		cmd5="A+Start hear  B+A reset";
 	} else if (labPage_==3) {
 		field="Loop: trim window";
 		edit="S=start L=loop E=end";
@@ -1429,7 +1443,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd3="Dpad to start/lstart/end";
 		cmd4="A+Dpad exact values";
 		cmd5="Sel root from trim";
-		cmd6="RB+A+Up hear it";
+		cmd6="A+Start hear it";
 		cmd7="RB+Start once/loop";
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
 		field="2 envelopes/LFOs";

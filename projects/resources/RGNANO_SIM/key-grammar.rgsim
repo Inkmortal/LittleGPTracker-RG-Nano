@@ -1,0 +1,89 @@
+# The shared key rules hold on every screen: B+Down = forward 16 / a page,
+# B tapped alone = back / close, B+RB mutes on the Mixer as elsewhere.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+goto instrument
+expect_screen_text Instrument 00
+# B+Down: 16 forward, B+Up: back
+down b
+press d 80
+up b
+wait 100
+expect_screen_text Instrument 10
+down b
+press u 80
+up b
+wait 100
+expect_screen_text Instrument 00
+# A+Start hears the instrument, again stops it
+down a
+press s 80
+up a
+wait 200
+expect_player_running yes
+expect_play_mode audition
+down a
+press s 80
+up a
+wait 200
+expect_player_running no
+# B+A puts a knob back to its default (pan 7F)
+page MIX
+set pan 0x20
+expect_instrument_param 0 pan 32
+down b
+press a 80
+up b
+wait 100
+expect_instrument_param 0 pan 127
+# The instrument list: B+Down pages, B tapped closes
+down n
+press u 80
+up n
+wait 200
+expect_screen_text INSTRUMENTS
+expect_screen_text 00/8F
+down b
+press d 80
+up b
+wait 100
+expect_screen_text 0C/8F
+press b 80
+wait 200
+expect_view instrument
+# The guide from the helper: B+Down pages, B back to topics, B closes
+down n
+press k 80
+up n
+wait 150
+press a 80
+wait 300
+expect_screen_text B topics  B+Up/Dn page
+down b
+press d 80
+up b
+wait 100
+expect_screen_text B topics  B+Up/Dn page
+press b 80
+wait 150
+press b 80
+wait 200
+expect_view instrument
+# Mixer: B+RB mutes the track, like Song/Chain/Phrase
+goto mixer
+down b
+press n 80
+up b
+wait 100
+expect_screen_text muted
+down b
+press n 80
+up b
+goto song
+expect_no_error
+quit
