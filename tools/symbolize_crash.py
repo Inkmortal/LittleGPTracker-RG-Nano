@@ -22,12 +22,12 @@ def msys_path(path: Path) -> str:
 
 
 def main() -> int:
-    crash = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "rgnano-sim-crash.txt"
+    crash = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "projects" / "rgnano-sim-crash.txt"
     exe = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "projects" / "lgpt-rgnano-sim.exe"
     text = crash.read_text()
     print(text.splitlines()[0])
     base = int(re.search(r"base=(?:0x)?([0-9A-Fa-f]+)", text).group(1), 16)
-    addrs = [int(m, 16) for m in re.findall(r"frame \d+ (?:0x)?([0-9A-Fa-f]+)", text)]
+    addrs = [int(m, 16) for m in re.findall(r"frame s?\d+ (?:0x)?([0-9A-Fa-f]+)", text)]
     fixed = [hex(a - base + PREFERRED_BASE) for a in addrs if a >= base]
     # addr2line only starts inside the MSYS2 environment on this machine
     cmd = f"PATH=/mingw32/bin:/usr/bin addr2line -e '{msys_path(exe)}' -f -C -p " + " ".join(fixed)
