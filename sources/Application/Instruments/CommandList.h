@@ -18,6 +18,9 @@
 #define I_CMD_MDPG MAKE_FOURCC('M','D','P','G')
 #define I_CMD_MVEL MAKE_FOURCC('M','V','E','L')
 #define I_CMD_PLOF MAKE_FOURCC('P','L','O','F')
+// PLAY 00bb: sample play mode for this note (00 forward, 01 reverse ...),
+// the M8's PLY
+#define I_CMD_PLAY MAKE_FOURCC('P','L','A','Y')
 #define I_CMD_FLTR MAKE_FOURCC('F','L','T','R')
 #define I_CMD_TABL MAKE_FOURCC('T','A','B','L')
 #define I_CMD_CRSH MAKE_FOURCC('C','R','S','H')

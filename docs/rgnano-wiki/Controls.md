@@ -16,10 +16,10 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **Start** | play / stop what this screen shows |
 | **RB + Start** | play / stop the whole song (on the Song screen in Live mode: stop this track) |
 | **LB + Start** | capture or launch: record this bar/chain into a sample, or on the Song launch the row live |
-| **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, song section or bookmark) |
+| **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, MOD slot, song section or bookmark) |
 | **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
 | **B + LB** | start a selection (again: grow it to whole rows, then the whole block). In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
-| **Select** | this screen's special tool: command picker, Live mode, sample import/root, rename, sort |
+| **Select** | this screen's special tool: command picker, Live mode, sample import/root/editor, rename, sort |
 | **A + Select** | mark it: bookmark the Song row |
 | **B + Select** / **LB + Select** | undo / redo any change, on every screen (hold B or LB first) |
 | **RB + Select** | the helper, on every screen |
@@ -46,7 +46,8 @@ Hold **RB** and press a direction:
 | Scale | — | Project | — | — |
 | Mixer | — | — | Song | FX |
 | FX | EQ | — | Mixer | — |
-| EQ | — | FX | — | — |
+| EQ | Limit | FX | — | — |
+| Limit | — | EQ | — | — |
 
 If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a direction moves one screen, however long you hold it.
 
@@ -140,7 +141,8 @@ Didn't like it? **B + Select** undoes.
 
 | Input | Does |
 | --- | --- |
-| **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX for synths) |
+| **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX, EQ for synths) |
+| **LB + Up/Down** on the MOD page | pick the slot (1–4) the settings edit |
 | **A + Left/Right** on `preset` | browse ready-made sounds |
 | **A + D-pad** | change the focused knob |
 | **B + Left/Right** | previous / next instrument (**B + Down/Up**: 16 forward / back) |
@@ -150,7 +152,7 @@ Didn't like it? **B + Select** undoes.
 | **A + Start** | hear the instrument (synth at C3, sample at its root); again to stop |
 | **RB + A + Left/Right** | hear it an octave down / up |
 
-Sample instruments have their own pages and trim controls — see [Samples](Samples).
+Sample instruments have their own pages, play modes, trim controls and a sample editor (**Select** on the Source or Loop page) — see [Samples](Samples).
 
 ## Moving tracks
 
@@ -174,12 +176,12 @@ Sample instruments have their own pages and trim controls — see [Samples](Samp
 | **Start** | play / stop the song |
 | **RB + Left** | back to Project |
 
-## Mixer, FX and EQ
+## Mixer, FX, EQ and Limit
 
 | Input | Does |
 | --- | --- |
 | **Left/Right** | pick a strip (Mixer) |
-| **Up/Down** | pick a knob (FX, EQ) |
+| **Up/Down** | pick a knob (FX, EQ, Limit) |
 | **A + Up/Down** / **A + Left/Right** | big / small step |
 | **B + A** | back to default (fader to `C0`, master to 100, knob to its default) |
 | **B + RB** / **A + RB** | mute / solo the track (Mixer); **RB + LB** unmutes all |

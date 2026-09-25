@@ -255,11 +255,11 @@ COMMONFILES := \
 	ControlNode.o \
 	I_GUIWindowImp.o \
 	Application.o AppWindow.o SelectProjectDialog.o \
-	NewProjectDialog.o InstrumentListDialog.o RenderToSampleDialog.o GuideDialog.o \
+	NewProjectDialog.o InstrumentListDialog.o RenderToSampleDialog.o SampleEditDialog.o GuideDialog.o \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
-	MixerView.o FXView.o EQView.o ScaleView.o NullView.o \
-	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMod.o UIController.o \
+	MixerView.o FXView.o EQView.o LimiterView.o ScaleView.o NullView.o \
+	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMod.o InstrumentViewEQ.o UIController.o \
 	View.o ModalView.o FieldView.o UIField.o UIIntField.o \
 	UIIntVarOffField.o UIIntVarField.o ViewEvent.o I_Action.o\
 	UITempoField.o UIActionField.o \
@@ -270,13 +270,13 @@ COMMONFILES := \
 	char.o n_assert.o fixed.o wildcard.o RecentSongs.o UndoHistory.o\
 	SyncMaster.o TablePlayback.o Player.o \
 	Table.o TableView.o\
-	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SynthInstrument.o ModSources.o SamplePool.o CommandList.o FxPrinter.o\
+	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SampleProcessor.o SynthInstrument.o ModSources.o InstrumentEQ.o SamplePool.o CommandList.o FxPrinter.o \
 	PersistencyService.o Persistent.o \
 	Observable.o SingletonRegistry.o \
 	Audio.o AudioMixer.o AudioOutDriver.o AudioDriver.o \
 	AudioOut.o \
 	DummyAudioOut.o PlayerChannel.o AudioFileStreamer.o \
-	MixBus.o SendFX.o MasterEQ.o \
+	MixBus.o SendFX.o ThreeBandEQ.o MasterEQ.o MasterLimiter.o \
 	MixerService.o PlayerMixer.o \
 	Service.o ServiceRegistry.o SubService.o \
 	Variable.o VariableContainer.o WatchedVariable.o \

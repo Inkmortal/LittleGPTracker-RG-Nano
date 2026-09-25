@@ -76,9 +76,10 @@ Under the grid is a piano roll of the whole bar: each note sits at its pitch, wi
 <img src="images/synth-3-filter.png" width="190" alt="FILTER">
 <img src="images/synth-5-mod.png" width="190" alt="MOD">
 <img src="images/synth-6-mix.png" width="190" alt="MIX">
+<img src="images/synth-7-eq.png" width="190" alt="EQ">
 </p>
 
-Six pages (SOUND, ENV, FILTER, LFO, MOD, MIX), switched with **LB + Left/Right**. The top half draws what the page does — waveform, envelope, filter curve, LFO, modulation, levels — and shows the preset name and the focused value in real units (`32 ms`, `641 Hz`). The knobs are listed below. Full details on the **[Synth](Synth)** page.
+Seven pages (SOUND, ENV, FILTER, LFO, MOD, MIX, EQ), switched with **LB + Left/Right**. The top half draws what the page does — waveform, envelope, filter curve, LFO, modulation, levels, EQ curve — and shows the preset name and the focused value in real units (`32 ms`, `641 Hz`). The knobs are listed below. Full details on the **[Synth](Synth)** page.
 
 The first row, `type`, switches the slot between **synth** and **sample**.
 
@@ -101,7 +102,7 @@ The first row, `type`, switches the slot between **synth** and **sample**.
 
 ## Instrument (sample)
 
-Sample instruments have six pages too: Source, Shape, Filter, Loop, Mod, Motion, with a waveform and start/loop/end markers. See **[Samples](Samples)**.
+Sample instruments have seven pages too: Source, Shape, Filter, Loop, Mod, Motion, EQ, with a waveform and start/loop/end markers. See **[Samples](Samples)**.
 
 ## Table
 
@@ -156,7 +157,7 @@ The ruler on the right draws one bar twice: an even grid on top, and this groove
 
 <img src="images/demo-mixer.png" width="300" align="right" alt="Mixer">
 
-Faders for the 8 tracks, the three effect returns (**C** chorus, **D** echo, **R** reverb) and the master (**M**), each with a live level meter, plus the master waveform. Levels save with the song.
+Faders for the 8 tracks, the three effect returns (**C** chorus, **D** echo, **R** reverb) and the master (**M**), each with a live level meter, plus the master waveform. Levels save with the song. When the [limiter](#limit) is on, a white line hangs from the top of the master meter as long as it is limiting (12 dB = half the meter), and the master line reads `LIM -3.2dB`.
 
 | Input | Does |
 | --- | --- |
@@ -199,6 +200,29 @@ A three-band EQ on the whole mix, after the effects: **RB + Right** from FX.
 `gain 80` is flat; each step is about 0.1 dB, from −12 to +12 dB. The heading shows the real values, and the curve underneath shows the result from 20 Hz to 20 kHz (marks at 100 Hz, 1 kHz, 10 kHz). **Up/Down** picks a knob, **A + D-pad** edits, **B + A** puts a knob back. It saves with the song; a flat EQ costs nothing.
 
 Try: low `+3 dB` at 80 Hz for weight, mid `−3 dB` at 400 Hz to clear mud, high `+2 dB` at 8 kHz for air.
+
+**RB + Right** goes on to the [limiter](#limit). Every instrument also has an EQ of its own, on its EQ page.
+
+<br clear="right">
+
+## Limit
+
+<img src="images/limit.png" width="300" align="right" alt="LIMIT">
+
+The master limiter, **RB + Right** from EQ (like the M8's `LIM`): it keeps the whole mix under a ceiling, so you can make it louder without it clipping. It comes after the EQ; the Project's `clip` (soft clip) and master volume come after it.
+
+| Knob | Does | Values |
+| --- | --- | --- |
+| `drive` | pushes the mix into the limiter | `00` = **off** (the default), `01` = 0 dB .. `FF` = +25.4 dB |
+| `ceil` | the loudest the mix may get | `00` = −25.5 dB .. `FF` = 0 dB, default `FC` = −0.3 dB |
+| `attk` | how far it looks ahead: the gain is already down when a peak arrives | 0.1–10 ms, default `80` = 1 ms |
+| `rels` | how fast it lets go afterwards | `00` = auto (100–900 ms: slower the harder it works), `01` = 4 ms .. `FF` = 1 s |
+
+Under the knobs, the red **GR** bar shows how many dB it is taking off right now, with the peak going in (after drive) and coming out. The scope below scrolls the last few seconds: the mix level rises from the bottom, the limiting hangs from the top in red, the dotted line is the ceiling.
+
+**Up/Down** picks a knob, **A + D-pad** edits, **B + A** puts a knob back (`drive` back to off), **RB + Left** returns to EQ. With `drive 00` the mix passes untouched; switched on, it delays the whole mix by the look-ahead (1 ms by default).
+
+Try: `drive` +3 to +6 dB with `rels` on auto. A few dB of GR on the loudest hits is transparent; if it pumps, lower `drive` or lengthen `rels`.
 
 <br clear="right">
 

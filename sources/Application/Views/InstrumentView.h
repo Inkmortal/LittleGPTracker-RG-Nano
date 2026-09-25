@@ -8,9 +8,13 @@
 
 // View-owned "type" field (sample/synth) shown first on page 1
 #define INSTRUMENT_TYPE_FIELD MAKE_FOURCC('I','T','Y','P')
-// Pages per instrument (sample and synth both have six, MOD is the 5th)
-#define INSTRUMENT_PAGE_COUNT 6
+// Pages per instrument (sample and synth both have seven: MOD is the 5th,
+// EQ the last)
+#define INSTRUMENT_PAGE_COUNT 7
 #define INSTRUMENT_MOD_PAGE 4
+#define INSTRUMENT_EQ_PAGE 6
+// View-owned "slot" field (1..4) on the MOD page
+#define INSTRUMENT_MOD_SLOT_FIELD MAKE_FOURCC('I','M','S','L')
 
 class InstrumentView: public FieldView, public I_Observer {
 public:
@@ -54,7 +58,23 @@ protected:
 	void fillModPage(I_Instrument *instr, GUIPoint position) ;
 	bool isModField(FourCC id) ;
 	void getModFieldHelp(FourCC id, I_Instrument *instr, char *line1, char *line2, char *value) ;
-	void drawModPlot(I_Instrument *instr, int bx, int by, int bw, int bh) ;
+	void drawModPage(I_Instrument *instr) ;
+	void drawModCurve(I_Instrument *instr, int slot, int x, int y, int w, int h, bool big) ;
+	// MOD page keys and edits: slot switching, type defaults, B+A
+	bool processModKeys(unsigned short mask) ;
+	bool syncModPage(int instrumentBefore, int slotBefore, int typeBefore) ;
+	bool resetModField() ;
+	void refreshStaleModFields() ;
+	void selectModSlot(int slot) ;
+	int currentModType() ;
+	void customizeModOverlay(const char *&field, const char *&where, const char *&edit,
+	                         const char *&cmd1, const char *&cmd2, const char *&cmd3,
+	                         const char *&cmd4, const char *&cmd5, const char *&cmd6,
+	                         const char *&cmd7) ;
+	void fillEQPage(I_Instrument *instr, GUIPoint position) ;
+	bool isEQField(FourCC id) ;
+	void getEQFieldHelp(FourCC id, I_Instrument *instr, char *line1, char *line2, char *value) ;
+	void drawEQPlot(I_Instrument *instr, int bx, int by, int bw, int bh) ;
 	void customizeSynthOverlay(const char *&name, const char *&where,
 	                           const char *&edit, const char *&field,
 	                           const char *&cmd1, const char *&cmd2,
@@ -64,6 +84,7 @@ protected:
 	InstrumentType getInstrumentType() ;
 public:
 	virtual void GetGuideTopic(const char *&page, const char *&section) ;
+	virtual void CustomizeHowToSteps(const char **lines) ;
 	void OpenInstrument(int instrument) ;
 protected:
 	void drawSampleLabVisuals() ;
@@ -74,6 +95,10 @@ protected:
 	void drawSampleWaveform(class SampleInstrument *instrument, int x, int y,
 	                        int width, int height, bool showMarkers) ;
 	void drawMarkerLine(int x, int y, int height, ColorDefinition color, FourCC marker) ;
+	// Under the waveform: the way a note travels for the play mode (first
+	// pass, then the loop), arrows pointing the direction
+	void drawPlayPath(class SampleInstrument *instrument, int x, int y, int width) ;
+	void openSampleEditor() ;
 	void normalizeWaveMarkers(class SampleInstrument *instrument, FourCC changedMarker) ;
 	void cycleWaveMarker(int offset) ;
 	void nudgeWaveMarker(int offset, int multiplier=1) ;
@@ -94,5 +119,9 @@ private:
 	bool previewLoop_ ;
 	int currentSlot_ ;
 	Variable *typeVar_ ;
+	// MOD page: the slot shown, and the type its fields were built for
+	Variable *modSlotVar_ ;
+	int modFieldsType_ ;
+	int modFieldsSlot_ ;
 } ;
 #endif

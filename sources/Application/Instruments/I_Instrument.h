@@ -10,6 +10,8 @@
 
 #include "Application/Player/TablePlayback.h"
 
+class InstrumentMods ;
+
 enum InstrumentType {
 	IT_SAMPLE=0,
 	IT_MIDI,
@@ -66,6 +68,8 @@ public:
 	  // Transport stop / project change: drop every voice this instrument
 	  // still holds, on every channel, right now
 	  virtual void AllNotesOff() {} ;
+	  // The MOD page's four slots (0 when the instrument has none)
+	  virtual InstrumentMods *GetMods() { return 0 ; } ;
 
 };
 #endif

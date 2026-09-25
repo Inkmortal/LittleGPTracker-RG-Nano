@@ -63,6 +63,11 @@ void RenderToSampleDialog::OnFocus() {
         done_ = true;
         return;
     }
+    if (!SamplePool::GetInstance()->EnsureProjectSampleDir()) {
+        error_ = "can't make samples folder";
+        done_ = true;
+        return;
+    }
     Player *player = Player::GetInstance();
     if (player->IsRunning())
         player->Stop();

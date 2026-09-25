@@ -29,7 +29,7 @@ This is a fork of [LittleGPTracker / Little Piggy Tracker](https://github.com/dj
 
 | Page | |
 | --- | --- |
-| **[Screens](Screens)** | Song (and Live mode), Chain, Phrase, Instrument, Table, Groove, Project, Mixer, FX, EQ, Helper |
+| **[Screens](Screens)** | Song (and Live mode), Chain, Phrase, Instrument, Table, Groove, Project, Mixer, FX, EQ, Limit, Helper |
 | **[Synth](Synth)** | The built-in synth: every knob, every preset, sound recipes |
 | **[Commands](Commands)** | All phrase/table commands with examples |
 | **[Music Theory Cheat Sheet](Music-Theory-Cheat-Sheet)** | Scales, chords, progressions and drum patterns that just work |
@@ -46,7 +46,7 @@ This is a fork of [LittleGPTracker / Little Piggy Tracker](https://github.com/dj
 - **A song in every genre.** Sample packs of real instruments (piano, strings, brass, drums, guitar, Chinese instruments and more) and a demo song for each style.
 - **Play it live.** Live mode turns the Song screen into a clip launcher; the Mixer and FX screens mix it.
 - **Forgiving.** One key grammar on every screen, and **B + Select** undoes any change.
-- **Happy accidents.** Random notes, fills, shuffles and the `RAND`/`CHNC` commands, plus a master EQ to finish the mix.
+- **Happy accidents.** Random notes, fills, shuffles and the `RAND`/`CHNC` commands, plus a master EQ and limiter to finish the mix, and an EQ on every instrument.
 - **Tested like a product.** A desktop simulator drives the real app with scripted button presses, checks the screens and measures the audio before anything goes on the device.
 
 > **Tip:** On any screen, **RB + Select** opens the helper: a map of where you are, the buttons for this screen, and a short how-to. **A** in the helper opens this whole guide inside the app. Press **RB + Select** again to close.

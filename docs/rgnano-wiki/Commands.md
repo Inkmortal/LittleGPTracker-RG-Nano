@@ -84,6 +84,7 @@ A `ROLL` on a step with a note re-strikes that note; on a step without one it re
 
 | Command | Value | Does |
 | --- | --- | --- |
+| `PLAY` | `00bb` | play mode for this note: `00` forward, `01` reverse, `02` loop, `03` rev-loop, `04` pingpong, `05` rev-pingpong, `06`-`08` osc, `09` loop-sync ([play modes](Samples#play-modes)). With a note: the note starts over in that mode (reverse from E); without: the sound turns around from where it is |
 | `PLOF` | `aabb` | jump to position `aa`/256 of the sample, or move by `bb` chunks |
 | `LPOF` | `aaaa` | shift the loop window (wavetable scanning, stretch) |
 | `SLCE` | | pick a slice |

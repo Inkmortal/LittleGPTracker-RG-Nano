@@ -21,6 +21,14 @@ int main(int argc,char **argv) {
 		{"tan(0.5)",tan(h),0.54630248984379051},
 		{"tanh(0.5)",tanh(h),0.46211715726000974},
 		{"sqrt(2)",sqrt(2.0*a),1.4142135623730951},
+		{"floor(1.5389)",floor(1.5389*a),1.0},
+		{"floor(-0.25)",floor(-0.25*a),-1.0},
+		{"floor(37.9)",floor(37.9*a),37.0},
+		{"ceil(1.25)",ceil(1.25*a),2.0},
+		{"ceil(-1.75)",ceil(-1.75*a),-1.0},
+		{"fmod(7.5,2)",fmod(7.5*a,2.0),1.5},
+		{"floorf(2.75)",floorf((float)(2.75*a)),2.0},
+		{"floorf(-2.25)",floorf((float)(-2.25*a)),-3.0},
 	};
 	int bad=0;
 	for (unsigned i=0;i<sizeof(c)/sizeof(c[0]);i++) {
