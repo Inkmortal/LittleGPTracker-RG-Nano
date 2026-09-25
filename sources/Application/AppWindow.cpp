@@ -508,10 +508,13 @@ void AppWindow::Flush() {
     unsigned char *previous = _preScreen;
     unsigned char *currentProp = _charScreenProp;
     unsigned char *previousProp = _preScreenProp;
+    // While the helper is open, repaint every cell: a screen's pixel
+    // graphics (meters, waveforms) drawn underneath must not show through
+    bool repaintAll = View::contextOverlay_;
     for (int y = 0; y < 30; y++) {
         for (int x = 0; x < 40; x++) {
 #ifndef _LGPT_NO_SCREEN_CACHE_
-            if ((*current != *previous) || (*currentProp != *previousProp)) {
+            if (repaintAll || (*current != *previous) || (*currentProp != *previousProp)) {
 #endif
                 props.invert_ = (*currentProp & PROP_INVERT) != 0;
                 if (((*currentProp) & 0x7F) != color) {
@@ -1081,7 +1084,14 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
 
         if (_currentView) {
             SysMutexLocker locker(drawMutex_);
-            _currentView->OnPlayerUpdate(pt->GetType(), pt->GetTickCount());
+            if (View::contextOverlay_) {
+                // The helper covers the screen: the view's live drawing
+                // (meters, play markers) would paint over it. An open
+                // dialog still hears the tick (e.g. render to sample).
+                _currentView->View::OnPlayerUpdate(pt->GetType(), pt->GetTickCount());
+            } else {
+                _currentView->OnPlayerUpdate(pt->GetType(), pt->GetTickCount());
+            }
             Invalidate();
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
             const char *dumpInput = Config::GetInstance()->GetValue("DUMPEVENT");

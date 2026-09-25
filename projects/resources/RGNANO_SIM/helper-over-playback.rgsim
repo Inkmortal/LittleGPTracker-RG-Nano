@@ -1,0 +1,35 @@
+# The helper (RB+Select) opened while a song plays: the Song screen's live
+# meters and play markers must not draw over it. Also B on the power menu's
+# "Save your work?" answers No in one press.
+wait 1500
+expect_view song
+press s 80
+wait 1500
+down n
+press k 80
+up n
+wait 900
+screenshot_app helper-playing-1.bmp
+wait 700
+screenshot_app helper-playing-2.bmp
+expect_screen_text MAP
+down n
+press k 80
+up n
+press s 80
+wait 300
+# Menu > Song List > "Save your work?": B = No, straight to the song list
+press p 80
+wait 150
+press d 80
+press d 80
+press d 80
+expect_selected_text powerMenu=Song List
+press a 80
+wait 150
+expect_selected_text powerConfirm=Yes
+press b 80
+wait 1200
+expect_screen_text YOUR SONGS
+expect_no_error
+quit

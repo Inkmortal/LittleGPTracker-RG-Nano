@@ -596,7 +596,11 @@
    on the Song)
 *B
    back / close, in dialogs
-   (right away)
+   (right away); on a
+   Yes/No question it
+   answers No (so "Save
+   your work?" then B
+   leaves without saving)
 *Left/Right in a list
    a page at a time (where
    Left/Right pick a button

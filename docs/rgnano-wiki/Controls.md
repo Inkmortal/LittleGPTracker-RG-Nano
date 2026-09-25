@@ -10,7 +10,7 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **B + A** | delete it, or put a knob back to its default |
 | **A + Start** | hear the instrument (on a phrase, **A** on a note already previews it) |
 | **B + D-pad** | jump to the neighbouring item that way (chain, phrase, instrument, table, groove; 16 rows on the Song) |
-| **B** | back / close, in dialogs (right away) |
+| **B** | back / close, in dialogs (right away); on a Yes/No question it answers **No** (so "Save your work?" then **B** leaves without saving) |
 | **Left/Right** in a list | a page at a time (where Left/Right pick a button instead: **LB + Up/Down**) |
 | **RB + D-pad** | go to the screen that way on the map |
 | **Start** | play / stop what this screen shows |

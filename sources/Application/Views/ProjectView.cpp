@@ -83,7 +83,7 @@ static void SaveAsProjectCallback(View &v,ModalView &dialog) {
     }
 }
 
-// "Save your work?" Yes saves then leaves, No leaves, B stays
+// "Save your work?" Yes saves then leaves, No (or B) leaves without saving
 static bool leaveAfterSavePrompt(ModalView &dialog) {
     MixerService::GetInstance()->SetRenderMode(0);
     int answer = dialog.GetReturnCode();

@@ -3306,7 +3306,7 @@ void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *wind
 		showExitConfirm_ ? "Save before leaving" : "Sound, light, quit",
 		showExitConfirm_ ? "Up/Down choose" : "Up/Down  L/R adjust",
 		showExitConfirm_ ? "A answer" : "A open choice",
-		showExitConfirm_ ? "B back to menu" : "B or Power close",
+		showExitConfirm_ ? "B = No, leave" : "B or Power close",
 		"R+Select helper");
 }
 
@@ -3426,7 +3426,9 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 
 			case SDLK_a:  // A button - confirm
 			case SDLK_RETURN:
+			case SDLK_b:  // B answers "No": one press to leave without saving
 			{
+				if (key == SDLK_b) exitConfirmSelection_ = 1;
 				if (exitConfirmSelection_ == 0) {
 					PersistencyService::GetInstance()->Save();
 					Trace::Log("EVENT","Power menu: saved song");
@@ -3443,7 +3445,6 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 				break;
 			}
 
-			case SDLK_b:  // B button - cancel
 			case SDLK_ESCAPE:
 				// Back to main menu
 				showExitConfirm_ = false;

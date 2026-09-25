@@ -218,6 +218,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "helper-over-playback"
+    Script = "helper-over-playback.rgsim"
+    Args = @("-OpenDemo=EngineRoom")
+  },
+  @{
     Name = "undo"
     Script = "undo.rgsim"
     Args = @("-ResetLastProject")

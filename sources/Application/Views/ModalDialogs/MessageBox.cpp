@@ -80,7 +80,7 @@ void MessageBox::CustomizeContextOverlay(
 	field="Confirm/cancel";
 	cmd1="Left/Right choose";
 	cmd2="A confirm choice";
-	cmd3="B backs out";
+	cmd3="B = No (or back out)";
 	cmd4="Read message first";
 	cmd5="Use No if unsure";
 	cmd6="Delete is final";
@@ -100,7 +100,14 @@ void MessageBox::ProcessButtonMask(unsigned short mask,bool pressed) {
 		return ;
 	}
 	if (mask==EPBM_B) {
-		// B always backs out without doing anything
+		// B answers No when there is a No (one press: "Save your work?"
+		// then B leaves without saving); otherwise it backs out
+		for (int i=0;i<buttonCount_;i++) {
+			if (button_[i]==MBL_NO) {
+				EndModal(MBL_NO) ;
+				return ;
+			}
+		}
 		EndModal(MBL_CANCEL) ;
 		return ;
 	}
