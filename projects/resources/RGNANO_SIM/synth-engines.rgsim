@@ -1,0 +1,181 @@
+# Synth engines (FM4, HYPER, WAV): pick each engine on the SOUND page, browse
+# its presets, hear them, edit engine knobs (the FM4 grid, the hyper chord),
+# and undo an engine change. Screenshots of every engine page.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+goto instrument
+expect_screen_text Instrument 00 SYNTH
+
+# --- FM4 ---
+set engine fm4
+expect_instrument_param 0 engine fm4
+expect_instrument_param 0 preset fm_init
+expect_screen_text Instrument 00 FM4 SYNTH
+expect_screen_text 1/6 SOUND
+expect_screen_text FM4 ALGO 00
+screenshot_app engine-fm4-init.bmp
+set preset epiano
+expect_instrument_name 0 EPIANO
+expect_instrument_param 0 fm_algo 07
+expect_instrument_param 0 fm_a_ratio 1400
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_play_mode audition
+expect_audio_activity 64
+down a
+press s 80
+up a
+screenshot_app engine-fm4-epiano.bmp
+
+# The grid: from algo, Down lands on A's shape, Right moves to B, Down to
+# B's ratio; A+Up jumps to the next whole ratio
+focus algo
+press d 80
+expect_selected_text sin
+press r 80
+press d 80
+expect_selected_text 1.00
+down a
+press u 80
+up a
+expect_instrument_param 0 fm_b_ratio 200
+expect_selected_text 2.00
+down a
+press r 80
+up a
+expect_instrument_param 0 fm_b_ratio 201
+# Up/Down keep the column: Down from B ratio is B level
+press d 80
+expect_selected_text D8
+screenshot_app engine-fm4-grid.bmp
+# The helper explains the focused operator knob
+down n
+press k 80
+up n
+expect_screen_text how loud it is heard
+down n
+press k 80
+up n
+
+focus algo
+set algo 0B
+expect_instrument_param 0 fm_algo 0B
+screenshot_app engine-fm4-algo0b.bmp
+set preset fm_bell
+set preset brass
+expect_instrument_name 0 BRASS
+reset_audio_stats
+down a
+press s 80
+up a
+wait 600
+expect_audio_activity 64
+down a
+press s 80
+up a
+screenshot_app engine-fm4-brass.bmp
+
+# --- HYPER ---
+set engine hyper
+expect_instrument_param 0 engine hyper
+expect_instrument_param 0 preset hyper_init
+expect_screen_text HYPERSYNTH
+set chord minor
+expect_instrument_param 0 hyper_note_2 3
+expect_instrument_param 0 hyper_note_5 15
+set swarm 0xC0
+set width 0xFF
+expect_instrument_param 0 hyper_width 255
+screenshot_app engine-hyper-wide.bmp
+set preset hyper_pad
+expect_instrument_param 0 preset hyper_pad
+reset_audio_stats
+down a
+press s 80
+up a
+wait 800
+expect_audio_activity 64
+down a
+press s 80
+up a
+screenshot_app engine-hyper-pad.bmp
+# Editing a note by hand makes the chord "custom"
+focus chord
+press d 80
+press r 80
+down a
+press r 80
+up a
+expect_instrument_param 0 hyper_chord custom
+# Scale on: with the song in C major, a major chord on D becomes D minor
+sim_set_key 0
+sim_set_scale 21
+set preset hyper_init
+focus scale
+set scale true
+expect_instrument_param 0 hyper_scale true
+screenshot_app engine-hyper-scale.bmp
+
+# --- WAV ---
+set engine wav
+expect_instrument_param 0 engine wav
+expect_screen_text WAVSYNTH
+set wave pulse50
+set mirror 0x40
+expect_instrument_param 0 wav_mirror 64
+screenshot_app engine-wav-pwm.bmp
+set mult 0x60
+set warp 0x40
+screenshot_app engine-wav-bent.bmp
+set preset fold_bass
+expect_instrument_param 0 limit fold
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_audio_activity 64
+down a
+press s 80
+up a
+screenshot_app engine-wav-fold.bmp
+
+# Undo takes back an engine change (one step) and the page follows
+focus engine
+set engine hyper
+expect_instrument_param 0 engine hyper
+expect_screen_text swarm
+down b
+press k 80
+up b
+wait 150
+expect_instrument_param 0 engine wav
+expect_instrument_param 0 preset fold_bass
+expect_instrument_param 0 limit fold
+expect_screen_text WAVSYNTH
+expect_screen_text mirror
+
+# Back to the original synth: its page is the one it always was
+set engine synth
+expect_instrument_param 0 preset init
+expect_screen_text Instrument 00 SYNTH
+focus wave
+screenshot_app engine-synth-back.bmp
+
+# The other pages are shared: FM4 with a filter sweep
+set engine fm4
+page FILTER
+set filter lowpass
+expect_instrument_param 0 filter lowpass
+page SOUND
+expect_screen_text FM4 ALGO 00
+expect_no_error
+quit

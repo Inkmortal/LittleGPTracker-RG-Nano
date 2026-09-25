@@ -62,6 +62,16 @@ protected:
 	                           const char *&cmd5, const char *&cmd6,
 	                           const char *&cmd7) ;
 	InstrumentType getInstrumentType() ;
+	// Synth engines (FM4 / HYPER / WAV): their own SOUND page, help and
+	// picture (InstrumentViewEngines.cpp)
+	void fillEngineSoundPage(class SynthInstrument *s, GUIPoint position, int engine) ;
+	bool getEngineFieldHelp(FourCC id, I_Instrument *s, char *line1, char *line2, char *value) ;
+	void drawEngineSoundVisual(class SynthInstrument *s, int bx, int by, int bw, int bh) ;
+	void customizeEngineOverlay(int engine, const char *&name, const char *&field,
+	                            const char *&cmd1, const char *&cmd2, const char *&cmd3) ;
+	const char *getEngineGuideSection() ;
+	// The engine knob changed (here, by undo or by a sim script): rebuild
+	void syncSynthEngine() ;
 public:
 	virtual void GetGuideTopic(const char *&page, const char *&section) ;
 	void OpenInstrument(int instrument) ;
@@ -94,5 +104,6 @@ private:
 	bool previewLoop_ ;
 	int currentSlot_ ;
 	Variable *typeVar_ ;
+	int shownEngine_ ;   // synth engine the fields were built for (-1: none)
 } ;
 #endif

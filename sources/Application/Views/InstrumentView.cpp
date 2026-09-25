@@ -41,6 +41,7 @@ InstrumentView::InstrumentView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	markerFocus_=SIP_START ;
 	previewLoop_=false ;
 	typeVar_=new Variable("type",INSTRUMENT_TYPE_FIELD,instrumentTypeNames,2,0) ;
+	shownEngine_=-1 ;
 	onInstrumentChange() ;
 }
 
@@ -70,6 +71,8 @@ void InstrumentView::onInstrumentChange() {
 		old->RemoveObserver(*this) ;
 	} ;
 	T_SimpleList<UIField>::Empty() ;
+	shownEngine_=-1 ;
+	nearestColumn_=false ;
 
 	InstrumentType it=getInstrumentType() ;
 
@@ -1016,7 +1019,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			Variable &v=focus->GetVariable();
 			FourCC id=focus->GetVariableID();
 			bool special=(id==SIP_SAMPLE || id==SIP_TABLE || id==MIP_TABLE ||
-			              !strcmp(v.GetName(),"preset") || !strcmp(v.GetName(),"type"));
+			              !strcmp(v.GetName(),"preset") || !strcmp(v.GetName(),"type") ||
+			              id==SYP_ENGINE);
 			if (!special) {
 				v.ResetToDefault();
 				isDirty_=true;
@@ -1194,6 +1198,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (applyTypeChange()) {
 		return ;
 	}
+	// A new synth engine brings its own SOUND page
+	syncSynthEngine() ;
 
     Player *player=Player::GetInstance() ;
 	// B Modifier
@@ -1333,6 +1339,7 @@ void InstrumentView::syncReplacedInstrument() {
 void InstrumentView::DrawView() {
 
 	syncReplacedInstrument() ;
+	syncSynthEngine() ;
 
 	Clear() ;
     View::EnableNotification();
@@ -1347,7 +1354,13 @@ void InstrumentView::DrawView() {
     const char *kind = "";
     switch (getInstrumentType()) {
         case IT_SAMPLE: kind = " SAMPLE"; break;
-        case IT_SYNTH: kind = " SYNTH"; break;
+        case IT_SYNTH: {
+            int engine=((SynthInstrument *)viewData_->project_->GetInstrumentBank()
+                        ->GetInstrument(viewData_->currentInstrument_))->GetEngine();
+            kind = engine==SE_FM4 ? " FM4 SYNTH" : (engine==SE_HYPER ? " HYPERSYNTH" :
+                   (engine==SE_WAV ? " WAVSYNTH" : " SYNTH"));
+            break;
+        }
         case IT_MIDI: kind = " MIDI"; break;
         default: break;
     }
@@ -1378,7 +1391,7 @@ void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
 		section="Sample pages";
 	} else {
 		page="synth";
-		section="";
+		section=getEngineGuideSection();
 	}
 }
 

@@ -5,6 +5,9 @@
 #include "Services/Audio/Audio.h"
 #include "System/Console/Trace.h"
 #include "Application/Mixer/SendFX.h"
+#include "Application/Player/Player.h"
+#include "Application/Model/Project.h"
+#include "Application/Model/Scale.h"
 
 #include <math.h>
 #include <string.h>
@@ -84,17 +87,25 @@ struct SynthPresetValue {
 	int value_ ;
 } ;
 
+#define SYNTH_PRESET_VALUES 48
+
 struct SynthPreset {
 	const char *name_ ;
-	SynthPresetValue values_[24] ;
+	int engine_ ;
+	SynthPresetValue values_[SYNTH_PRESET_VALUES] ;
 } ;
 
 #define PV(a,b) {a,b}
 #define PEND {0,0}
+#define OP(op,shape,ratio,level,fb,a,d,s) \
+	PV(FM4_ID(op,FM4P_SHAPE),shape),PV(FM4_ID(op,FM4P_RATIO),ratio), \
+	PV(FM4_ID(op,FM4P_LEVEL),level),PV(FM4_ID(op,FM4P_FEEDBACK),fb), \
+	PV(FM4_ID(op,FM4P_ATTACK),a),PV(FM4_ID(op,FM4P_DECAY),d), \
+	PV(FM4_ID(op,FM4P_SUSTAIN),s)
 
 // Every preset starts from INIT, then applies its own values.
 static const SynthPreset synthPresets[]={
-	{"init",{
+	{"init",SE_SYNTH,{
 		PV(SYP_WAVE,SW_PULSE),PV(SYP_SHAPE,0),PV(SYP_SUB,0),PV(SYP_NOISE,0),
 		PV(SYP_FMAMT,0),PV(SYP_FMRATIO,2),PV(SYP_CHORD,0),PV(SYP_TUNE,0),PV(SYP_FINE,0),
 		PV(SYP_ATTACK,0),PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0x80),PV(SYP_RELEASE,0x70),
@@ -102,91 +113,269 @@ static const SynthPreset synthPresets[]={
 		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0xC0),PV(SYP_RESO,0x20),
 		PV(SYP_ENVAMT,0x30),PV(SYP_ENVDEC,0x98),PV(SYP_DRIVE,0),
 		PV(SYP_LFODEST,SLD_PITCH),PV(SYP_LFORATE,0xB0)}},
-	{"kick",{
+	{"kick",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SINE),PV(SYP_SHAPE,0x10),PV(SYP_TUNE,-27),
 		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x60),
 		PV(SYP_PITCHENV,0x9C),PV(SYP_PITCHDEC,0x70),
 		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x50),
 		PV(SYP_VOLUME,0xB4),PEND}},
-	{"snare",{
+	{"snare",SE_SYNTH,{
 		PV(SYP_WAVE,SW_TRIANGLE),PV(SYP_TUNE,-5),PV(SYP_NOISE,0xB0),
 		PV(SYP_DECAY,0x98),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x70),
 		PV(SYP_PITCHENV,0x28),PV(SYP_PITCHDEC,0x68),
 		PV(SYP_CUTOFF,0xE8),PV(SYP_RESO,0),PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x30),
 		PV(SYP_VOLUME,0xC8),PEND}},
-	{"clap",{
+	{"clap",SE_SYNTH,{
 		PV(SYP_WAVE,SW_NOISE),
 		PV(SYP_DECAY,0x94),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x70),
 		PV(SYP_FILTTYPE,SFT_BANDPASS),PV(SYP_CUTOFF,0xB4),PV(SYP_RESO,0x60),
 		PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x20),PV(SYP_VOLUME,0xF0),PEND}},
-	{"hat",{
+	{"hat",SE_SYNTH,{
 		PV(SYP_WAVE,SW_METAL),PV(SYP_SHAPE,0x40),PV(SYP_NOISE,0x70),
 		PV(SYP_DECAY,0x70),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x50),
 		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xB8),PV(SYP_RESO,0x30),
 		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xD8),PV(SYP_PAN,0x90),PEND}},
-	{"openhat",{
+	{"openhat",SE_SYNTH,{
 		PV(SYP_WAVE,SW_METAL),PV(SYP_SHAPE,0x40),PV(SYP_NOISE,0x70),
 		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x90),
 		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xB4),PV(SYP_RESO,0x30),
 		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xC0),PV(SYP_PAN,0x90),PEND}},
-	{"tom",{
+	{"tom",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SINE),PV(SYP_SHAPE,0x20),PV(SYP_TUNE,-17),PV(SYP_NOISE,0x10),
 		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x70),
 		PV(SYP_PITCHENV,0x40),PV(SYP_PITCHDEC,0x8C),
 		PV(SYP_CUTOFF,0xD0),PV(SYP_RESO,0),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xB0),PEND}},
-	{"perc",{
+	{"perc",SE_SYNTH,{
 		PV(SYP_WAVE,SW_TRIANGLE),PV(SYP_TUNE,19),
 		PV(SYP_DECAY,0x68),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x50),
 		PV(SYP_PITCHENV,0x20),PV(SYP_PITCHDEC,0x40),
 		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0x70),PV(SYP_RESO,0x10),
 		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x90),PEND}},
-	{"bass",{
+	{"bass",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SAW),PV(SYP_SUB,0x70),PV(SYP_TUNE,-24),
 		PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0x90),PV(SYP_RELEASE,0x60),
 		PV(SYP_CUTOFF,0x58),PV(SYP_RESO,0x40),PV(SYP_ENVAMT,0x88),PV(SYP_ENVDEC,0x98),
 		PV(SYP_DRIVE,0x30),PV(SYP_VOLUME,0x70),PEND}},
-	{"subbass",{
+	{"subbass",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SINE),PV(SYP_SHAPE,0x08),PV(SYP_TUNE,-24),
 		PV(SYP_ATTACK,0x10),PV(SYP_DECAY,0xC0),PV(SYP_SUSTAIN,0xD0),PV(SYP_RELEASE,0x70),
 		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x28),PV(SYP_VOLUME,0x58),PEND}},
-	{"acid",{
+	{"acid",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SAW),PV(SYP_TUNE,-24),
 		PV(SYP_DECAY,0xA0),PV(SYP_SUSTAIN,0x60),PV(SYP_RELEASE,0x60),PV(SYP_GLIDE,0x60),
 		PV(SYP_CUTOFF,0x48),PV(SYP_RESO,0xD0),PV(SYP_ENVAMT,0xA8),PV(SYP_ENVDEC,0x88),
 		PV(SYP_DRIVE,0x70),PV(SYP_VOLUME,0x48),PEND}},
-	{"pluck",{
+	{"pluck",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SAW),
 		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x90),
 		PV(SYP_CUTOFF,0x40),PV(SYP_RESO,0x50),PV(SYP_ENVAMT,0xB8),PV(SYP_ENVDEC,0x8C),
 		PV(SYP_VOLUME,0xE0),PEND}},
-	{"lead",{
+	{"lead",SE_SYNTH,{
 		PV(SYP_WAVE,SW_PULSE),PV(SYP_SHAPE,0x40),
 		PV(SYP_ATTACK,0x18),PV(SYP_DECAY,0xA0),PV(SYP_SUSTAIN,0xA8),PV(SYP_RELEASE,0x88),
 		PV(SYP_GLIDE,0x30),
 		PV(SYP_CUTOFF,0xB8),PV(SYP_RESO,0x28),PV(SYP_ENVAMT,0x38),PV(SYP_ENVDEC,0x98),
 		PV(SYP_LFODEST,SLD_PITCH),PV(SYP_LFORATE,0xB0),PV(SYP_LFOAMT,0x14),
 		PV(SYP_VOLUME,0x50),PEND}},
-	{"pad",{
+	{"pad",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SUPERSAW),PV(SYP_SHAPE,0x70),
 		PV(SYP_ATTACK,0xB8),PV(SYP_DECAY,0xC8),PV(SYP_SUSTAIN,0xD0),PV(SYP_RELEASE,0xC8),
 		PV(SYP_CUTOFF,0x98),PV(SYP_RESO,0x20),PV(SYP_ENVAMT,0x20),PV(SYP_ENVDEC,0xC0),
 		PV(SYP_LFODEST,SLD_CUTOFF),PV(SYP_LFORATE,0x48),PV(SYP_LFOAMT,0x28),
 		PV(SYP_VOLUME,0x50),PEND}},
-	{"keys",{
+	{"keys",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SINE),PV(SYP_FMAMT,0x40),PV(SYP_FMRATIO,2),
 		PV(SYP_ATTACK,0x08),PV(SYP_DECAY,0xC4),PV(SYP_SUSTAIN,0x50),PV(SYP_RELEASE,0x98),
 		PV(SYP_CUTOFF,0xD8),PV(SYP_RESO,0),PV(SYP_ENVAMT,0x70),PV(SYP_ENVDEC,0xA8),
 		PV(SYP_LFODEST,SLD_VOLUME),PV(SYP_LFORATE,0xA0),PV(SYP_LFOAMT,0x10),
 		PV(SYP_VOLUME,0x7C),PEND}},
-	{"bell",{
+	{"bell",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SINE),PV(SYP_FMAMT,0x68),PV(SYP_FMRATIO,7),
 		PV(SYP_DECAY,0xD4),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0xC8),
 		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0x90),PV(SYP_ENVDEC,0xB8),
 		PV(SYP_VOLUME,0x58),PEND}},
-	{"chip",{
+	{"chip",SE_SYNTH,{
 		PV(SYP_WAVE,SW_PULSE),PV(SYP_SHAPE,0x90),
 		PV(SYP_DECAY,0x90),PV(SYP_SUSTAIN,0x90),PV(SYP_RELEASE,0x40),
-		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x48),PEND}}
+		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x48),PEND}},
+
+	// FM4. OP(operator, shape, ratio x100, level, feedback, attack, decay,
+	// sustain). The first entry of each engine is its starting point: every
+	// other preset of that engine is applied on top of it.
+	{"fm init",SE_FM4,{
+		PV(FM4P_ALGO,0),
+		OP(0,F4S_SIN,100,0,0,0,0x80,0xFF),OP(1,F4S_SIN,100,0,0,0,0x80,0xFF),
+		OP(2,F4S_SIN,100,0x60,0,0,0x80,0xFF),OP(3,F4S_SIN,100,0xFF,0,0,0x80,0xFF),
+		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x80),PEND}},
+	{"epiano",SE_FM4,{
+		PV(FM4P_ALGO,7),
+		OP(0,F4S_SIN,1400,0x60,0,0,0x6C,0),OP(1,F4S_SIN,100,0xD8,0,0,0xC8,0x50),
+		OP(2,F4S_SIN,100,0x74,0x30,0,0xB0,0x28),OP(3,F4S_SIN,100,0xFF,0,0,0xD0,0x60),
+		PV(SYP_DECAY,0xD8),PV(SYP_SUSTAIN,0x50),PV(SYP_RELEASE,0x98),
+		PV(SYP_LFODEST,SLD_VOLUME),PV(SYP_LFORATE,0xA0),PV(SYP_LFOAMT,0x10),
+		PV(SYP_CHORUS,0x40),PV(SYP_VOLUME,0x78),PEND}},
+	{"fm bell",SE_FM4,{
+		PV(FM4P_ALGO,7),
+		OP(0,F4S_SIN,350,0x98,0,0,0xD0,0),OP(1,F4S_SIN,100,0xFF,0,0,0xE0,0),
+		OP(2,F4S_SIN,141,0x78,0,0,0xC8,0),OP(3,F4S_SIN,100,0xB0,0,0,0xD8,0),
+		PV(SYP_DECAY,0xE4),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0xD0),
+		PV(SYP_REVERB,0x60),PV(SYP_VOLUME,0x70),PEND}},
+	{"tubular",SE_FM4,{
+		PV(FM4P_ALGO,5),
+		OP(0,F4S_SIN,700,0x48,0,0,0xB0,0),OP(1,F4S_SIN,350,0x88,0,0,0xD8,0x20),
+		OP(2,F4S_SIN,100,0xFF,0,0,0xE8,0),OP(3,F4S_SIN,276,0x70,0,0,0xD8,0),
+		PV(SYP_DECAY,0xEC),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0xD8),
+		PV(SYP_REVERB,0x70),PV(SYP_VOLUME,0x70),PEND}},
+	{"fm bass",SE_FM4,{
+		PV(FM4P_ALGO,7),PV(SYP_TUNE,-24),
+		OP(0,F4S_SIN,100,0x98,0x90,0,0x98,0x30),OP(1,F4S_SIN,100,0xFF,0,0,0xC0,0xC0),
+		OP(2,F4S_SIN,100,0x40,0,0,0xA0,0x40),OP(3,F4S_SIN,50,0xB0,0,0,0xC0,0xC0),
+		PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0xA0),PV(SYP_RELEASE,0x60),
+		PV(SYP_VOLUME,0x70),PEND}},
+	{"slap bass",SE_FM4,{
+		PV(FM4P_ALGO,3),PV(SYP_TUNE,-24),
+		OP(0,F4S_SIN,700,0x50,0,0,0x50,0),OP(1,F4S_SIN,100,0x88,0x40,0,0x90,0x18),
+		OP(2,F4S_SIN,300,0x70,0,0,0x70,0),OP(3,F4S_SIN,100,0xFF,0,0,0xC0,0x90),
+		PV(SYP_DECAY,0xB8),PV(SYP_SUSTAIN,0x58),PV(SYP_RELEASE,0x60),
+		PV(SYP_VOLUME,0x70),PEND}},
+	{"brass",SE_FM4,{
+		PV(FM4P_ALGO,2),
+		OP(0,F4S_SIN,100,0x40,0,0x60,0xB0,0x80),OP(1,F4S_SIN,100,0x70,0,0x60,0xB0,0xA0),
+		OP(2,F4S_SIN,100,0x90,0x70,0x68,0xB0,0xB0),OP(3,F4S_SIN,100,0xFF,0,0x40,0x80,0xFF),
+		PV(SYP_ATTACK,0x48),PV(SYP_DECAY,0xC0),PV(SYP_SUSTAIN,0xC8),PV(SYP_RELEASE,0x90),
+		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0xD0),PV(SYP_RESO,0),
+		PV(SYP_LFODEST,SLD_PITCH),PV(SYP_LFORATE,0xB0),PV(SYP_LFOAMT,0x0C),
+		PV(SYP_REVERB,0x40),PV(SYP_VOLUME,0x68),PEND}},
+	{"organ",SE_FM4,{
+		PV(FM4P_ALGO,11),
+		OP(0,F4S_SIN,50,0xB0,0,0,0x80,0xFF),OP(1,F4S_SIN,100,0xFF,0,0,0x80,0xFF),
+		OP(2,F4S_SIN,200,0xC0,0,0,0x80,0xFF),OP(3,F4S_SIN,300,0x98,0,0,0x80,0xFF),
+		PV(SYP_ATTACK,0x10),PV(SYP_DECAY,0x80),PV(SYP_SUSTAIN,0xFF),PV(SYP_RELEASE,0x58),
+		PV(SYP_LFODEST,SLD_VOLUME),PV(SYP_LFORATE,0xB8),PV(SYP_LFOAMT,0x0C),
+		PV(SYP_CHORUS,0x60),PV(SYP_VOLUME,0x80),PEND}},
+	{"marimba",SE_FM4,{
+		PV(FM4P_ALGO,10),
+		OP(0,F4S_SIN,300,0x60,0,0,0x70,0),OP(1,F4S_SIN,100,0xFF,0,0,0xB8,0),
+		OP(2,F4S_SIN,400,0x60,0,0,0x98,0),OP(3,F4S_SIN,1000,0x30,0,0,0x70,0),
+		PV(SYP_DECAY,0xBC),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0xB0),
+		PV(SYP_REVERB,0x40),PV(SYP_VOLUME,0xA0),PEND}},
+	{"fm pluck",SE_FM4,{
+		PV(FM4P_ALGO,0),
+		OP(2,F4S_SIN,200,0xA8,0x20,0,0x90,0),OP(3,F4S_SIN,100,0xFF,0,0,0xB8,0),
+		PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x90),
+		PV(SYP_DELAY,0x50),PV(SYP_VOLUME,0x90),PEND}},
+	{"glass",SE_FM4,{
+		PV(FM4P_ALGO,8),
+		OP(0,F4S_SIN,100,0x58,0,0x80,0xC8,0x40),OP(1,F4S_SIN,100,0xFF,0,0,0xD0,0xA0),
+		OP(2,F4S_SIN,300,0x90,0,0,0xC8,0x50),OP(3,F4S_SIN,500,0x68,0,0,0xB8,0x30),
+		PV(SYP_ATTACK,0x30),PV(SYP_DECAY,0xD0),PV(SYP_SUSTAIN,0x70),PV(SYP_RELEASE,0xC8),
+		PV(SYP_REVERB,0x90),PV(SYP_CHORUS,0x40),PV(SYP_VOLUME,0x70),PEND}},
+	{"fm lead",SE_FM4,{
+		PV(FM4P_ALGO,1),
+		OP(0,F4S_SIN,100,0x60,0xB0,0,0xA0,0x80),OP(1,F4S_SIN,200,0x48,0,0,0x80,0xFF),
+		OP(2,F4S_SIN,100,0x80,0,0,0xA0,0xB0),OP(3,F4S_SIN,100,0xFF,0,0,0x80,0xFF),
+		PV(SYP_ATTACK,0x10),PV(SYP_DECAY,0xA0),PV(SYP_SUSTAIN,0xC0),PV(SYP_RELEASE,0x80),
+		PV(SYP_GLIDE,0x30),PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0xC8),PV(SYP_RESO,0x10),
+		PV(SYP_LFODEST,SLD_PITCH),PV(SYP_LFORATE,0xB0),PV(SYP_LFOAMT,0x14),
+		PV(SYP_DELAY,0x40),PV(SYP_VOLUME,0x58),PEND}},
+	{"clav",SE_FM4,{
+		PV(FM4P_ALGO,7),
+		OP(0,F4S_SIN,100,0xA0,0x80,0,0x88,0x28),OP(1,F4S_SIN,100,0xFF,0,0,0xB0,0x50),
+		OP(2,F4S_SIN,700,0x50,0,0,0x60,0),OP(3,F4S_SIN,300,0x70,0,0,0x98,0),
+		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0x40),PV(SYP_RELEASE,0x60),
+		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0x50),PV(SYP_RESO,0),
+		PV(SYP_VOLUME,0x68),PEND}},
+
+	// HYPER. Chords: 1 unison 2 octaves 3 5th 4 major 5 minor 6 sus2 7 sus4
+	// 8 maj7 9 min7 10 dom7 11 maj9 12 min9 13 add9 14 min11 15 quartal
+	{"hyper init",SE_HYPER,{
+		PV(HYP_CHORD,4),PV(HYP_SHIFT,0),PV(HYP_SWARM,0x60),PV(HYP_WIDTH,0x80),
+		PV(HYP_SUB,0),PV(SYP_CUTOFF,0xC0),PV(SYP_RESO,0x10),PV(SYP_ENVAMT,0),
+		PV(SYP_VOLUME,0x70),PEND}},
+	{"hyper pad",SE_HYPER,{
+		PV(HYP_CHORD,12),PV(HYP_SHIFT,0x60),PV(HYP_SWARM,0x70),PV(HYP_WIDTH,0xE0),PV(HYP_SUB,0x30),
+		PV(SYP_ATTACK,0xB8),PV(SYP_DECAY,0xC8),PV(SYP_SUSTAIN,0xD0),PV(SYP_RELEASE,0xC8),
+		PV(SYP_CUTOFF,0x98),PV(SYP_RESO,0x20),PV(SYP_ENVAMT,0x20),PV(SYP_ENVDEC,0xC0),
+		PV(SYP_LFODEST,SLD_CUTOFF),PV(SYP_LFORATE,0x48),PV(SYP_LFOAMT,0x28),
+		PV(SYP_REVERB,0xA0),PV(SYP_VOLUME,0x60),PEND}},
+	{"trance lead",SE_HYPER,{
+		PV(HYP_CHORD,1),PV(HYP_SHIFT,0x40),PV(HYP_SWARM,0xA0),PV(HYP_WIDTH,0xC0),
+		PV(SYP_ATTACK,0x08),PV(SYP_DECAY,0xA0),PV(SYP_SUSTAIN,0xB0),PV(SYP_RELEASE,0x90),
+		PV(SYP_CUTOFF,0xC8),PV(SYP_RESO,0x30),PV(SYP_ENVAMT,0x30),PV(SYP_ENVDEC,0x98),
+		PV(SYP_DELAY,0x50),PV(SYP_REVERB,0x50),PV(SYP_VOLUME,0x58),PEND}},
+	{"hoover",SE_HYPER,{
+		PV(HYP_CHORD,2),PV(HYP_SHIFT,0x20),PV(HYP_SWARM,0xE0),PV(HYP_WIDTH,0xFF),PV(HYP_SUB,0xA0),
+		PV(SYP_PITCHENV,0x18),PV(SYP_PITCHDEC,0x98),PV(SYP_GLIDE,0x50),
+		PV(SYP_ATTACK,0x20),PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0xC0),PV(SYP_RELEASE,0x90),
+		PV(SYP_CUTOFF,0xD0),PV(SYP_RESO,0x18),PV(SYP_ENVAMT,0x10),
+		PV(SYP_REVERB,0x40),PV(SYP_VOLUME,0x58),PEND}},
+	{"strings",SE_HYPER,{
+		PV(HYP_CHORD,3),PV(HYP_SHIFT,0x80),PV(HYP_SWARM,0x50),PV(HYP_WIDTH,0xD0),
+		PV(SYP_ATTACK,0xA8),PV(SYP_DECAY,0xC0),PV(SYP_SUSTAIN,0xD0),PV(SYP_RELEASE,0xB8),
+		PV(SYP_CUTOFF,0x90),PV(SYP_RESO,0x10),PV(SYP_ENVAMT,0),
+		PV(SYP_LFODEST,SLD_PITCH),PV(SYP_LFORATE,0xA8),PV(SYP_LFOAMT,0x0C),
+		PV(SYP_REVERB,0x80),PV(SYP_VOLUME,0x60),PEND}},
+	{"stab",SE_HYPER,{
+		PV(HYP_CHORD,9),PV(HYP_SHIFT,0),PV(HYP_SWARM,0x50),PV(HYP_WIDTH,0xA0),
+		PV(SYP_DECAY,0xA0),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x80),
+		PV(SYP_CUTOFF,0x70),PV(SYP_RESO,0x50),PV(SYP_ENVAMT,0xA0),PV(SYP_ENVDEC,0x90),
+		PV(SYP_REVERB,0x60),PV(SYP_DELAY,0x40),PV(SYP_VOLUME,0x68),PEND}},
+	{"dream",SE_HYPER,{
+		PV(HYP_CHORD,11),PV(HYP_SHIFT,0xA0),PV(HYP_SWARM,0x60),PV(HYP_WIDTH,0xFF),PV(HYP_SUB,0x40),
+		PV(SYP_ATTACK,0xC0),PV(SYP_DECAY,0xD0),PV(SYP_SUSTAIN,0xE0),PV(SYP_RELEASE,0xD8),
+		PV(SYP_CUTOFF,0xA8),PV(SYP_RESO,0x10),PV(SYP_ENVAMT,0),
+		PV(SYP_REVERB,0xC0),PV(SYP_CHORUS,0x60),PV(SYP_VOLUME,0x58),PEND}},
+	{"hyper bass",SE_HYPER,{
+		PV(HYP_CHORD,1),PV(HYP_SHIFT,0),PV(HYP_SWARM,0x40),PV(HYP_WIDTH,0x40),PV(HYP_SUB,0xC0),
+		PV(SYP_TUNE,-24),
+		PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0x90),PV(SYP_RELEASE,0x60),
+		PV(SYP_CUTOFF,0x60),PV(SYP_RESO,0x40),PV(SYP_ENVAMT,0x80),PV(SYP_ENVDEC,0x98),
+		PV(SYP_DRIVE,0x20),PV(SYP_VOLUME,0x68),PEND}},
+
+	// WAV
+	{"wav init",SE_WAV,{
+		PV(WVP_SHAPE,WVS_SAW),PV(WVP_SIZE,0xFF),PV(WVP_MULT,0),PV(WVP_WARP,0),
+		PV(WVP_MIRROR,0x80),PV(WVP_LIMIT,WVL_SOFT),
+		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x60),PEND}},
+	{"chip lead",SE_WAV,{
+		PV(WVP_SHAPE,WVS_PULSE25),
+		PV(SYP_DECAY,0xA0),PV(SYP_SUSTAIN,0xB0),PV(SYP_RELEASE,0x60),PV(SYP_GLIDE,0x20),
+		PV(SYP_LFODEST,SLD_PITCH),PV(SYP_LFORATE,0xB4),PV(SYP_LFOAMT,0x14),
+		PV(SYP_DELAY,0x40),PV(SYP_VOLUME,0x48),PEND}},
+	{"chip bass",SE_WAV,{
+		PV(WVP_SHAPE,WVS_TRIANGLE),PV(WVP_SIZE,0x80),PV(SYP_TUNE,-24),
+		PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0xFF),PV(SYP_RELEASE,0x40),
+		PV(SYP_VOLUME,0x90),PEND}},
+	{"pwm pad",SE_WAV,{
+		PV(WVP_SHAPE,WVS_PULSE50),
+		PV(SYP_ATTACK,0xB0),PV(SYP_DECAY,0xC8),PV(SYP_SUSTAIN,0xD0),PV(SYP_RELEASE,0xC0),
+		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0xA0),PV(SYP_RESO,0x18),
+		PV(SYP_LFODEST,SLD_SHAPE),PV(SYP_LFORATE,0x60),PV(SYP_LFOAMT,0x70),
+		PV(SYP_CHORUS,0x80),PV(SYP_REVERB,0x80),PV(SYP_VOLUME,0x40),PEND}},
+	{"sync lead",SE_WAV,{
+		PV(WVP_SHAPE,WVS_SAW),PV(WVP_MULT,0x38),PV(WVP_LIMIT,WVL_CLIP),PV(SYP_DRIVE,0x30),
+		PV(SYP_ATTACK,0x08),PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0xA0),PV(SYP_RELEASE,0x80),
+		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0xC8),PV(SYP_RESO,0x20),
+		PV(SYP_GLIDE,0x28),PV(SYP_DELAY,0x40),PV(SYP_VOLUME,0x40),PEND}},
+	{"fold bass",SE_WAV,{
+		PV(WVP_SHAPE,WVS_SINE),PV(WVP_LIMIT,WVL_FOLD),PV(SYP_DRIVE,0x60),PV(SYP_TUNE,-24),
+		PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0x90),PV(SYP_RELEASE,0x60),
+		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0x90),PV(SYP_RESO,0x20),
+		PV(SYP_ENVAMT,0x60),PV(SYP_ENVDEC,0x98),PV(SYP_VOLUME,0x70),PEND}},
+	{"zap",SE_WAV,{
+		PV(WVP_SHAPE,WVS_SINE),PV(WVP_WARP,0x80),
+		PV(SYP_PITCHENV,0xC0),PV(SYP_PITCHDEC,0x68),
+		PV(SYP_DECAY,0x98),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x60),
+		PV(SYP_VOLUME,0x80),PEND}},
+	{"lofi bell",SE_WAV,{
+		PV(WVP_SHAPE,WVS_SINE),PV(WVP_SIZE,0x20),PV(WVP_MULT,0x20),
+		PV(SYP_DECAY,0xD0),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0xC0),
+		PV(SYP_REVERB,0x70),PV(SYP_VOLUME,0x68),PEND}},
+	{"noise hat",SE_WAV,{
+		PV(WVP_SHAPE,WVS_NOISE),PV(SYP_TUNE,24),
+		PV(SYP_DECAY,0x70),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x50),
+		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xB0),PV(SYP_RESO,0x20),
+		PV(SYP_VOLUME,0xB0),PV(SYP_PAN,0x70),PEND}}
 } ;
 
 #define SYNTH_PRESET_COUNT ((int)(sizeof(synthPresets)/sizeof(SynthPreset)))
@@ -207,6 +396,40 @@ static char **getPresetNameList() {
 int SynthInstrument::GetPresetCount() {
 	return SYNTH_PRESET_COUNT ;
 }
+
+static const char *synthEngineNames[SE_LAST]={
+	"synth","fm4","hyper","wav"
+} ;
+
+const char *SynthInstrument::GetEngineName(int engine) {
+	if (engine<0 || engine>=SE_LAST) return "" ;
+	return synthEngineNames[engine] ;
+}
+
+int SynthInstrument::GetPresetEngine(int preset) {
+	if (preset<0 || preset>=SYNTH_PRESET_COUNT) return SE_SYNTH ;
+	return synthPresets[preset].engine_ ;
+}
+
+void SynthInstrument::GetPresetRange(int engine,int &first,int &last) {
+	first=-1 ;
+	last=-1 ;
+	for (int i=0;i<SYNTH_PRESET_COUNT;i++) {
+		if (synthPresets[i].engine_!=engine) continue ;
+		if (first<0) first=i ;
+		last=i ;
+	}
+	if (first<0) {
+		first=last=0 ;
+	}
+}
+
+// Hooks of SynthHookVariable
+enum {
+	SYNTH_HOOK_ENGINE=0,
+	SYNTH_HOOK_HYPER_CHORD,
+	SYNTH_HOOK_HYPER_NOTE
+} ;
 
 const char *SynthInstrument::GetPresetName(int index) {
 	if (index<0 || index>=SYNTH_PRESET_COUNT) return "" ;
@@ -270,16 +493,9 @@ static inline float softSat(float x) {
 
 // Sine lookup (phase in cycles). Linear interpolation over 2048 points is
 // far below audible error and much cheaper than libm sin() on the RG Nano.
-#define SYNTH_SINE_SIZE 2048
-static float synthSineTable[SYNTH_SINE_SIZE+1] ;
-static bool synthSineReady=false ;
-
+// The table is shared with the engines (SynthEngines.cpp).
 static void initSineTable() {
-	if (synthSineReady) return ;
-	for (int i=0;i<=SYNTH_SINE_SIZE;i++) {
-		synthSineTable[i]=(float)sin(SYNTH_TWO_PI*i/SYNTH_SINE_SIZE) ;
-	}
-	synthSineReady=true ;
+	SynthEnginesInit() ;
 }
 
 static inline float fastSin(float phase) {
@@ -319,6 +535,114 @@ void SynthPresetVariable::onChange() {
 	}
 }
 
+SynthHookVariable::SynthHookVariable(SynthInstrument *owner,int hook,const char *name,
+                                     FourCC id,const char *const *list,int size,int index)
+	:Variable(name,id,list,size,index),owner_(owner),hook_(hook) {
+}
+
+SynthHookVariable::SynthHookVariable(SynthInstrument *owner,int hook,const char *name,
+                                     FourCC id,int value)
+	:Variable(name,id,value,0),owner_(owner),hook_(hook) {
+}
+
+void SynthHookVariable::onChange() {
+	if (owner_) {
+		owner_->OnHook(hook_) ;
+	}
+}
+
+/***************************************************************
+ Engine knobs
+ ***************************************************************/
+
+static const char fm4ParamChars[FM4_PARAM_COUNT]={
+	FM4P_SHAPE,FM4P_RATIO,FM4P_LEVEL,FM4P_FEEDBACK,FM4P_ATTACK,FM4P_DECAY,FM4P_SUSTAIN
+} ;
+
+static const char *fm4ParamNames[FM4_PARAM_COUNT]={
+	"shape","ratio","level","feedback","attack","decay","sustain"
+} ;
+
+// Saved names: "fm a shape", "fm b ratio", ... (names must be unique per
+// instrument: projects are saved and restored by name)
+static char fm4VarNames[FM4_OPS][FM4_PARAM_COUNT][20] ;
+static char hyperNoteNames[HYPER_NOTES][16] ;
+static bool engineNamesReady=false ;
+
+static void initEngineNames() {
+	if (engineNamesReady) return ;
+	for (int op=0;op<FM4_OPS;op++) {
+		for (int k=0;k<FM4_PARAM_COUNT;k++) {
+			sprintf(fm4VarNames[op][k],"fm %c %s",'a'+op,fm4ParamNames[k]) ;
+		}
+	}
+	for (int n=0;n<HYPER_NOTES;n++) {
+		sprintf(hyperNoteNames[n],"hyper note %d",n+1) ;
+	}
+	engineNamesReady=true ;
+}
+
+int SynthInstrument::GetEngine() {
+	int e=engine_->GetInt() ;
+	if (e<0 || e>=SE_LAST) e=SE_SYNTH ;
+	return e ;
+}
+
+void SynthInstrument::OnHook(int hook) {
+	switch(hook) {
+		case SYNTH_HOOK_ENGINE: {
+			if (applyingPreset_) return ;
+			// A new engine starts from its own first preset; a restored or
+			// undone project already has the matching preset in place
+			int e=GetEngine() ;
+			if (GetPresetEngine(preset_->GetInt())!=e) {
+				int first,last ;
+				GetPresetRange(e,first,last) ;
+				preset_->SetInt(first) ;
+			}
+			break ;
+		}
+		case SYNTH_HOOK_HYPER_CHORD: {
+			int c=hyperChord_->GetInt() ;
+			if (c>0 && c<HYPER_CHORD_COUNT) {
+				for (int n=0;n<HYPER_NOTES;n++) {
+					hyperNote_[n]->SetInt(hyperChords[c][n],false) ;
+				}
+			}
+			break ;
+		}
+		case SYNTH_HOOK_HYPER_NOTE:
+			syncHyperChordName() ;
+			break ;
+		default:
+			break ;
+	}
+}
+
+// The chord knob names the six notes when they match a known chord
+void SynthInstrument::syncHyperChordName() {
+	int match=0 ;
+	for (int c=1;c<HYPER_CHORD_COUNT && !match;c++) {
+		bool same=true ;
+		for (int n=0;n<HYPER_NOTES;n++) {
+			if (hyperNote_[n]->GetInt()!=hyperChords[c][n]) {
+				same=false ;
+				break ;
+			}
+		}
+		if (same) match=c ;
+	}
+	if (hyperChord_->GetInt()!=match) {
+		hyperChord_->SetInt(match,false) ;
+	}
+}
+
+void SynthInstrument::resetEngineVariables() {
+	for (unsigned int i=0;i<engineVars_.size();i++) {
+		engineVars_[i]->Reset() ;
+	}
+}
+
 /***************************************************************
  Instrument
  ***************************************************************/
@@ -327,8 +651,14 @@ SynthInstrument::SynthInstrument() {
 	initSineTable() ;
 	applyingPreset_=true ;
 
+	initEngineNames() ;
 	preset_=new SynthPresetVariable(this,"preset",SYP_PRESET,getPresetNameList(),SYNTH_PRESET_COUNT,0) ;
 	Insert(preset_) ;
+	// Saved right after the preset: a restored song applies the preset
+	// (which picks its engine), then the engine agrees with it
+	engine_=new SynthHookVariable(this,SYNTH_HOOK_ENGINE,"engine",SYP_ENGINE,
+	                              synthEngineNames,SE_LAST,SE_SYNTH) ;
+	Insert(engine_) ;
 	wave_=new Variable("wave",SYP_WAVE,synthWaveNames,SW_LAST,SW_PULSE) ;
 	Insert(wave_) ;
 	shape_=new Variable("shape",SYP_SHAPE,0) ;
@@ -397,6 +727,77 @@ SynthInstrument::SynthInstrument() {
 	customName_=new Variable("name",INSTRUMENT_NAME_ID,"") ;
 	Insert(customName_) ;
 
+	// FM4 (defaults = "fm init": D is heard, C modulates it gently)
+	fmAlgo_=new Variable("fm algo",FM4P_ALGO,fm4AlgoNames,FM4_ALGO_COUNT,0) ;
+	Insert(fmAlgo_) ;
+	engineVars_.push_back(fmAlgo_) ;
+	for (int op=0;op<FM4_OPS;op++) {
+		for (int k=0;k<FM4_PARAM_COUNT;k++) {
+			FourCC id=FM4_ID(op,fm4ParamChars[k]) ;
+			const char *name=fm4VarNames[op][k] ;
+			Variable *v ;
+			switch(fm4ParamChars[k]) {
+				case FM4P_SHAPE:
+					v=new Variable(name,id,fm4ShapeNames,F4S_LAST,F4S_SIN) ;
+					break ;
+				case FM4P_RATIO:
+					v=new Variable(name,id,100,0) ;
+					break ;
+				case FM4P_LEVEL:
+					v=new Variable(name,id,op==3?0xFF:(op==2?0x60:0),0) ;
+					break ;
+				case FM4P_DECAY:
+					v=new Variable(name,id,0x80,0) ;
+					break ;
+				case FM4P_SUSTAIN:
+					v=new Variable(name,id,0xFF,0) ;
+					break ;
+				default:
+					v=new Variable(name,id,0,0) ;
+					break ;
+			}
+			fmOp_[op][k]=v ;
+			Insert(v) ;
+			engineVars_.push_back(v) ;
+		}
+	}
+
+	// HYPER: the chord knob goes first, so a restored song's own notes
+	// (saved after it) win
+	hyperChord_=new SynthHookVariable(this,SYNTH_HOOK_HYPER_CHORD,"hyper chord",HYP_CHORD,
+	                                  hyperChordNames,HYPER_CHORD_COUNT,4) ;
+	Insert(hyperChord_) ;
+	engineVars_.push_back(hyperChord_) ;
+	for (int n=0;n<HYPER_NOTES;n++) {
+		hyperNote_[n]=new SynthHookVariable(this,SYNTH_HOOK_HYPER_NOTE,hyperNoteNames[n],
+		                                    HYP_NOTE(n),hyperChords[4][n]) ;
+		Insert(hyperNote_[n]) ;
+		engineVars_.push_back(hyperNote_[n]) ;
+	}
+	hyperShift_=new Variable("hyper shift",HYP_SHIFT,0,0) ;
+	hyperSwarm_=new Variable("hyper swarm",HYP_SWARM,0x60,0) ;
+	hyperWidth_=new Variable("hyper width",HYP_WIDTH,0x80,0) ;
+	hyperSub_=new Variable("hyper sub",HYP_SUB,0,0) ;
+	hyperScale_=new Variable("hyper scale",HYP_SCALE,false) ;
+	Variable *hyperVars[5]={hyperShift_,hyperSwarm_,hyperWidth_,hyperSub_,hyperScale_} ;
+	for (int k=0;k<5;k++) {
+		Insert(hyperVars[k]) ;
+		engineVars_.push_back(hyperVars[k]) ;
+	}
+
+	// WAV
+	wavShape_=new Variable("wav shape",WVP_SHAPE,wavShapeNames,WVS_LAST,WVS_SAW) ;
+	wavSize_=new Variable("wav size",WVP_SIZE,0xFF,0) ;
+	wavMult_=new Variable("wav mult",WVP_MULT,0,0) ;
+	wavWarp_=new Variable("wav warp",WVP_WARP,0,0) ;
+	wavMirror_=new Variable("wav mirror",WVP_MIRROR,0x80,0) ;
+	wavLimit_=new Variable("limit",WVP_LIMIT,wavLimitNames,WVL_LAST,WVL_SOFT) ;
+	Variable *wavVars[6]={wavShape_,wavSize_,wavMult_,wavWarp_,wavMirror_,wavLimit_} ;
+	for (int k=0;k<6;k++) {
+		Insert(wavVars[k]) ;
+		engineVars_.push_back(wavVars[k]) ;
+	}
+
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		SynthVoice &v=voices_[i] ;
 		v.active_=false ;
@@ -424,8 +825,21 @@ SynthInstrument::SynthInstrument() {
 		v.hasPlayed_=false ;
 		v.fastRelease_=false ;
 		v.ic1eq_=v.ic2eq_=0.0f ;
+		v.ic1eqR_=v.ic2eqR_=0.0f ;
 		v.fa1_=v.fa2_=v.fa3_=v.fk_=0.0f ;
 		v.chordCount_=1 ;
+		for (int p=0;p<SYNTH_MAX_PARTIALS;p++) {
+			Fm4Start(v.fm_[p],0x9E3779B9u+i*977u+p) ;
+			WavStart(v.wav_[p],0x1D872B41u+i*31u+p) ;
+		}
+		HyperStart(v.hyper_,0x2545F491u+i*7u) ;
+		v.hyperCmdChord_=false ;
+		for (int n=0;n<HYPER_NOTES;n++) {
+			v.hyperCmd_[n]=0 ;
+			v.hyperSemis_[n]=0 ;
+			v.hyperRatio_[n]=1.0f ;
+		}
+		v.hyperKey_=-1 ;
 		v.baseVolume_=v.volume_=i2fp(0x80) ;
 		v.basePan_=v.pan_=i2fp(0x7F) ;
 		v.baseCutoff_=v.cutoff_=fl2fp(0.75f) ;
@@ -484,7 +898,7 @@ void SynthInstrument::ApplyPreset(int preset) {
 
 	// INIT is the base for every preset
 	const SynthPreset &base=synthPresets[0] ;
-	for (int i=0;i<24 && base.values_[i].id_!=0;i++) {
+	for (int i=0;i<SYNTH_PRESET_VALUES && base.values_[i].id_!=0;i++) {
 		Variable *v=FindVariable(base.values_[i].id_) ;
 		if (v) v->SetInt(base.values_[i].value_) ;
 	}
@@ -495,14 +909,25 @@ void SynthInstrument::ApplyPreset(int preset) {
 	chorus_->SetInt(0) ;
 	volume_->SetInt(0x80) ;
 	pan_->SetInt(0x7F) ;
+	resetEngineVariables() ;
 
-	if (preset!=0) {
-		const SynthPreset &p=synthPresets[preset] ;
-		for (int i=0;i<24 && p.values_[i].id_!=0;i++) {
+	// Then the engine's own starting point (its first preset), then the
+	// preset itself
+	int engine=synthPresets[preset].engine_ ;
+	engine_->SetInt(engine) ;
+	int first,last ;
+	GetPresetRange(engine,first,last) ;
+	int steps[2]={first,preset} ;
+	for (int k=0;k<2;k++) {
+		int index=steps[k] ;
+		if (index==0 || (k==1 && index==first)) continue ;
+		const SynthPreset &p=synthPresets[index] ;
+		for (int i=0;i<SYNTH_PRESET_VALUES && p.values_[i].id_!=0;i++) {
 			Variable *v=FindVariable(p.values_[i].id_) ;
 			if (v) v->SetInt(p.values_[i].value_) ;
 		}
 	}
+	syncHyperChordName() ;
 	if (preset_->GetInt()!=preset) {
 		preset_->SetInt(preset,false) ;
 	}
@@ -528,8 +953,17 @@ const char *SynthInstrument::GetName() {
 	}
 	const char *preset=preset_->GetString() ;
 	const char *wave=wave_->GetString() ;
+	int first,last ;
+	int engine=GetEngine() ;
+	GetPresetRange(engine,first,last) ;
 	if (preset_->GetInt()==0) {
 		sprintf(name,"synth %s",wave) ;
+	} else if (preset_->GetInt()==first && engine==SE_FM4) {
+		sprintf(name,"fm4 algo %s",fmAlgo_->GetString()) ;
+	} else if (preset_->GetInt()==first && engine==SE_HYPER) {
+		sprintf(name,"hyper %s",hyperChord_->GetString()) ;
+	} else if (preset_->GetInt()==first && engine==SE_WAV) {
+		sprintf(name,"wav %s",wavShape_->GetString()) ;
 	} else {
 		sprintf(name,"%s",preset) ;
 	}
@@ -626,6 +1060,7 @@ bool SynthInstrument::Start(int channel,unsigned char note,bool cleanStart) {
 			v.chord_[0]=0 ;
 			v.chordCount_=1 ;
 		}
+		v.hyperCmdChord_=false ;
 	}
 	v.krateCount_=0 ;
 
@@ -674,6 +1109,22 @@ void SynthInstrument::startVoice(int channel,unsigned char note,bool cleanStart)
 	v.subPhase_=0.0f ;
 	for (int m=0;m<6;m++) v.metalPhase_[m]=0.13f*m ;
 	v.ic1eq_=v.ic2eq_=0.0f ;
+	v.ic1eqR_=v.ic2eqR_=0.0f ;
+	unsigned int seed=(unsigned int)(channel*7919+note*131)+v.noiseState_ ;
+	switch(GetEngine()) {
+		case SE_FM4:
+			for (int p=0;p<SYNTH_MAX_PARTIALS;p++) Fm4Start(v.fm_[p],seed+p) ;
+			break ;
+		case SE_HYPER:
+			HyperStart(v.hyper_,seed) ;
+			v.hyperKey_=-1 ;
+			break ;
+		case SE_WAV:
+			for (int p=0;p<SYNTH_MAX_PARTIALS;p++) WavStart(v.wav_[p],seed+p) ;
+			break ;
+		default:
+			break ;
+	}
 	if (!v.hasPlayed_ || glide_->GetInt()==0) {
 		v.glideNote_=(float)note ;
 	}
@@ -750,6 +1201,17 @@ void SynthInstrument::ProcessCommand(int channel,FourCC cc,ushort value) {
 				}
 			}
 			v.chordCount_=count ;
+			// HYPER: the chord's notes, then the same notes an octave up,
+			// fill the six slots (one or two notes: three each side)
+			for (int n=0;n<HYPER_NOTES;n++) {
+				if (count>=3) {
+					v.hyperCmd_[n]=v.chord_[n%count]+12*(n/count) ;
+				} else {
+					v.hyperCmd_[n]=v.chord_[(n%3)%count]+(n>=3?12:0) ;
+				}
+			}
+			v.hyperCmdChord_=true ;
+			v.hyperKey_=-1 ;
 			break ;
 		}
 
@@ -1047,6 +1509,110 @@ float SynthInstrument::renderPartial(SynthVoice &v,int p,float inc,float shape,
 	return out ;
 }
 
+// FM4 settings that only change when a knob does (read once per buffer)
+void SynthInstrument::setupFm4(Fm4Params &p,float sampleRate) {
+	int algo=fmAlgo_->GetInt() ;
+	if (algo<0 || algo>=FM4_ALGO_COUNT) algo=0 ;
+	p.algo_=algo ;
+	float blockRate=sampleRate/SYNTH_BLOCK ;
+	for (int op=0;op<FM4_OPS;op++) {
+		int shape=fmOp_[op][0]->GetInt() ;
+		p.shape_[op]=(shape>=0 && shape<F4S_LAST)?shape:F4S_SIN ;
+		int ratio=fmOp_[op][1]->GetInt() ;
+		if (ratio<FM4_RATIO_MIN) ratio=FM4_RATIO_MIN ;
+		if (ratio>FM4_RATIO_MAX) ratio=FM4_RATIO_MAX ;
+		p.ratio_[op]=ratio/100.0f ;
+		p.level_[op]=fm4LevelAmp(fmOp_[op][2]->GetInt()) ;
+		p.fbDepth_[op]=fm4FeedbackDepth(fmOp_[op][3]->GetInt()) ;
+		p.attackStep_[op]=1.0f/(TimeFromParam(fmOp_[op][4]->GetInt())*blockRate) ;
+		p.decayCoef_[op]=coefFromTime(TimeFromParam(fmOp_[op][5]->GetInt()),blockRate) ;
+		p.sustain_[op]=fmOp_[op][6]->GetInt()/255.0f ;
+	}
+	p.modScale_=1.0f ;
+	p.carrierNorm_=1.0f/(float)Fm4CarrierCount(algo) ;
+}
+
+// The six notes of the hyper chord on a root note, in semitones. With
+// "scale" on, each note moves down onto the song's key/scale.
+void SynthInstrument::GetHyperNotes(int root,int *semis) {
+	for (int n=0;n<HYPER_NOTES;n++) {
+		semis[n]=hyperNote_[n]->GetInt() ;
+	}
+	if (!hyperScale_->GetBool()) return ;
+	Project *project=Player::GetInstance()->GetProject() ;
+	if (!project) return ;
+	int key=project->GetScaleKey() ;
+	if (key<0) return ;
+	int scale=project->GetScale() ;
+	if (scale<0 || scale>=scaleCount) return ;
+	for (int n=0;n<HYPER_NOTES;n++) {
+		int note=root+semis[n] ;
+		for (int tries=0;tries<12;tries++) {
+			int inKey=(note-key)%12 ;
+			if (inKey<0) inKey+=12 ;
+			if (scaleSteps[scale][inKey]) break ;
+			note-- ;
+		}
+		semis[n]=note-root ;
+	}
+}
+
+// The voice's six note ratios, recomputed (pow) only when a note changed
+void SynthInstrument::updateHyperRatios(SynthVoice &v) {
+	int semis[HYPER_NOTES] ;
+	if (v.hyperCmdChord_) {
+		for (int n=0;n<HYPER_NOTES;n++) semis[n]=v.hyperCmd_[n] ;
+	} else {
+		GetHyperNotes(v.midiNote_,semis) ;
+	}
+	int key=0 ;
+	for (int n=0;n<HYPER_NOTES;n++) {
+		key=key*61+(semis[n]+30) ;
+	}
+	if (key!=v.hyperKey_) {
+		v.hyperKey_=key ;
+		for (int n=0;n<HYPER_NOTES;n++) {
+			v.hyperSemis_[n]=semis[n] ;
+			v.hyperRatio_[n]=(float)pow(2.0,semis[n]/12.0) ;
+		}
+	}
+}
+
+// Per control block: pitch of every saw, shift, width and sub
+void SynthInstrument::setupHyper(const float *ratio,HyperParams &p,float baseInc,int swarm) {
+	if (swarm<0) swarm=0 ;
+	if (swarm>255) swarm=255 ;
+	for (int n=0;n<HYPER_NOTES;n++) {
+		// Half the spread each way; 2^(c/1200) ~ 1 + c*ln2/1200 this close
+		float half=HyperDetuneCents(swarm,n)*0.5f*0.000577623f ;
+		float inc=baseInc*ratio[n] ;
+		float a=inc*(1.0f-half) ;
+		float b=inc*(1.0f+half) ;
+		p.inc_[n][0]=a>0.45f?0.45f:a ;
+		p.inc_[n][1]=b>0.45f?0.45f:b ;
+	}
+	float first,second ;
+	HyperShiftGains(hyperShift_->GetInt(),first,second) ;
+	for (int n=0;n<HYPER_NOTES;n++) {
+		p.gain_[n]=(n<3)?first:second ;
+	}
+	// About the same loudness whatever the shift
+	p.norm_=1.2f/(float)sqrt(6.0f*(first*first+second*second)+0.0001f) ;
+	// Saw a of each pair leans left, saw b right; 00 = both centred
+	float w=hyperWidth_->GetInt()/255.0f ;
+	float angleA=(1.0f-w)*0.7853982f ;
+	float angleB=(1.0f+w)*0.7853982f ;
+	p.gainL_[0]=(float)cos(angleA)*1.4142136f ;
+	p.gainR_[0]=(float)sin(angleA)*1.4142136f ;
+	p.gainL_[1]=(float)cos(angleB)*1.4142136f ;
+	p.gainR_[1]=(float)sin(angleB)*1.4142136f ;
+	int octaves ;
+	float level ;
+	HyperSub(hyperSub_->GetInt(),octaves,level) ;
+	p.subLevel_=level ;
+	p.subInc_=baseInc/(float)(1<<octaves) ;
+}
+
 bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick) {
 	SynthVoice &v=voices_[channel] ;
 	SYS_MEMSET(buffer,0,size*2*sizeof(fixed)) ;
@@ -1054,6 +1620,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 
 	float sampleRate=(float)Audio::GetInstance()->GetSampleRate() ;
 	if (sampleRate<8000.0f) sampleRate=44100.0f ;
+	int engine=GetEngine() ;
 
 	// Tick-level updates (arp steps, retrig)
 	if (updateTick) {
@@ -1064,14 +1631,19 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 				v.stage_=SS_ATTACK ;
 				v.pitchEnv_=1.0f ;
 				v.filterEnv_=1.0f ;
+				if (engine==SE_FM4) {
+					for (int p=0;p<SYNTH_MAX_PARTIALS;p++) {
+						for (int op=0;op<FM4_OPS;op++) v.fm_[p].stage_[op]=0 ;
+					}
+				}
 			}
 		}
 	}
 
 	int wave=wave_->GetInt() ;
 	float shapeBase=shape_->GetInt()/255.0f ;
-	float subLevel=sub_->GetInt()/255.0f ;
-	float noiseMix=noise_->GetInt()/255.0f ;
+	float subLevel=(engine==SE_SYNTH)?sub_->GetInt()/255.0f:0.0f ;
+	float noiseMix=(engine==SE_SYNTH)?noise_->GetInt()/255.0f:0.0f ;
 	float toneGain=(float)cos(noiseMix*SYNTH_PI*0.5f) ;
 	float noiseGain=(float)sin(noiseMix*SYNTH_PI*0.5f) ;
 	int ratioIndex=fmRatio_->GetInt() ;
@@ -1095,6 +1667,24 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	float lfoAmt=lfoAmt_->GetInt()/255.0f ;
 	int glide=glide_->GetInt() ;
 	float glideCoef=glide>0?coefFromTime(TimeFromParam(glide),sampleRate/SYNTH_BLOCK):0.0f ;
+	int limit=wavLimit_->GetInt() ;
+
+	// Engine settings
+	Fm4Params fmp ;
+	HyperParams hyp ;
+	WavParams wvp ;
+	int swarmBase=hyperSwarm_->GetInt() ;
+	int wavShape=wavShape_->GetInt() ;
+	int wavSize=wavSize_->GetInt() ;
+	int wavMult=wavMult_->GetInt() ;
+	int wavWarp=wavWarp_->GetInt() ;
+	int wavMirror=wavMirror_->GetInt() ;
+	if (engine==SE_FM4) {
+		setupFm4(fmp,sampleRate) ;
+	} else if (engine==SE_WAV) {
+		WavSetup(wvp,wavShape,wavSize,wavMult,wavWarp,wavMirror) ;
+	}
+	bool stereo=(engine==SE_HYPER) ;
 
 	float inc[SYNTH_MAX_PARTIALS] ;
 	float subInc=0.0f ;
@@ -1141,6 +1731,31 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			}
 			subInc=baseInc*0.5f ;
 			partialNorm=1.0f/(float)sqrt((float)v.chordCount_) ;
+			float shapeLfo=(lfoDest==SLD_SHAPE)?lfo*lfoAmt:0.0f ;
+
+			switch(engine) {
+				case SE_FM4:
+					// LFO "shape": FM brightness (every modulator's depth)
+					fmp.modScale_=1.0f+shapeLfo ;
+					if (fmp.modScale_<0.0f) fmp.modScale_=0.0f ;
+					for (int p=0;p<v.chordCount_;p++) {
+						Fm4Block(v.fm_[p],fmp,inc[p],SYNTH_BLOCK) ;
+					}
+					break ;
+				case SE_HYPER:
+					// LFO "shape": the swarm breathes
+					updateHyperRatios(v) ;
+					setupHyper(v.hyperRatio_,hyp,baseInc,swarmBase+(int)(shapeLfo*128.0f)) ;
+					break ;
+				case SE_WAV:
+					// LFO "shape": moves the mirror (pulse width on pulse50)
+					if (shapeLfo!=0.0f) {
+						WavSetup(wvp,wavShape,wavSize,wavMult,wavWarp,wavMirror+(int)(shapeLfo*127.0f)) ;
+					}
+					break ;
+				default:
+					break ;
+			}
 
 			shape=shapeBase ;
 			if (lfoDest==SLD_SHAPE) {
@@ -1221,29 +1836,50 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 
 		// Oscillators
 		float sig=0.0f ;
-		for (int p=0;p<v.chordCount_;p++) {
-			sig+=renderPartial(v,p,inc[p],shape,fmIndex,fmRatio,wave) ;
-		}
-		sig*=partialNorm ;
+		float sigR=0.0f ;
+		switch(engine) {
+			case SE_FM4:
+				for (int p=0;p<v.chordCount_;p++) {
+					sig+=fm4Tick(v.fm_[p],fmp) ;
+				}
+				sig*=partialNorm ;
+				break ;
+			case SE_HYPER:
+				hyperTick(v.hyper_,hyp,sig,sigR) ;
+				break ;
+			case SE_WAV:
+				for (int p=0;p<v.chordCount_;p++) {
+					sig+=wavTick(v.wav_[p],wvp,inc[p]) ;
+				}
+				sig*=partialNorm ;
+				break ;
+			default:
+				for (int p=0;p<v.chordCount_;p++) {
+					sig+=renderPartial(v,p,inc[p],shape,fmIndex,fmRatio,wave) ;
+				}
+				sig*=partialNorm ;
 
-		if (subLevel>0.0f) {
-			float st=v.subPhase_ ;
-			float s=(st<0.5f)?1.0f:-1.0f ;
-			s+=polyBlep(st,subInc) ;
-			s-=polyBlep(wrap01(st+0.5f),subInc) ;
-			sig+=s*subLevel*0.7f ;
-			v.subPhase_=wrap01(st+subInc) ;
-		}
+				if (subLevel>0.0f) {
+					float st=v.subPhase_ ;
+					float s=(st<0.5f)?1.0f:-1.0f ;
+					s+=polyBlep(st,subInc) ;
+					s-=polyBlep(wrap01(st+0.5f),subInc) ;
+					sig+=s*subLevel*0.7f ;
+					v.subPhase_=wrap01(st+subInc) ;
+				}
 
-		if (noiseMix>0.0f) {
-			sig=sig*toneGain+whiteNoise(v.noiseState_)*noiseGain ;
+				if (noiseMix>0.0f) {
+					sig=sig*toneGain+whiteNoise(v.noiseState_)*noiseGain ;
+				}
+				break ;
 		}
 
 		if (v.drive_>0) {
-			sig=softSat(sig*driveGain) ;
+			sig=synthLimit(limit,sig*driveGain) ;
+			if (stereo) sigR=synthLimit(limit,sigR*driveGain) ;
 		}
 
-		// State variable filter (TPT)
+		// State variable filter (TPT), a second one for the right channel
 		if (filterType!=SFT_OFF) {
 			float v3=sig-v.ic2eq_ ;
 			float v1=v.fa1_*v.ic1eq_+v.fa2_*v3 ;
@@ -1261,9 +1897,29 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 					sig=v2 ;
 					break ;
 			}
+			if (stereo) {
+				float r3=sigR-v.ic2eqR_ ;
+				float r1=v.fa1_*v.ic1eqR_+v.fa2_*r3 ;
+				float r2=v.ic2eqR_+v.fa2_*v.ic1eqR_+v.fa3_*r3 ;
+				v.ic1eqR_=2.0f*r1-v.ic1eqR_ ;
+				v.ic2eqR_=2.0f*r2-v.ic2eqR_ ;
+				switch(filterType) {
+					case SFT_HIGHPASS:
+						sigR=sigR-v.fk_*r1-r2 ;
+						break ;
+					case SFT_BANDPASS:
+						sigR=r1*v.fk_ ;
+						break ;
+					default:
+						sigR=r2 ;
+						break ;
+				}
+			}
 		}
+		if (!stereo) sigR=sig ;
 
-		if (sig!=sig || sig>1e6f || sig<-1e6f || v.level_!=v.level_) {
+		if (sig!=sig || sig>1e6f || sig<-1e6f || sigR!=sigR || sigR>1e6f || sigR<-1e6f ||
+		    v.level_!=v.level_) {
 			// NaN / runaway state (e.g. the filter): silence this voice
 			// instead of letting it ring on forever
 			synthBrokenVoices_++ ;
@@ -1271,14 +1927,19 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			v.active_=false ;
 			v.level_=0.0f ;
 			v.ic1eq_=v.ic2eq_=0.0f ;
+			v.ic1eqR_=v.ic2eqR_=0.0f ;
 			break ;
 		}
-		sig*=v.level_*ampMod ;
+		float amp=v.level_*ampMod ;
+		sig*=amp ;
+		sigR*=amp ;
 		if (sig>2.0f) sig=2.0f ;
 		if (sig<-2.0f) sig=-2.0f ;
+		if (sigR>2.0f) sigR=2.0f ;
+		if (sigR<-2.0f) sigR=-2.0f ;
 
 		float outL=sig*gainL ;
-		float outR=sig*gainR ;
+		float outR=sigR*gainR ;
 		*out++=fl2fp(outL*32767.0f) ;
 		*out++=fl2fp(outR*32767.0f) ;
 		if (sending && i<SENDFX_MAX_FRAMES) {
@@ -1333,6 +1994,85 @@ void SynthInstrument::RenderCycle(float *out,int count) {
 				if (a>peak) peak=a ;
 			}
 		}
+	}
+	for (int i=0;i<count;i++) {
+		out[i]/=peak ;
+	}
+}
+
+// A few cycles of what the current engine plays, for the instrument screen:
+// FM4 with every operator at the top of its envelope, WAV through the
+// drive stage (so fold/wrap show), HYPER as the mono sum.
+void SynthInstrument::RenderPreview(float *out,int count,float cycles) {
+	if (count<=0) return ;
+	int engine=GetEngine() ;
+	float inc=cycles/(float)count ;
+	float peak=0.0001f ;
+	if (engine==SE_FM4) {
+		Fm4Ops o ;
+		Fm4Params p ;
+		Fm4Start(o,0x13579BDu) ;
+		setupFm4(p,44100.0f) ;
+		for (int op=0;op<FM4_OPS;op++) {
+			float r=inc*p.ratio_[op] ;
+			if (r>0.45f) r=0.45f ;
+			o.inc_[op]=(unsigned int)(r*4294967296.0f) ;
+			o.env_[op]=1.0f ;
+			o.stage_[op]=1 ;
+			o.gain_[op]=p.level_[op] ;
+			o.gainStep_[op]=0.0f ;
+		}
+		// One pass first so feedback settles
+		for (int pass=0;pass<2;pass++) {
+			for (int op=0;op<FM4_OPS;op++) o.phase_[op]=0 ;
+			for (int i=0;i<count;i++) {
+				float s=fm4Tick(o,p) ;
+				if (pass==1) out[i]=s ;
+			}
+		}
+	} else if (engine==SE_WAV) {
+		WavParams p ;
+		WavOsc o ;
+		WavSetup(p,wavShape_->GetInt(),wavSize_->GetInt(),wavMult_->GetInt(),
+		         wavWarp_->GetInt(),wavMirror_->GetInt()) ;
+		WavStart(o,0x2468ACEu) ;
+		int drive=drive_->GetInt() ;
+		float driveGain=1.0f+drive/255.0f*8.0f ;
+		int limit=wavLimit_->GetInt() ;
+		for (int i=0;i<count;i++) {
+			float s=wavTick(o,p,inc) ;
+			if (drive>0) s=synthLimit(limit,s*driveGain) ;
+			out[i]=s ;
+		}
+	} else if (engine==SE_HYPER) {
+		HyperOsc o ;
+		HyperParams p ;
+		HyperStart(o,0x55AA55u) ;
+		int semis[HYPER_NOTES] ;
+		float ratio[HYPER_NOTES] ;
+		GetHyperNotes(60,semis) ;
+		for (int n=0;n<HYPER_NOTES;n++) {
+			ratio[n]=(float)pow(2.0,semis[n]/12.0) ;
+		}
+		setupHyper(ratio,p,inc,hyperSwarm_->GetInt()) ;
+		for (int i=0;i<count;i++) {
+			float l,r ;
+			hyperTick(o,p,l,r) ;
+			out[i]=0.5f*(l+r) ;
+		}
+	} else {
+		// The original synth: one cycle, repeated
+		int per=(int)((float)count/(cycles>1.0f?cycles:1.0f)) ;
+		if (per<1) per=1 ;
+		float cycle[256] ;
+		if (per>256) per=256 ;
+		RenderCycle(cycle,per) ;
+		for (int i=0;i<count;i++) out[i]=cycle[i%per] ;
+		return ;
+	}
+	for (int i=0;i<count;i++) {
+		float a=(float)fabs(out[i]) ;
+		if (a>peak) peak=a ;
 	}
 	for (int i=0;i<count;i++) {
 		out[i]/=peak ;

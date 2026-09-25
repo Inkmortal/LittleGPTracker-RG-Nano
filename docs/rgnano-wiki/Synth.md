@@ -19,6 +19,102 @@ Each track plays one synth voice at a time. A note stopped by `KILL` or replaced
 
 `init` is a plain starting point for designing from scratch. Basses are tuned two octaves down, drums are tuned so `C 3` sounds right.
 
+## Engines
+
+The `engine` knob (SOUND page, under `type`) picks how the tone is made. The other five pages (ENV, FILTER, LFO, MOD, MIX) work the same for every engine, and so do the commands.
+
+| Engine | Makes | Like the M8's |
+| --- | --- | --- |
+| `synth` | the original synth: waves, sub, noise, 2-operator FM, chords | — |
+| `fm4` | four-operator FM: e-pianos, bells, brass, organs, slap bass | FM Synth |
+| `hyper` | a six-note chord of detuned saw pairs, wide in stereo: pads, trance leads, hoovers | Hypersynth |
+| `wav` | raw 8-bit shapes you bend: chip leads, PWM, sync and fold sounds | Wavsynth |
+
+Changing the engine loads that engine's starting sound (`fm init`, `hyper init`, `wav init`); **A + Left/Right** on `preset` then browses only that engine's presets. **B + Select** undoes an engine change like any other edit.
+
+| Engine | Presets |
+| --- | --- |
+| `fm4` | `epiano`, `fm bell`, `tubular`, `fm bass`, `slap bass`, `brass`, `organ`, `marimba`, `fm pluck`, `glass`, `fm lead`, `clav` |
+| `hyper` | `hyper pad`, `trance lead`, `hoover`, `strings`, `stab`, `dream`, `hyper bass` |
+| `wav` | `chip lead`, `chip bass`, `pwm pad`, `sync lead`, `fold bass`, `zap`, `lofi bell`, `noise hat` |
+
+The LFO's `shape` target means something per engine: `fm4` — FM brightness (every modulator's depth), `hyper` — the swarm breathes, `wav` — the mirror moves (pulse-width modulation on `pulse50`).
+
+### FM4 engine
+
+<img src="images/synth-7-fm4.png" width="280" align="right">
+
+Four sine operators **A B C D**. An operator either is **heard** (a carrier, it goes to the output) or **bends another one** (a modulator: the more level, the brighter and more metallic). `algo` picks who does what; the picture draws the routing: boxes on top modulate the boxes below them, the bottom ones feed the output bar. A filled box is sounding, the bright one is under the cursor, a hook on its side means feedback. Next to it: two cycles of the sound it makes.
+
+| Knob | Does |
+| --- | --- |
+| `algo` | the routing, `00`–`0B` (below) |
+| `tune` | semitones, like the synth's |
+| `shape` | the operator's wave: `sin` (pure FM), `sw2` half sine, `sw3` two humps, `sw4` quarter sine, `sw5`/`sw6` double-speed halves, `tri`, `saw`, `squ`, `pul` (25%), `imp` (a click), `nse` (noise) |
+| `ratio` | pitch against the note: `1.00` = the note, `2.00` = an octave up, `0.50` down. Whole ratios sound warm; `3.50`, `7.00`, `1.41` ring like bells. **A + Left/Right** ±0.01, **A + Up/Down** the next whole ratio |
+| `level` | a carrier: how loud; a modulator: how much it bends (FM depth) |
+| `fbk` | feedback: the operator modulates itself — sine, then saw, then noise |
+| `atk` `dec` `sus` | the operator's own envelope: time to reach its level, time to fall, level it holds (`FF` = full). A modulator that decays fast = the "ping" of an e-piano; one that attacks slowly = a brass swell |
+
+The grid has one column per operator: **Up/Down** stay in the column, **Left/Right** move between operators. The amp envelope on the ENV page still shapes the whole note.
+
+| `algo` | Routing | | `algo` | Routing |
+| --- | --- | --- | --- | --- |
+| `00` | A>B>C>D | | `06` | [A>B>C]+[A>B>D] |
+| `01` | [A+B]>C>D | | `07` | [A>B]+[C>D] — two pairs (e-piano) |
+| `02` | [A>B+C]>D | | `08` | [A>B]+[A>C]+[A>D] |
+| `03` | [A>B+A>C]>D | | `09` | [A>B]+[A>C]+D |
+| `04` | [A+B+C]>D | | `0A` | [A>B]+C+D |
+| `05` | [A>B>C]+D | | `0B` | A+B+C+D — additive: four tones, no FM (organ) |
+
+`>` = modulates, `+` = both heard (or both modulate the same one).
+
+**Try:** `fm init`, set C's `ratio` to `3.50` and raise C's `level` — a bell; shorten C's `dec` to `70` and it becomes a pluck.
+
+<br clear="right">
+
+### HYPER engine
+
+<img src="images/synth-8-hyper.png" width="280" align="right">
+
+Six notes at once, each played by **two saws** tuned slightly apart, spread left and right, plus a square sub. The picture has a lane per note: on the left the stereo field (its two saws as dots, pushed apart by `width`), on the right one second of how the pair beats (flat = in tune, more bumps = faster shimmer). Dim lanes are faded out by `shift`.
+
+| Knob | Does |
+| --- | --- |
+| `chord` | fills the six notes: `unison`, `octaves`, `5th`, `major`, `minor`, `sus2`, `sus4`, `maj7`, `min7`, `dom7`, `maj9`, `min9`, `add9`, `min11`, `quartal`. Editing a note shows `custom` |
+| `1-3` / `4-6` | the six notes, semitones above the one you play (`-24`…`+36`) |
+| `shift` | fades from notes 1-3 (`00`) to notes 4-6 (`FF`); in between you hear both |
+| `swarm` | how far apart each note's two saws are tuned, up to 60 cents: thicker, then seasick |
+| `width` | `00` = mono, `FF` = one saw of each pair hard left, the other hard right |
+| `sub` | square sub: `01`–`7F` two octaves down (louder as it rises), `80`–`FF` one octave down |
+| `scale` | `on`: every note moves down onto the song's Key/Scale (Project screen), so any note you type gives an in-key chord |
+| `tune` | semitones |
+
+`CHRD` in a phrase replaces the six notes: its notes, then the same an octave up (`CHRD 0047` = `0 4 7 12 16 19`).
+
+<br clear="right">
+
+### WAV engine
+
+<img src="images/synth-9-wav.png" width="280" align="right">
+
+A deliberately raw, 8-bit oscillator (no smoothing: it aliases like a game console). Pick a shape, then bend it; the picture shows the result through the drive stage.
+
+| Knob | Does |
+| --- | --- |
+| `wave` | `pulse12`, `pulse25`, `pulse50`, `pulse75`, `saw`, `triangle`, `sine`, `tonenoise` (a looping noise pattern with a pitch), `noise` (8-bit noise, colour follows the note) |
+| `size` | steps per cycle: `00` = 4 (crunchy) … `FF` = 256 (smooth) |
+| `mult` | repeats the shape in one cycle, `x1`…`x16` — a hard-sync sound |
+| `warp` | squeezes the shape into the start of the cycle, silence after — a hollow, vocal tone |
+| `mirror` | moves the middle of the wave: on `pulse50` it is the pulse width (`80` = square), on the others it bends the shape |
+| `drive` | the same drive as on the FILTER page |
+| `limit` | what drive does when the wave gets too loud: `soft` saturation, `clip`, `sin` (smooth fold), `fold`, `wrap`. Applies to every engine |
+| `tune` | semitones |
+
+**Try:** `pwm pad` — the LFO moves `mirror`; `fold bass` — a sine with `drive 60` and `limit fold`.
+
+<br clear="right">
+
 ## Pages and knobs
 
 Switch pages with **LB + Left/Right**. Values are hex `00`–`FF` unless noted. The top of the page draws the result; press **RB + Select** for a plain-English explanation of the focused knob.
@@ -30,6 +126,7 @@ Switch pages with **LB + Left/Right**. Values are hex `00`–`FF` unless noted. 
 | Knob | Does |
 | --- | --- |
 | `type` | synth / sample |
+| `engine` | how the tone is made: `synth`, `fm4`, `hyper`, `wav` (see [Engines](#engines)); the rows below are the `synth` engine's |
 | `preset` | load a ready sound (overwrites the knobs) |
 | `wave` | sine, triangle, saw, pulse, supersaw, noise, metal |
 | `shape` | depends on the wave: sine → feedback (buzzier), triangle → wavefold, saw → octave brightness, pulse → width, supersaw → detune, noise → crunch, metal → spread |

@@ -1719,8 +1719,10 @@ int SDLEventManager::StepSimGoal(SDLGUIWindowImp *window, SimCommand &command)
 		Trace::Error("RGNANO_SIM set %s: focused field has no value",command.arg.c_str());
 		return -1;
 	}
-	const std::string &target=command.arg2;
+	std::string target=command.arg2;
 	if (focused->GetType()==Variable::CHAR_LIST) {
+		// List entries with spaces are written with '_' (fm_bell)
+		std::replace(target.begin(),target.end(),'_',' ');
 		if (simLower(focused->GetString())==simLower(target)) return 0;
 		// Lists do not wrap: step toward the wanted entry
 		int wantedIndex=-1;
@@ -2579,7 +2581,10 @@ bool SDLEventManager::ExpectSimInstrumentParam(int instrument, const std::string
 	}
 	bool matches=false;
 	if (v->GetType()==Variable::CHAR_LIST || v->GetType()==Variable::BOOL) {
-		matches=(value==v->GetString());
+		// List entries with spaces are written with '_' (fm_init)
+		std::string wanted=value;
+		if (v->GetType()==Variable::CHAR_LIST) std::replace(wanted.begin(),wanted.end(),'_',' ');
+		matches=(wanted==v->GetString());
 	} else {
 		matches=(v->GetInt()==(int)strtol(value.c_str(),0,0));
 	}

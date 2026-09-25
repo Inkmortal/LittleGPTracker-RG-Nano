@@ -3,7 +3,30 @@
 
 FieldView::FieldView(GUIWindow &w,ViewData *data):View(w,data),T_SimpleList<UIField>(true) {
 	focus_=0 ;	
+	nearestColumn_=false ;
 } ;
+
+// Up/Down on a grid of fields: of the fields on the row we move to, the one
+// closest to the cursor's column (off: the row's first field, as always)
+UIField *FieldView::nearestInRow(UIField *target) {
+	if (!nearestColumn_ || !target || !focus_) return target ;
+	int y=target->GetPosition()._y ;
+	int x=focus_->GetPosition()._x ;
+	UIField *best=target ;
+	int bestDistance=-1 ;
+	IteratorPtr<UIField> it(T_SimpleList<UIField>::GetIterator()) ;
+	for (it->Begin();!it->IsDone();it->Next()) {
+		UIField &current=it->CurrentItem() ;
+		if (current.IsStatic() || current.GetPosition()._y!=y) continue ;
+		int d=current.GetPosition()._x-x ;
+		if (d<0) d=-d ;
+		if (bestDistance<0 || d<bestDistance) {
+			best=&current ;
+			bestDistance=d ;
+		}
+	}
+	return best ;
+}
 
 void FieldView::SetFocus(UIField *field) {
 
@@ -144,6 +167,7 @@ void FieldView::ProcessButtonMask(unsigned short mask) {
 					if (next==0) {
 						next=first ;
 					}
+					next=nearestInRow(next) ;
 
 					focus_->ClearFocus() ;
 					focus_=next ;
@@ -185,6 +209,7 @@ void FieldView::ProcessButtonMask(unsigned short mask) {
 					if (prev==0) {
 						prev=last ;
 					}
+					prev=nearestInRow(prev) ;
 
 					focus_->ClearFocus() ;
  					focus_=prev ;

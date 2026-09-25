@@ -115,6 +115,8 @@ Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 
 | Area | Where |
 | --- | --- |
 | Synth engine and presets | `sources/Application/Instruments/SynthInstrument.*` |
+| FM4 / HYPER / WAV engines (DSP) | `sources/Application/Instruments/SynthEngines.*` (ARM check: `tools/dsp-harness/synth_engines_check.cpp`) |
+| Engine SOUND pages (grid, pictures, help) | `sources/Application/Views/InstrumentViewEngines.cpp` |
 | Shared reverb / echo | `sources/Application/Mixer/SendFX.*` |
 | Instrument bank, type switching, starter kit | `sources/Application/Instruments/InstrumentBank.cpp` |
 | Synth screen | `sources/Application/Views/InstrumentViewSynth.cpp` |

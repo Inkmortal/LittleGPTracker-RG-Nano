@@ -46,6 +46,8 @@ public:
 
 	static Player *GetInstance() ;
 	bool Init(Project*,ViewData *) ;
+	// The song being played (0 before Init); instruments read its key/scale
+	Project *GetProject() { return project_ ; } ;
 	void Reset() ;
 	void Close() ;
 	

@@ -547,7 +547,8 @@ int View::getMoreKeys(const char **lines,int max) {
 		"Sel LB+U shuffle LB+D rev","A+Up/Dn on cmd: A to Z",
 		"LB+Start render to sample","RB+Up Groove RB+Dn Table"};
 	static const char *instrument[]={"B+Dpad other instrument","B+A clear sample/table",
-		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song"};
+		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song",
+		"Grids: Up/Dn keep column","FM ratio: A+Up/Dn whole"};
 	static const char *table[]={"B+Left/Right other table","B+A delete",
 		"B+LB select, then B copy","A+LB paste","RB+Start play the song"};
 	static const char *groove[]={"B+Left/Right other groove","B+A clear the step",

@@ -105,10 +105,21 @@ void InstrumentView::fillSynthParameters() {
 	T_SimpleList<UIField>::Insert(f); \
 	position._y+=1;
 
+	int engine=s->GetEngine();
+	int firstPreset,lastPreset;
+	SynthInstrument::GetPresetRange(engine,firstPreset,lastPreset);
+	shownEngine_=engine;
+
 	switch(labPage_) {
 		case 0:
 			addTypeField(position);
-			SYNTH_FIELD(SYP_PRESET,"preset %s",0,SynthInstrument::GetPresetCount()-1,1,1);
+			SYNTH_FIELD(SYP_ENGINE,"engine %s",0,SE_LAST-1,1,1);
+			// A+Left/Right browses this engine's presets
+			SYNTH_FIELD(SYP_PRESET,"preset %s",firstPreset,lastPreset,1,1);
+			if (engine!=SE_SYNTH) {
+				fillEngineSoundPage(s,position,engine);
+				break;
+			}
 			SYNTH_FIELD(SYP_WAVE,"wave   %s",0,SW_LAST-1,1,1);
 			SYNTH_FIELD(SYP_SHAPE,"shape  %2.2X",0,0xFF,1,0x10);
 			SYNTH_FIELD(SYP_SUB,"sub    %2.2X",0,0xFF,1,0x10);
@@ -174,6 +185,16 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 		case SYP_PRESET:
 			strcpy(line1,"A+Left/Right loads a");
 			strcpy(line2,"ready-made sound");
+			break;
+		case SYP_ENGINE:
+			strcpy(line1,"how the tone is made: synth,");
+			strcpy(line2,"fm4, hyper chord or wav");
+			switch(x) {
+				case SE_FM4: strcpy(value,"4-op FM"); break;
+				case SE_HYPER: strcpy(value,"6-note saw chord"); break;
+				case SE_WAV: strcpy(value,"8-bit shapes"); break;
+				default: strcpy(value,"subtractive + FM"); break;
+			}
 			break;
 		case SYP_WAVE:
 			strcpy(line1,"base tone: saw/pulse bright");
@@ -333,19 +354,21 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 			strcpy(line2,"speed/depth: FX screen");
 			break;
 		default:
-			getModFieldHelp(id,s,line1,line2,value);
+			if (!getEngineFieldHelp(id,s,line1,line2,value)) {
+				getModFieldHelp(id,s,line1,line2,value);
+			}
 			break;
 	}
 }
 
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 
-static GUIColor synthPanel() { return AppWindow::ThemeColor(CD_BACKGROUND); }
-static GUIColor synthFrame() { return AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45); }
-static GUIColor synthTrace() { return AppWindow::ThemeColor(CD_HILITE2); }
-static GUIColor synthHot() { return AppWindow::ThemeColor(CD_NORMAL); }
+GUIColor synthPanel() { return AppWindow::ThemeColor(CD_BACKGROUND); }
+GUIColor synthFrame() { return AppWindow::ThemeBlend(CD_BACKGROUND,CD_BORDER,45); }
+GUIColor synthTrace() { return AppWindow::ThemeColor(CD_HILITE2); }
+GUIColor synthHot() { return AppWindow::ThemeColor(CD_NORMAL); }
 
-static void synthBox(SDLGUIWindowImp *imp, int x, int y, int w, int h) {
+void synthBox(SDLGUIWindowImp *imp, int x, int y, int w, int h) {
 	GUIColor frame=synthFrame();
 	GUIColor panel=synthPanel();
 	imp->SetColor(frame);
@@ -357,7 +380,7 @@ static void synthBox(SDLGUIWindowImp *imp, int x, int y, int w, int h) {
 }
 
 // Draws a continuous trace through points (px) inside a box
-static void synthPlot(SDLGUIWindowImp *imp, const int *ys, int count, int x, int top,
+void synthPlot(SDLGUIWindowImp *imp, const int *ys, int count, int x, int top,
                       int bottom, bool hot) {
 	GUIColor color=hot?synthHot():synthTrace();
 	imp->SetColor(color);
@@ -401,7 +424,10 @@ void InstrumentView::drawSynthVisuals() {
 	int ys[240];
 	synthBox(imp,bx,by,bw,bh);
 
-	if (labPage_==0) {
+	if (labPage_==0 && s->GetEngine()!=SE_SYNTH) {
+		// FM4 routing, HYPER swarm, WAV shape
+		drawEngineSoundVisual(s,bx,by,bw,bh);
+	} else if (labPage_==0) {
 		// One cycle of the oscillator, twice, so the shape reads clearly
 		float cycle[110];
 		s->RenderCycle(cycle,110);
@@ -568,11 +594,17 @@ void InstrumentView::customizeSynthOverlay(const char *&name, const char *&where
 	cmd6="A+Start hear  B+A reset";
 	cmd7="B+Left/Right other instr";
 	switch(labPage_) {
-		case 0:
+		case 0: {
 			name="SYNTH SOUND";
 			field="Tone: preset/wave/FM";
 			cmd1="preset: A+LR pick a sound";
+			int i=viewData_->currentInstrument_;
+			SynthInstrument *s=(SynthInstrument *)viewData_->project_->GetInstrumentBank()->GetInstrument(i);
+			if (s->GetEngine()!=SE_SYNTH) {
+				customizeEngineOverlay(s->GetEngine(),name,field,cmd1,cmd2,cmd3);
+			}
 			break;
+		}
 		case 1:
 			name="SYNTH ENV";
 			field="Volume shape over time";
