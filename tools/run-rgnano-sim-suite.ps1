@@ -198,6 +198,16 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "mod-slots-legacy"
+    Script = "mod-slots-legacy.rgsim"
+    Args = @("-OpenDemo=LateLibrary")
+  },
+  @{
+    Name = "mod-slots-reopen"
+    Script = "mod-slots-reopen.rgsim"
+    Args = @()
+  },
+  @{
     Name = "demo-stop-silences"
     Script = "demo-stop-silences.rgsim"
     Args = @("-OpenDemo=JadeSword")

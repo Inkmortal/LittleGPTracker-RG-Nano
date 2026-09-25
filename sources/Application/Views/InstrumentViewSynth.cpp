@@ -387,6 +387,12 @@ void InstrumentView::drawSynthVisuals() {
 	DrawString((30-(int)strlen(line))/2,2,line,props);
 	SetColor(CD_NORMAL);
 
+	if (labPage_==INSTRUMENT_MOD_PAGE) {
+		// Its own layout: four slots, one curve, the slot's settings
+		drawModPage(s);
+		return;
+	}
+
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
 	GUIColor clearColor=AppWindow::ThemeColor(CD_BACKGROUND);
@@ -492,8 +498,6 @@ void InstrumentView::drawSynthVisuals() {
 			ys[x]=mid-(int)(v*(bottom-top)/2);
 		}
 		synthPlot(imp,ys,plotW,bx+2,top,bottom,false);
-	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
-		drawModPlot(s,bx,by,bw,bh);
 	} else {
 		// Mix: level and pan, then the three effect sends
 		const char *names[5]={"VOL","PAN","REV","DLY","CHO"};
@@ -590,8 +594,7 @@ void InstrumentView::customizeSynthOverlay(const char *&name, const char *&where
 			break;
 		case INSTRUMENT_MOD_PAGE:
 			name="SYNTH MOD";
-			field="2 envelopes/LFOs";
-			cmd1="type: decay/swell or LFO";
+			customizeModOverlay(field,where,edit,cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7);
 			break;
 		default:
 			name="SYNTH MIX";

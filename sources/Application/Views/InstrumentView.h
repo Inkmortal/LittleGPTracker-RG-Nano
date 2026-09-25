@@ -11,6 +11,8 @@
 // Pages per instrument (sample and synth both have six, MOD is the 5th)
 #define INSTRUMENT_PAGE_COUNT 6
 #define INSTRUMENT_MOD_PAGE 4
+// View-owned "slot" field (1..4) on the MOD page
+#define INSTRUMENT_MOD_SLOT_FIELD MAKE_FOURCC('I','M','S','L')
 
 class InstrumentView: public FieldView, public I_Observer {
 public:
@@ -54,7 +56,19 @@ protected:
 	void fillModPage(I_Instrument *instr, GUIPoint position) ;
 	bool isModField(FourCC id) ;
 	void getModFieldHelp(FourCC id, I_Instrument *instr, char *line1, char *line2, char *value) ;
-	void drawModPlot(I_Instrument *instr, int bx, int by, int bw, int bh) ;
+	void drawModPage(I_Instrument *instr) ;
+	void drawModCurve(I_Instrument *instr, int slot, int x, int y, int w, int h, bool big) ;
+	// MOD page keys and edits: slot switching, type defaults, B+A
+	bool processModKeys(unsigned short mask) ;
+	bool syncModPage(int instrumentBefore, int slotBefore, int typeBefore) ;
+	bool resetModField() ;
+	void refreshStaleModFields() ;
+	void selectModSlot(int slot) ;
+	int currentModType() ;
+	void customizeModOverlay(const char *&field, const char *&where, const char *&edit,
+	                         const char *&cmd1, const char *&cmd2, const char *&cmd3,
+	                         const char *&cmd4, const char *&cmd5, const char *&cmd6,
+	                         const char *&cmd7) ;
 	void customizeSynthOverlay(const char *&name, const char *&where,
 	                           const char *&edit, const char *&field,
 	                           const char *&cmd1, const char *&cmd2,
@@ -64,6 +78,7 @@ protected:
 	InstrumentType getInstrumentType() ;
 public:
 	virtual void GetGuideTopic(const char *&page, const char *&section) ;
+	virtual void CustomizeHowToSteps(const char **lines) ;
 	void OpenInstrument(int instrument) ;
 protected:
 	void drawSampleLabVisuals() ;
@@ -94,5 +109,9 @@ private:
 	bool previewLoop_ ;
 	int currentSlot_ ;
 	Variable *typeVar_ ;
+	// MOD page: the slot shown, and the type its fields were built for
+	Variable *modSlotVar_ ;
+	int modFieldsType_ ;
+	int modFieldsSlot_ ;
 } ;
 #endif

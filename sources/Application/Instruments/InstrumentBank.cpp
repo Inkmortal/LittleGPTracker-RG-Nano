@@ -1,5 +1,6 @@
 
 #include "InstrumentBank.h"
+#include "ModSources.h"
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Instruments/MidiInstrument.h"
@@ -177,9 +178,17 @@ void InstrumentBank::RestoreContent(TiXmlElement *element) {
 				} ;
 
         TiXmlElement *param=current->FirstChildElement() ;
+				InstrumentMods *mods=instr->GetMods() ;
 				while (param) {
 					const char *name=param->Attribute("NAME") ;
 					const char *value=param->Attribute("VALUE") ;
+
+          // Songs from the first MOD release (two slots, LFO shapes as
+          // types, a "rate"): converted to the four-slot settings
+          if (mods && mods->RestoreLegacy(name,value)) {
+            param=param->NextSiblingElement() ;
+            continue ;
+          }
 
           // Convert old filter dist to newer filter mode
 
@@ -204,6 +213,9 @@ void InstrumentBank::RestoreContent(TiXmlElement *element) {
 						} ;
 					}
 					param=param->NextSiblingElement() ;
+				}
+				if (mods) {
+					mods->FinishRestore() ;
 				}
 				if (doc->version_<38) {
 					Variable *cvl=instr->FindVariable(SIP_CRUSHVOL) ;

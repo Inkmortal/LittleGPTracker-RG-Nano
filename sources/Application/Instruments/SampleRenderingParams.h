@@ -76,6 +76,10 @@ struct renderParams {
 	LogSpeedRamp pfin_ ;
 	Arp arp_ ;
 	ModSource mods_[MOD_SLOT_COUNT] ;
+	float modVolScale_ ;          // MOD envelopes on volume
+	float modExtra_[RUX_LAST] ;   // MOD drive/crush/start/loop/sends
+	int baseLoopStart_ ;          // loop start before MOD moves it
+	bool releasing_ ;             // note-off while an ADSR fades the volume
 
 	bool couldClick_ ;
 

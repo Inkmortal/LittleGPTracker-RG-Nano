@@ -47,7 +47,7 @@ Imported samples live inside the song folder (`lgpt_<name>/samples/`), so the so
 | Shape | volume, pan, reverb, delay and chorus sends (the shared effects on the [FX screen](Screens#fx)), crush, drive, downsample |
 | Filter | cutoff, resonance, filter type and mode |
 | Loop | loop mode, start, loop start, end |
-| Mod | two envelopes/LFOs on volume, cutoff, reso, pitch or pan — see [Synth → MOD](Synth#mod--envelopes-and-lfos) |
+| Mod | four slots (ADSR/AHD/drum envelopes, LFOs, key tracking) on volume, cutoff, reso, pitch, fine, pan, drive, crush, feedback, sample start, loop start or the sends — see [Synth → MOD](Synth#mod--4-modulation-slots) |
 | Motion | instrument table, feedback |
 
 ## Trimming

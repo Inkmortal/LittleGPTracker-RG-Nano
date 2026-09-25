@@ -16,7 +16,7 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **Start** | play / stop what this screen shows |
 | **RB + Start** | play / stop the whole song (on the Song screen in Live mode: stop this track) |
 | **LB + Start** | capture or launch: record this bar/chain into a sample, or on the Song launch the row live |
-| **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, song section) |
+| **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, MOD slot, song section) |
 | **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
 | **B + LB** | start a selection (again: grow it to whole rows, then the whole block). In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
 | **Select** | this screen's special tool: command picker, Live mode, sample import/root, rename, sort |
@@ -137,6 +137,7 @@ Didn't like it? **B + Select** undoes.
 | Input | Does |
 | --- | --- |
 | **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX for synths) |
+| **LB + Up/Down** on the MOD page | pick the slot (1–4) the settings edit |
 | **A + Left/Right** on `preset` | browse ready-made sounds |
 | **A + D-pad** | change the focused knob |
 | **B + Left/Right** | previous / next instrument (**B + Down/Up**: 16 forward / back) |

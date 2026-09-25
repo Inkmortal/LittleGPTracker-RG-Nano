@@ -1,5 +1,6 @@
-# The MOD page: two envelope/LFO slots on both synth and sample
-# instruments. Set a slot, check the value in real units, hear it.
+# The MOD page: four slots (envelopes, LFOs, key tracking) on synth and
+# sample instruments. Pick slots, set types (each type loads its own
+# starting values), check values in real units, hear it, undo.
 route boot.new_project_random
 expect_view song
 press a 80
@@ -10,25 +11,93 @@ press a 80
 goto instrument
 expect_screen_text Instrument 00 SYNTH
 
-# Synth: slot 1 = decay envelope sweeping the filter, slot 2 = vibrato
+# Synth, slot 1: an ADSR closing the filter
 set preset pad
 page MOD
 expect_screen_text 5/6 MOD
-set mod1 decay
-set dest1 cutoff
-set amt1 80
-set rate1 0x60
-expect_instrument_param 0 mod1_type decay
+expect_screen_text >1 off
+expect_screen_text slot 1 is off
+set type adsr
+expect_instrument_param 0 mod1_type adsr
+expect_instrument_param 0 mod1_p1 32
+expect_instrument_param 0 mod1_p3 128
+set dest cutoff
+set amount 100
 expect_instrument_param 0 mod1_dest cutoff
-expect_instrument_param 0 mod1_amount 80
-focus rate1
-expect_screen_text 312 ms
-set mod2 sine
-set amt2 6
-focus rate2
-expect_screen_text 1.60 Hz
-screenshot_app mod-synth.bmp
-# RB+A+Up previews it
+expect_instrument_param 0 mod1_amount 100
+focus attack
+expect_screen_text 20 3.2 ms
+focus sustn
+expect_screen_text 80 50%
+set releas 0x80
+expect_screen_text 80 102 ms
+expect_screen_text note off
+screenshot_app mod-synth-adsr.bmp
+# Another instrument and back (B+Right, B+Left): its settings stay its own
+instrument 01
+expect_screen_text Instrument 01 SYNTH
+expect_screen_text >1 off
+instrument 00
+expect_instrument_param 0 mod1_p4 128
+expect_instrument_param 1 mod1_type off
+
+# LB+Down: slot 2, a sine vibrato that restarts with every note
+down m
+press d 80
+up m
+wait 100
+expect_screen_text >2 off
+set type lfo
+expect_instrument_param 0 mod2_type lfo
+expect_instrument_param 0 mod2_p1 160
+set dest pitch
+set amount 6
+focus amount
+expect_screen_text +6 +1.1 semi
+set shape 1
+expect_screen_text shape  sine
+set trig 1
+expect_screen_text trig   retrig
+set rate 0x80
+expect_screen_text 80 1.60 Hz
+expect_instrument_param 0 mod2_p2 1
+expect_instrument_param 0 mod2_p3 1
+
+# The slot field: slot 3 = drum envelope on volume, slot 4 = key tracking
+set slot 3
+set type drum
+set dest volume
+focus peak
+expect_screen_text 40 11ms dip 77%
+set slot 4
+set type track
+set dest cutoff
+focus from
+expect_instrument_param 0 mod4_p1 36
+expect_screen_text >4 track cutoff  key
+screenshot_app mod-synth-4slots.bmp
+set slot 1
+expect_screen_text >1 adsr  cutoff  +100
+focus releas
+screenshot_app mod-synth-overview.bmp
+# The helper explains the page and the focused setting
+down n
+press k 80
+up n
+wait 100
+press d 80
+wait 100
+expect_screen_text LB+Up/Down other slot
+expect_screen_text fade after KILL / new instr
+screenshot_app mod-helper.bmp
+press d 80
+wait 100
+expect_screen_text MOD: 4 slots move the sound
+down n
+press k 80
+up n
+wait 100
+# A+Start previews it
 down a
 press s 80
 up a
@@ -40,27 +109,59 @@ press s 80
 up a
 wait 300
 
-# A preset starts clean: picking one switches both slots off
+# B+A on a setting: back to its type's starting value
+set slot 2
+focus rate
+down b
+press a 80
+up b
+wait 100
+expect_instrument_param 0 mod2_p1 160
+# Undo brings the edited rate back; a type change and its values undo as one
+down b
+press k 80
+up b
+wait 100
+expect_instrument_param 0 mod2_p1 128
+set type drum
+expect_instrument_param 0 mod2_type drum
+expect_instrument_param 0 mod2_p1 64
+down b
+press k 80
+up b
+wait 100
+expect_instrument_param 0 mod2_type lfo
+expect_instrument_param 0 mod2_p1 128
+expect_screen_text rate   80 1.60 Hz
+
+# A preset starts clean: every slot off
 page SOUND
 set preset keys
 expect_instrument_param 0 mod1_type off
-expect_instrument_param 0 mod2_type off
+expect_instrument_param 0 mod4_type off
 
-# Sample instrument: same page, sixth page is still MOTION
+# Sample instrument: same page, its own destinations (start, loop...)
 instrument 01
 page SOUND
 set type sample
 expect_instrument_type 1 Sample
 page MOD
 expect_screen_text 5/6 MOD
-set mod1 square
-set dest1 volume
-set amt1 -60
-expect_instrument_param 1 mod1_type square
+set slot 1
+set type ahd
+set dest start
+expect_instrument_param 1 mod1_dest start
+set type lfo
+set shape 8
+expect_screen_text shape  random
+set dest volume
+set amount -60
+expect_instrument_param 1 mod1_type lfo
 expect_instrument_param 1 mod1_amount -60
+expect_instrument_param 1 mod1_p2 8
+screenshot_app mod-sample.bmp
 page MOTION
 expect_screen_text 6/6 MOTION
-screenshot_app mod-sample.bmp
 
 goto song
 expect_no_error

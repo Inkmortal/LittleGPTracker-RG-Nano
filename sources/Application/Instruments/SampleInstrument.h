@@ -69,6 +69,9 @@ public:
        virtual bool Render(int channel,fixed *buffer,int size,bool updateTick) ;
        void sendToEffects(int channel,fixed *buffer,int size) ;
        virtual void AllNotesOff() ;
+       virtual bool IsReleasing(int channel) ;
+       virtual InstrumentMods *GetMods() { return &mods_ ; } ;
+       virtual void StopQuickly(int channel) ;
        virtual bool IsInitialized() ;
 	   virtual bool IsEmpty() ;
 

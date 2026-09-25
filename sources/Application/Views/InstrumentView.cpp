@@ -41,11 +41,15 @@ InstrumentView::InstrumentView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	markerFocus_=SIP_START ;
 	previewLoop_=false ;
 	typeVar_=new Variable("type",INSTRUMENT_TYPE_FIELD,instrumentTypeNames,2,0) ;
+	modSlotVar_=new Variable("slot",INSTRUMENT_MOD_SLOT_FIELD,1) ;
+	modFieldsType_=-1 ;
+	modFieldsSlot_=-1 ;
 	onInstrumentChange() ;
 }
 
 InstrumentView::~InstrumentView() {
 	delete typeVar_ ;
+	delete modSlotVar_ ;
 }
 
 InstrumentType InstrumentView::getInstrumentType() {
@@ -874,18 +878,7 @@ void InstrumentView::drawSampleLabVisuals() {
 		DrawString(3,12,line,props);
 #endif
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
-		drawModPlot(instrument,10,36,220,52);
-		// The focused setting in real units (ms, Hz, semitones)
-		UIIntVarField *field=(UIIntVarField *)GetFocus();
-		if (field) {
-			char l1[40],l2[40],value[40];
-			getModFieldHelp(field->GetVariableID(),instrument,l1,l2,value);
-			if (value[0]) {
-				SetColor(CD_HILITE1);
-				drawLabText((30-(int)strlen(value))/2,13,value,props);
-				SetColor(CD_NORMAL);
-			}
-		}
+		drawModPage(instrument);
 	} else {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 		// The instrument's table: 16 steps down three command columns, a
@@ -981,6 +974,11 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	isDirty_=false ;
 	syncReplacedInstrument() ;
 
+	// MOD page: LB+Up/Down picks the slot
+	if (processModKeys(mask)) {
+		return;
+	}
+
 	if (getInstrumentType()==IT_SYNTH && (mask&EPBM_L) &&
 	    !(mask&(EPBM_A|EPBM_B|EPBM_R|EPBM_START|EPBM_SELECT))) {
 		if (mask&EPBM_LEFT) {
@@ -1017,6 +1015,9 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			FourCC id=focus->GetVariableID();
 			bool special=(id==SIP_SAMPLE || id==SIP_TABLE || id==MIP_TABLE ||
 			              !strcmp(v.GetName(),"preset") || !strcmp(v.GetName(),"type"));
+			if (resetModField()) {
+				return;
+			}
 			if (!special) {
 				v.ResetToDefault();
 				isDirty_=true;
@@ -1185,6 +1186,9 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 
 	// B and RB combos belong to the screen (switch instrument, cut, go to
 	// another screen), never to the focused knob
+	int modInstrumentBefore=viewData_->currentInstrument_ ;
+	int modSlotBefore=modSlotVar_->GetInt()-1 ;
+	int modTypeBefore=(labPage_==INSTRUMENT_MOD_PAGE)?currentModType():-1 ;
 	if (!(mask&(EPBM_B|EPBM_R))) {
 		FieldView::ProcessButtonMask(mask) ;
 	}
@@ -1192,6 +1196,10 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	// The type field swaps the whole instrument: rebuild before anything
 	// else touches the (now replaced) fields.
 	if (applyTypeChange()) {
+		return ;
+	}
+	// MOD page: another slot, or a new type with its own settings
+	if (syncModPage(modInstrumentBefore,modSlotBefore,modTypeBefore)) {
 		return ;
 	}
 
@@ -1333,6 +1341,7 @@ void InstrumentView::syncReplacedInstrument() {
 void InstrumentView::DrawView() {
 
 	syncReplacedInstrument() ;
+	refreshStaleModFields() ;
 
 	Clear() ;
     View::EnableNotification();
@@ -1373,7 +1382,12 @@ void InstrumentView::OnFocus() { onInstrumentChange(); }
 
 void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
 	// Samples have a page of their own (packs, trimming, root, slices)
-	if (getInstrumentType()==IT_SAMPLE) {
+	if (labPage_==INSTRUMENT_MOD_PAGE &&
+	    (getInstrumentType()==IT_SAMPLE || getInstrumentType()==IT_SYNTH)) {
+		// Both instrument kinds share the MOD page, explained once
+		page="synth";
+		section="MOD - 4 modulation slots";
+	} else if (getInstrumentType()==IT_SAMPLE) {
 		page="samples";
 		section="Sample pages";
 	} else {
@@ -1452,23 +1466,8 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd6="A+Start hear it";
 		cmd7="RB+Start once/loop";
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
-		field="2 envelopes/LFOs";
 		edit="A+Dpad edit value";
-		cmd1="type: decay/swell or LFO";
-		cmd2="dest: what it moves";
-		cmd3="amt: how far (+/-)";
-		cmd4="rate: higher = faster";
-		cmd5="LB+Left/Right page";
-		// The focused setting explained
-		UIIntVarField *focused=(UIIntVarField *)GetFocus();
-		if (focused && isModField(focused->GetVariableID())) {
-			static char help1[40],help2[40],value[40];
-			int i=viewData_->currentInstrument_;
-			I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
-			getModFieldHelp(focused->GetVariableID(),instr,help1,help2,value);
-			where=help1;
-			edit=help2;
-		}
+		customizeModOverlay(field,where,edit,cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7);
 	} else {
 		field="Motion: table/fb";
 		edit="Automation source";

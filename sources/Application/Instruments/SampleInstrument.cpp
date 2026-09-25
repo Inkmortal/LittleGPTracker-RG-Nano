@@ -139,7 +139,7 @@ SampleInstrument::SampleInstrument() {
      chorus_ = new Variable("chorus", SIP_CHORUS, 0);
      Insert(chorus_);
 
-     mods_.Create(*this);
+     mods_.Create(*this, MIK_SAMPLE);
 
      customName_ = new Variable("name", INSTRUMENT_NAME_ID, "");
      Insert(customName_);
@@ -161,6 +161,13 @@ SampleInstrument::SampleInstrument() {
          for (int m = 0; m < MOD_SLOT_COUNT; m++) {
              rp->updaters_.push_back(&rp->mods_[m]);
          }
+         rp->modVolScale_ = 1.0f;
+         for (int x = 0; x < RUX_LAST; x++) {
+             rp->modExtra_[x] = 0.0f;
+         }
+         rp->baseLoopStart_ = 0;
+         rp->releasing_ = false;
+         rp->finished_ = true;
 	} ;
 
  // Reset table state
@@ -196,6 +203,74 @@ static void clampModulated(renderParams *rp) {
 	if (rp->cutoff_>i2fp(1)) rp->cutoff_=i2fp(1) ;
 	if (rp->reso_<0) rp->reso_=0 ;
 	if (rp->reso_>i2fp(1)) rp->reso_=i2fp(1) ;
+}
+
+// Sums the command ramps and MOD slots into the voice (tick or k-rate)
+static void applyUpdaterSums(renderParams *rp,bool withFilter) {
+	struct RUParams rup ;
+	rup.Reset() ;
+	std::vector<I_SRPUpdater *>::iterator it ;
+	for (it=rp->activeUpdaters_.begin();it!=rp->activeUpdaters_.end();it++) {
+		(*it)->UpdateSRP(rup) ;
+	}
+	rp->modVolScale_=rup.volumeScale_ ;
+	for (int x=0;x<RUX_LAST;x++) {
+		rp->modExtra_[x]=rup.extra_[x] ;
+	}
+	rp->volume_=fp_mul(rp->baseVolume_+rup.volumeOffset_,fl2fp(rup.volumeScale_)) ;
+	rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
+	rp->pan_=rp->basePan_+rup.panOffset_ ;
+	if (withFilter) {
+		rp->cutoff_=rp->baseFCut_+rup.cutOffset_ ;
+		rp->reso_=rp->baseFRes_+rup.resOffset_ ;
+		rp->fbMix_=rp->baseFbMix_+rup.fbMixOffset_ ;
+		rp->fbTun_=rp->baseFbTun_+rup.fbTunOffset_ ;
+	}
+	clampModulated(rp) ;
+}
+
+// Bit depth after MOD crush (more amount = fewer bits) and the drive
+// before it
+static int modulatedCrush(renderParams *rp) {
+	int bits=rp->crush_-(int)(rp->modExtra_[RUX_CRUSH]+(rp->modExtra_[RUX_CRUSH]>=0?0.5f:-0.5f)) ;
+	if (bits<1) bits=1 ;
+	if (bits>16) bits=16 ;
+	return bits ;
+}
+
+static int modulatedDrive(renderParams *rp) {
+	int drive=rp->drive_+(int)rp->modExtra_[RUX_DRIVE] ;
+	if (drive<0) drive=0 ;
+	if (drive>255) drive=255 ;
+	return drive ;
+}
+
+// Loop start moved by MOD, as a share of the trimmed sample (forward loops)
+static void applyModLoopStart(renderParams *rp) {
+	int base=rp->baseLoopStart_ ;
+	if (base>=rp->rendLoopEnd_) {
+		rp->rendLoopStart_=base ;
+		return ;
+	}
+	int span=rp->rendLoopEnd_-rp->rendFirst_ ;
+	if (span<0) span=-span ;
+	int loop=base+(int)(rp->modExtra_[RUX_LOOP]*span) ;
+	if (loop<0) loop=0 ;
+	if (loop>rp->rendLoopEnd_-2) loop=rp->rendLoopEnd_-2 ;
+	if (loop<0) loop=0 ;
+	rp->rendLoopStart_=loop ;
+}
+
+// An ADSR on volume still fading this voice out
+static bool volumeReleaseRunning(renderParams *rp) {
+	for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		ModSource &mod=rp->mods_[m] ;
+		if (mod.Enabled() && mod.GetType()==MT_ADSR && mod.GetDest()==MD_VOLUME &&
+		    mod.GetAmount()>0.0f && !mod.IsDone()) {
+			return true ;
+		}
+	}
+	return false ;
 }
 
 bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
@@ -254,6 +329,7 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 		 } ;
 	 } 
      SampleInstrumentLoopMode loopmode=(SampleInstrumentLoopMode)loopMode_->GetInt() ;
+     rp->releasing_=false ;
 
 /*	 if (loopmode==SILM_OSCFINE) {
 		if (rp->rendLoopEnd_>source_->GetSize()-1) { // check for older instrument that were not correctly handled
@@ -405,26 +481,65 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 		}
 
 		rp->activeUpdaters_.clear() ;
+	}
 
-		// Envelopes and LFOs from the MOD page restart with every note
-		float krateHz=Audio::GetInstance()->GetSampleRate()/(float)KRATE_SAMPLE_COUNT ;
-		mods_.StartVoice(rp->mods_,rp->activeUpdaters_,krateHz,channel*131+midinote) ;
-	}	
+	// Envelopes and LFOs from the MOD page restart with every note, with or
+	// without an instrument number on the step, and the note starts with
+	// their first values
+	float krateHz=Audio::GetInstance()->GetSampleRate()/(float)KRATE_SAMPLE_COUNT ;
+	mods_.StartVoice(rp->mods_,rp->activeUpdaters_,krateHz,midinote,channel,channel*131+midinote) ;
+	applyUpdaterSums(rp,true) ;
+	rp->baseLoopStart_=rp->rendLoopStart_ ;
+	applyModLoopStart(rp) ;
+
+	// Sample start moved by MOD (key tracking, a free LFO...): a share of
+	// the trimmed sample, only where the note starts at 'start'
+	if (rp->modExtra_[RUX_START]!=0.0f &&
+	    (loopmode==SILM_ONESHOT || loopmode==SILM_LOOP || loopmode==SILM_LOOP_PINGPONG)) {
+		int span=rp->rendLoopEnd_-rp->rendFirst_ ;
+		float pos=rp->rendFirst_+rp->modExtra_[RUX_START]*span ;
+		int size=source_->GetSize(rp->midiNote_) ;
+		float lo=0.0f,hi=(float)(size>1?size-1:0) ;
+		if (span>0) {
+			hi=(float)(rp->rendLoopEnd_-1) ;
+		} else if (span<0) {
+			lo=(float)(rp->rendLoopEnd_+1) ;
+		}
+		if (pos<lo) pos=lo ;
+		if (pos>hi) pos=hi ;
+		rp->position_=pos ;
+	}
 	return true ;
 }
 
 void SampleInstrument::Stop(int channel) {
 
-	// Get Rendering params for current voice & fill init data
-
 	 renderParams *rp=renderParams_+channel ;
 	 running_=false ;
+	 // Note-off / KILL: ADSR slots release. One on volume keeps the sample
+	 // playing while it fades (the channel holds it as a release tail)
+	 for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		 rp->mods_[m].NoteOff() ;
+	 }
+	 rp->releasing_=!rp->finished_ && volumeReleaseRunning(rp) ;
+}
+
+bool SampleInstrument::IsReleasing(int channel) {
+	renderParams *rp=renderParams_+channel ;
+	return rp->releasing_ && !rp->finished_ ;
+}
+
+// Transport stop: no release tail
+void SampleInstrument::StopQuickly(int channel) {
+	Stop(channel) ;
+	renderParams_[channel].releasing_=false ;
 }
 
 void SampleInstrument::AllNotesOff() {
 	// Mark every voice finished: Stop() only flips the shared running_ flag
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		renderParams_[i].finished_=true ;
+		renderParams_[i].releasing_=false ;
 	}
 	running_=false ;
 }
@@ -536,22 +651,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 			 if (hasUpdaters) {
 
 				 doTickUpdate(channel) ;
-
-				struct RUParams rup ;
-				rup.cutOffset_=rup.resOffset_=rup.volumeOffset_=rup.panOffset_=0 ;
-				rup.speedOffset_=FP_ONE ;
-
-				std::vector<I_SRPUpdater *>::iterator it ;
-
-				for (it=rp->activeUpdaters_.begin();it!=rp->activeUpdaters_.end();it++) {
-					I_SRPUpdater *current=*it ;
-					current->UpdateSRP(rup) ;
-				}
-
-				rp->volume_=rp->baseVolume_+rup.volumeOffset_ ;
-				rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
-				rp->pan_=rp->basePan_+rup.panOffset_ ;
-				clampModulated(rp) ;
+				 applyUpdaterSums(rp,false) ;
 			}
 
 		// Process retrig
@@ -565,6 +665,10 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 						rp->position_=0 ;
 					} ;
 					rp->retrigCount_=rp->retrigLoop_ ;
+					// each re-strike restarts the MOD envelopes too
+					for (int m=0;m<MOD_SLOT_COUNT;m++) {
+						if (rp->mods_[m].Enabled()) rp->mods_[m].Retrigger() ;
+					}
 				}
 				rp->retrigCount_-- ;
 			} ;
@@ -577,7 +681,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 		 // Crush 
 
-		 int shift=16-rp->crush_;
+		 int shift=16-modulatedCrush(rp);
 	     fixed mask=0xFFFFFFFF ;
 		 if (shift !=0) {
 			 mask<<=FIXED_SHIFT+shift  ;
@@ -585,7 +689,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 		 // Crush vol
 
-		 int crushvol=rp->drive_ ;
+		 int crushvol=modulatedDrive(rp) ;
 		 fixed fpcrushvol=fl2fp(crushvol/255.0F) ;
 
 		 // downsample
@@ -806,25 +910,24 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 					if (hasUpdaters) {
 						doKRateUpdate(channel) ;
-						struct RUParams rup ;
-						rup.cutOffset_=rup.resOffset_=rup.volumeOffset_=rup.panOffset_=rup.fbMixOffset_=rup.fbTunOffset_=0 ;
-						rup.speedOffset_=FP_ONE;
-				
-						std::vector<I_SRPUpdater *>::iterator it ;
+						applyUpdaterSums(rp,true) ;
 
-						for (it=rp->activeUpdaters_.begin();it!=rp->activeUpdaters_.end();it++) {
-							I_SRPUpdater *current=*it ;
-							current->UpdateSRP(rup) ;
+						// MOD on crush / drive / loop start
+						int crushShift=16-modulatedCrush(rp) ;
+						mask=0xFFFFFFFF ;
+						if (crushShift!=0) {
+							mask<<=FIXED_SHIFT+crushShift ;
 						}
-						
-						rp->volume_=rp->baseVolume_+rup.volumeOffset_ ;
-						rp->pan_=rp->basePan_+rup.panOffset_ ;
-						rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
-						rp->cutoff_=rp->baseFCut_+rup.cutOffset_ ;
-						rp->reso_=rp->baseFRes_+rup.resOffset_ ;
-						clampModulated(rp) ;
-						rp->fbMix_=rp->baseFbMix_+rup.fbMixOffset_ ;
-						rp->fbTun_=rp->baseFbTun_+rup.fbTunOffset_ ;
+						fpcrushvol=fl2fp(modulatedDrive(rp)/255.0F) ;
+						if (rp->baseLoopStart_!=rp->rendLoopStart_ || rp->modExtra_[RUX_LOOP]!=0.0f) {
+							applyModLoopStart(rp) ;
+							loopPosition=(short *)(wavbuf+rp->rendLoopStart_*2*channelCount) ;
+						}
+
+						// Note-off faded out by an ADSR on volume: done
+						if (rp->releasing_ && !volumeReleaseRunning(rp)) {
+							*rpFinished=true ;
+						}
 
 						set_filter(channel,FLT_LOWPASS,rp->cutoff_,rp->reso_,filterMix,bassyFilter);
 						filtering=(rp->cutoff_<i2fp(1))||(rp->reso_>i2fp(0)) ;
@@ -1042,9 +1145,14 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 // Copy the rendered voice to the shared reverb / echo (SendFX), like synths
 void SampleInstrument::sendToEffects(int channel,fixed *buffer,int size) {
-  float reverb=reverb_->GetInt()/255.0f ;
-  float delay=delay_->GetInt()/255.0f ;
-  float chorus=chorus_->GetInt()/255.0f ;
+  // MOD slots aimed at the sends move them per voice
+  renderParams *rp=renderParams_+channel ;
+  float reverb=reverb_->GetInt()/255.0f+rp->modExtra_[RUX_REVERB] ;
+  float delay=delay_->GetInt()/255.0f+rp->modExtra_[RUX_DELAY] ;
+  float chorus=chorus_->GetInt()/255.0f+rp->modExtra_[RUX_CHORUS] ;
+  reverb=reverb<0.0f?0.0f:(reverb>1.0f?1.0f:reverb) ;
+  delay=delay<0.0f?0.0f:(delay>1.0f?1.0f:delay) ;
+  chorus=chorus<0.0f?0.0f:(chorus>1.0f?1.0f:chorus) ;
   if (reverb<=0.0f && delay<=0.0f && chorus<=0.0f) return ;
   static float send[SENDFX_MAX_FRAMES*2] ;
   int frames=size<SENDFX_MAX_FRAMES ? size : SENDFX_MAX_FRAMES ;

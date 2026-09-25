@@ -1,5 +1,6 @@
 #include "MasterEQ.h"
 #include "MixerService.h"
+#include "Application/Instruments/ModSources.h"
 #include "Application/Audio/DummyAudioOut.h"
 #include "Application/Model/Config.h"
 #include "Application/Model/Mixer.h"
@@ -38,6 +39,8 @@ bool MixerService::Init() {
 	}
 	// Send effects render last so every channel has added its sends
 	master_.Insert(*SendFX::GetInstance());
+	// Counts rendered samples for free-running MOD LFOs (adds no sound)
+	master_.Insert(*ModClock::GetInstance());
 	// The master EQ shapes the whole mix, effects included
 	master_.SetInsert(MasterEQ::GetInstance());
 

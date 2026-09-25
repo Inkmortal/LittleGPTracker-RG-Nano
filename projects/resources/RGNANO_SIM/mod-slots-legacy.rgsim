@@ -1,0 +1,60 @@
+# A song saved with the first two-slot MOD page (the LateLibrary demo) loads
+# with the same sound: the old "sine" slot becomes an lfo with the sine
+# shape that restarts with every note, the old "rate" becomes its first
+# setting. Then slots 3 and 4 get new types and the song is saved;
+# mod-slots-reopen checks all four come back.
+wait 1500
+expect_view song
+expect_instrument_param 5 mod1_type decay
+expect_instrument_param 5 mod1_dest cutoff
+expect_instrument_param 5 mod1_amount 40
+expect_instrument_param 5 mod1_p1 80
+expect_instrument_param 5 mod2_type lfo
+expect_instrument_param 5 mod2_dest pitch
+expect_instrument_param 5 mod2_amount 2
+expect_instrument_param 5 mod2_p1 56
+expect_instrument_param 5 mod2_p2 1
+expect_instrument_param 5 mod2_p3 1
+expect_instrument_param 5 mod3_type off
+expect_instrument_param 5 mod4_type off
+
+goto chain
+goto phrase
+goto instrument
+instrument 05
+page MOD
+expect_screen_text 5/6 MOD
+expect_screen_text >1 decay cutoff  +40
+expect_screen_text 2 lfo   pitch   +2
+set slot 2
+focus rate
+expect_screen_text rate   38 0.23 Hz
+expect_screen_text trig   retrig
+screenshot_app mod-legacy.bmp
+
+# It still plays
+down n
+press s 80
+up n
+wait 1500
+expect_audio_activity 64
+down n
+press s 80
+up n
+wait 300
+
+# Slot 3: an ADSR shaping the volume; slot 4: a trig envelope from track 2
+set slot 3
+set type adsr
+set dest volume
+set amount 100
+set slot 4
+set type trig
+set source 1
+expect_instrument_param 5 mod3_type adsr
+expect_instrument_param 5 mod4_type trig
+expect_instrument_param 5 mod4_p4 1
+sim_save_project
+goto song
+expect_no_error
+quit

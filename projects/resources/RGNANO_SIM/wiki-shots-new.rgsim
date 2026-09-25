@@ -88,13 +88,19 @@ screenshot_app wiki-synth-3-filter.bmp
 page LFO
 screenshot_app wiki-synth-4-lfo.bmp
 page MOD
-set mod1 decay
-set dest1 cutoff
-set amt1 80
-set rate1 0x60
-set mod2 sine
-set amt2 6
-focus rate1
+set type adsr
+set dest cutoff
+set amount 80
+set slot 2
+set type lfo
+set dest pitch
+set amount 6
+set shape 1
+set slot 3
+set type drum
+set dest volume
+set slot 1
+focus releas
 screenshot_app wiki-synth-5-mod.bmp
 page MIX
 screenshot_app wiki-synth-6-mix.bmp

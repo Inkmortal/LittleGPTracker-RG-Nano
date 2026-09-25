@@ -257,6 +257,12 @@ static inline float polyBlep(float t,float dt) {
 	return 0.0f ;
 }
 
+static inline float modClamp01(float x) {
+	if (x<0.0f) return 0.0f ;
+	if (x>1.0f) return 1.0f ;
+	return x ;
+}
+
 static inline float wrap01(float x) {
 	return x-(float)floor(x) ;
 }
@@ -393,7 +399,7 @@ SynthInstrument::SynthInstrument() {
 	Insert(table_) ;
 	tableAuto_=new Variable("table automation",SYP_TABLEAUTO,false) ;
 	Insert(tableAuto_) ;
-	mods_.Create(*this) ;
+	mods_.Create(*this,MIK_SYNTH) ;
 	customName_=new Variable("name",INSTRUMENT_NAME_ID,"") ;
 	Insert(customName_) ;
 
@@ -432,6 +438,8 @@ SynthInstrument::SynthInstrument() {
 		v.baseReso_=v.reso_=0 ;
 		v.speed_=FP_ONE ;
 		v.drive_=0 ;
+		v.modVolScale_=1.0f ;
+		for (int x=0;x<RUX_LAST;x++) v.modExtra_[x]=0.0f ;
 		v.krateCount_=0 ;
 		v.retrig_=false ;
 		v.retrigLoop_=0 ;
@@ -607,12 +615,6 @@ bool SynthInstrument::Start(int channel,unsigned char note,bool cleanStart) {
 		}
 		v.activeUpdaters_.clear() ;
 		v.speed_=FP_ONE ;
-		// Envelopes and LFOs from the MOD page restart with every note
-		float sampleRate=(float)Audio::GetInstance()->GetSampleRate() ;
-		if (sampleRate<8000.0f) sampleRate=44100.0f ;
-		mods_.StartVoice(v.mods_,v.activeUpdaters_,
-		                 sampleRate/(float)((SYNTH_KRATE/SYNTH_BLOCK)*SYNTH_BLOCK),
-		                 channel*131+note) ;
 
 		int chord=chord_->GetInt() ;
 		if (chord<0 || chord>=SYNTH_CHORD_COUNT) chord=0 ;
@@ -628,6 +630,9 @@ bool SynthInstrument::Start(int channel,unsigned char note,bool cleanStart) {
 		}
 	}
 	v.krateCount_=0 ;
+	// Envelopes and LFOs from the MOD page restart with every note, with or
+	// without an instrument number on the step
+	startMods(v,channel,note) ;
 
 	bool legato=(glide_->GetInt()>0) && v.active_ && v.stage_!=SS_RELEASE && v.hasPlayed_ ;
 	if (legato) {
@@ -647,6 +652,16 @@ bool SynthInstrument::Start(int channel,unsigned char note,bool cleanStart) {
 		startVoice(channel,note,cleanStart) ;
 	}
 	return true ;
+}
+
+void SynthInstrument::startMods(SynthVoice &v,int channel,unsigned char note) {
+	float sampleRate=(float)Audio::GetInstance()->GetSampleRate() ;
+	if (sampleRate<8000.0f) sampleRate=44100.0f ;
+	mods_.StartVoice(v.mods_,v.activeUpdaters_,
+	                 sampleRate/(float)((SYNTH_KRATE/SYNTH_BLOCK)*SYNTH_BLOCK),
+	                 note,channel,channel*131+note) ;
+	// The note starts with the slots' first values, not the last note's
+	applyUpdaters(v) ;
 }
 
 void SynthInstrument::startVoice(int channel,unsigned char note,bool cleanStart) {
@@ -687,6 +702,10 @@ void SynthInstrument::Stop(int channel) {
 		v.pendingStart_=false ;
 	}
 	v.stage_=SS_RELEASE ;
+	// Note-off / KILL: ADSR slots go to their release too
+	for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		v.mods_[m].NoteOff() ;
+	}
 }
 
 void SynthInstrument::AllNotesOff() {
@@ -706,6 +725,9 @@ void SynthInstrument::StopQuickly(int channel) {
 	v.pendingStart_=false ;
 	v.stage_=SS_RELEASE ;
 	v.fastRelease_=true ;
+	for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		v.mods_[m].NoteOff() ;
+	}
 }
 
 /***************************************************************
@@ -918,10 +940,14 @@ void SynthInstrument::processUpdaters(SynthVoice &v,bool tick) {
 	for (it=v.activeUpdaters_.begin();it!=v.activeUpdaters_.end();it++) {
 		(*it)->Trigger(tick) ;
 	}
+	applyUpdaters(v) ;
+}
+
+// Sums what the command ramps and MOD slots do into the voice's values
+void SynthInstrument::applyUpdaters(SynthVoice &v) {
 	RUParams rup ;
-	rup.cutOffset_=rup.resOffset_=rup.volumeOffset_=rup.panOffset_=0 ;
-	rup.fbMixOffset_=rup.fbTunOffset_=0 ;
-	rup.speedOffset_=FP_ONE ;
+	rup.Reset() ;
+	std::vector<I_SRPUpdater *>::iterator it ;
 	for (it=v.activeUpdaters_.begin();it!=v.activeUpdaters_.end();it++) {
 		(*it)->UpdateSRP(rup) ;
 	}
@@ -930,6 +956,10 @@ void SynthInstrument::processUpdaters(SynthVoice &v,bool tick) {
 	v.cutoff_=v.baseCutoff_+rup.cutOffset_ ;
 	v.reso_=v.baseReso_+rup.resOffset_ ;
 	v.speed_=rup.speedOffset_ ;
+	v.modVolScale_=rup.volumeScale_ ;
+	for (int x=0;x<RUX_LAST;x++) {
+		v.modExtra_[x]=rup.extra_[x] ;
+	}
 }
 
 void SynthInstrument::updateFilter(SynthVoice &v,float cutoff,float reso,float sampleRate) {
@@ -1064,6 +1094,10 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 				v.stage_=SS_ATTACK ;
 				v.pitchEnv_=1.0f ;
 				v.filterEnv_=1.0f ;
+				// each re-strike restarts the MOD envelopes too
+				for (int m=0;m<MOD_SLOT_COUNT;m++) {
+					if (v.mods_[m].Enabled()) v.mods_[m].Retrigger() ;
+				}
 			}
 		}
 	}
@@ -1071,7 +1105,8 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	int wave=wave_->GetInt() ;
 	float shapeBase=shape_->GetInt()/255.0f ;
 	float subLevel=sub_->GetInt()/255.0f ;
-	float noiseMix=noise_->GetInt()/255.0f ;
+	float noiseBase=noise_->GetInt()/255.0f ;
+	float noiseMix=noiseBase ;
 	float toneGain=(float)cos(noiseMix*SYNTH_PI*0.5f) ;
 	float noiseGain=(float)sin(noiseMix*SYNTH_PI*0.5f) ;
 	int ratioIndex=fmRatio_->GetInt() ;
@@ -1102,13 +1137,15 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	float fmIndex=0.0f ;
 	float ampMod=1.0f ;
 	float driveGain=1.0f ;
+	float driveAmount=0.0f ;
 	float partialNorm=1.0f ;
 	float gainL=0.0f ;
 	float gainR=0.0f ;
 	static float sendBuffer[SENDFX_MAX_FRAMES*2] ;
-	float reverbSend=reverb_->GetInt()/255.0f ;
-	float delaySend=delay_->GetInt()/255.0f ;
-	float chorusSend=chorus_->GetInt()/255.0f ;
+	// Sends, moved by MOD slots aimed at them
+	float reverbSend=modClamp01(reverb_->GetInt()/255.0f+v.modExtra_[RUX_REVERB]) ;
+	float delaySend=modClamp01(delay_->GetInt()/255.0f+v.modExtra_[RUX_DELAY]) ;
+	float chorusSend=modClamp01(chorus_->GetInt()/255.0f+v.modExtra_[RUX_CHORUS]) ;
 	bool sending=(reverbSend>0.0f || delaySend>0.0f || chorusSend>0.0f) ;
 	int rendered=0 ;
 
@@ -1142,13 +1179,22 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			subInc=baseInc*0.5f ;
 			partialNorm=1.0f/(float)sqrt((float)v.chordCount_) ;
 
-			shape=shapeBase ;
+			shape=shapeBase+v.modExtra_[RUX_SHAPE] ;
 			if (lfoDest==SLD_SHAPE) {
 				shape+=lfo*lfoAmt*0.5f ;
-				if (shape<0.0f) shape=0.0f ;
-				if (shape>1.0f) shape=1.0f ;
 			}
-			fmIndex=fmBase*(1.0f+3.0f*envAmt*v.filterEnv_) ;
+			shape=modClamp01(shape) ;
+			float fm=fmBase+v.modExtra_[RUX_FM]/255.0f*5.0f ;
+			if (fm<0.0f) fm=0.0f ;
+			fmIndex=fm*(1.0f+3.0f*envAmt*v.filterEnv_) ;
+			if (v.modExtra_[RUX_NOISE]!=0.0f || noiseMix!=noiseBase) {
+				float mix=modClamp01(noiseBase+v.modExtra_[RUX_NOISE]) ;
+				if (mix!=noiseMix) {
+					noiseMix=mix ;
+					toneGain=(float)cos(noiseMix*SYNTH_PI*0.5f) ;
+					noiseGain=(float)sin(noiseMix*SYNTH_PI*0.5f) ;
+				}
+			}
 
 			ampMod=1.0f ;
 			if (lfoDest==SLD_VOLUME) {
@@ -1161,9 +1207,12 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 				updateFilter(v,cut,fp2fl(v.reso_),sampleRate) ;
 			}
 
-			driveGain=1.0f+v.drive_/255.0f*8.0f ;
+			driveAmount=v.drive_+v.modExtra_[RUX_DRIVE] ;
+			if (driveAmount<0.0f) driveAmount=0.0f ;
+			if (driveAmount>255.0f) driveAmount=255.0f ;
+			driveGain=1.0f+driveAmount/255.0f*8.0f ;
 
-			float vol=fp2fl(v.volume_) ;
+			float vol=fp2fl(v.volume_)*v.modVolScale_ ;
 			if (vol<0.0f) vol=0.0f ;
 			if (vol>255.0f) vol=255.0f ;
 			int pan=fp2i(v.pan_) ;
@@ -1239,7 +1288,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			sig=sig*toneGain+whiteNoise(v.noiseState_)*noiseGain ;
 		}
 
-		if (v.drive_>0) {
+		if (driveAmount>0.0f) {
 			sig=softSat(sig*driveGain) ;
 		}
 

@@ -10,6 +10,21 @@
 
 #include <math.h>
 
+// floor() is wrong too: for x >= 1 it returns x unchanged (floor(1.5) =
+// 1.5), so phase wraps like x-floor(x) collapsed to 0. Whole-number parts
+// come from an integer conversion instead.
+extern "C" double floor(double x) {
+	if (x!=x || x>=4503599627370496.0 || x<=-4503599627370496.0) return x ;
+	double whole=(double)(long long)x ;
+	return (whole>x)?whole-1.0:whole ;
+}
+
+extern "C" double ceil(double x) {
+	if (x!=x || x>=4503599627370496.0 || x<=-4503599627370496.0) return x ;
+	double whole=(double)(long long)x ;
+	return (whole<x)?whole+1.0:whole ;
+}
+
 static const double LN2_HI=6.93147180369123816490e-01 ;
 static const double LN2_LO=1.90821492927058770002e-10 ;
 static const double INV_LN2=1.44269504088896338700e+00 ;

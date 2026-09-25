@@ -155,6 +155,8 @@ class View : public Observable {
     void drawMap();
     void drawContextOverlay();
     void getHowToSteps(const char **lines);
+    // Lets a screen rewrite its how-to lines (e.g. per page)
+    virtual void CustomizeHowToSteps(const char **lines) {}
     int getMoreKeys(const char **lines, int max);
     // Dialogs override: they are not the screen underneath
     virtual bool IsModal() { return false; }
