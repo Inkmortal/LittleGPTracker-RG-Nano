@@ -693,9 +693,10 @@ void SongView::ProcessButtonMask(unsigned short mask, bool pressed) {
     };
 
     // Was the previous press an A that pasted into an empty cell? (only
-    // A + Select looks at it, on this press)
+    // A + Select and A + LB look at it, on this press)
     bool pastedOnA = pastedOnA_;
-    pastedOnA_ = pastedOnA && mask == (EPBM_A | EPBM_SELECT);
+    pastedOnA_ = pastedOnA &&
+                 (mask == (EPBM_A | EPBM_SELECT) || mask == (EPBM_A | EPBM_L));
 
     if (reorder_) {
         processReorderButtonMask(mask);
@@ -833,6 +834,13 @@ void SongView::processNormalButtonMask(unsigned int mask) {
             if (mask & EPBM_RIGHT)
                 updateChain(0x01);
             if (mask & EPBM_L && !canDeepClone_) {
+                // Holding A on an empty cell has just put the last chain
+                // there: that press was the start of A + LB, so the paste
+                // goes into the empty cell, not above a stray chain
+                if (pastedOnA_) {
+                    *viewData_->GetCurrentSongPointer() = 0xFF;
+                    pastedOnA_ = false;
+                }
                 pasteClipboard();
             }
             if (mask == EPBM_A) {

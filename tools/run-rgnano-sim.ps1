@@ -8,6 +8,8 @@ param(
   # Copy a shipped demo song (e.g. JadeSword) into the sim and auto-load it
   [string]$OpenDemo = "",
   [switch]$Mute,
+  # Seed for the suggested song names, so they are the same every run
+  [string]$NameSeed = "",
   [switch]$Visible,
   [string]$ArtifactsDir = ""
 )
@@ -251,6 +253,10 @@ $args += "-RGNANOSIM_LOG=$(Join-Path $exeDir 'rgnano-sim.log')"
 if ($Mute) {
   # Audio is still rendered, measured and captured, just not played
   $args += "-RGNANOSIM_MUTE=YES"
+}
+if ($NameSeed) {
+  # The same "random" song names every run (walkthrough screenshots)
+  $args += "-RGNANOSIM_NAMESEED=$NameSeed"
 }
 if ($Skin -or -not $Script) {
   $args += "-RGNANOSIM_SKIN=YES"
