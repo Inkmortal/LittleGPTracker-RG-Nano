@@ -27,6 +27,16 @@ goto fx
 wait 200
 expect_screen_text CHORUS
 screenshot_app wiki-fx.bmp
+goto eq
+goto limit
+set drive 0x3D
+set rels 0x80
+focus drive
+press s 80
+wait 2500
+screenshot_app wiki-limit.bmp
+press s 80
+wait 200
 goto song
 expect_no_error
 quit

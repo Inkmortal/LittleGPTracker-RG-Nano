@@ -1,0 +1,101 @@
+# The master limiter (EQ, RB+Right): off by default (an older song plays
+# exactly as before), drive pushes the mix into it, nothing gets past the
+# ceiling, the GR meter and the mixer's master strip show it working.
+wait 1500
+expect_view song
+goto limit
+expect_view limit
+expect_screen_text LIMIT
+expect_screen_text LIMITER off
+expect_screen_text -0.3 dB
+expect_screen_text 1.0 ms
+expect_screen_text auto
+screenshot_app limit-off.bmp
+
+# Off: the song plays, nothing is limited
+press s 80
+wait 1500
+expect_audio_activity 64
+expect_limiter_gr 0 0
+
+# Drive the mix hard into a low ceiling: it limits a lot, and the loudest
+# sample that comes out stays at the ceiling (-25.5 dB = 1740 of 32767)
+set drive 0xC0
+expect_screen_text +19.1 dB
+expect_screen_text LIMITER on 1.0ms
+set ceil 0x00
+expect_screen_text -25.5 dB
+wait 400
+reset_audio_stats
+wait 2000
+expect_limiter_gr 60 700
+expect_audio_peak_max 1745
+screenshot_app limit-hard.bmp
+
+# B+A puts the ceiling back; undo / redo step through it
+down b
+press a 80
+up b
+wait 100
+expect_screen_text -0.3 dB
+down b
+press k 80
+up b
+wait 150
+expect_screen_text -25.5 dB
+down m
+press k 80
+up m
+wait 150
+expect_screen_text -0.3 dB
+
+# A sensible master: +6 dB into -0.3 dB, a short release
+set drive 0x3D
+expect_screen_text +6.0 dB
+set rels 0x80
+expect_screen_text 63 ms
+set attk 0x40
+expect_screen_text 0.3 ms
+wait 400
+reset_audio_stats
+wait 2000
+expect_audio_activity 2000
+expect_audio_peak_max 31700
+screenshot_app limit-master.bmp
+
+# The mixer's master strip shows the limiting (LIM line on its meter)
+goto mixer
+wait 600
+screenshot_app mixer-limiting.bmp
+goto limit
+
+# B+A on drive: off again, no limiting at all
+focus drive
+down b
+press a 80
+up b
+wait 100
+expect_screen_text LIMITER off
+# (the meter history scrolls for a few seconds)
+wait 3500
+expect_limiter_gr 0 0
+press s 80
+wait 200
+
+# The helper knows the screen, the map shows it right of EQ
+down n
+press k 80
+up n
+wait 100
+expect_screen_text Master limiter
+expect_screen_text FX > EQ > Limit
+down n
+press k 80
+up n
+wait 100
+goto eq
+expect_screen_text RB+R LIMIT
+goto fx
+expect_no_error
+goto song
+quit

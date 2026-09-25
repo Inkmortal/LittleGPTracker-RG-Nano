@@ -88,6 +88,12 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[1].assign("jump abs to aa or");
 			result[2].assign("move rel bb chunks");
 			break;
+		case I_CMD_PLAY:
+			// Sample play mode, the numbers of the instrument's play list
+			result[0].assign("PLAY mode:00bb");
+			result[1].assign("00 fwd 01 rev 02 lp");
+			result[2].assign("03 revlp 04 pingpong");
+			break;
 		case I_CMD_FLTR:
 			result[0].assign("FiLTer&Resonance:aabb");
 			result[1].assign("cutoff aa");

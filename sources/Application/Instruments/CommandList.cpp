@@ -25,6 +25,7 @@ static FourCC _all[]= {
 	I_CMD_MVEL,
 	I_CMD_PAN_,
 	I_CMD_PFIN,
+	I_CMD_PLAY,
 	I_CMD_PLOF,
 	I_CMD_PTCH,
 	I_CMD_RAND,

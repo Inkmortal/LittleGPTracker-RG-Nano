@@ -126,6 +126,8 @@ private:
 	bool ExpectSimGroove(int channel, int groove);
 	bool ExpectSimTableActive(int channel, int table);
 	bool ExpectSimTempo(int bpm);
+	bool ExpectSimLimiterGr(int minTenths,int maxTenths);
+	bool ExpectSimAudioPeakMax(int maxPeak);
 	bool ExpectSimInstrumentSample(int instrument, const std::string &sampleName);
 	bool ExpectSimInstrumentRoot(int instrument, int note);
 	bool ExpectSimInstrumentRootSuggestion(int instrument, int note);
@@ -146,6 +148,8 @@ private:
 	bool SimSetSynth(int instrument, const std::string &preset);
 	bool SimSetMacro(int instrument, const std::string &preset);
 	bool SimSetInstrumentParam(int instrument, const std::string &name, const std::string &value);
+	bool SimLoadInstrumentParam(int instrument, const std::string &name, const std::string &value);
+	bool ExpectSimSampleStats(const std::string &sampleName, const std::string &framesText, int minPeak, int maxPeak);
 	bool ExpectSimInstrumentType(int instrument, const std::string &type);
 	bool ExpectSimInstrumentName(int instrument, const std::string &name);
 	bool ExpectSimInstrumentParam(int instrument, const std::string &name, const std::string &value);

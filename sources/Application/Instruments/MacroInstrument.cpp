@@ -523,7 +523,8 @@ MacroInstrument::MacroInstrument() {
 	Insert(table_) ;
 	tableAuto_=new Variable("table automation",SYP_TABLEAUTO,false) ;
 	Insert(tableAuto_) ;
-	mods_.Create(*this) ;
+	mods_.Create(*this,MIK_MACRO) ;
+	eq_.Create(*this) ;
 	customName_=new Variable("name",INSTRUMENT_NAME_ID,"") ;
 	Insert(customName_) ;
 
@@ -567,6 +568,8 @@ MacroInstrument::MacroInstrument() {
 		v.baseColor_=v.color_=fl2fp(0.5f) ;
 		v.speed_=FP_ONE ;
 		v.drive_=0 ;
+		v.modVolScale_=1.0f ;
+		for (int x=0;x<RUX_LAST;x++) v.modExtra_[x]=0.0f ;
 		v.krateCount_=0 ;
 		v.retrig_=false ;
 		v.retrigLoop_=0 ;
@@ -632,6 +635,7 @@ void MacroInstrument::ApplyPreset(int preset) {
 	lfoRate_->SetInt(0xB0) ;
 	lfoAmt_->SetInt(0) ;
 	mods_.Reset() ;
+	eq_.Reset() ;
 	reverb_->SetInt(0) ;
 	delay_->SetInt(0) ;
 	chorus_->SetInt(0) ;
@@ -745,13 +749,11 @@ bool MacroInstrument::Start(int channel,unsigned char note,bool cleanStart) {
 		}
 		v.activeUpdaters_.clear() ;
 		v.speed_=FP_ONE ;
-		float sampleRate=(float)Audio::GetInstance()->GetSampleRate() ;
-		if (sampleRate<8000.0f) sampleRate=44100.0f ;
-		mods_.StartVoice(v.mods_,v.activeUpdaters_,
-		                 sampleRate/(float)((MACRO_KRATE/MACRO_BLOCK)*MACRO_BLOCK),
-		                 channel*131+note) ;
 	}
 	v.krateCount_=0 ;
+	// Envelopes and LFOs from the MOD page restart with every note, with or
+	// without an instrument number on the step
+	startMods(v,channel,note) ;
 
 	bool legato=(glide_->GetInt()>0) && v.active_ && v.stage_!=MSS_RELEASE && v.hasPlayed_ ;
 	if (legato) {
@@ -773,6 +775,16 @@ bool MacroInstrument::Start(int channel,unsigned char note,bool cleanStart) {
 	return true ;
 }
 
+void MacroInstrument::startMods(MacroVoice &v,int channel,unsigned char note) {
+	float sampleRate=(float)Audio::GetInstance()->GetSampleRate() ;
+	if (sampleRate<8000.0f) sampleRate=44100.0f ;
+	mods_.StartVoice(v.mods_,v.activeUpdaters_,
+	                 sampleRate/(float)((MACRO_KRATE/MACRO_BLOCK)*MACRO_BLOCK),
+	                 note,channel,channel*131+note) ;
+	// The note starts with the slots' first values, not the last note's
+	applyUpdaters(v) ;
+}
+
 void MacroInstrument::startVoice(int channel,unsigned char note,bool cleanStart) {
 	MacroVoice &v=voices_[channel] ;
 	v.pendingStart_=false ;
@@ -784,6 +796,7 @@ void MacroInstrument::startVoice(int channel,unsigned char note,bool cleanStart)
 	v.filterEnv_=1.0f ;
 	v.tcEnv_=1.0f ;
 	v.ic1eq_=v.ic2eq_=0.0f ;
+	eq_.ResetVoice(channel) ;
 	// Fresh input: the new note's first samples come straight from the model
 	v.fifoCount_=0 ;
 	v.readPos_=0 ;
@@ -803,6 +816,10 @@ void MacroInstrument::Stop(int channel) {
 		v.pendingStart_=false ;
 	}
 	v.stage_=MSS_RELEASE ;
+	// Note-off / KILL: ADSR slots go to their release too
+	for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		v.mods_[m].NoteOff() ;
+	}
 }
 
 void MacroInstrument::AllNotesOff() {
@@ -822,6 +839,9 @@ void MacroInstrument::StopQuickly(int channel) {
 	v.pendingStart_=false ;
 	v.stage_=MSS_RELEASE ;
 	v.fastRelease_=true ;
+	for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		v.mods_[m].NoteOff() ;
+	}
 }
 
 /***************************************************************
@@ -1021,10 +1041,14 @@ void MacroInstrument::processUpdaters(MacroVoice &v,bool tick) {
 	for (it=v.activeUpdaters_.begin();it!=v.activeUpdaters_.end();it++) {
 		(*it)->Trigger(tick) ;
 	}
+	applyUpdaters(v) ;
+}
+
+// Sums what the command ramps and MOD slots do into the voice's values
+void MacroInstrument::applyUpdaters(MacroVoice &v) {
 	RUParams rup ;
-	rup.cutOffset_=rup.resOffset_=rup.volumeOffset_=rup.panOffset_=0 ;
-	rup.fbMixOffset_=rup.fbTunOffset_=0 ;
-	rup.speedOffset_=FP_ONE ;
+	rup.Reset() ;
+	std::vector<I_SRPUpdater *>::iterator it ;
 	for (it=v.activeUpdaters_.begin();it!=v.activeUpdaters_.end();it++) {
 		(*it)->UpdateSRP(rup) ;
 	}
@@ -1036,6 +1060,10 @@ void MacroInstrument::processUpdaters(MacroVoice &v,bool tick) {
 	v.timbre_=v.baseTimbre_+rup.fbMixOffset_ ;
 	v.color_=v.baseColor_+rup.fbTunOffset_ ;
 	v.speed_=rup.speedOffset_ ;
+	v.modVolScale_=rup.volumeScale_ ;
+	for (int x=0;x<RUX_LAST;x++) {
+		v.modExtra_[x]=rup.extra_[x] ;
+	}
 }
 
 void MacroInstrument::updateFilter(MacroVoice &v,float cutoff,float reso,float sampleRate) {
@@ -1109,6 +1137,10 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 				v.filterEnv_=1.0f ;
 				v.tcEnv_=1.0f ;
 				v.strike_=true ;
+				// each re-strike restarts the MOD envelopes too
+				for (int m=0;m<MOD_SLOT_COUNT;m++) {
+					if (v.mods_[m].Enabled()) v.mods_[m].Retrigger() ;
+				}
 			}
 		}
 	}
@@ -1147,13 +1179,16 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 
 	float ampMod=1.0f ;
 	float driveGain=1.0f ;
+	float driveAmount=0.0f ;
 	float gainL=0.0f ;
 	float gainR=0.0f ;
 	static float sendBuffer[SENDFX_MAX_FRAMES*2] ;
-	float reverbSend=reverb_->GetInt()/255.0f ;
-	float delaySend=delay_->GetInt()/255.0f ;
-	float chorusSend=chorus_->GetInt()/255.0f ;
+	// Sends, moved by MOD slots aimed at them
+	float reverbSend=clamp01(reverb_->GetInt()/255.0f+v.modExtra_[RUX_REVERB]) ;
+	float delaySend=clamp01(delay_->GetInt()/255.0f+v.modExtra_[RUX_DELAY]) ;
+	float chorusSend=clamp01(chorus_->GetInt()/255.0f+v.modExtra_[RUX_CHORUS]) ;
 	bool sending=(reverbSend>0.0f || delaySend>0.0f || chorusSend>0.0f) ;
+	bool eqOn=eq_.Prepare() ;
 	int rendered=0 ;
 
 	fixed *out=buffer ;
@@ -1186,8 +1221,8 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			if (pitch>16383) pitch=16383 ;
 			v.osc_->set_pitch((int16_t)pitch) ;
 
-			float timbre=fp2fl(v.timbre_)+tEnv*v.tcEnv_ ;
-			float color=fp2fl(v.color_)+cEnv*v.tcEnv_ ;
+			float timbre=fp2fl(v.timbre_)+tEnv*v.tcEnv_+v.modExtra_[RUX_TIMBRE] ;
+			float color=fp2fl(v.color_)+cEnv*v.tcEnv_+v.modExtra_[RUX_COLOR] ;
 			if (lfoDest==MLD_TIMBRE) timbre+=lfo*lfoAmt*0.5f ;
 			if (lfoDest==MLD_COLOR) color+=lfo*lfoAmt*0.5f ;
 			v.osc_->set_parameters((int16_t)(clamp01(timbre)*32767.0f),
@@ -1206,9 +1241,12 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			v.filterEnv_*=envCoef ;
 			v.tcEnv_*=tcCoef ;
 
-			driveGain=1.0f+v.drive_/255.0f*8.0f ;
+			driveAmount=v.drive_+v.modExtra_[RUX_DRIVE] ;
+			if (driveAmount<0.0f) driveAmount=0.0f ;
+			if (driveAmount>255.0f) driveAmount=255.0f ;
+			driveGain=1.0f+driveAmount/255.0f*8.0f ;
 
-			float vol=fp2fl(v.volume_) ;
+			float vol=fp2fl(v.volume_)*v.modVolScale_ ;
 			if (vol<0.0f) vol=0.0f ;
 			if (vol>255.0f) vol=255.0f ;
 			int pan=fp2i(v.pan_) ;
@@ -1287,7 +1325,7 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			v.readPos_=0 ;
 		}
 
-		if (v.drive_>0) {
+		if (driveAmount>0.0f) {
 			sig=softSat(sig*driveGain) ;
 		}
 
@@ -1322,6 +1360,8 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			break ;
 		}
 		sig*=v.level_*ampMod ;
+		// The instrument's own EQ (EQ page), before pan and the sends
+		if (eqOn) sig=eq_.TickMono(channel,sig) ;
 		if (sig>2.0f) sig=2.0f ;
 		if (sig<-2.0f) sig=-2.0f ;
 

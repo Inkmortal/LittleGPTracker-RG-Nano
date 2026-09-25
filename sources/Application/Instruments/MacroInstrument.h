@@ -12,13 +12,15 @@
 //
 // Around it sits the same voice as the native synth: ADSR amp envelope,
 // pitch envelope, glide, state-variable filter with its envelope, drive,
-// the two MOD slots, pan/volume and the reverb/delay/chorus sends. Those
-// knobs share the synth's variable ids (SYP_*), so the ENV, FILTER, MOD
-// and MIX pages of the instrument screen are the synth's pages.
+// the four MOD slots (which can also move timbre and color), its own EQ,
+// pan/volume and the reverb/delay/chorus sends. Those
+// knobs share the synth's variable ids (SYP_*), so the ENV, FILTER, MOD,
+// MIX and EQ pages of the instrument screen are the synth's pages.
 
 #include "I_Instrument.h"
 #include "SRPUpdaters.h"
 #include "ModSources.h"
+#include "InstrumentEQ.h"
 #include "SynthInstrument.h"
 #include "Application/Model/Song.h"
 #include "Foundation/Types/Types.h"
@@ -138,6 +140,8 @@ struct MacroVoice {
 	LogSpeedRamp pfin_ ;
 	Arp arp_ ;
 	ModSource mods_[MOD_SLOT_COUNT] ;
+	float modVolScale_ ;           // MOD envelopes on volume
+	float modExtra_[RUX_LAST] ;    // MOD drive/timbre/color/sends
 	std::vector<I_SRPUpdater *> updaters_ ;
 	std::vector<I_SRPUpdater *> activeUpdaters_ ;
 } ;
@@ -185,6 +189,7 @@ public:
 	virtual bool IsReleasing(int channel) ;
 	virtual void StopQuickly(int channel) ;
 	virtual void AllNotesOff() ;
+	virtual InstrumentMods *GetMods() { return &mods_ ; } ;
 
 	void GetVoiceDebug(int channel,int &stage,float &level) ;
 	static int BrokenVoiceCount() ;
@@ -215,6 +220,8 @@ private:
 	void startVoice(int channel,unsigned char note,bool cleanStart) ;
 	void updateFilter(MacroVoice &v,float cutoff,float reso,float sampleRate) ;
 	void processUpdaters(MacroVoice &v,bool tick) ;
+	void applyUpdaters(MacroVoice &v) ;
+	void startMods(MacroVoice &v,int channel,unsigned char note) ;
 	void removeUpdater(MacroVoice &v,I_SRPUpdater *u) ;
 	void fillBlock(MacroVoice &v) ;
 	int getInt(FourCC id) ;
@@ -260,6 +267,7 @@ private:
 	Variable *table_ ;
 	Variable *tableAuto_ ;
 	InstrumentMods mods_ ;
+	InstrumentEQ eq_ ;
 	Variable *customName_ ;
 } ;
 

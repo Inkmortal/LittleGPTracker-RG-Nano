@@ -16,7 +16,7 @@ expect_screen_text Instrument 00 SYNTH
 set type macro
 expect_instrument_type 0 Macro
 expect_screen_text Instrument 00 MACRO
-expect_screen_text 1/6 SOUND
+expect_screen_text 1/7 SOUND
 expect_screen_text MACRO CSAW
 expect_instrument_param 0 preset init
 screenshot_app macro-sound-init.bmp
@@ -95,7 +95,7 @@ wait 200
 
 # The pages: ENV/FILTER/MOD/MIX are the synth's, MOTION is the macro's own
 page ENV
-expect_screen_text 2/6 ENV
+expect_screen_text 2/7 ENV
 set decay 0x60
 expect_instrument_param 0 decay 0x60
 screenshot_app macro-page-2-env.bmp
@@ -106,7 +106,7 @@ expect_instrument_param 0 filter lowpass
 expect_instrument_param 0 cutoff 0x90
 screenshot_app macro-page-3-filter.bmp
 page MOTION
-expect_screen_text 4/6 MOTION
+expect_screen_text 4/7 MOTION
 set lfo color
 expect_instrument_param 0 lfo_dest color
 set t.env 0x30
@@ -126,8 +126,18 @@ press b 80
 press b 80
 wait 150
 page MOD
-expect_screen_text 5/6 MOD
+expect_screen_text 5/7 MOD
+# The MOD slots can move timbre and color on a macro
+set type lfo
+set dest timbre
+set amount 60
+expect_instrument_param 0 mod1_type lfo
+expect_instrument_param 0 mod1_dest timbre
+expect_instrument_param 0 mod1_amount 60
 screenshot_app macro-page-5-mod.bmp
+page EQ
+expect_screen_text 7/7 EQ
+screenshot_app macro-page-7-eq.bmp
 page MIX
 set reverb 0x40
 expect_instrument_param 0 reverb 0x40

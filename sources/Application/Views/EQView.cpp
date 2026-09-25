@@ -81,6 +81,12 @@ void EQView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			SetChanged() ;
 			NotifyObservers(&ve) ;
 		}
+		if (mask&EPBM_RIGHT) {
+			ViewType vt=VT_LIMIT ;
+			ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
+			SetChanged() ;
+			NotifyObservers(&ve) ;
+		}
 	} else if (mask==EPBM_START) {
 		Player::GetInstance()->OnStartButton(PM_SONG,viewData_->songX_,false,viewData_->songX_) ;
 	}
@@ -137,7 +143,7 @@ void EQView::DrawView() {
 		DrawString(1,HELP_ROW+1,help[focus][1],props) ;
 	}
 	SetColor(CD_MUTE) ;
-	DrawString(1,HELP_ROW+3,"B+A flat  RB+Left FX",props) ;
+	DrawString(1,HELP_ROW+3,"B+A flat  RB+L FX  RB+R LIMIT",props) ;
 	SetColor(CD_NORMAL) ;
 }
 

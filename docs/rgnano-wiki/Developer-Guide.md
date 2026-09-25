@@ -43,7 +43,7 @@ instrument 0A          # B+D-pad to an instrument slot
 
 Each goal logs `=> reached in N steps` and fails with a clear message if an input changes nothing.
 
-Assertions: `expect_view`, `expect_screen_text`, `expect_selected_text`, `expect_player_running`, `expect_play_mode`, `expect_audio_activity`, `expect_song_chain`, `expect_phrase_row_count`, `expect_instrument_type/name/param`, `expect_size 240 240`, `expect_no_error`, and more — see `docs/RGNANO_SIM.md`.
+Assertions: `expect_view`, `expect_screen_text`, `expect_selected_text`, `expect_player_running`, `expect_play_mode`, `expect_audio_activity`, `expect_song_chain`, `expect_phrase_row_count`, `expect_instrument_type/name/param`, `expect_audio_peak_max`, `expect_limiter_gr`, `expect_size 240 240`, `expect_no_error`, and more — see `docs/RGNANO_SIM.md`.
 
 State setup for long scenarios: `sim_set_synth`, `sim_set_instrument_param`, `sim_set_song_chain`, `sim_set_chain_phrase`, `sim_set_phrase_note`, `sim_set_phrase_command`, `sim_set_tempo`.
 
@@ -117,6 +117,11 @@ Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 
 | Synth engine and presets | `sources/Application/Instruments/SynthInstrument.*` |
 | Macro synth (voice, resampler, presets) | `sources/Application/Instruments/MacroInstrument.*`; its oscillator (Braids port, MIT) in `sources/Externals/Braids`; pages in `sources/Application/Views/InstrumentViewMacro.cpp`; ARM check `tools/dsp-harness/macro_check.cpp` |
 | Shared reverb / echo | `sources/Application/Mixer/SendFX.*` |
+| Master EQ, instrument EQ design (shared biquads) | `sources/Application/Mixer/ThreeBandEQ.*`, `MasterEQ.*` |
+| Master limiter (look-ahead) | `sources/Application/Mixer/MasterLimiter.*`, screen `Views/LimiterView.cpp` |
+| Instrument EQ (per voice) | `sources/Application/Instruments/InstrumentEQ.*`, page `Views/InstrumentViewEQ.cpp` |
+| Sampler play modes (forward, reverse, loops, ping-pong, osc) | `sources/Application/Instruments/SampleInstrument.*` (`setupVoicePlayback`, `Render`) |
+| Sample editor (normalize, crop, fades, reverse, trim) | `sources/Application/Instruments/SampleProcessor.*`, `Views/ModalDialogs/SampleEditDialog.*` |
 | Instrument bank, type switching, starter kit | `sources/Application/Instruments/InstrumentBank.cpp` |
 | Synth screen | `sources/Application/Views/InstrumentViewSynth.cpp` |
 | Helper overlay | `sources/Application/Views/BaseClasses/View.cpp` |

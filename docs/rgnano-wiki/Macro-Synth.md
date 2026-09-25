@@ -42,7 +42,7 @@ Drums are tuned so `C 3` sounds right; basses sound two octaves down.
 
 ## Pages
 
-Six pages, switched with **LB + Left/Right**. SOUND and MOTION are the macro synth's own; ENV, FILTER, MOD and MIX are exactly the [Synth](Synth) pages. **RB + Select** explains the knob under the cursor — on `shape` it tells you what timbre and color do on that shape.
+Seven pages, switched with **LB + Left/Right**. SOUND and MOTION are the macro synth's own; ENV, FILTER, MOD, MIX and EQ are exactly the [Synth](Synth) pages. **RB + Select** explains the knob under the cursor — on `shape` it tells you what timbre and color do on that shape.
 
 ### SOUND - shape and knobs
 
@@ -82,7 +82,8 @@ The picture is the shape's real output with the current knobs, at `C 3`: two cyc
 
 - **ENV** — attack, decay, sustain, release, pitch drop, glide, as on the synth. Struck shapes (PLUCK, BELL, DRUM, KICK, SNARE) fade on their own: keep `sustn` at `FF` and let the shape decide.
 - **FILTER** — lowpass / highpass / bandpass / off after the shape (off in `init`), with its own envelope and drive.
-- **MOD** — the two envelope/LFO slots (volume, cutoff, reso, pitch, pan).
+- **MOD** — the four modulation slots (envelopes, LFOs, key tracking). On a macro synth they can also move `timbre` and `color` — an LFO on timbre is the classic way to make a shape evolve.
+- **EQ** — the instrument's own low / mid / high EQ.
 - **MIX** — volume, pan and the reverb / delay / chorus sends.
 
 ## Shapes

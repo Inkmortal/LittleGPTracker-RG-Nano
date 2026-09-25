@@ -196,7 +196,7 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 	const char *row4="  |       |       |";
 	const char *row5="Mixer   Table   Instr";
 	const char *row6="  |";
-	const char *row7="  FX > EQ";
+	const char *row7="  FX > EQ > Limit";
 	drawOverlayLine(x,y,width,row1,props);
 	drawOverlayLine(x,y+1,width,row2,props);
 	drawOverlayLine(x,y+2,width,row3,props);
@@ -246,6 +246,11 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 			hx=x+7;
 			hy=y+6;
 			label="EQ";
+			break;
+		case VT_LIMIT:
+			hx=x+12;
+			hy=y+6;
+			label="Limit";
 			break;
 		case VT_TABLE:
 			hx=x+8;
@@ -447,7 +452,7 @@ void View::drawContextOverlay() {
 			break;
 		case VT_EQ:
 			name="EQ";
-			where="RB+Left FX";
+			where="RB+Left FX RB+Right Limit";
 			edit="A+Dpad edit value";
 			field="Master low/mid/high";
 			cmd1="Up/Down pick a knob";
@@ -456,7 +461,20 @@ void View::drawContextOverlay() {
 			cmd4="gain 80 = flat";
 			cmd5="B+A back to flat";
 			cmd6="Start play the song";
-			cmd7="RB+Left FX";
+			cmd7="RB+Right master limiter";
+			break;
+		case VT_LIMIT:
+			name="LIMIT";
+			where="RB+Left EQ";
+			edit="A+Dpad edit value";
+			field="Master limiter";
+			cmd1="Up/Down pick a knob";
+			cmd2="A+Left/Right small step";
+			cmd3="A+Up/Down big step";
+			cmd4="drive 00 = off";
+			cmd5="GR bar = how hard it works";
+			cmd6="Start play the song";
+			cmd7="B+A knob to default";
 			break;
 		default:
 			break;
@@ -533,6 +551,13 @@ void View::drawContextOverlay() {
 	SetColor(CD_NORMAL);
 }
 
+// Sample or synth: the Instrument screen's help differs
+InstrumentType View::currentInstrumentType() {
+	if (!viewData_ || !viewData_->project_) return IT_LAST;
+	I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(viewData_->currentInstrument_);
+	return instr?instr->GetType():IT_LAST;
+}
+
 // Keys the 7 command lines have no room for, per screen (helper page 2)
 int View::getMoreKeys(const char **lines,int max) {
 	static const char *song[]={"Select  LIVE mode on/off","Live: Start cue a cell",
@@ -547,7 +572,12 @@ int View::getMoreKeys(const char **lines,int max) {
 		"Sel LB+U shuffle LB+D rev","A+Up/Dn on cmd: A to Z",
 		"LB+Start render to sample","RB+Up Groove RB+Dn Table"};
 	static const char *instrument[]={"B+Dpad other instrument","B+A clear sample/table",
-		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song"};
+		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song",
+		"MOD page: LB+Up/Dn slot"};
+	static const char *sampler[]={"B+Dpad other instrument","B+A clear sample/table",
+		"Sel on SOURCE/LOOP: edit","  normalize crop fade rev","PLAY cmd: mode per note",
+		"RB+Up list of all sounds","RB+Down instrument table",
+		"MOD page: LB+Up/Dn slot"};
 	static const char *table[]={"B+Left/Right other table","B+A delete",
 		"B+LB select, then B copy","A+LB paste","RB+Start play the song"};
 	static const char *groove[]={"B+Left/Right other groove","B+A clear the step",
@@ -558,7 +588,10 @@ int View::getMoreKeys(const char **lines,int max) {
 	static const char *fx[]={"Up/Down next knob","A+Left/Right small step",
 		"A+Up/Down big step","B+A knob to default","RB+Right EQ","Start play/stop the song"};
 	static const char *eq[]={"Up/Down next knob","A+Left/Right small step",
-		"A+Up/Down big step","B+A back to flat","RB+Left FX","Start play/stop the song"};
+		"A+Up/Down big step","B+A back to flat","RB+Left FX","RB+Right master limiter",
+		"Start play/stop the song"};
+	static const char *limit[]={"Up/Down next knob","A+Left/Right small step",
+		"A+Up/Down big step","B+A knob to default","RB+Left EQ","Start play/stop the song"};
 	const char **list=0;
 	int count=0;
 #define MORE_KEYS(a) list=a; count=sizeof(a)/sizeof(a[0]);
@@ -566,7 +599,13 @@ int View::getMoreKeys(const char **lines,int max) {
 		case VT_SONG: MORE_KEYS(song); break;
 		case VT_CHAIN: MORE_KEYS(chain); break;
 		case VT_PHRASE: MORE_KEYS(phrase); break;
-		case VT_INSTRUMENT: MORE_KEYS(instrument); break;
+		case VT_INSTRUMENT:
+			if (currentInstrumentType()==IT_SAMPLE) {
+				MORE_KEYS(sampler);
+			} else {
+				MORE_KEYS(instrument);
+			}
+			break;
 		case VT_TABLE:
 		case VT_TABLE2: MORE_KEYS(table); break;
 		case VT_GROOVE: MORE_KEYS(groove); break;
@@ -574,6 +613,7 @@ int View::getMoreKeys(const char **lines,int max) {
 		case VT_MIXER: MORE_KEYS(mixer); break;
 		case VT_FX: MORE_KEYS(fx); break;
 		case VT_EQ: MORE_KEYS(eq); break;
+		case VT_LIMIT: MORE_KEYS(limit); break;
 		default: break;
 	}
 #undef MORE_KEYS
@@ -617,13 +657,23 @@ void View::getHowToSteps(const char **lines) {
 			lines[6]="Start: loop this bar";
 			break;
 		case VT_INSTRUMENT:
+			if (currentInstrumentType()==IT_SAMPLE) {
+				lines[0]="Sampler: plays a WAV.";
+				lines[1]="Sel on sample: import one";
+				lines[2]="play: forward, reverse,";
+				lines[3]="loop, pingpong, osc";
+				lines[4]="LB+Up/Dn + LB+A+L/R: S L E";
+				lines[5]="Sel: edit (normalize...)";
+				lines[6]="A+Start hear it";
+				break;
+			}
 			lines[0]="Instrument = the sound.";
 			lines[1]="preset: A+Left/Right tries";
 			lines[2]="sounds. A+Start = hear";
 			lines[3]="LB+Left/Right: more pages";
 			lines[4]="ENV: short or long notes";
 			lines[5]="FILTER dark/bright, MOD";
-			lines[6]="sweeps+wobbles, MIX space";
+			lines[6]="sweeps, MIX space, EQ tone";
 			break;
 		case VT_TABLE:
 		case VT_TABLE2:
@@ -678,11 +728,22 @@ void View::getHowToSteps(const char **lines) {
 			lines[3]="HIGH: treble shelf.";
 			lines[4]="gain 80 = flat, +-12 dB";
 			lines[5]="freq moves each band";
-			lines[6]="B+A puts a knob back";
+			lines[6]="RB+Right: the limiter";
+			break;
+		case VT_LIMIT:
+			lines[0]="Keeps the mix under a";
+			lines[1]="ceiling, so it gets loud";
+			lines[2]="without clipping.";
+			lines[3]="1 drive up: louder mix";
+			lines[4]="2 red GR bar = limiting";
+			lines[5]="3 a few dB GR sounds fine";
+			lines[6]="drive 00 switches it off";
 			break;
 		default:
 			break;
 	}
+	// A screen's page can tell its own story (the instrument's MOD page)
+	CustomizeHowToSteps(lines);
 }
 
 void View::CustomizeContextOverlay(const char *&name, const char *&where,
@@ -1043,6 +1104,7 @@ void View::GetGuideTopic(const char *&page, const char *&section) {
 		case VT_MIXER: section="Mixer"; break;
 		case VT_FX: section="FX"; break;
 		case VT_EQ: section="EQ"; break;
+		case VT_LIMIT: section="Limit"; break;
 		default: page=""; break;
 	}
 }

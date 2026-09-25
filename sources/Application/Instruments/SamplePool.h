@@ -33,6 +33,9 @@ public:
     int ImportSample(Path &path);
     // Load a file already in the project's samples folder (e.g. a render)
     int AddProjectSample(const char *name);
+    // The song's samples folder exists (a song copied without it, like a
+    // synth-only demo from git, has none): writers call this first
+    bool EnsureProjectSampleDir();
     bool IsImported(std::string name);
     // int InsertSample(const std::string& sampleName, bool imported, std::string fi);
     int Reassign(std::string name, bool imported);

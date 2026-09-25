@@ -1,0 +1,29 @@
+# Reopens the song mod-slots-legacy saved: the converted first-release
+# slots and the two new ones come back as they were.
+wait 1500
+expect_view song
+expect_instrument_param 5 mod1_type decay
+expect_instrument_param 5 mod1_p1 80
+expect_instrument_param 5 mod2_type lfo
+expect_instrument_param 5 mod2_p1 56
+expect_instrument_param 5 mod2_p2 1
+expect_instrument_param 5 mod2_p3 1
+expect_instrument_param 5 mod3_type adsr
+expect_instrument_param 5 mod3_dest volume
+expect_instrument_param 5 mod3_amount 100
+expect_instrument_param 5 mod3_p1 32
+expect_instrument_param 5 mod3_p4 160
+expect_instrument_param 5 mod4_type trig
+expect_instrument_param 5 mod4_p3 160
+expect_instrument_param 5 mod4_p4 1
+goto chain
+goto phrase
+goto instrument
+instrument 05
+page MOD
+expect_screen_text 3 adsr  volume  +100
+expect_screen_text 4 trig  pan     +64
+screenshot_app mod-reopen.bmp
+goto song
+expect_no_error
+quit

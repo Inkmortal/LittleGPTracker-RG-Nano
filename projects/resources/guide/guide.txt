@@ -557,7 +557,8 @@
    + Start records it into
    a new sample (render to
    sample). Play it
-   backwards or slice it
+   backwards (play reverse,
+   play modes) or slice it
    for a fill.
  - Open the other Demo
    Songs and see how
@@ -620,7 +621,8 @@
    the finer or alternate
    move (chromatic note,
    instrument page, trim
-   marker, song section)
+   marker, MOD slot, song
+   section)
 *B + RB / A + RB
    mute / solo the track;
    RB + LB unmutes all
@@ -637,8 +639,8 @@
    this screen's special
    tool: command picker,
    Live mode, sample
-   import/root, rename,
-   sort
+   import/root/editor,
+   rename, sort
 *B + Select / LB + Select
    undo / redo any change,
    on every screen (hold B
@@ -718,8 +720,13 @@
    RB + Up: Mixer
    RB + Down: -
 *EQ
-   -
+   Limit
    RB + Left: FX
+   RB + Up: -
+   RB + Down: -
+*Limit
+   -
+   RB + Left: EQ
    RB + Up: -
    RB + Down: -
  
@@ -937,8 +944,11 @@
  
 *LB + Left/Right
    change page (SOUND, ENV,
-   FILTER, LFO, MOD, MIX
-   for synths)
+   FILTER, LFO, MOD, MIX,
+   EQ for synths)
+*LB + Up/Down on the MOD pa
+   pick the slot (1-4) the
+   settings edit
 *A + Left/Right on preset
    browse ready-made sounds
 *A + D-pad
@@ -967,15 +977,19 @@
    up
  
  Sample instruments have
- their own pages and trim
- controls - see Samples.
+ their own pages, play
+ modes, trim controls and a
+ sample editor (Select on
+ the Source or Loop page) -
+ see Samples.
  
-=Mixer, FX and EQ
+=Mixer, FX, EQ and Limit
  
 *Left/Right
    pick a strip (Mixer)
 *Up/Down
-   pick a knob (FX, EQ)
+   pick a knob (FX, EQ,
+   Limit)
 *A + Up/Down / A + Left/Rig
    big / small step
 *B + A
@@ -1282,16 +1296,16 @@
  
 =Instrument (synth)
  
- Six pages (SOUND, ENV,
- FILTER, LFO, MOD, MIX),
- switched with LB +
+ Seven pages (SOUND, ENV,
+ FILTER, LFO, MOD, MIX,
+ EQ), switched with LB +
  Left/Right. The top half
  draws what the page does -
  waveform, envelope, filter
  curve, LFO, modulation,
- levels - and shows the
- preset name and the
- focused value in real
+ levels, EQ curve - and
+ shows the preset name and
+ the focused value in real
  units (32 ms, 641 Hz). The
  knobs are listed below.
  Full details on the Synth
@@ -1350,11 +1364,12 @@
 =Instrument (sample)
  
  Sample instruments have
- six pages too: Source,
+ seven pages too: Source,
  Shape, Filter, Loop, Mod,
- Motion, with a waveform
- and start/loop/end
- markers. See Samples.
+ Motion, EQ, with a
+ waveform and
+ start/loop/end markers.
+ See Samples.
  
 =Table
  
@@ -1436,7 +1451,14 @@
  (M), each with a live
  level meter, plus the
  master waveform. Levels
- save with the song.
+ save with the song. When
+ the limiter is on, a white
+ line hangs from the top of
+ the master meter as long
+ as it is limiting (12 dB =
+ half the meter), and the
+ master line reads LIM
+ -3.2dB.
  
 *Left/Right
    pick a strip
@@ -1531,6 +1553,80 @@
  400 Hz to clear mud, high
  +2 dB at 8 kHz for air.
  
+ RB + Right goes on to the
+ limiter. Every instrument
+ also has an EQ of its own,
+ on its EQ page.
+ 
+=Limit
+ 
+ The master limiter, RB +
+ Right from EQ (like the
+ M8's LIM): it keeps the
+ whole mix under a ceiling,
+ so you can make it louder
+ without it clipping. It
+ comes after the EQ; the
+ Project's clip (soft clip)
+ and master volume come
+ after it.
+ 
+*drive
+   pushes the mix into the
+   limiter
+   Values: 00 = off (the
+   default), 01 = 0 dB ..
+   FF = +25.4 dB
+*ceil
+   the loudest the mix may
+   get
+   Values: 00 = 25.5 dB ..
+   FF = 0 dB, default FC =
+   0.3 dB
+*attk
+   how far it looks ahead:
+   the gain is already down
+   when a peak arrives
+   Values: 0.1-10 ms,
+   default 80 = 1 ms
+*rels
+   how fast it lets go
+   afterwards
+   Values: 00 = auto
+   (100-900 ms: slower the
+   harder it works), 01 = 4
+   ms .. FF = 1 s
+ 
+ Under the knobs, the red
+ GR bar shows how many dB
+ it is taking off right
+ now, with the peak going
+ in (after drive) and
+ coming out. The scope
+ below scrolls the last few
+ seconds: the mix level
+ rises from the bottom, the
+ limiting hangs from the
+ top in red, the dotted
+ line is the ceiling.
+ 
+ Up/Down picks a knob, A +
+ D-pad edits, B + A puts a
+ knob back (drive back to
+ off), RB + Left returns to
+ EQ. With drive 00 the mix
+ passes untouched; switched
+ on, it delays the whole
+ mix by the look-ahead (1
+ ms by default).
+ 
+ Try: drive +3 to +6 dB
+ with rels on auto. A few
+ dB of GR on the loudest
+ hits is transparent; if it
+ pumps, lower drive or
+ lengthen rels.
+ 
 =Helper (RB + Select)
  
  Available on every screen,
@@ -1591,7 +1687,8 @@
  plays 47 ready synthesis
  models with two knobs, and
  keeps this page's ENV,
- FILTER, MOD and MIX pages.
+ FILTER, MOD, MIX and EQ
+ pages.
  
 =The starter kit
  
@@ -1777,49 +1874,219 @@
    an instrument table that
    runs on every note
  
-=MOD - envelopes and LFOs
+=MOD - 4 modulation slots
  
- Two slots, mod1 and mod2,
- each move one part of the
- sound on every note.
+ Four slots move the sound
+ by themselves on every
+ note, like the M8's
+ modulation page:
+ envelopes, LFOs and key
+ tracking, each aimed at
+ one part of the sound.
  Sample instruments have
- the same page.
+ the same page, with their
+ own destinations.
  
-*mod1 / mod2
-   decay (starts full,
-   falls away) or swell
-   (rises, then holds) -
-   envelopes; sine,
-   triangle, square, saw,
-   random - LFOs
+ - The top four lines are
+   the four slots at a
+   glance: type, what it
+   moves, how far, and a
+   tiny curve. > marks the
+   slot you are editing.
+ - The box draws that slot
+   over real time from the
+   note start (for adsr the
+   dotted line is the
+   note-off, for track the
+   notes from low to high).
+ - The settings below
+   belong to that slot
+   only. Each shows its hex
+   value and what it means:
+   A0 324 ms, 80 1.60 Hz,
+   80 50%.
+ 
+ LB + Up/Down picks the
+ slot (so does the slot
+ setting). Changing type
+ loads that type's starting
+ values, ready to hear. B +
+ A puts a setting back to
+ its type's starting value
+ (on type: off). Changes to
+ a running slot are heard
+ right away (a slot
+ switched on starts with
+ the next note); undo (B +
+ Select) takes back a type
+ change together with its
+ values.
+ 
+*slot
+   which slot the settings
+   below edit, 1-4
+*type
+   ahd, adsr, drum, lfo,
+   trig, track (and decay,
+   swell from the first
+   release); off
 *dest
-   what it moves: volume,
-   cutoff, reso, pitch, pan
-*amt
+   what it moves (below)
+*amount
    how far, -127 ... +127;
    minus goes the other
-   way. On pitch, +127 = 2
-   octaves
-*rate
-   higher is always faster:
-   envelopes 00 = 10 s ...
-   FF = 1 ms, LFOs 00 =
-   0.05 Hz ... FF = 50 Hz
+   way. Pitch: +127 = 2
+   octaves; fine: +127 = 1
+   semitone; others show a
+   percentage
  
- The picture shows both
- slots over two seconds;
- the focused knob shows its
- real value (312 ms, 1.60
- Hz, +3.0 semitones).
- Picking a preset switches
- both slots off.
+*ahd
+   attack hold decay
+   What it does: rises to
+   full, stays, falls back
+   to nothing - on every
+   note
+*adsr
+   attack decay sustn
+   releas
+   What it does: stays at
+   sustn while the note
+   holds; KILL (or the next
+   instrument on the track)
+   starts the release
+*drum
+   peak body decay
+   What it does: a sharp
+   peak, a short dip (peak:
+   dip depth and time),
+   then the body swells
+   back, holds and decays -
+   punchy drums
+*lfo
+   rate shape trig
+   What it does: repeating
+   wobble; rate 00 = 0.05
+   Hz ... 80 = 1.6 Hz ...
+   FF = 50 Hz
+*trig
+   attack hold decay source
+   What it does: an ahd
+   fired by notes on
+   another track (source =
+   track 1-8) - sidechain
+   ducking, call and
+   response
+*track
+   from to low high
+   What it does: the note
+   picks the value: low at
+   the from note, high at
+   the to note, in between
+   for notes between
+*decay / swell
+   rate
+   What it does: the first
+   release's envelopes,
+   kept so older songs
+   sound the same (rate:
+   higher = faster)
  
- Try: mod1 decay, dest1
- cutoff, amt1 +80, rate1 60
- - a pluck that closes its
- filter on every note. mod2
- sine, dest2 pitch, amt2 +4
- - gentle vibrato.
+ Envelope times: 00 =
+ instant, 01 = 1 ms, 40 =
+ 10 ms, 80 = 100 ms, C0 = 1
+ s, FF = 10 s. The attack
+ rises in a straight line,
+ decays and releases fall
+ fast then slow, landing on
+ zero exactly at their
+ time.
+ 
+ LFO shapes: tri, sine,
+ ramp dn, ramp up, exp dn,
+ exp up, sqr dn, sqr up,
+ random (a new level every
+ cycle - sample and hold),
+ drunk (a random walk).
+ trig: free keeps running
+ across notes (every note
+ joins it wherever it is),
+ retrig restarts it with
+ every note, hold plays one
+ cycle and holds its last
+ level, once plays one
+ cycle and returns to its
+ start.
+ 
+ Destinations. Synth:
+ volume, cutoff, reso,
+ pitch, pan, fine, drive,
+ shape, fm amt, noise,
+ reverb, delay, chorus.
+ Macro synth: volume,
+ cutoff, reso, pitch, pan,
+ fine, drive, timbre,
+ color, reverb, delay,
+ chorus. Sample: volume,
+ cutoff, reso, pitch, pan,
+ fine, drive, crush, fb
+ mix, fb tune, start, loop
+ st, reverb, delay, chorus.
+ 
+ - An envelope on volume
+   shapes the note: +127
+   follows the envelope
+   from silence (an adsr
+   becomes the note's own
+   volume envelope), -127
+   ducks the sound while
+   the envelope is up. LFOs
+   and tracking move the
+   volume up and down
+   around its level.
+ - On a sample, start moves
+   where the note starts
+   and loop st moves the
+   loop start while it
+   plays, +127 = the whole
+   trimmed sample. crush
+   removes bits (+127 = 15
+   bits fewer).
+ - A sample normally stops
+   at KILL; with an adsr on
+   volume (positive amount)
+   it keeps playing and
+   fades with the release.
+ - Every slot restarts with
+   every note, with or
+   without an instrument
+   number on the step; RTRG
+   restarts the envelopes
+   too. Picking a preset
+   switches all four slots
+   off.
+ 
+ Try:
+ 
+ - adsr -> cutoff, amount
+   +80, sustn 40, releas A0
+   - a filter that opens
+   per note and closes
+   after KILL.
+ - lfo -> pitch, amount +6,
+   shape sine, trig retrig
+   - vibrato that starts
+   fresh on every note.
+ - drum -> volume, amount
+   +127 on a sample loop -
+   a punchy, gated hit.
+ - trig -> volume, amount
+   -100, source 1 on a pad
+   - it ducks every time
+   the kick on track 1
+   plays.
+ - track -> cutoff, low
+   -40, high +40 - higher
+   notes get brighter.
  
 =MIX - level and space
  
@@ -1844,6 +2111,53 @@
  shared by every instrument
  and set on the FX screen
  (Mixer, then RB + Down).
+ 
+=EQ - its own tone
+ 
+ Every instrument has its
+ own three-band EQ, like
+ the M8's instrument EQ:
+ the same low shelf, mid
+ bell and high shelf as the
+ master EQ, but only on
+ this sound (before its pan
+ and its effect sends).
+ Sample instruments have
+ the same page.
+ 
+*l.gain / l.freq
+   bass shelf: everything
+   below l.freq (30-400 Hz)
+   up or down
+*m.gain / m.freq
+   a wide bell around
+   m.freq (150 Hz-6 kHz)
+*h.gain / h.freq
+   treble shelf: everything
+   above h.freq (1.5-16
+   kHz)
+ 
+ Gains: 80 = flat, 12 ...
+ +12 dB (about 0.1 dB a
+ step). The curve shows the
+ result from 20 Hz to 20
+ kHz, with a mark at the
+ focused band; the focused
+ knob shows its real value
+ (+4.5 dB, 94 Hz). B + A
+ puts a knob back. A flat
+ band costs nothing, so
+ leave what you don't need
+ at 80. Picking a preset
+ sets the EQ flat again.
+ 
+ Try: on a bass, l.gain +4
+ dB for weight and h.gain 6
+ dB to keep it out of the
+ hats' way; on a pad,
+ m.gain 4 dB around 400 Hz
+ to leave room for the
+ lead.
  
 =Chords with CHRD
  
@@ -2162,14 +2476,14 @@
  
 =Pages
  
- Six pages, switched with
+ Seven pages, switched with
  LB + Left/Right. SOUND and
  MOTION are the macro
  synth's own; ENV, FILTER,
- MOD and MIX are exactly
- the Synth pages. RB +
- Select explains the knob
- under the cursor - on
+ MOD, MIX and EQ are
+ exactly the Synth pages.
+ RB + Select explains the
+ knob under the cursor - on
  shape it tells you what
  timbre and color do on
  that shape.
@@ -2261,10 +2575,17 @@
    off after the shape (off
    in init), with its own
    envelope and drive.
- - MOD - the two
-   envelope/LFO slots
-   (volume, cutoff, reso,
-   pitch, pan).
+ - MOD - the four
+   modulation slots
+   (envelopes, LFOs, key
+   tracking). On a macro
+   synth they can also move
+   timbre and color - an
+   LFO on timbre is the
+   classic way to make a
+   shape evolve.
+ - EQ - the instrument's
+   own low / mid / high EQ.
  - MIX - volume, pan and
    the reverb / delay /
    chorus sends.
@@ -2639,6 +2960,19 @@
  
 =Samples only
  
+*PLAY
+   00bb
+   Does: play mode for this
+   note: 00 forward, 01
+   reverse, 02 loop, 03
+   rev-loop, 04 pingpong,
+   05 rev-pingpong, 06-08
+   osc, 09 loop-sync (play
+   modes). With a note: the
+   note starts over in that
+   mode (reverse from E);
+   without: the sound turns
+   around from where it is
 *PLOF
    aabb
    Does: jump to position
@@ -3397,12 +3731,12 @@
 =Sample pages
  
  LB + Left/Right switches
- between the six sample
+ between the seven sample
  pages:
  
 *Source
-   sample, root note,
-   detune, slices
+   sample, play mode, root
+   note, detune, slices
 *Shape
    volume, pan, reverb,
    delay and chorus sends
@@ -3413,16 +3747,131 @@
    cutoff, resonance,
    filter type and mode
 *Loop
-   loop mode, start, loop
-   start, end
+   play mode, slices,
+   start, loop start, end
 *Mod
-   two envelopes/LFOs on
-   volume, cutoff, reso,
-   pitch or pan - see Synth
-   -> MOD
+   four slots
+   (ADSR/AHD/drum
+   envelopes, LFOs, key
+   tracking) on volume,
+   cutoff, reso, pitch,
+   fine, pan, drive, crush,
+   feedback, sample start,
+   loop start or the sends
+   - see Synth -> MOD
 *Motion
    instrument table,
    feedback
+*EQ
+   the instrument's own low
+   / mid / high EQ, drawn
+   as a curve - see
+   Instrument EQ
+ 
+=Instrument EQ
+ 
+ The last page. Each sample
+ instrument has its own
+ three-band EQ, the same as
+ a synth's (Synth -> EQ):
+ l.gain/l.freq a bass shelf
+ (30-400 Hz), m.gain/m.freq
+ a bell (150 Hz-6 kHz),
+ h.gain/h.freq a treble
+ shelf (1.5-16 kHz). Gains
+ 80 = flat, 12 ... +12 dB.
+ It shapes only this sound,
+ before its effect sends;
+ flat bands cost nothing.
+ The curve above the knobs
+ shows the result, and the
+ focused knob's value is
+ shown in dB or Hz.
+ 
+ Try: thin a loop with
+ l.gain 8 dB so the kick
+ has the bottom to itself,
+ or brighten a dull vocal
+ chop with h.gain +4 dB.
+ 
+=Play modes
+ 
+ play (on Source and Loop)
+ picks the direction and
+ whether the sample loops,
+ the same choices as the
+ M8's sampler. S, L and E
+ are the start, loop start
+ and end markers (see
+ Trimming).
+ 
+*forward
+   S to E, once (the
+   default)
+*reverse
+   E back to S, once
+*loop
+   S to E, then L to E
+   again and again
+*rev-loop
+   E back to L, again and
+   again
+*pingpong
+   S to E, then back and
+   forth between E and L
+*rev-pingpong
+   E back to L, then back
+   and forth
+*osc
+   L..E is one wave cycle,
+   pitched like a synth
+   (single-cycle waveforms)
+*osc-rev / osc-pingpong
+   the cycle backwards /
+   there and back
+*loop-sync
+   L..E stretched to one
+   bar at the song tempo
+   (drum loops that follow
+   the tempo)
+ 
+ Under the waveform a green
+ line with arrows shows the
+ first pass and which way
+ it goes; a second line
+ shows the part that loops
+ (arrows both ways for
+ ping-pong). With slices,
+ every slice plays its own
+ part in the chosen mode,
+ so reverse plays each
+ slice backwards.
+ 
+ A single note can use
+ another mode with the PLAY
+ command: PLAY 0001 on a
+ step with a note plays
+ that note in reverse while
+ the instrument stays
+ forward (the number is the
+ mode's place in the list
+ above: 00 forward, 01
+ reverse, 02 loop, 03
+ rev-loop, 04 pingpong, 05
+ rev-pingpong, 06 osc, 07
+ osc-rev, 08 osc-pingpong,
+ 09 loop-sync). On a step
+ without a note it turns
+ the sound that is already
+ playing around from where
+ it is.
+ 
+ Songs made before these
+ modes open unchanged: none
+ is now forward, ping pong
+ is pingpong, oscillator is
+ osc, looper sync is
+ loop-sync.
  
 =Trimming
  
@@ -3443,7 +3892,84 @@
 *RB + Start
    switch that preview
    between once and loop
-   (PREV: on screen)
+   (PREV: on screen), in
+   the play mode's
+   direction
+*Select
+   open the sample editor
+   (on sample: import; on
+   root: find the root)
+ 
+=Sample editing
+ 
+ Like the M8's sample
+ editor, with the same
+ processes. On the Source
+ or Loop page press Select
+ (anywhere but on sample
+ and root). The editor
+ works on the part between
+ S and E, shaded in the
+ pictures: BEFORE is the
+ sample now, AFTER what the
+ edit will make.
+ 
+*normalize
+   makes S..E as loud as it
+   can be without clipping
+*crop to S..E
+   keeps only S..E (L moves
+   with the sound)
+*fade in S..E
+   S..E rises from silence
+*fade out S..E
+   S..E falls to silence
+*reverse S..E
+   S..E plays backwards
+*trim silence
+   cuts the quiet start and
+   end of the whole sample
+ 
+*Up / Down
+   pick an edit
+*A
+   make it
+*Start
+   hear the sample (again:
+   stop)
+*B
+   back to the instrument
+ 
+ Nothing is overwritten: A
+ writes a new file next to
+ the original (kick.wav
+ becomes kick_nrm.wav,
+ kick_crop.wav,
+ kick_rev.wav ...), puts it
+ on the instrument and
+ keeps your markers where
+ they were in the sound.
+ Edits chain: crop, then
+ normalize the result.
+ Changed your mind? Close
+ the editor and press B +
+ Select: the instrument
+ goes back to the previous
+ file (the new file stays
+ in the song's samples
+ folder, unused). To fade
+ only the last bit of a
+ sound, move S there first
+ (LB + Up/Down, LB + A +
+ Left/Right), fade out,
+ then move S back.
+ 
+ If an edit would change
+ nothing the editor says
+ why instead (already as
+ loud as it gets, move S or
+ E in first, no silence at
+ the ends).
  
 =Root note
  
@@ -3469,9 +3995,11 @@
  opens the new instrument;
  B cancels and leaves
  nothing behind. Chop it
- with slices, reverse it
- with a table, or stack it
- again.
+ with slices, play it
+ backwards with play
+ reverse, trim and
+ normalize it in the sample
+ editor, or stack it again.
  
 =Slices
  
@@ -3845,7 +4373,7 @@
    Chain, Phrase,
    Instrument, Table,
    Groove, Project, Mixer,
-   FX, EQ, Helper
+   FX, EQ, Limit, Helper
 *Synth
    The built-in synth:
    every knob, every
@@ -3917,7 +4445,9 @@
    notes, fills, shuffles
    and the RAND/CHNC
    commands, plus a master
-   EQ to finish the mix.
+   EQ and limiter to finish
+   the mix, and an EQ on
+   every instrument.
  - Tested like a product. A
    desktop simulator drives
    the real app with
@@ -4050,10 +4580,12 @@
  expect_song_chain,
  expect_phrase_row_count, e
  xpect_instrument_type/name
- /param, expect_size 240
- 240, expect_no_error, and
- more - see
- docs/RGNANO_SIM.md.
+ /param,
+ expect_audio_peak_max,
+ expect_limiter_gr,
+ expect_size 240 240,
+ expect_no_error, and more
+ - see docs/RGNANO_SIM.md.
  
  State setup for long
  scenarios: sim_set_synth,
@@ -4291,6 +4823,30 @@
 *Shared reverb / echo
    sources/Application/Mixe
    r/SendFX.*
+*Master EQ, instrument EQ d
+   sources/Application/Mixe
+   r/ThreeBandEQ.*,
+   MasterEQ.*
+*Master limiter (look-ahead
+   sources/Application/Mixe
+   r/MasterLimiter.*,
+   screen
+   Views/LimiterView.cpp
+*Instrument EQ (per voice)
+   sources/Application/Inst
+   ruments/InstrumentEQ.*,
+   page Views/InstrumentVie
+   wEQ.cpp
+*Sampler play modes (forwar
+   sources/Application/Inst
+   ruments/SampleInstrument
+   .* (setupVoicePlayback,
+   Render)
+*Sample editor (normalize, 
+   sources/Application/Inst
+   ruments/SampleProcessor.
+   *, Views/ModalDialogs/Sa
+   mpleEditDialog.*
 *Instrument bank, type swit
    sources/Application/Inst
    ruments/InstrumentBank.c

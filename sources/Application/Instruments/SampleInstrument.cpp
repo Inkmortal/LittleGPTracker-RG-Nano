@@ -139,7 +139,8 @@ SampleInstrument::SampleInstrument() {
      chorus_ = new Variable("chorus", SIP_CHORUS, 0);
      Insert(chorus_);
 
-     mods_.Create(*this);
+     mods_.Create(*this, MIK_SAMPLE);
+     eq_.Create(*this);
 
      customName_ = new Variable("name", INSTRUMENT_NAME_ID, "");
      Insert(customName_);
@@ -148,6 +149,11 @@ SampleInstrument::SampleInstrument() {
 
      for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
          renderParams *rp = renderParams_ + i;
+         rp->fresh_ = false;
+         rp->loopMode_ = SILM_ONESHOT;
+         rp->markStart_ = rp->markLoop_ = rp->markEnd_ = 0;
+         rp->sampleSize_ = 0;
+         rp->noteFactor_ = 1.0f;
          rp->updaters_.push_back(&rp->volumeRamp_);
          rp->updaters_.push_back(&rp->panner_);
          rp->updaters_.push_back(&rp->cutRamp_);
@@ -161,6 +167,14 @@ SampleInstrument::SampleInstrument() {
          for (int m = 0; m < MOD_SLOT_COUNT; m++) {
              rp->updaters_.push_back(&rp->mods_[m]);
          }
+         rp->modVolScale_ = 1.0f;
+         for (int x = 0; x < RUX_LAST; x++) {
+             rp->modExtra_[x] = 0.0f;
+         }
+         rp->baseLoopStart_ = 0;
+         rp->loopModded_ = false;
+         rp->releasing_ = false;
+         rp->finished_ = true;
 	} ;
 
  // Reset table state
@@ -196,6 +210,88 @@ static void clampModulated(renderParams *rp) {
 	if (rp->cutoff_>i2fp(1)) rp->cutoff_=i2fp(1) ;
 	if (rp->reso_<0) rp->reso_=0 ;
 	if (rp->reso_>i2fp(1)) rp->reso_=i2fp(1) ;
+}
+
+// Sums the command ramps and MOD slots into the voice (tick or k-rate)
+static void applyUpdaterSums(renderParams *rp,bool withFilter) {
+	struct RUParams rup ;
+	rup.Reset() ;
+	std::vector<I_SRPUpdater *>::iterator it ;
+	for (it=rp->activeUpdaters_.begin();it!=rp->activeUpdaters_.end();it++) {
+		(*it)->UpdateSRP(rup) ;
+	}
+	rp->modVolScale_=rup.volumeScale_ ;
+	for (int x=0;x<RUX_LAST;x++) {
+		rp->modExtra_[x]=rup.extra_[x] ;
+	}
+	rp->volume_=fp_mul(rp->baseVolume_+rup.volumeOffset_,fl2fp(rup.volumeScale_)) ;
+	rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
+	rp->pan_=rp->basePan_+rup.panOffset_ ;
+	if (withFilter) {
+		rp->cutoff_=rp->baseFCut_+rup.cutOffset_ ;
+		rp->reso_=rp->baseFRes_+rup.resOffset_ ;
+		rp->fbMix_=rp->baseFbMix_+rup.fbMixOffset_ ;
+		rp->fbTun_=rp->baseFbTun_+rup.fbTunOffset_ ;
+	}
+	clampModulated(rp) ;
+}
+
+// Bit depth after MOD crush (more amount = fewer bits) and the drive
+// before it
+static int modulatedCrush(renderParams *rp) {
+	int bits=rp->crush_-(int)(rp->modExtra_[RUX_CRUSH]+(rp->modExtra_[RUX_CRUSH]>=0?0.5f:-0.5f)) ;
+	if (bits<1) bits=1 ;
+	if (bits>16) bits=16 ;
+	return bits ;
+}
+
+static int modulatedDrive(renderParams *rp) {
+	int drive=rp->drive_+(int)rp->modExtra_[RUX_DRIVE] ;
+	if (drive<0) drive=0 ;
+	if (drive>255) drive=255 ;
+	return drive ;
+}
+
+// Loop start (L) moved by MOD, as a share of the trimmed sample, in the
+// looping play modes (the oscillator and looper sync modes size their
+// pitch from L..E, so they keep it). Rebuilds the voice's loop path.
+static void applyModLoopStart(renderParams *rp) {
+	int mode=rp->loopMode_ ;
+	if (!SampleInstrument::IsLoopingMode(mode) || SampleInstrument::IsOscMode(mode) ||
+	    mode==SILM_LOOPSYNC) {
+		return ;
+	}
+	if (rp->modExtra_[RUX_LOOP]==0.0f && !rp->loopModded_) {
+		return ;   // untouched: LPOF and the marks rule
+	}
+	int S=rp->markStart_ ;
+	int E=rp->markEnd_ ;
+	int lo=S<E?S:E ;
+	int hi=(S<E?E:S)-2 ;
+	int span=E-S ;
+	if (span<0) span=-span ;
+	int loop=rp->baseLoopStart_+(int)(rp->modExtra_[RUX_LOOP]*span) ;
+	if (loop>hi) loop=hi ;
+	if (loop<lo) loop=lo ;
+	if (loop<0) loop=0 ;
+	rp->markLoop_=loop ;
+	int first,end,restart ;
+	SampleInstrument::PlayPath(mode,S,loop,E,first,end,restart) ;
+	rp->rendLoopStart_=restart ;
+	rp->rendLoopEnd_=end ;
+	rp->loopModded_=(rp->modExtra_[RUX_LOOP]!=0.0f) ;
+}
+
+// An ADSR on volume still fading this voice out
+static bool volumeReleaseRunning(renderParams *rp) {
+	for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		ModSource &mod=rp->mods_[m] ;
+		if (mod.Enabled() && mod.GetType()==MT_ADSR && mod.GetDest()==MD_VOLUME &&
+		    mod.GetAmount()>0.0f && !mod.IsDone()) {
+			return true ;
+		}
+	}
+	return false ;
 }
 
 bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
@@ -238,99 +334,43 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 
 	 rp->pan_=rp->basePan_=i2fp(pan_->GetInt()) ;
 
-	 if (!source_->IsMulti()) {
-		 rp->rendLoopStart_=loopStart_->GetInt();
- 		 rp->rendLoopEnd_=loopEnd_->GetInt() ;
-	 } else {
+	 int markStart=start_->GetInt() ;
+	 int markLoop=loopStart_->GetInt() ;
+	 int markEnd=loopEnd_->GetInt() ;
+	 int voiceMode=loopMode_->GetInt() ;
+	 if (source_->IsMulti()) {
+		 // SoundFont presets bring their own loop
 		 long start=source_->GetLoopStart(rp->midiNote_)  ;
+		 markStart=0 ;
 		 if (start>0) {
-			 rp->rendLoopStart_=source_->GetLoopStart(rp->midiNote_); // hack at the moment
-			 rp->rendLoopEnd_=source_->GetLoopEnd(rp->midiNote_) ;
+			 markLoop=source_->GetLoopStart(rp->midiNote_); // hack at the moment
+			 markEnd=source_->GetLoopEnd(rp->midiNote_) ;
 			 loopMode_->SetInt(SILM_LOOP) ;
 		 } else {
-			 rp->rendLoopStart_=0; // hack at the moment
-			 rp->rendLoopEnd_=source_->GetSize(rp->midiNote_) ; // hack at the moment
+			 markLoop=0; // hack at the moment
+			 markEnd=source_->GetSize(rp->midiNote_) ; // hack at the moment
 			 loopMode_->SetInt(SILM_ONESHOT) ;
 		 } ;
-	 } 
-     SampleInstrumentLoopMode loopmode=(SampleInstrumentLoopMode)loopMode_->GetInt() ;
+		 voiceMode=loopMode_->GetInt() ;
+	 }
+     rp->releasing_=false ;
 
-/*	 if (loopmode==SILM_OSCFINE) {
-		if (rp->rendLoopEnd_>source_->GetSize()-1) { // check for older instrument that were not correctly handled
-			rp->rendLoopEnd_=source_->GetSize()-1 ;
-		}
-	 }*/
-	 rp->reverse_=false ;
-
-     float driverRate = float(Audio::GetInstance()->GetSampleRate());
      int isSliced = slices_->GetInt() > 1;
      if (isSliced) {
 		 if (rp->midiNote_ > slices_->GetInt() - 1) return false; // No sound outside of slice range
-		 int slice = rp->rendLoopEnd_ / slices_->GetInt();
-		 rp->rendLoopStart_ = rp->midiNote_ * slice;
-		 rp->rendLoopEnd_ = (rp->midiNote_ + 1) * slice;
+		 // Each slice is its own little sample: S and L at its start, E at
+		 // its end, so every play mode (reverse too) works per slice
+		 int slice = markEnd / slices_->GetInt();
+		 markStart = markLoop = rp->midiNote_ * slice;
+		 markEnd = (rp->midiNote_ + 1) * slice;
 	 }
+	 if (voiceMode<0 || voiceMode>=SILM_LAST) voiceMode=SILM_ONESHOT ;
 
-	 switch (loopmode) {
-		 case SILM_ONESHOT:
-		 case SILM_LOOP:
-         case SILM_LOOP_PINGPONG:
-             // Compute speed factor
-             // if instrument sampled below 44.1Khz, should
-             // travel slower in sample
-
-             rp->rendFirst_ =
-                 (isSliced) ? rp->rendLoopStart_ : start_->GetInt();
-             rp->position_ = float(rp->rendFirst_);
-             rp->baseSpeed_ =
-                 fl2fp(source_->GetSampleRate(rp->midiNote_) / driverRate);
-             rp->reverse_ = (rp->rendLoopEnd_ < rp->position_);
-
-             break;
-
-         case SILM_OSC:
-             //		case SILM_OSCFINE:
-             {
-
-                 float freq = 261.6255653006f; // C3
-                 /*			if (loopmode==SILM_OSCFINE) {
-                                 freq=float(pow(2.0,-0.75))*440; // C3
-                             }*/
-                 int length = rp->rendLoopEnd_ - rp->rendLoopStart_;
-                 if (length == 0)
-                     length = 1;
-                 if (length < 0) {
-                     rp->reverse_ = true;
-                     length = -length;
-                 };
-                 rp->baseSpeed_ = fl2fp((freq * length) / driverRate);
-                 rp->rendFirst_ = rp->rendLoopStart_;
-                 if (cleanstart) {
-                     rp->position_ = float(rp->rendFirst_);
-                 }
-                 break;
-             }
-		case SILM_LOOPSYNC:
-		{
-			int length=rp->rendLoopEnd_-rp->rendLoopStart_ ;
-			if (length<0) {
-				 rp->reverse_=true ;
-				 length=-length ;
-			} ;
-			SyncMaster *sm=SyncMaster::GetInstance() ;
-			int sampleCount=int(sm->GetTickSampleCount()) ;
-			sampleCount*=(6*16) ; 
-			rp->baseSpeed_=fl2fp(length/float(sampleCount)) ;
-      rp->rendFirst_ = rp->rendLoopStart_;
-      if (cleanstart) {
-        rp->position_= float(rp->rendFirst_);
-      }
-      break ;
-        }
-        case SILM_LAST:
-			NAssert(0) ;
-			break ;
-        }
+	 rp->markStart_=markStart ;
+	 rp->markLoop_=markLoop ;
+	 rp->markEnd_=markEnd ;
+	 rp->loopMode_=voiceMode ;
+	 rp->sampleSize_=source_->GetSize(rp->midiNote_) ;
 
         // Compute octave & note difference from root
         float fineTune = float(fineTune_->GetInt() - 0x7F);
@@ -342,10 +382,10 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
     while (offset > 127) {
         offset -= 12;
     }
+	rp->noteFactor_=float(pow(2.0,(offset+fineTune)/12.0)) ;
 
-    fixed freqFactor=fl2fp(float(pow(2.0,(offset+fineTune)/12.0))) ;
-	rp->baseSpeed_=fp_mul(rp->baseSpeed_,freqFactor) ;
-    rp->speed_=rp->baseSpeed_ ;
+	setupVoicePlayback(rp,cleanstart,true) ;
+    rp->fresh_=true ;
     
   // Init k rate counter
  
@@ -405,26 +445,208 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 		}
 
 		rp->activeUpdaters_.clear() ;
+	}
 
-		// Envelopes and LFOs from the MOD page restart with every note
-		float krateHz=Audio::GetInstance()->GetSampleRate()/(float)KRATE_SAMPLE_COUNT ;
-		mods_.StartVoice(rp->mods_,rp->activeUpdaters_,krateHz,channel*131+midinote) ;
-	}	
+	// The EQ page's filters start from silence, like the voice
+	if (cleanstart) {
+		eq_.ResetVoice(channel) ;
+	}
+
+	// Envelopes and LFOs from the MOD page restart with every note, with or
+	// without an instrument number on the step, and the note starts with
+	// their first values
+	float krateHz=Audio::GetInstance()->GetSampleRate()/(float)KRATE_SAMPLE_COUNT ;
+	mods_.StartVoice(rp->mods_,rp->activeUpdaters_,krateHz,midinote,channel,channel*131+midinote) ;
+	applyUpdaterSums(rp,true) ;
+	rp->baseLoopStart_=rp->markLoop_ ;
+	rp->loopModded_=false ;
+	applyModLoopStart(rp) ;
+
+	// Sample start moved by MOD (key tracking, a free LFO...): a share of
+	// the way from where the note starts to where its first pass ends, in
+	// the play direction (not in the oscillator / looper sync modes)
+	int mode=rp->loopMode_ ;
+	if (rp->modExtra_[RUX_START]!=0.0f && !IsOscMode(mode) && mode!=SILM_LOOPSYNC) {
+		int first=rp->rendFirst_ ;
+		int end=rp->rendLoopEnd_ ;
+		float pos=first+rp->modExtra_[RUX_START]*(end-first) ;
+		float lo=(float)(first<end?first:end) ;
+		float hi=(float)(first<end?end:first) ;
+		if (first<end) hi-=2.0f ;   // stays inside the forward pass
+		else lo+=1.0f ;
+		if (hi>rp->sampleSize_-2) hi=(float)(rp->sampleSize_-2) ;
+		if (lo<0.0f) lo=0.0f ;
+		if (pos<lo) pos=lo ;
+		if (pos>hi) pos=hi ;
+		rp->position_=pos ;
+	}
 	return true ;
+}
+
+// The voice's path through the sample for its play mode. Three numbers
+// drive the renderer: rendFirst_ (where the note starts), rendLoopEnd_
+// (where every pass ends, in the direction of travel) and rendLoopStart_
+// (where a loop jumps back to). Reverse modes are the forward ones mirrored:
+// they start at E and run down. Old songs whose E sits before S (the way
+// LGPT used to reverse) keep playing backwards in the forward modes.
+void SampleInstrument::setupVoicePlayback(renderParams *rp,bool cleanstart,bool reposition) {
+	int mode=rp->loopMode_ ;
+	int S=rp->markStart_ ;
+	int L=rp->markLoop_ ;
+	int E=rp->markEnd_ ;
+	bool osc=IsOscMode(mode) || mode==SILM_LOOPSYNC ;
+
+	int first,end,restart ;
+	PlayPath(mode,S,L,E,first,end,restart) ;
+	// E is exclusive (a forward pass stops before it): going down, the
+	// first frame heard is the one before E. A backward loop jumps to just
+	// under its restart point the same way (see Render).
+	if (IsReverseMode(mode)) first-=1 ;
+	// The interpolation also reads the frame after the playhead: never
+	// start on the very last frame of the sample
+	int lastStart=rp->sampleSize_-2 ;
+	if (lastStart<0) lastStart=0 ;
+	if (end<first && first>lastStart) first=lastStart ;
+	if (first<0) first=0 ;
+	rp->rendFirst_=first ;
+	rp->rendLoopStart_=restart ;
+	rp->rendLoopEnd_=end ;
+
+	float driverRate=float(Audio::GetInstance()->GetSampleRate()) ;
+	float base ;
+	if (IsOscMode(mode)) {
+		// L..E is one cycle at C3 (there and back for ping-pong)
+		float freq=261.6255653006f ;
+		int length=E-L ;
+		if (length<0) length=-length ;
+		if (length==0) length=1 ;
+		if (mode==SILM_OSC_PINGPONG) length*=2 ;
+		base=(freq*length)/driverRate ;
+	} else if (mode==SILM_LOOPSYNC) {
+		int length=E-L ;
+		if (length<0) length=-length ;
+		SyncMaster *sm=SyncMaster::GetInstance() ;
+		int sampleCount=int(sm->GetTickSampleCount()) ;
+		sampleCount*=(6*16) ;
+		base=length/float(sampleCount) ;
+	} else {
+		// A sample recorded below the output rate travels slower
+		base=source_->GetSampleRate(rp->midiNote_)/driverRate ;
+	}
+	rp->baseSpeed_=fl2fp(base*rp->noteFactor_) ;
+	rp->speed_=rp->baseSpeed_ ;
+
+	// Oscillator modes keep their phase on a retrigger without instrument;
+	// otherwise the note starts at its first frame. Without reposition (a
+	// PLAY command on a sounding note) it carries on from where it is, in
+	// the new mode's direction.
+	if (reposition && (cleanstart || !osc)) {
+		rp->position_=float(first) ;
+	}
+	rp->reverse_=(end<first) ;
+}
+
+void SampleInstrument::PlayPath(int mode,int S,int L,int E,int &first,int &end,int &restart) {
+	if (!IsReverseMode(mode)) {
+		bool osc=IsOscMode(mode) || mode==SILM_LOOPSYNC ;
+		first=osc?L:S ;
+		end=E ;
+		restart=L ;
+	} else {
+		first=E ;
+		end=(mode==SILM_REVERSE)?S:L ;
+		restart=E ;
+	}
+}
+
+bool SampleInstrument::IsReverseMode(int mode) {
+	return mode==SILM_REVERSE || mode==SILM_REVLOOP ||
+	       mode==SILM_REV_PINGPONG || mode==SILM_OSC_REV ;
+}
+
+bool SampleInstrument::IsLoopingMode(int mode) {
+	return mode!=SILM_ONESHOT && mode!=SILM_REVERSE ;
+}
+
+bool SampleInstrument::IsPingPongMode(int mode) {
+	return mode==SILM_LOOP_PINGPONG || mode==SILM_REV_PINGPONG ||
+	       mode==SILM_OSC_PINGPONG ;
+}
+
+bool SampleInstrument::IsOscMode(int mode) {
+	return mode==SILM_OSC || mode==SILM_OSC_REV || mode==SILM_OSC_PINGPONG ;
+}
+
+int SampleInstrument::WithLooping(int mode,bool loop) {
+	if (loop) {
+		if (mode==SILM_ONESHOT) return SILM_LOOP ;
+		if (mode==SILM_REVERSE) return SILM_REVLOOP ;
+		return mode ;
+	}
+	return IsReverseMode(mode)?SILM_REVERSE:SILM_ONESHOT ;
+}
+
+const char *SampleInstrument::CanonicalLoopModeName(const char *saved) {
+	if (!saved) return saved ;
+	static const char *legacy[][2]={
+		{"none","forward"},
+		{"ping pong","pingpong"},
+		{"oscillator","osc"},
+		{"looper sync","loop-sync"},
+		{0,0}
+	} ;
+	for (int i=0;legacy[i][0];i++) {
+		if (!strcmp(saved,legacy[i][0])) return legacy[i][1] ;
+	}
+	return saved ;
+}
+
+const char *SampleInstrument::GetLoopModeName(int mode) {
+	if (mode<0 || mode>=SILM_LAST) return "?" ;
+	return loopTypes[mode] ;
+}
+
+void SampleInstrument::ReplaceSample(int index,int start,int loopStart,int end) {
+	FindVariable(SIP_SAMPLE)->SetInt(index) ;
+	// Take it now: while a voice plays, the variable's observer only marks
+	// the instrument dirty, and the next note would reset the markers
+	updateInstrumentData(false) ;
+	start_->SetInt(start) ;
+	loopStart_->SetInt(loopStart) ;
+	loopEnd_->SetInt(end) ;
+	suggestedRootNote_=-1 ;
+	SetChanged() ;
+	NotifyObservers() ;
 }
 
 void SampleInstrument::Stop(int channel) {
 
-	// Get Rendering params for current voice & fill init data
-
 	 renderParams *rp=renderParams_+channel ;
 	 running_=false ;
+	 // Note-off / KILL: ADSR slots release. One on volume keeps the sample
+	 // playing while it fades (the channel holds it as a release tail)
+	 for (int m=0;m<MOD_SLOT_COUNT;m++) {
+		 rp->mods_[m].NoteOff() ;
+	 }
+	 rp->releasing_=!rp->finished_ && volumeReleaseRunning(rp) ;
+}
+
+bool SampleInstrument::IsReleasing(int channel) {
+	renderParams *rp=renderParams_+channel ;
+	return rp->releasing_ && !rp->finished_ ;
+}
+
+// Transport stop: no release tail
+void SampleInstrument::StopQuickly(int channel) {
+	Stop(channel) ;
+	renderParams_[channel].releasing_=false ;
 }
 
 void SampleInstrument::AllNotesOff() {
 	// Mark every voice finished: Stop() only flips the shared running_ flag
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		renderParams_[i].finished_=true ;
+		renderParams_[i].releasing_=false ;
 	}
 	running_=false ;
 }
@@ -456,25 +678,10 @@ void SampleInstrument::doKRateUpdate(int channel) {
 
 void SampleInstrument::updateFeedback(renderParams *rp) {
 
-	 SampleInstrumentLoopMode loopMode=(SampleInstrumentLoopMode)loopMode_->GetInt() ;
-
 	 if (rp->fbMix_!=0) {
 		int offset=fp2i(fp_mul(rp->fbTun_,fl2fp(255.0f))) ;
-		
-		switch(loopMode) {
-			case SILM_ONESHOT:
-			case SILM_LOOP:
-            case SILM_LOOP_PINGPONG:
-            case SILM_LOOPSYNC:
-                rp->feedbackMode_ = FB_ADD;
-                if (offset < 0x80) {
-                    offset = FB_BUFFER_LENGTH - offset - 1;
-                } else {
-                    offset = FB_BUFFER_LENGTH - offset * 10 - 1;
-                }
-                break;
-			case SILM_OSC:
-//			case SILM_OSCFINE:
+
+		if (IsOscMode(rp->loopMode_)) {
 				if (offset<0x80) {
 					offset=FB_BUFFER_LENGTH-offset-1 ;
 					rp->feedbackMode_=FB_ADD ;
@@ -482,10 +689,13 @@ void SampleInstrument::updateFeedback(renderParams *rp) {
 					offset=FB_BUFFER_LENGTH-(0x100-offset) ;
 					rp->feedbackMode_=FB_SUB ;
 				}
-				break ;
-			case SILM_LAST:
-				NAssert(0) ;
-				break ;
+		} else {
+                rp->feedbackMode_ = FB_ADD;
+                if (offset < 0x80) {
+                    offset = FB_BUFFER_LENGTH - offset - 1;
+                } else {
+                    offset = FB_BUFFER_LENGTH - offset * 10 - 1;
+                }
 		}
 		rp->feedbackOut_=rp->feedbackIn_+offset ;
 		if (rp->feedbackOut_>=FB_BUFFER_LENGTH) {
@@ -536,22 +746,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 			 if (hasUpdaters) {
 
 				 doTickUpdate(channel) ;
-
-				struct RUParams rup ;
-				rup.cutOffset_=rup.resOffset_=rup.volumeOffset_=rup.panOffset_=0 ;
-				rup.speedOffset_=FP_ONE ;
-
-				std::vector<I_SRPUpdater *>::iterator it ;
-
-				for (it=rp->activeUpdaters_.begin();it!=rp->activeUpdaters_.end();it++) {
-					I_SRPUpdater *current=*it ;
-					current->UpdateSRP(rup) ;
-				}
-
-				rp->volume_=rp->baseVolume_+rup.volumeOffset_ ;
-				rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
-				rp->pan_=rp->basePan_+rup.panOffset_ ;
-				clampModulated(rp) ;
+				 applyUpdaterSums(rp,false) ;
 			}
 
 		// Process retrig
@@ -565,6 +760,10 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 						rp->position_=0 ;
 					} ;
 					rp->retrigCount_=rp->retrigLoop_ ;
+					// each re-strike restarts the MOD envelopes too
+					for (int m=0;m<MOD_SLOT_COUNT;m++) {
+						if (rp->mods_[m].Enabled()) rp->mods_[m].Retrigger() ;
+					}
 				}
 				rp->retrigCount_-- ;
 			} ;
@@ -577,7 +776,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 		 // Crush 
 
-		 int shift=16-rp->crush_;
+		 int shift=16-modulatedCrush(rp);
 	     fixed mask=0xFFFFFFFF ;
 		 if (shift !=0) {
 			 mask<<=FIXED_SHIFT+shift  ;
@@ -585,7 +784,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 		 // Crush vol
 
-		 int crushvol=rp->drive_ ;
+		 int crushvol=modulatedDrive(rp) ;
 		 fixed fpcrushvol=fl2fp(crushvol/255.0F) ;
 
 		 // downsample
@@ -593,9 +792,11 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 		 int downsmpl=rp->downsample_ ;
 		 unsigned int dsMask=0xFFFFFFFF<<downsmpl ;
 
-		 // Loop mode
+		 // Play mode of this voice
 
-		 SampleInstrumentLoopMode loopMode=(SampleInstrumentLoopMode)loopMode_->GetInt() ;
+		 int loopMode=rp->loopMode_ ;
+		 bool looping=IsLoopingMode(loopMode) ;
+		 bool pingpong=IsPingPongMode(loopMode) ;
 
 		 // Interpolation
 
@@ -645,14 +846,39 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
     fixed s1,s2,t2,eta,inveta;
 		s2=0 ; t2=0 ;
 
-    short* loopPosition=(short *)(wavbuf+rp->rendLoopStart_*2*channelCount) ;
-    short* lastSample=(short *)(wavbuf+(rp->rendLoopEnd_-1)*2*channelCount) ;
+    // MOD on the loop start: once per buffer, before the path is laid out
+    applyModLoopStart(rp) ;
 
-    if (/*(loopMode==SILM_OSCFINE)||*/(rp->reverse_))
-    {
-			lastSample=(short *)(wavbuf+rp->rendLoopEnd_*2*channelCount) ;
-		}
-        
+    // Boundaries of this voice's path, in frames (see setupVoicePlayback).
+    // Every pointer stays where input and input+1 can both be read.
+    short *base=(short *)wavbuf ;
+    int lastFrame=rp->sampleSize_-2 ;
+    if (lastFrame<0) lastFrame=0 ;
+    int endFrame=rp->rendLoopEnd_ ;
+    if (endFrame>rp->sampleSize_) endFrame=rp->sampleSize_ ;
+    if (endFrame<0) endFrame=0 ;
+    // A loop restarts in the direction from its restart point to its end.
+    // Going up it restarts on L; going down just under its restart point
+    // (E is exclusive, like a forward pass's end)
+    bool restartReverse=(rp->rendLoopEnd_<rp->rendLoopStart_) ;
+    int restartFrame=rp->rendLoopStart_ ;
+    if (!restartReverse && restartFrame>endFrame-2) restartFrame=endFrame-2 ;
+    if (restartFrame>lastFrame+1) restartFrame=lastFrame+1 ;
+    if (restartFrame<1 && restartReverse) restartFrame=1 ;
+    if (restartFrame<0) restartFrame=0 ;
+    // Ping-pong bounces between L and the frame before E
+    int loFrame=rp->rendLoopStart_<rp->rendLoopEnd_?rp->rendLoopStart_:rp->rendLoopEnd_ ;
+    int hiFrame=rp->rendLoopStart_<rp->rendLoopEnd_?rp->rendLoopEnd_:rp->rendLoopStart_ ;
+    if (hiFrame>rp->sampleSize_) hiFrame=rp->sampleSize_ ;
+    if (loFrame<0) loFrame=0 ;
+    if (loFrame>lastFrame) loFrame=lastFrame ;
+    short *endFwd=base+(endFrame-1)*channelCount ;   // a forward pass stops here
+    short *endBack=base+endFrame*channelCount ;      // a backward pass stops below
+    short *restartPtr=base+restartFrame*channelCount ;
+    short *loPtr=base+loFrame*channelCount ;         // ping-pong turns
+    short *hiPtr=base+(hiFrame-1)*channelCount ;
+    if (hiPtr<loPtr+channelCount) hiPtr=loPtr+channelCount ;
+
     fixed zerofive=fl2fp(0.5f) ;
 
 		// Get feedback pointer position & boundary
@@ -696,105 +922,76 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 			// look where we are, if we need to
 
-			if (!rpReverse) { //Looping forward 
-				if (input>=lastSample/*-((loopMode==SILM_OSCFINE)?1:0)*/) {
-					switch(loopMode) {
-                    case SILM_ONESHOT:
-                        *rpFinished = true;
-                        break;
-                    case SILM_LOOP:
-                    case SILM_OSC:
-                    case SILM_LOOPSYNC:
-                        input = loopPosition;
-                        rpReverse = (loopPosition > lastSample);
-                        if (rpReverse) {
-                            fpSpeed = -rp->speed_;
-                        } else {
-                            fpSpeed = rp->speed_;
-                        }
-                        break;
-                    case SILM_LOOP_PINGPONG:
-                        if ((loopPosition > lastSample)) {
-                            if (input <= lastSample || input >= loopPosition) {
-                                rpReverse = !rpReverse;
-                                fpSpeed = -fpSpeed;
-                            }
-                        } else {
-                            if (input >= lastSample || input <= loopPosition) {
-                                rpReverse = !rpReverse;
-                                fpSpeed = -fpSpeed;
-                            }
-                        }
-                        break;
-                        /*						case SILM_OSCFINE:
-                                                {
-                                                    int
-                           offset=(input-lastSample)/channelCount ;
-                                                    rpReverse=(loopPosition>lastSample)
-                           ; if (rpReverse) { fpSpeed=-rp->speed_ ;
-                                                        input=loopPosition-offset
-                           ; } else { fpSpeed=rp->speed_ ;
-                                                        input=loopPosition+offset
-                           ;
-                                                    }
-                                                    break ;
-                                                }*/
-                    case SILM_LAST:
-                        NAssert(0);
-                        break;
-					} ;
+			if (!rpReverse) { // going forward
+				if (pingpong) {
+					if (input>=hiPtr) {
+						// turn around: the position mirrored at E's last frame
+						if (fpPos==0) {
+							input=hiPtr-(input-hiPtr) ;
+						} else {
+							input=hiPtr-(input-hiPtr)-channelCount ;
+							fpPos=FP_ONE-fpPos ;
+						}
+						if (input>=hiPtr) {
+							// that frame itself: read it as the far end of
+							// its left neighbour (input+1 must stay inside)
+							input=hiPtr-channelCount ;
+							fpPos=FP_ONE-1 ;
+						}
+						if (input<loPtr) input=loPtr ;
+						rpReverse=true ;
+						fpSpeed=-rp->speed_ ;
+					}
+				} else if (input>=endFwd) {
+					if (!looping) {
+						*rpFinished = true;
+					} else {
+						// back to the loop start, keeping what we overshot
+						rpReverse=restartReverse ;
+						if (!rpReverse) {
+							input=restartPtr+(input-endFwd) ;
+							if (input>=endFwd) input=restartPtr ;
+							fpSpeed=rp->speed_ ;
+						} else {
+							input=restartPtr-channelCount ;
+							fpSpeed=-rp->speed_ ;
+						}
+					}
 				}
-			} else { // Looping backward
-				if (input<lastSample) {
-					switch(loopMode) {
-                    case SILM_ONESHOT:
-                        *rpFinished = true;
-                        break;
-                    case SILM_LOOP:
-                    case SILM_OSC:
-                    case SILM_LOOPSYNC:
-                        input = loopPosition;
-                        rpReverse = (loopPosition > lastSample);
-                        if (rpReverse) {
-                            fpSpeed = -rp->speed_;
-                        } else {
-                            fpSpeed = rp->speed_;
-                        }
-                        break;
-                    case SILM_LOOP_PINGPONG:
-                        if ((loopPosition > lastSample)) {
-                            if (input <= lastSample || input >= loopPosition) {
-                                rpReverse = !rpReverse;
-                                fpSpeed = -fpSpeed;
-                            }
-                        } else {
-                            if (input >= lastSample || input <= loopPosition) {
-                                rpReverse = !rpReverse;
-                                fpSpeed = -fpSpeed;
-                            }
-                        }
-                        break;
-                        /*						case SILM_OSCFINE:
-                                                {
-                                                    int
-                           offset=(lastSample-input)/channelCount ;
-                                                    rpReverse=(loopPosition>lastSample)
-                           ; if (rpReverse) { fpSpeed=-rp->speed_ ;
-                                                        input=loopPosition-offset
-                           ; } else { fpSpeed=rp->speed_ ;
-                                                        input=loopPosition+offset
-                           ;
-                                                    }
-                                                    break ;
-                                                }*/
-                    case SILM_LAST:
-                        NAssert(0);
-                        break;
-					} ;
+			} else { // going backward
+				if (pingpong) {
+					if (input<loPtr) {
+						// turn around, mirrored at L
+						if (fpPos==0) {
+							input=loPtr+(loPtr-input) ;
+						} else {
+							input=loPtr+(loPtr-input)-channelCount ;
+							fpPos=FP_ONE-fpPos ;
+						}
+						if (input>=hiPtr) input=hiPtr-channelCount ;
+						if (input<loPtr) input=loPtr ;
+						rpReverse=false ;
+						fpSpeed=rp->speed_ ;
+					}
+				} else if (input<endBack) {
+					if (!looping) {
+						*rpFinished = true;
+					} else {
+						rpReverse=restartReverse ;
+						if (rpReverse) {
+							// as far under the restart point as we went past
+							// the end
+							input=restartPtr+(input-endBack) ;
+							if (input<endBack) input=restartPtr-channelCount ;
+							fpSpeed=-rp->speed_ ;
+						} else {
+							input=restartPtr ;
+							fpSpeed=rp->speed_ ;
+						}
+					}
 				}
 			};
 
-			
       if (*rpFinished) {
 				count=-1 ;
 			} else {
@@ -806,25 +1003,20 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 					if (hasUpdaters) {
 						doKRateUpdate(channel) ;
-						struct RUParams rup ;
-						rup.cutOffset_=rup.resOffset_=rup.volumeOffset_=rup.panOffset_=rup.fbMixOffset_=rup.fbTunOffset_=0 ;
-						rup.speedOffset_=FP_ONE;
-				
-						std::vector<I_SRPUpdater *>::iterator it ;
+						applyUpdaterSums(rp,true) ;
 
-						for (it=rp->activeUpdaters_.begin();it!=rp->activeUpdaters_.end();it++) {
-							I_SRPUpdater *current=*it ;
-							current->UpdateSRP(rup) ;
+						// MOD on crush / drive / loop start
+						int crushShift=16-modulatedCrush(rp) ;
+						mask=0xFFFFFFFF ;
+						if (crushShift!=0) {
+							mask<<=FIXED_SHIFT+crushShift ;
 						}
-						
-						rp->volume_=rp->baseVolume_+rup.volumeOffset_ ;
-						rp->pan_=rp->basePan_+rup.panOffset_ ;
-						rp->speed_=fp_mul(rp->baseSpeed_,rup.speedOffset_) ;
-						rp->cutoff_=rp->baseFCut_+rup.cutOffset_ ;
-						rp->reso_=rp->baseFRes_+rup.resOffset_ ;
-						clampModulated(rp) ;
-						rp->fbMix_=rp->baseFbMix_+rup.fbMixOffset_ ;
-						rp->fbTun_=rp->baseFbTun_+rup.fbTunOffset_ ;
+						fpcrushvol=fl2fp(modulatedDrive(rp)/255.0F) ;
+
+						// Note-off faded out by an ADSR on volume: done
+						if (rp->releasing_ && !volumeReleaseRunning(rp)) {
+							*rpFinished=true ;
+						}
 
 						set_filter(channel,FLT_LOWPASS,rp->cutoff_,rp->reso_,filterMix,bassyFilter);
 						filtering=(rp->cutoff_<i2fp(1))||(rp->reso_>i2fp(0)) ;
@@ -1023,6 +1215,7 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
     // Update 'reverse' mode if changed
 
     rp->reverse_ = rpReverse;
+    rp->fresh_ = false; // a PLAY from now on changes a sounding note
 
 		// Update final sample position
     rp->position_=(((char *)input)-wavbuf)/(2*channelCount)+fp2fl(fpPos) ;
@@ -1035,6 +1228,10 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
     }
 
     if (somethingToMix) {
+      // The instrument's own EQ (EQ page), before the sends
+      if (eq_.Prepare()) {
+        eq_.ProcessStereo(channel,buffer,size) ;
+      }
       sendToEffects(channel,buffer,size) ;
     }
     return somethingToMix ; 
@@ -1042,9 +1239,14 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
 
 // Copy the rendered voice to the shared reverb / echo (SendFX), like synths
 void SampleInstrument::sendToEffects(int channel,fixed *buffer,int size) {
-  float reverb=reverb_->GetInt()/255.0f ;
-  float delay=delay_->GetInt()/255.0f ;
-  float chorus=chorus_->GetInt()/255.0f ;
+  // MOD slots aimed at the sends move them per voice
+  renderParams *rp=renderParams_+channel ;
+  float reverb=reverb_->GetInt()/255.0f+rp->modExtra_[RUX_REVERB] ;
+  float delay=delay_->GetInt()/255.0f+rp->modExtra_[RUX_DELAY] ;
+  float chorus=chorus_->GetInt()/255.0f+rp->modExtra_[RUX_CHORUS] ;
+  reverb=reverb<0.0f?0.0f:(reverb>1.0f?1.0f:reverb) ;
+  delay=delay<0.0f?0.0f:(delay>1.0f?1.0f:delay) ;
+  chorus=chorus<0.0f?0.0f:(chorus>1.0f?1.0f:chorus) ;
   if (reverb<=0.0f && delay<=0.0f && chorus<=0.0f) return ;
   static float send[SENDFX_MAX_FRAMES*2] ;
   int frames=size<SENDFX_MAX_FRAMES ? size : SENDFX_MAX_FRAMES ;
@@ -1380,15 +1582,16 @@ void SampleInstrument::ProcessCommand(int channel,FourCC cc,ushort value) {
         //    into neighbors). That's intentional — these are useful artifacts,
         //    not bugs.
 
-        SampleInstrumentLoopMode loopmode =
-            (SampleInstrumentLoopMode)loopMode_->GetInt();
-        bool dragPlayhead = (loopmode != SILM_OSC);
+        bool dragPlayhead = !IsOscMode(rp->loopMode_);
+        // Reverse modes keep the window's ends the other way round
+        int windowLow = rp->rendLoopStart_ < rp->rendLoopEnd_ ? rp->rendLoopStart_ : rp->rendLoopEnd_;
+        int windowHigh = rp->rendLoopStart_ < rp->rendLoopEnd_ ? rp->rendLoopEnd_ : rp->rendLoopStart_;
 
         if (value > 0x8000) {
             // Backward shift (two's complement): 0xFFFF = -1, 0x8001 = -32767
             int shift = (int)(0x10000 - value);
-            if (shift > rp->rendLoopStart_) { // Don't push start below sample 0
-                shift = rp->rendLoopStart_;
+            if (shift > windowLow) { // Don't push start below sample 0
+                shift = windowLow;
             }
             rp->rendLoopEnd_ -= shift;
             rp->rendLoopStart_ -= shift;
@@ -1401,8 +1604,8 @@ void SampleInstrument::ProcessCommand(int channel,FourCC cc,ushort value) {
             // Clamp so rendLoopEnd_ doesn't escape the sample. When the window
             // hits the end, further forward LPOFs become no-ops — the loop is
             // parked at the boundary until something resets it.
-            if (rp->rendLoopEnd_ + shift >= sampleSize) {
-                shift = sampleSize - rp->rendLoopEnd_;
+            if (windowHigh + shift >= sampleSize) {
+                shift = sampleSize - windowHigh;
             }
             if (shift > 0) {
                 rp->rendLoopEnd_ += shift;
@@ -1412,6 +1615,25 @@ void SampleInstrument::ProcessCommand(int channel,FourCC cc,ushort value) {
                 }
             }
         }
+        break;
+    }
+    case I_CMD_PLAY: {
+        // PLAY 00bb: this note's play mode (bb as in the instrument's play
+        // list: 00 forward, 01 reverse, 02 loop ...). On the note's own
+        // step the note starts over in the new mode (reverse from E); on a
+        // sounding note it carries on from where it is, the new way round.
+        if (rp->sampleSize_ <= 0)
+            break; // this voice never played a note
+        int mode = value & 0xFF;
+        if (mode >= SILM_LAST)
+            mode = SILM_LAST - 1;
+        rp->loopMode_ = mode;
+        setupVoicePlayback(rp, rp->fresh_, rp->fresh_);
+#ifdef PLATFORM_RGNANO_SIM
+        Trace::Log("SAMPLE_PLAY", "channel %d mode=%s %s first=%d end=%d at=%d",
+                   channel, loopTypes[mode], rp->fresh_ ? "restart" : "carry on",
+                   rp->rendFirst_, rp->rendLoopEnd_, int(rp->position_));
+#endif
         break;
     }
     case I_CMD_PLOF: {
