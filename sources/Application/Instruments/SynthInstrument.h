@@ -11,6 +11,7 @@
 #include "SynthEngines.h"
 #include "SRPUpdaters.h"
 #include "ModSources.h"
+#include "InstrumentEQ.h"
 #include "Application/Model/Song.h"
 #include "Foundation/Types/Types.h"
 #include "Foundation/Variables/Variable.h"
@@ -182,6 +183,8 @@ struct SynthVoice {
 	LogSpeedRamp pfin_ ;
 	Arp arp_ ;
 	ModSource mods_[MOD_SLOT_COUNT] ;
+	float modVolScale_ ;           // MOD envelopes on volume
+	float modExtra_[RUX_LAST] ;    // MOD drive/shape/FM/noise/sends
 	std::vector<I_SRPUpdater *> updaters_ ;
 	std::vector<I_SRPUpdater *> activeUpdaters_ ;
 } ;
@@ -237,6 +240,7 @@ public:
 	virtual bool IsReleasing(int channel) ;
 	virtual void StopQuickly(int channel) ;
 	virtual void AllNotesOff() ;
+	virtual InstrumentMods *GetMods() { return &mods_ ; } ;
 	// Debug: voices shut off because their state went non-finite
 	static int BrokenVoiceCount() ;
 	void GetVoiceDebug(int channel,int &stage,float &level) ;
@@ -273,6 +277,8 @@ private:
 	void startVoice(int channel,unsigned char note,bool cleanStart) ;
 	void updateFilter(SynthVoice &v,float cutoff,float reso,float sampleRate) ;
 	void processUpdaters(SynthVoice &v,bool tick) ;
+	void applyUpdaters(SynthVoice &v) ;
+	void startMods(SynthVoice &v,int channel,unsigned char note) ;
 	float renderPartial(SynthVoice &v,int p,float inc,float shape,float fmIndex,float fmRatio,int wave) ;
 	void setupFm4(Fm4Params &p,float sampleRate) ;
 	void updateHyperRatios(SynthVoice &v) ;
@@ -320,6 +326,7 @@ private:
 	Variable *table_ ;
 	Variable *tableAuto_ ;
 	InstrumentMods mods_ ;
+	InstrumentEQ eq_ ;
 	Variable *customName_ ;
 
 	SynthHookVariable *engine_ ;

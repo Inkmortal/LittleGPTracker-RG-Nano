@@ -15,6 +15,7 @@
 #include "ModalDialogs/ImportSampleDialog.h"
 #include "ModalDialogs/InstrumentListDialog.h"
 #include "ModalDialogs/MessageBox.h"
+#include "ModalDialogs/SampleEditDialog.h"
 #include "System/System/System.h"
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 #include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
@@ -42,11 +43,15 @@ InstrumentView::InstrumentView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	previewLoop_=false ;
 	typeVar_=new Variable("type",INSTRUMENT_TYPE_FIELD,instrumentTypeNames,2,0) ;
 	shownEngine_=-1 ;
+	modSlotVar_=new Variable("slot",INSTRUMENT_MOD_SLOT_FIELD,1) ;
+	modFieldsType_=-1 ;
+	modFieldsSlot_=-1 ;
 	onInstrumentChange() ;
 }
 
 InstrumentView::~InstrumentView() {
 	delete typeVar_ ;
+	delete modSlotVar_ ;
 }
 
 InstrumentType InstrumentView::getInstrumentType() {
@@ -75,6 +80,13 @@ void InstrumentView::onInstrumentChange() {
 	nearestColumn_=false ;
 
 	InstrumentType it=getInstrumentType() ;
+	// The type field mirrors this instrument from now on. It is only shown
+	// on the first page, but applyTypeChange() reads it after every key:
+	// left at an earlier instrument's type, a key press on another page
+	// turned this instrument into that type.
+	if (i<MAX_SAMPLEINSTRUMENT_COUNT) {
+		typeVar_->SetInt(it==IT_SYNTH?1:0,false) ;
+	}
 
     switch (it) {
 		case IT_MIDI:
@@ -151,6 +163,9 @@ void InstrumentView::fillSampleParameters() {
 		case INSTRUMENT_MOD_PAGE:
 			fillModPage(instrument,position);
 			break;
+		case INSTRUMENT_EQ_PAGE:
+			fillEQPage(instrument,position);
+			break;
 		default:
 			fillSampleMotionPage(instrument,position);
 			break;
@@ -164,6 +179,11 @@ void InstrumentView::fillSampleSourcePage(SampleInstrument *instrument, GUIPoint
 	int sampleMax=sp->GetNameListSize()-1;
 	if (sampleMax<0) sampleMax=0;
 	UIIntVarField *f1=new UIIntVarField(position,*v,"sample %s",0,sampleMax,1,0x10) ;
+	T_SimpleList<UIField>::Insert(f1) ;
+	position._y+=1 ;
+	// Play direction and looping, as on the M8's sampler page
+	v=instrument->FindVariable(SIP_LOOPMODE) ;
+	f1=new UIIntVarField(position,*v,"play   %s",0,SILM_LAST-1,1,1) ;
 	T_SimpleList<UIField>::Insert(f1) ;
 	position._y+=1 ;
 	v=instrument->FindVariable(SIP_ROOTNOTE) ;
@@ -243,7 +263,7 @@ void InstrumentView::fillSampleLoopPage(SampleInstrument *instrument, GUIPoint p
 	int max=instrument->GetSampleSize()-1;
 	if (max<0) max=0;
 	Variable *v=instrument->FindVariable(SIP_LOOPMODE) ;
-	UIIntVarField *f1=new UIIntVarField(position,*v,"mode   %s",0,SILM_LAST-1,1,1) ;
+	UIIntVarField *f1=new UIIntVarField(position,*v,"play   %s",0,SILM_LAST-1,1,1) ;
 	T_SimpleList<UIField>::Insert(f1) ;
 	position._y+=1 ;
 	v=instrument->FindVariable(SIP_SLICES) ;
@@ -338,6 +358,7 @@ const char *InstrumentView::getLabPageName() {
 		case 2: return "FILTER";
 		case 3: return "LOOP";
 		case INSTRUMENT_MOD_PAGE: return "MOD";
+		case INSTRUMENT_EQ_PAGE: return "EQ";
 		default: return "MOTION";
 	}
 }
@@ -479,7 +500,9 @@ void InstrumentView::auditionSamplePitch(int offset) {
 	Variable *loopMode=instrument->FindVariable(SIP_LOOPMODE);
 	int originalLoopMode=loopMode?loopMode->GetInt():SILM_ONESHOT;
 	if (loopMode) {
-		loopMode->SetInt(previewLoop_?SILM_LOOP:SILM_ONESHOT);
+		// The note keeps the mode it starts with: preview once or looping,
+		// in the instrument's own direction (reverse stays reverse)
+		loopMode->SetInt(SampleInstrument::WithLooping(originalLoopMode,previewLoop_));
 	}
 	Player::GetInstance()->AuditionInstrument(i,note);
 	if (loopMode) {
@@ -714,6 +737,70 @@ void InstrumentView::drawSampleWaveform(SampleInstrument *instrument, int x, int
 #endif
 }
 
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+// A small arrow head at (x, mid) pointing right or left, 3 px wide
+static void drawArrowHead(SDLGUIWindowImp *imp, int x, int mid, bool right) {
+	for (int i=0;i<3;i++) {
+		int col=right?x+i:x+2-i;
+		GUIRect r(col,mid-2+i,col+1,mid+3-i);
+		imp->DrawRect(r);
+	}
+}
+
+// One lane of the play path: a line from a to b (pixels) with arrow heads
+// every few pixels pointing the way the note travels (both for ping-pong)
+static void drawPathLane(SDLGUIWindowImp *imp, int a, int b, int mid,
+                         bool right, bool both) {
+	int lo=a<b?a:b;
+	int hi=a<b?b:a;
+	if (hi-lo<4) hi=lo+4;
+	GUIRect line(lo,mid,hi+1,mid+1);
+	imp->DrawRect(line);
+	int count=0;
+	for (int x=lo+3;x+3<=hi;x+=10,count++) {
+		bool r=both?((count%2)==0):right;
+		drawArrowHead(imp,x,mid,r);
+	}
+	if (count==0) drawArrowHead(imp,lo+1,mid,right);
+	// the end the note heads for
+	GUIRect cap(right||both?hi:lo,mid-2,(right||both?hi:lo)+1,mid+3);
+	imp->DrawRect(cap);
+	if (both) {
+		GUIRect cap2(lo,mid-2,lo+1,mid+3);
+		imp->DrawRect(cap2);
+	}
+}
+#endif
+
+void InstrumentView::drawPlayPath(SampleInstrument *instrument, int x, int y, int width) {
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+	int sampleSize=instrument->GetSampleSize();
+	if (sampleSize<=0 || instrument->IsEmpty()) return;
+	int mode=GetVarInt(instrument,SIP_LOOPMODE);
+	int S=GetVarInt(instrument,SIP_START);
+	int L=GetVarInt(instrument,SIP_LOOPSTART);
+	int E=GetVarInt(instrument,SIP_END);
+	if (E<=0 || E>sampleSize) E=sampleSize;
+	int first,end,restart;
+	SampleInstrument::PlayPath(mode,S,L,E,first,end,restart);
+	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow();
+#define PATH_X(pos) (x+(int)(((long long)(pos)*width)/sampleSize))
+	// First pass
+	GUIColor passColor=AppWindow::ThemeColor(CD_PLAY);
+	imp->SetColor(passColor);
+	drawPathLane(imp,PATH_X(first),PATH_X(end),y+2,end>=first,false);
+	// Then the loop, again and again
+	if (SampleInstrument::IsLoopingMode(mode)) {
+		GUIColor loopColor=AppWindow::ThemeColor(CD_HILITE2);
+		imp->SetColor(loopColor);
+		bool both=SampleInstrument::IsPingPongMode(mode);
+		drawPathLane(imp,PATH_X(restart),PATH_X(end),y+8,end>=restart,both);
+	}
+#undef PATH_X
+	SetColor(CD_NORMAL);
+#endif
+}
+
 void InstrumentView::drawSampleLabVisuals() {
 	if (getInstrumentType()!=IT_SAMPLE) {
 		return;
@@ -761,7 +848,8 @@ void InstrumentView::drawSampleLabVisuals() {
 
 	if (labPage_==0 || labPage_==3) {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
-		drawSampleWaveform(instrument,10,36,220,52,true);
+		drawSampleWaveform(instrument,10,36,220,46,true);
+		drawPlayPath(instrument,12,83,216);
 		sprintf(line,"EDIT %-5s PREV:%s",getWaveMarkerName(),previewLoop_?"LOOP":"ONCE");
 		drawLabText((30-(int)strlen(line))/2,12,line,props);
 		sprintf(line,"S%05X L%05X E%05X",start,loopStart,loopEnd);
@@ -877,12 +965,14 @@ void InstrumentView::drawSampleLabVisuals() {
 		DrawString(3,12,line,props);
 #endif
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
-		drawModPlot(instrument,10,36,220,52);
-		// The focused setting in real units (ms, Hz, semitones)
+		drawModPage(instrument);
+	} else if (labPage_==INSTRUMENT_EQ_PAGE) {
+		drawEQPlot(instrument,10,36,220,52);
+		// The focused knob in real units (dB, Hz)
 		UIIntVarField *field=(UIIntVarField *)GetFocus();
 		if (field) {
 			char l1[40],l2[40],value[40];
-			getModFieldHelp(field->GetVariableID(),instrument,l1,l2,value);
+			getEQFieldHelp(field->GetVariableID(),instrument,l1,l2,value);
 			if (value[0]) {
 				SetColor(CD_HILITE1);
 				drawLabText((30-(int)strlen(value))/2,13,value,props);
@@ -945,6 +1035,23 @@ static void InstrumentListCallback(View &v, ModalView &dialog) {
 	}
 }
 
+// The edit replaced the sample (or undo will): show the new one
+static void SampleEditCallback(View &v, ModalView &dialog) {
+	((InstrumentView &)v).OnFocus();
+}
+
+void InstrumentView::openSampleEditor() {
+	int i=viewData_->currentInstrument_;
+	I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
+	if (!instr || instr->GetType()!=IT_SAMPLE || instr->IsEmpty()) {
+		View::SetNotification("no sample: Sel on sample");
+		isDirty_=true;
+		return;
+	}
+	DoModal(new SampleEditDialog(*this,i),SampleEditCallback);
+	isDirty_=true;
+}
+
 void InstrumentView::OpenInstrument(int instrument) {
 	viewData_->currentInstrument_=instrument ;
 	onInstrumentChange() ;
@@ -984,6 +1091,11 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	isDirty_=false ;
 	syncReplacedInstrument() ;
 
+	// MOD page: LB+Up/Down picks the slot
+	if (processModKeys(mask)) {
+		return;
+	}
+
 	if (getInstrumentType()==IT_SYNTH && (mask&EPBM_L) &&
 	    !(mask&(EPBM_A|EPBM_B|EPBM_R|EPBM_START|EPBM_SELECT))) {
 		if (mask&EPBM_LEFT) {
@@ -1021,6 +1133,9 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			bool special=(id==SIP_SAMPLE || id==SIP_TABLE || id==MIP_TABLE ||
 			              !strcmp(v.GetName(),"preset") || !strcmp(v.GetName(),"type") ||
 			              id==SYP_ENGINE);
+			if (resetModField()) {
+				return;
+			}
 			if (!special) {
 				v.ResetToDefault();
 				isDirty_=true;
@@ -1118,6 +1233,15 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 				isDirty_=true;
 				return;
 			}
+			// Select on root only ever means the root helper
+			View::SetNotification("no clear pitch: tune by ear");
+			isDirty_=true;
+			return;
+		}
+		// Anywhere else on the waveform pages: the sample editor
+		if (isWaveMarkerPage()) {
+			openSampleEditor();
+			return;
 		}
 	}
 
@@ -1189,6 +1313,9 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 
 	// B and RB combos belong to the screen (switch instrument, cut, go to
 	// another screen), never to the focused knob
+	int modInstrumentBefore=viewData_->currentInstrument_ ;
+	int modSlotBefore=modSlotVar_->GetInt()-1 ;
+	int modTypeBefore=(labPage_==INSTRUMENT_MOD_PAGE)?currentModType():-1 ;
 	if (!(mask&(EPBM_B|EPBM_R))) {
 		FieldView::ProcessButtonMask(mask) ;
 	}
@@ -1196,6 +1323,10 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	// The type field swaps the whole instrument: rebuild before anything
 	// else touches the (now replaced) fields.
 	if (applyTypeChange()) {
+		return ;
+	}
+	// MOD page: another slot, or a new type with its own settings
+	if (syncModPage(modInstrumentBefore,modSlotBefore,modTypeBefore)) {
 		return ;
 	}
 	// A new synth engine brings its own SOUND page
@@ -1340,6 +1471,7 @@ void InstrumentView::DrawView() {
 
 	syncReplacedInstrument() ;
 	syncSynthEngine() ;
+	refreshStaleModFields() ;
 
 	Clear() ;
     View::EnableNotification();
@@ -1386,12 +1518,17 @@ void InstrumentView::OnFocus() { onInstrumentChange(); }
 
 void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
 	// Samples have a page of their own (packs, trimming, root, slices)
-	if (getInstrumentType()==IT_SAMPLE) {
+	if (labPage_==INSTRUMENT_MOD_PAGE &&
+	    (getInstrumentType()==IT_SAMPLE || getInstrumentType()==IT_SYNTH)) {
+		// Both instrument kinds share the MOD page, explained once
+		page="synth";
+		section="MOD - 4 modulation slots";
+	} else if (getInstrumentType()==IT_SAMPLE) {
 		page="samples";
-		section="Sample pages";
+		section=(labPage_==INSTRUMENT_EQ_PAGE)?"Instrument EQ":"Sample pages";
 	} else {
 		page="synth";
-		section=getEngineGuideSection();
+		section=(labPage_==INSTRUMENT_EQ_PAGE)?"EQ - its own tone":getEngineGuideSection();
 	}
 }
 
@@ -1418,6 +1555,8 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		name="INSTR LOOP";
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
 		name="INSTR MOD";
+	} else if (labPage_==INSTRUMENT_EQ_PAGE) {
+		name="INSTR EQ";
 	} else {
 		name="INSTR MOTION";
 	}
@@ -1429,15 +1568,15 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 	cmd6="RB+Left Phrase";
 	cmd7="RB+Select close";
 	if (labPage_==0) {
-		field="Source: sample/root";
-		edit="Sel sample/root";
-		cmd1="Dpad choose sample/root";
+		field="Source: sample/play/root";
+		edit="A+Start hear it";
+		cmd1="play: fwd rev loop pingpong";
 		cmd2="Sel on sample: import";
 		cmd3="Sel on root: suggest/use";
-		cmd4="LB+UD pick Start/Loop/End";
-		cmd5="LB+A+LR nudge marker";
-		cmd6="A+Start hear it";
-		cmd7="RB+Start once/loop";
+		cmd4="Sel elsewhere: edit sample";
+		cmd5="LB+UD pick Start/Loop/End";
+		cmd6="LB+A+LR nudge marker";
+		cmd7="RB+Start preview once/loop";
 	} else if (labPage_==1) {
 		field="Shape: level/pan/grit";
 		edit="A+Dpad changes values";
@@ -1455,30 +1594,34 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		cmd4="LB+Left/Right page";
 		cmd5="A+Start hear  B+A reset";
 	} else if (labPage_==3) {
-		field="Loop: trim window";
+		field="Loop: play mode + trim";
 		edit="S=start L=loop E=end";
-		cmd1="LB+UD choose Start/Loop/End";
-		cmd2="LB+A+LR nudge mark";
-		cmd3="Dpad to start/lstart/end";
+		cmd1="play: direction, looping";
+		cmd2="LB+UD choose Start/Loop/End";
+		cmd3="LB+A+LR nudge mark";
 		cmd4="A+Dpad exact values";
-		cmd5="Sel root from trim";
+		cmd5="Sel: edit (fade, crop...)";
 		cmd6="A+Start hear it";
 		cmd7="RB+Start once/loop";
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
-		field="2 envelopes/LFOs";
 		edit="A+Dpad edit value";
-		cmd1="type: decay/swell or LFO";
-		cmd2="dest: what it moves";
-		cmd3="amt: how far (+/-)";
-		cmd4="rate: higher = faster";
+		customizeModOverlay(field,where,edit,cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7);
+	} else if (labPage_==INSTRUMENT_EQ_PAGE) {
+		field="Its own low/mid/high EQ";
+		edit="A+Dpad edit value";
+		cmd1="l/m/h gain: 80 = flat";
+		cmd2="freq: where the band sits";
+		cmd3="A+Left/Right small step";
+		cmd4="A+Up/Down big step";
 		cmd5="LB+Left/Right page";
-		// The focused setting explained
+		cmd6="A+Start hear  B+A flat";
+		// The focused knob explained
 		UIIntVarField *focused=(UIIntVarField *)GetFocus();
-		if (focused && isModField(focused->GetVariableID())) {
+		if (focused && isEQField(focused->GetVariableID())) {
 			static char help1[40],help2[40],value[40];
 			int i=viewData_->currentInstrument_;
 			I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
-			getModFieldHelp(focused->GetVariableID(),instr,help1,help2,value);
+			getEQFieldHelp(focused->GetVariableID(),instr,help1,help2,value);
 			where=help1;
 			edit=help2;
 		}

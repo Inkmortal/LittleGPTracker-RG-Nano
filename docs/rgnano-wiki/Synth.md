@@ -38,7 +38,7 @@ Changing the engine loads that engine's starting sound (`fm init`, `hyper init`,
 | `hyper` | `hyper pad`, `trance lead`, `hoover`, `strings`, `stab`, `dream`, `hyper bass` |
 | `wav` | `chip lead`, `chip bass`, `pwm pad`, `sync lead`, `fold bass`, `zap`, `lofi bell`, `noise hat` |
 
-The LFO's `shape` target means something per engine: `fm4` — FM brightness (every modulator's depth), `hyper` — the swarm breathes, `wav` — the mirror moves (pulse-width modulation on `pulse50`).
+The LFO's `shape` target, and a MOD slot aimed at `shape`, mean something per engine: `fm4` — FM brightness (every modulator's depth), `hyper` — the swarm breathes, `wav` — the mirror moves (pulse-width modulation on `pulse50`). A MOD slot aimed at `fm` deepens every FM4 modulator (`+127` = twice as deep); one aimed at `noise` mixes noise into any engine.
 
 ### FM4 engine
 
@@ -182,22 +182,55 @@ Times are exponential: `00` = 1 ms, `40` = 10 ms, `80` = 100 ms, `C0` = 1 s, `FF
 | `fine` | fine tune in cents |
 | `auto` / `table` | an instrument table that runs on every note |
 
-### MOD — envelopes and LFOs
+### MOD — 4 modulation slots
 
 <img src="images/synth-5-mod.png" width="280" align="right">
 
-Two slots, **mod1** and **mod2**, each move one part of the sound on every note. Sample instruments have the same page.
+Four slots move the sound by themselves on every note, like the M8's modulation page: envelopes, LFOs and key tracking, each aimed at one part of the sound. Sample instruments have the same page, with their own destinations.
 
-| Knob | Does |
+- The **top four lines** are the four slots at a glance: type, what it moves, how far, and a tiny curve. `>` marks the slot you are editing.
+- The **box** draws that slot over real time from the note start (for `adsr` the dotted line is the note-off, for `track` the notes from low to high).
+- The **settings below** belong to that slot only. Each shows its hex value and what it means: `A0 324 ms`, `80 1.60 Hz`, `80 50%`.
+
+**LB + Up/Down** picks the slot (so does the `slot` setting). Changing `type` loads that type's starting values, ready to hear. **B + A** puts a setting back to its type's starting value (on `type`: off). Changes to a running slot are heard right away (a slot switched on starts with the next note); undo (**B + Select**) takes back a type change together with its values.
+
+| Setting | Does |
 | --- | --- |
-| `mod1` / `mod2` | `decay` (starts full, falls away) or `swell` (rises, then holds) — envelopes; `sine`, `triangle`, `square`, `saw`, `random` — LFOs |
-| `dest` | what it moves: `volume`, `cutoff`, `reso`, `pitch`, `pan` |
-| `amt` | how far, `-127` … `+127`; minus goes the other way. On pitch, `+127` = 2 octaves |
-| `rate` | higher is always faster: envelopes `00` = 10 s … `FF` = 1 ms, LFOs `00` = 0.05 Hz … `FF` = 50 Hz |
+| `slot` | which slot the settings below edit, 1–4 |
+| `type` | `ahd`, `adsr`, `drum`, `lfo`, `trig`, `track` (and `decay`, `swell` from the first release); `off` |
+| `dest` | what it moves (below) |
+| `amount` | how far, `-127` … `+127`; minus goes the other way. Pitch: `+127` = 2 octaves; fine: `+127` = 1 semitone; others show a percentage |
 
-The picture shows both slots over two seconds; the focused knob shows its real value (`312 ms`, `1.60 Hz`, `+3.0 semitones`). Picking a preset switches both slots off.
+| Type | Settings | What it does |
+| --- | --- | --- |
+| `ahd` | `attack` `hold` `decay` | rises to full, stays, falls back to nothing — on every note |
+| `adsr` | `attack` `decay` `sustn` `releas` | stays at `sustn` while the note holds; `KILL` (or the next instrument on the track) starts the release |
+| `drum` | `peak` `body` `decay` | a sharp peak, a short dip (`peak`: dip depth and time), then the body swells back, holds and decays — punchy drums |
+| `lfo` | `rate` `shape` `trig` | repeating wobble; `rate` `00` = 0.05 Hz … `80` = 1.6 Hz … `FF` = 50 Hz |
+| `trig` | `attack` `hold` `decay` `source` | an `ahd` fired by notes on another track (`source` = track 1–8) — sidechain ducking, call and response |
+| `track` | `from` `to` `low` `high` | the note picks the value: `low` at the `from` note, `high` at the `to` note, in between for notes between |
+| `decay` / `swell` | `rate` | the first release's envelopes, kept so older songs sound the same (`rate`: higher = faster) |
 
-**Try:** `mod1 decay`, `dest1 cutoff`, `amt1 +80`, `rate1 60` — a pluck that closes its filter on every note. `mod2 sine`, `dest2 pitch`, `amt2 +4` — gentle vibrato.
+Envelope times: `00` = instant, `01` = 1 ms, `40` = 10 ms, `80` = 100 ms, `C0` = 1 s, `FF` = 10 s. The attack rises in a straight line, decays and releases fall fast then slow, landing on zero exactly at their time.
+
+**LFO shapes:** `tri`, `sine`, `ramp dn`, `ramp up`, `exp dn`, `exp up`, `sqr dn`, `sqr up`, `random` (a new level every cycle — sample and hold), `drunk` (a random walk). **`trig`:** `free` keeps running across notes (every note joins it wherever it is), `retrig` restarts it with every note, `hold` plays one cycle and holds its last level, `once` plays one cycle and returns to its start.
+
+**Destinations.** Synth: `volume`, `cutoff`, `reso`, `pitch`, `pan`, `fine`, `drive`, `shape`, `fm amt`, `noise`, `reverb`, `delay`, `chorus`. Sample: `volume`, `cutoff`, `reso`, `pitch`, `pan`, `fine`, `drive`, `crush`, `fb mix`, `fb tune`, `start`, `loop st`, `reverb`, `delay`, `chorus`.
+
+- An **envelope on `volume`** shapes the note: `+127` follows the envelope from silence (an `adsr` becomes the note's own volume envelope), `-127` ducks the sound while the envelope is up. LFOs and tracking move the volume up and down around its level.
+- On a sample, `start` moves where the note starts and `loop st` moves the loop start while it plays, `+127` = the whole trimmed sample. `crush` removes bits (`+127` = 15 bits fewer).
+- A sample normally stops at `KILL`; with an `adsr` on `volume` (positive amount) it keeps playing and fades with the release.
+- Every slot restarts with every note, with or without an instrument number on the step; `RTRG` restarts the envelopes too. Picking a preset switches all four slots off.
+
+**Try:**
+
+- `adsr` → `cutoff`, `amount +80`, `sustn 40`, `releas A0` — a filter that opens per note and closes after `KILL`.
+- `lfo` → `pitch`, `amount +6`, `shape sine`, `trig retrig` — vibrato that starts fresh on every note.
+- `drum` → `volume`, `amount +127` on a sample loop — a punchy, gated hit.
+- `trig` → `volume`, `amount -100`, `source 1` on a pad — it ducks every time the kick on track 1 plays.
+- `track` → `cutoff`, `low -40`, `high +40` — higher notes get brighter.
+
+<br clear="right">
 
 ### MIX — level and space
 
@@ -212,6 +245,24 @@ The picture shows both slots over two seconds; the focused knob shows its real v
 | `chorus` | send to the shared chorus (width and shimmer) |
 
 The reverb room, echo time and chorus speed are shared by every instrument and set on the [FX screen](Screens#fx) (Mixer, then **RB + Down**).
+
+<br clear="right">
+
+### EQ — its own tone
+
+<img src="images/synth-7-eq.png" width="280" align="right">
+
+Every instrument has its own three-band EQ, like the M8's instrument EQ: the same low shelf, mid bell and high shelf as the [master EQ](Screens#eq), but only on this sound (before its pan and its effect sends). Sample instruments have the same page.
+
+| Knob | Does |
+| --- | --- |
+| `l.gain` / `l.freq` | bass shelf: everything below `l.freq` (30–400 Hz) up or down |
+| `m.gain` / `m.freq` | a wide bell around `m.freq` (150 Hz–6 kHz) |
+| `h.gain` / `h.freq` | treble shelf: everything above `h.freq` (1.5–16 kHz) |
+
+Gains: `80` = flat, −12 … +12 dB (about 0.1 dB a step). The curve shows the result from 20 Hz to 20 kHz, with a mark at the focused band; the focused knob shows its real value (`+4.5 dB`, `94 Hz`). **B + A** puts a knob back. A flat band costs nothing, so leave what you don't need at `80`. Picking a preset sets the EQ flat again.
+
+**Try:** on a bass, `l.gain` `+4 dB` for weight and `h.gain` `−6 dB` to keep it out of the hats' way; on a pad, `m.gain` `−4 dB` around 400 Hz to leave room for the lead.
 
 <br clear="right">
 

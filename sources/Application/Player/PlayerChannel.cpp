@@ -1,5 +1,6 @@
 
 #include "PlayerChannel.h"
+#include "Application/Instruments/ModSources.h"
 #include "Application/Mixer/SendFX.h"
 #include "Application/Player/SyncMaster.h"
 #include "Application/Mixer/MixerService.h"
@@ -30,6 +31,8 @@ void PlayerChannel::StartInstrument(I_Instrument *instr,unsigned char note,bool 
    }
    if (instr->Start(index_,note,trigger)) { // note could be refused coz it's out of the keymap
 	   instr_=instr ;
+	   // Trig envelopes (MOD page) listening to this track fire now
+	   ModSource::NoteStarted(index_) ;
    } else {
 	   instr_=0 ;
    };

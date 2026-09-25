@@ -16,3 +16,9 @@ Adapted third-party code:
 This fork is not endorsed by Dirtywave, Little Sound Dj, Anbernic, FunKey, or the upstream LittleGPTracker maintainers unless explicitly stated by those parties.
 
 Product names are used only to describe compatibility and development targets.
+
+Design references (no code copied):
+
+- The master limiter (`sources/Application/Mixer/MasterLimiter.cpp`) follows the structure described in Geraint Luff's "Designing a straightforward limiter" (Signalsmith Audio, 2022; their DSP library is MIT-licensed): peak hold over the look-ahead window, instant-attack/exponential release, stacked moving averages, audio delayed by the window.
+- The three-band EQ filters (`sources/Application/Mixer/ThreeBandEQ.cpp`) use Robert Bristow-Johnson's public "Audio EQ Cookbook" formulas.
+- The MOD slot envelopes (`sources/Application/Instruments/ModSources.cpp`): the segment design, where each segment runs from the level it starts at to its target through a shaped phase curve, is adapted from the envelope of Mutable Instruments Braids (`braids/envelope.h`, Copyright 2012 Emilie Gillet, MIT License). No code was copied verbatim.

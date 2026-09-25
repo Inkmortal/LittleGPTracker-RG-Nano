@@ -277,6 +277,21 @@ int main() {
 		expect(fabs(h[7]/h[1]-j2/j0)<0.05*j2/j0,"harmonic 7 / 1 = J2/J0",h[7]/h[1],j2/j0);
 		expect(h[3]/h[1]<0.002,"harmonic 3 absent",h[3]/h[1],0.0);
 		expect(h[6]/h[1]<0.002,"harmonic 6 absent",h[6]/h[1],0.0);
+		// A MOD slot aimed at "fm" deepens every modulator (+127 = twice)
+		setString(s,"mod1 type","ahd");
+		setString(s,"mod1 dest","fm amt");
+		set(s,"mod1 amount",127);
+		set(s,"mod1 p2",0xFF);   // hold
+		set(s,"mod1 p3",0xFF);   // decay
+		printf("mod1: %s -> %s %s, p1 %s p2 %s p3 %s\n",s->FindVariable("mod1 type")->GetString(),
+		       s->FindVariable("mod1 dest")->GetString(),s->FindVariable("mod1 amount")->GetString(),
+		       s->FindVariable("mod1 p1")->GetString(),s->FindVariable("mod1 p2")->GetString(),
+		       s->FindVariable("mod1 p3")->GetString());
+		play(s,45,0.5,L,R);
+		double index2=2.0*index;
+		double m0=amplitudeAt(L,f),m1=amplitudeAt(L,2*f);
+		double want=fabs(besselJ(1,index2)/besselJ(0,index2));
+		expect(fabs(m1/m0-want)<0.05*want,"MOD fm +127: index doubled (J1/J0)",m1/m0,want);
 		delete s;
 	}
 
@@ -361,7 +376,8 @@ int main() {
 		double fed3=amplitudeAt(L,330.0)/amplitudeAt(L,110.0);
 		expect(clean<0.001,"no feedback: pure sine (2nd/1st)",clean,0.0);
 		expect(fed>0.25 && fed3>0.1,"feedback FF: saw-like (2nd/1st)",fed,0.5);
-		expect(crossingHz(L)>109.5 && crossingHz(L)<110.5,"feedback keeps the pitch",crossingHz(L),110.0);
+		double fedHz=peakHz(L,105.0,115.0,0.05);
+		expect(fabs(fedHz-110.0)<0.1,"feedback keeps the pitch (peak)",fedHz,110.0);
 		delete s;
 	}
 

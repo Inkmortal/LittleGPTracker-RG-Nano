@@ -143,7 +143,7 @@ instrument 0A            # B+Left/Right/Up/Down to instrument 0A
 row 0C                   # move the Song/Chain/Phrase cursor to row 0C
 ```
 
-`goto` knows the view graph (Song, Chain, Phrase, Instrument, Table, Groove, Project, Mixer). `focus`/`set` work on any field screen (Instrument, Project). Each command logs `=> reached in N steps`.
+`goto` knows the view graph (Song, Chain, Phrase, Instrument, Table, Groove, Project, Mixer, FX, EQ, Limit: `goto limit`). `focus`/`set` work on any field screen (Instrument, Project, FX, EQ, Limit). Each command logs `=> reached in N steps`.
 
 ## Synth Script Commands
 
@@ -222,6 +222,13 @@ expect_file rgnano-sim-data/samples/rgnano-test-tone.wav
 # fail unless a sample was imported into the active project's samples folder
 expect_project_sample rgnano-test-tone.wav
 
+# a pool sample's frame count ("-" to skip) and peak level within min..max
+expect_sample_stats lofi-chord_nrm.wav 32000 32700 32767
+
+# apply a saved PARAM the way a song load does (old names like "ping pong"
+# are translated); the value is the rest of the line
+sim_load_instrument_param 0 loopmode ping pong
+
 # fail unless the simulator log contains text
 expect_log Loaded
 
@@ -280,6 +287,13 @@ end_audio_capture
 
 # fail unless no measured tracker audio has been produced since reset_audio_stats
 expect_audio_silence 0
+
+# fail unless audio played but its loudest sample (of 32767) stayed at or under N
+expect_audio_peak_max 1745
+
+# fail unless the master limiter's most gain reduction over its meter history
+# (the last few seconds) is within min..max tenths of a dB (0 0 = not limiting)
+expect_limiter_gr 60 700
 
 # fail if the simulator log contains an error marker
 expect_no_error

@@ -167,6 +167,7 @@ int SamplePool::ImportSample(Path &path) {
 
 	// construct target path
 
+	EnsureProjectSampleDir() ;
 	std::string dpath="samples:" ;
 	dpath+=path.GetName() ;
 	Path dstPath(dpath.c_str()) ;
@@ -218,6 +219,23 @@ int SamplePool::ImportSample(Path &path) {
 	NotifyObservers(&ev) ;
 	return status?(count_-1):-1 ;
 };
+
+bool SamplePool::EnsureProjectSampleDir() {
+	Path dir("samples:") ;
+	std::string path=dir.GetPath() ;
+	// the alias may resolve with a trailing separator
+	while (path.size()>1 && (path[path.size()-1]=='/' || path[path.size()-1]=='\\')) {
+		path.erase(path.size()-1) ;
+	}
+	FileSystem *fs=FileSystem::GetInstance() ;
+	if (fs->GetFileType(path.c_str())==FT_DIR) return true ;
+	if (fs->MakeDir(path.c_str()).Failed()) {
+		Trace::Error("Can't create the samples folder %s",path.c_str()) ;
+		return false ;
+	}
+	Trace::Log("SamplePool","created %s",path.c_str()) ;
+	return true ;
+}
 
 int SamplePool::AddProjectSample(const char *name) {
 	std::string alias="samples:" ;

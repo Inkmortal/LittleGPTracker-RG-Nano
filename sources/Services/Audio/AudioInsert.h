@@ -10,6 +10,8 @@ public:
 	virtual ~AudioInsert() {}
 	// Stereo interleaved, frames samples per channel
 	virtual void Process(fixed *buffer, int frames) = 0;
+	// Nothing played this buffer (the mix is silent): drop any held audio
+	virtual void Silence() {}
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "Application/AppWindow.h"
 #include "MixerView.h"
 #include "Application/Mixer/MixerService.h"
+#include "Application/Mixer/MasterLimiter.h"
 #include "Application/Model/Mixer.h"
 #include "Application/Model/Project.h"
 #include "UIController.h"
@@ -357,6 +358,10 @@ void MixerView::OnPlayerUpdate(PlayerEventType ,unsigned int tick) {
 
     drawChannelMeters() ;
     drawWaveform() ;
+    // The master line carries the live limiter reading
+    if (viewData_->mixerCol_==STRIP_MASTER) {
+        drawStripInfo() ;
+    }
 
 } ;
 
@@ -392,7 +397,13 @@ void MixerView::drawStripInfo() {
 		sprintf(line,"TRACK %d  %02X  %3d%%%s",strip+1,level,(level*100)/MIXER_UNITY,
 		        Player::GetInstance()->IsChannelMuted(strip)?"  muted":"") ;
 	} else if (strip==STRIP_MASTER) {
-		sprintf(line,"MASTER  %3d%%",level) ;
+		// With the limiter on, how hard it works (LIMIT screen)
+		MasterLimiter *lim=MasterLimiter::GetInstance() ;
+		if (lim->Enabled()) {
+			sprintf(line,"MASTER  %3d%%  LIM %4.1fdB",level,-lim->GetGainReductionDb()) ;
+		} else {
+			sprintf(line,"MASTER  %3d%%",level) ;
+		}
 	} else {
 		sprintf(line,"%s RETURN  %02X  %3d%%",returnName[strip-SONG_CHANNEL_COUNT],level,(level*100)/MIXER_UNITY) ;
 	}
@@ -471,6 +482,19 @@ void MixerView::drawChannelMeters(bool force) {
             imp->SetColor(level > 92 ? hot : meter);
             GUIRect bar(x + 9, top + height - m, x + 12, top + height);
             imp->DrawRect(bar);
+        }
+        // Limiter at work: a white line down from the top of the master
+        // meter, as long as the gain reduction (12 dB = half the meter),
+        // like the M8's LIM line
+        if (s == STRIP_MASTER && MasterLimiter::GetInstance()->Enabled()) {
+            float gr = MasterLimiter::GetInstance()->GetGainReductionDb();
+            int g = (int)(gr / 12.0f * (height / 2) + 0.5f);
+            if (g > height / 2) g = height / 2;
+            if (g > 0) {
+                imp->SetColor(knob);
+                GUIRect grLine(x + 9, top, x + 12, top + g);
+                imp->DrawRect(grLine);
+            }
         }
 
         label[0] = stripName[s];

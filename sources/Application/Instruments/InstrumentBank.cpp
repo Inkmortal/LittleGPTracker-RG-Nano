@@ -1,5 +1,6 @@
 
 #include "InstrumentBank.h"
+#include "ModSources.h"
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Instruments/MidiInstrument.h"
@@ -131,6 +132,23 @@ void InstrumentBank::SaveContent(TiXmlNode *node) {
 	}
 } ;
 
+// One saved PARAM onto an instrument, translating names older songs used
+void InstrumentBank::RestoreParam(I_Instrument *instr,const char *name,const char *value) {
+	if (!instr || !name || !value) return ;
+	if (instr->GetType()==IT_SAMPLE && !strcmp(name,"loopmode")) {
+		// "none", "ping pong", "oscillator", "looper sync" were renamed
+		// when the reverse play modes came in
+		value=SampleInstrument::CanonicalLoopModeName(value) ;
+	}
+	IteratorPtr<Variable> it(instr->GetIterator()) ;
+	for (it->Begin();!it->IsDone();it->Next()) {
+		Variable &v=it->CurrentItem() ;
+		if (!strcmp(v.GetName(),name)) {
+			v.SetString(value) ;
+		} ;
+	}
+}
+
 void InstrumentBank::RestoreContent(TiXmlElement *element) {
 
 	TiXmlElement *current=element->FirstChildElement() ;
@@ -177,9 +195,17 @@ void InstrumentBank::RestoreContent(TiXmlElement *element) {
 				} ;
 
         TiXmlElement *param=current->FirstChildElement() ;
+				InstrumentMods *mods=instr->GetMods() ;
 				while (param) {
 					const char *name=param->Attribute("NAME") ;
 					const char *value=param->Attribute("VALUE") ;
+
+          // Songs from the first MOD release (two slots, LFO shapes as
+          // types, a "rate"): converted to the four-slot settings
+          if (mods && mods->RestoreLegacy(name,value)) {
+            param=param->NextSiblingElement() ;
+            continue ;
+          }
 
           // Convert old filter dist to newer filter mode
 
@@ -196,14 +222,11 @@ void InstrumentBank::RestoreContent(TiXmlElement *element) {
             }
           }
 
-					IteratorPtr<Variable> it(instr->GetIterator()) ;
-					for (it->Begin();!it->IsDone();it->Next()) {
-						Variable &v=it->CurrentItem() ;
-						if (!strcmp(v.GetName(),name)) {
-							v.SetString(value) ;
-						} ;
-					}
+					RestoreParam(instr,name,value) ;
 					param=param->NextSiblingElement() ;
+				}
+				if (mods) {
+					mods->FinishRestore() ;
 				}
 				if (doc->version_<38) {
 					Variable *cvl=instr->FindVariable(SIP_CRUSHVOL) ;

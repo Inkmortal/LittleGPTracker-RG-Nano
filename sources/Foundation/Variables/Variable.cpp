@@ -210,10 +210,11 @@ void Variable::SetString(const char *input, bool notify) {
             if (list_.char_[i]) {
                 const char *d = list_.char_[i];
                 const char *s = input;
-                while (*s != 0) {
-                    if (tolower(*s++) != tolower(*d++)) {
-                        break;
-                    }
+                // Walk while both match: a difference in the last letter
+                // ("0B" vs "00", "sw3" vs "sw2") must not count as equal
+                while (*s != 0 && *d != 0 && tolower(*s) == tolower(*d)) {
+                    s++;
+                    d++;
                 }
                 if (*s == 0 &&
                     *d == 0) { // Ensure both strings end at the same point

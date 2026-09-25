@@ -16,7 +16,7 @@ set engine fm4
 expect_instrument_param 0 engine fm4
 expect_instrument_param 0 preset fm_init
 expect_screen_text Instrument 00 FM4 SYNTH
-expect_screen_text 1/6 SOUND
+expect_screen_text 1/7 SOUND
 expect_screen_text FM4 ALGO 00
 screenshot_app engine-fm4-init.bmp
 set preset epiano

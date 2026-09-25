@@ -10,8 +10,8 @@ AudioMixer::AudioMixer(const char *name):
 	T_SimpleList<AudioModule>(false),
 	enableRendering_(0),
 	writer_(0),
+	insertCount_(0),
 	capture_(0),
-	insert_(0),
 	captureLeft_(0),
 	captureTotal_(0),
 	name_(name)
@@ -102,9 +102,13 @@ bool AudioMixer::Render(fixed *buffer,int samplecount) {
          }
      }
 
-     // The mixer's insert effect (master EQ) on the sum
-     if (gotData && insert_) {
-         insert_->Process(buffer,samplecount) ;
+     // The mixer's insert effects (master EQ, limiter) on the sum
+     for (int i=0;i<insertCount_;i++) {
+         if (gotData) {
+             inserts_[i]->Process(buffer,samplecount) ;
+         } else {
+             inserts_[i]->Silence() ;
+         }
      }
 
      //  Apply volume

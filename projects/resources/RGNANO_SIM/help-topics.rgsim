@@ -47,6 +47,17 @@ expect_log GUIDE] open synth /
 press b 80
 press b 80
 wait 150
+page EQ
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open synth / EQ - its own tone
+press b 80
+press b 80
+wait 150
+page SOUND
 goto table
 down n
 press k 80
@@ -104,6 +115,16 @@ up n
 press a 80
 wait 200
 expect_log GUIDE] open screens / EQ
+press b 80
+press b 80
+wait 150
+goto limit
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Limit
 press b 80
 press b 80
 wait 150
