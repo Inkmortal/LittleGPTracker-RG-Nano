@@ -534,6 +534,16 @@
    047B -> 047E (major
    add9) gives dreamier
    chords.
+ - Let it write for you:
+   select the hook phrase
+   (B + LB, then Down to
+   grow it) and press LB +
+   Right for new random
+   notes in D minor; press
+   again until one clicks.
+   Put CHNC 0080 on a few
+   hats so they only play
+   half the time.
  - Jam it live: on the Song
    screen press Select for
    Live mode. Start on a
@@ -703,9 +713,14 @@
    RB + Up: Song
    RB + Down: FX
 *FX
-   -
+   EQ
    RB + Left: -
    RB + Up: Mixer
+   RB + Down: -
+*EQ
+   -
+   RB + Left: FX
+   RB + Up: -
    RB + Down: -
  
  If a cell is empty, RB +
@@ -893,6 +908,31 @@
    new sample (render to
    sample)
  
+ With a selection (B + LB,
+ then move to grow it), LB
+ + D-pad writes for you:
+ 
+*LB + Right
+   random notes in the
+   song's Key/Scale,
+   keeping the rhythm (no
+   notes selected: random
+   notes on random steps).
+   Again for another roll
+*LB + Left
+   fill: repeat the first
+   selected note on every
+   step; again for every
+   2nd, 4th, 8th step
+*LB + Up
+   shuffle the selected
+   steps
+*LB + Down
+   reverse them
+ 
+ Didn't like it? B + Select
+ undoes.
+ 
 =Instrument
  
 *LB + Left/Right
@@ -930,12 +970,12 @@
  their own pages and trim
  controls - see Samples.
  
-=Mixer and FX
+=Mixer, FX and EQ
  
 *Left/Right
    pick a strip (Mixer)
 *Up/Down
-   pick a knob (FX)
+   pick a knob (FX, EQ)
 *A + Up/Down / A + Left/Rig
    big / small step
 *B + A
@@ -1409,7 +1449,8 @@
  The three effects every
  instrument can send to,
  each with a picture of
- what it does:
+ what it does (RB + Right
+ goes on to the EQ):
  
 *Chorus
    speed (0.1-5 Hz), depth
@@ -1440,6 +1481,47 @@
  to hear it; the Mixer's
  C/D/R faders set how loud
  each effect comes back.
+ 
+=EQ
+ 
+ A three-band EQ on the
+ whole mix, after the
+ effects: RB + Right from
+ FX.
+ 
+*LOW
+   gain, freq (30-400 Hz)
+   Shape: a shelf:
+   everything below freq up
+   or down
+*MID
+   gain, freq (150 Hz-6
+   kHz)
+   Shape: a wide bell
+   around freq
+*HIGH
+   gain, freq (1.5-16 kHz)
+   Shape: a shelf:
+   everything above freq
+ 
+ gain 80 is flat; each step
+ is about 0.1 dB, from 12
+ to +12 dB. The heading
+ shows the real values, and
+ the curve underneath shows
+ the result from 20 Hz to
+ 20 kHz (marks at 100 Hz, 1
+ kHz, 10 kHz). Up/Down
+ picks a knob, A + D-pad
+ edits, B + A puts a knob
+ back. It saves with the
+ song; a flat EQ costs
+ nothing.
+ 
+ Try: low +3 dB at 80 Hz
+ for weight, mid 3 dB at
+ 400 Hz to clear mud, high
+ +2 dB at 8 kHz for air.
  
 =Helper (RB + Select)
  
@@ -2035,6 +2117,42 @@
    ticks late
    Try: DLAY 0003 push a
    note behind the beat
+ 
+=Randomness
+ 
+ Two commands that make
+ every pass a little
+ different, as on the M8:
+ 
+*RAND
+   00bb
+   Does: adds a random
+   amount, up to bb, to the
+   other command on the
+   same step. On its own it
+   moves the note up to bb
+   semitones, staying in
+   the song's Key/Scale
+   Try: VOLM 0060 + RAND
+   0060: velocity between
+   60 and C0  FCUT 0040 +
+   RAND 0080: a wandering
+   filter  RAND 000C alone:
+   a new melody every loop
+*CHNC
+   00bb
+   Does: the note plays
+   with a chance of bb/FF
+   (FF always, 80 half the
+   time, 00 never)
+   Try: ghost hats with
+   CHNC 0060  a fill that
+   only sometimes happens
+ 
+ Put them on a step with a
+ note. Both can go on one
+ step (CHNC in one column,
+ RAND in the other).
  
 =Song-level
  
@@ -3283,7 +3401,7 @@
    Chain, Phrase,
    Instrument, Table,
    Groove, Project, Mixer,
-   FX, Helper
+   FX, EQ, Helper
 *Synth
    The built-in synth:
    every knob, every
@@ -3351,6 +3469,11 @@
    grammar on every screen,
    and B + Select undoes
    any change.
+ - Happy accidents. Random
+   notes, fills, shuffles
+   and the RAND/CHNC
+   commands, plus a master
+   EQ to finish the mix.
  - Tested like a product. A
    desktop simulator drives
    the real app with

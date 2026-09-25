@@ -30,6 +30,17 @@ Timing: 1 step = 6 ticks at the default groove. Ramp speeds (`aa`) count in grou
 | `PAN ` | `aabb` | pan to `bb` (`00` left, `7F` centre, `FE` right) | `PAN 2000` sweep left |
 | `DLAY` | `--bb` | start the note `bb` ticks late | `DLAY 0003` push a note behind the beat |
 
+## Randomness
+
+Two commands that make every pass a little different, as on the M8:
+
+| Command | Value | Does | Try |
+| --- | --- | --- | --- |
+| `RAND` | `00bb` | adds a random amount, up to `bb`, to the **other command** on the same step. On its own it moves the **note** up to `bb` semitones, staying in the song's Key/Scale | `VOLM 0060` + `RAND 0060`: velocity between 60 and C0 · `FCUT 0040` + `RAND 0080`: a wandering filter · `RAND 000C` alone: a new melody every loop |
+| `CHNC` | `00bb` | the note plays with a chance of `bb`/`FF` (`FF` always, `80` half the time, `00` never) | ghost hats with `CHNC 0060` · a fill that only sometimes happens |
+
+Put them on a step with a note. Both can go on one step (`CHNC` in one column, `RAND` in the other).
+
 ## Song-level
 
 | Command | Value | Does |

@@ -24,6 +24,16 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[1].assign("through relative pitches");
 			result[2].assign("from original pitch");
 			break;
+		case I_CMD_RAND:
+			result[0].assign("RANDom:00bb up to bb");
+			result[1].assign("on the other command");
+			result[2].assign("alone: note, in scale");
+			break;
+		case I_CMD_CHNC:
+			result[0].assign("CHaNCe:00bb note");
+			result[1].assign("plays bb/FF of the");
+			result[2].assign("time (80 = half)");
+			break;
 		case I_CMD_CHRD:
 			// The note picks which chord, the value picks what kind
 			// (legend area is 20 characters wide)

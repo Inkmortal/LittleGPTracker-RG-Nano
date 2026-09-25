@@ -53,7 +53,8 @@ press s 80
 wait 80
 expect_screen_text YOUR SONGS
 
-# New opens on OK with a free name; B clears it, B again leaves
+# New opens on OK with a free name; B is a backspace (one letter),
+# CANCEL leaves
 press l 80
 press l 80
 expect_selected_text ="New"
@@ -65,8 +66,12 @@ expect_screen_text type to replace
 expect_selected_text ="DONE"
 press b 80
 wait 60
-expect_screen_text B back
-press b 80
+expect_screen_text NEW SONG
+expect_selected_text ="DONE"
+press l 80
+wait 60
+expect_selected_text ="CANCEL"
+press a 80
 wait 80
 expect_screen_text YOUR SONGS
 

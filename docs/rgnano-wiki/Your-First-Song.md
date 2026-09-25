@@ -252,6 +252,7 @@ Cursor on row `00`, **Start**. That's Dusk: about a minute that loops forever.
 
 - **Swap the kit for real drums:** open the kick instrument, set `type` to **sample**, move to `sample` and press **Select**, open `drums-dusty` and import `kick.wav`. Same for the snare and hats. Or try `drums-808` for a harder sound. See [Samples](Samples).
 - **Change the mood:** on the chord phrases, `037A` → `037E` (minor add9) or `047B` → `047E` (major add9) gives dreamier chords.
+- **Let it write for you:** select the hook phrase (**B + LB**, then **Down** to grow it) and press **LB + Right** for new random notes in D minor; press again until one clicks. Put `CHNC 0080` on a few hats so they only play half the time.
 - **Jam it live:** on the Song screen press **Select** for Live mode. **Start** on a cell cues it, **LB + Start** cues a whole row: loop the break, drop back into the drop when it feels right. See [Controls → Live mode](Controls#live-mode).
 - **Chop it:** on a phrase, **LB + Start** records it into a new sample ([render to sample](Samples#render-to-sample)). Play it backwards or slice it for a fill.
 - Open the other [Demo Songs](Demo-Songs) and see how they're built. Keep the [Music Theory Cheat Sheet](Music-Theory-Cheat-Sheet) nearby.

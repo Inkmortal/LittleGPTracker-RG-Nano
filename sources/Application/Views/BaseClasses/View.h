@@ -41,7 +41,8 @@ enum ViewType {
     VT_TABLE2, // Table screen under instrument
     VT_GROOVE,
     VT_MIXER,
-    VT_FX      // send effects, under the mixer
+    VT_FX,     // send effects, under the mixer
+    VT_EQ      // master EQ, right of FX
 };
 
 enum ViewMode {

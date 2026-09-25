@@ -1,0 +1,52 @@
+# The master EQ (FX, RB+Right): three bands with gain and frequency, the
+# curve drawn below, values in dB and Hz; B+A flattens a knob, undo works.
+wait 1500
+expect_view song
+goto eq
+wait 200
+expect_view eq
+expect_screen_text EQ
+expect_screen_text LOW
+expect_screen_text +0.0dB
+screenshot_app eq-flat.bmp
+set gain 0xC0
+expect_screen_text +6.0dB
+down n
+press k 80
+up n
+wait 100
+expect_screen_text Master low/mid/high
+down n
+press k 80
+up n
+wait 100
+# Mid cut, high boost
+press d 80
+press d 80
+set gain 0x50
+expect_screen_text -4.5dB
+press d 80
+press d 80
+set gain 0xB0
+screenshot_app eq-shaped.bmp
+press s 80
+wait 1000
+expect_audio_activity 32
+press s 80
+wait 200
+# B+A: back to flat; undo brings the boost back
+down b
+press a 80
+up b
+wait 100
+expect_screen_text +0.0dB
+down b
+press k 80
+up b
+wait 150
+expect_screen_text +4.5dB
+goto fx
+goto eq
+expect_no_error
+goto song
+quit

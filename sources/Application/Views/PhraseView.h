@@ -55,6 +55,11 @@ class PhraseView : public View {
     int row_;
     int col_;
     int lastNote_;
+    int fillMode_; // next fill density (every 1/2/4/8 steps)
+    void randomizeSelection();
+    void fillSelection();
+    void shuffleSelection();
+    void reverseSelection();
     int lastInstr_;
     int lastCmd_;
     int lastParam_;

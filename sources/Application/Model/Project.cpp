@@ -66,6 +66,13 @@ tempoNudge_(0)
     this->Insert(chorusRate);
     Variable *chorusDepth = new Variable("chorus depth", VAR_CHORUS_DEPTH, 0x70, 0xFF);
     this->Insert(chorusDepth);
+    // Master EQ, flat by default
+    this->Insert(new Variable("eq low gain", VAR_EQ_LOW_GAIN, 0x80, 0xFF));
+    this->Insert(new Variable("eq low freq", VAR_EQ_LOW_FREQ, 0x70, 0xFF));
+    this->Insert(new Variable("eq mid gain", VAR_EQ_MID_GAIN, 0x80, 0xFF));
+    this->Insert(new Variable("eq mid freq", VAR_EQ_MID_FREQ, 0x80, 0xFF));
+    this->Insert(new Variable("eq high gain", VAR_EQ_HIGH_GAIN, 0x80, 0xFF));
+    this->Insert(new Variable("eq high freq", VAR_EQ_HIGH_FREQ, 0x90, 0xFF));
 
 // Reload the midi device list
 

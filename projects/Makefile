@@ -258,7 +258,7 @@ COMMONFILES := \
 	NewProjectDialog.o InstrumentListDialog.o RenderToSampleDialog.o GuideDialog.o \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
-	MixerView.o FXView.o NullView.o \
+	MixerView.o FXView.o EQView.o NullView.o \
 	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMod.o UIController.o \
 	View.o ModalView.o FieldView.o UIField.o UIIntField.o \
 	UIIntVarOffField.o UIIntVarField.o ViewEvent.o I_Action.o\
@@ -276,7 +276,7 @@ COMMONFILES := \
 	Audio.o AudioMixer.o AudioOutDriver.o AudioDriver.o \
 	AudioOut.o \
 	DummyAudioOut.o PlayerChannel.o AudioFileStreamer.o \
-	MixBus.o SendFX.o \
+	MixBus.o SendFX.o MasterEQ.o \
 	MixerService.o PlayerMixer.o \
 	Service.o ServiceRegistry.o SubService.o \
 	Variable.o VariableContainer.o WatchedVariable.o \

@@ -259,13 +259,10 @@ void NewProjectDialog::typeChar(char c) {
     cursor_++;
 }
 
+// B is a plain backspace, also on the suggested name (typing a letter is
+// what replaces the whole suggestion)
 void NewProjectDialog::erase() {
-    if (suggested_) {
-        name_.clear();
-        cursor_ = 0;
-        suggested_ = false;
-        return;
-    }
+    suggested_ = false;
     if (cursor_ > 0) {
         name_.erase(cursor_ - 1, 1);
         cursor_--;

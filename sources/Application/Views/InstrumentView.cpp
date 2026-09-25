@@ -1372,8 +1372,14 @@ void InstrumentView::DrawView() {
 void InstrumentView::OnFocus() { onInstrumentChange(); }
 
 void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
-	page="screens";
-	section=(getInstrumentType()==IT_SAMPLE) ? "Instrument (sample)" : "Instrument (synth)";
+	// Samples have a page of their own (packs, trimming, root, slices)
+	if (getInstrumentType()==IT_SAMPLE) {
+		page="samples";
+		section="Sample pages";
+	} else {
+		page="synth";
+		section="";
+	}
 }
 
 void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&where,

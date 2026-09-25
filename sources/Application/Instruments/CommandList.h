@@ -35,6 +35,11 @@
 #define I_CMD_SLCE MAKE_FOURCC('S','L','C','E')
 #define I_CMD_STOP MAKE_FOURCC('S','T','O','P')
 #define I_CMD_CHRD MAKE_FOURCC('C','H','R','D')
+// Randomness (as on the M8): RAND 00bb randomizes the other command on the
+// step by up to bb (on its own: the note, up to bb semitones, in scale);
+// CHNC 00bb plays the note with probability bb/FF
+#define I_CMD_RAND MAKE_FOURCC('R','A','N','D')
+#define I_CMD_CHNC MAKE_FOURCC('C','H','N','C')
 
 class CommandList {
 public:

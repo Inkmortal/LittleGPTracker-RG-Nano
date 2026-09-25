@@ -1,0 +1,123 @@
+# From every screen, the helper's A opens the guide at that screen's own
+# section, and every section the screens point at exists.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+goto song
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Song
+press b 80
+press b 80
+wait 150
+goto chain
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Chain
+press b 80
+press b 80
+wait 150
+goto phrase
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Phrase
+press b 80
+press b 80
+wait 150
+goto instrument
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open synth /
+press b 80
+press b 80
+wait 150
+goto table
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Table
+press b 80
+press b 80
+wait 150
+goto groove
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Groove
+press b 80
+press b 80
+wait 150
+goto project
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Project
+press b 80
+press b 80
+wait 150
+goto mixer
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Mixer
+press b 80
+press b 80
+wait 150
+goto fx
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / FX
+press b 80
+press b 80
+wait 150
+goto eq
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / EQ
+press b 80
+press b 80
+wait 150
+goto song
+press k 80
+wait 150
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Live mode
+press b 80
+press b 80
+wait 150
+expect_no_error
+quit

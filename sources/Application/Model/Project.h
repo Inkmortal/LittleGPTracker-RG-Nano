@@ -26,6 +26,13 @@
 #define VAR_DELAY_FEEDBACK MAKE_FOURCC('D', 'L', 'F', 'B')
 #define VAR_CHORUS_RATE MAKE_FOURCC('C', 'H', 'R', 'T')
 #define VAR_CHORUS_DEPTH MAKE_FOURCC('C', 'H', 'D', 'P')
+// Master EQ: gain 80 = 0 dB (00 -12 dB, FF +12 dB), frequency 00..FF per band
+#define VAR_EQ_LOW_GAIN MAKE_FOURCC('E', 'Q', 'L', 'G')
+#define VAR_EQ_LOW_FREQ MAKE_FOURCC('E', 'Q', 'L', 'F')
+#define VAR_EQ_MID_GAIN MAKE_FOURCC('E', 'Q', 'M', 'G')
+#define VAR_EQ_MID_FREQ MAKE_FOURCC('E', 'Q', 'M', 'F')
+#define VAR_EQ_HIGH_GAIN MAKE_FOURCC('E', 'Q', 'H', 'G')
+#define VAR_EQ_HIGH_FREQ MAKE_FOURCC('E', 'Q', 'H', 'F')
 
 #define PROJECT_NUMBER "1"
 #define PROJECT_RELEASE "6"

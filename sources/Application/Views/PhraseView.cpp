@@ -36,6 +36,7 @@ PhraseView::PhraseView(GUIWindow &w, ViewData *viewData)
     viewData->phraseCurPos_ = 0;
     col_ = 0;
     lastNote_ = 60;
+    fillMode_ = 0;
     lastInstr_ = 0;
     lastCmd_ = I_CMD_NONE;
     lastParam_ = 0;
@@ -459,6 +460,154 @@ void PhraseView::warpToNeighbour(int offset) {
         gets the normalized rectangle of the current
         selection. Valid only while selection is drawn
  ******************************************************/
+
+/******************************************************
+ Selection tools (LB + direction with a selection), as
+ the M8 does with OPTION + direction: random notes, fill,
+ shuffle, reverse. They work on whole steps (rows) of the
+ selection and keep it, so pressing again rolls again.
+ ******************************************************/
+
+// The step at (phrase, row) as one unit, to move steps around
+struct PhraseStep {
+    uchar note, instr;
+    FourCC cmd1, cmd2;
+    ushort param1, param2;
+};
+
+static PhraseStep readStep(Phrase *p, int i) {
+    PhraseStep s = {p->note_[i], p->instr_[i], p->cmd1_[i], p->cmd2_[i],
+                    p->param1_[i], p->param2_[i]};
+    return s;
+}
+
+static void writeStep(Phrase *p, int i, const PhraseStep &s) {
+    p->note_[i] = s.note;
+    p->instr_[i] = s.instr;
+    p->cmd1_[i] = s.cmd1;
+    p->cmd2_[i] = s.cmd2;
+    p->param1_[i] = s.param1;
+    p->param2_[i] = s.param2;
+}
+
+// Nearest note at or below that fits the song's key/scale (any note if none)
+static int snapToScale(Project *project, int note) {
+    int key = project->GetScaleKey();
+    if (key < 0)
+        return note;
+    int scale = project->GetScale();
+    for (int down = 0; down < 12; down++) {
+        int inKey = (note - down - key) % 12;
+        if (inKey < 0)
+            inKey += 12;
+        if (scaleSteps[scale][inKey])
+            return note - down;
+    }
+    return note;
+}
+
+void PhraseView::randomizeSelection() {
+    GUIRect r = getSelectionRect();
+    int base = 16 * viewData_->currentPhrase_;
+    int low = 127, high = -1;
+    uchar instrument = 0xFF;
+    for (int row = r.Top(); row <= r.Bottom(); row++) {
+        uchar n = phrase_->note_[base + row];
+        if (n == 0xFF)
+            continue;
+        if (n < low) low = n;
+        if (n > high) high = n;
+        if (instrument == 0xFF && phrase_->instr_[base + row] != 0xFF)
+            instrument = phrase_->instr_[base + row];
+    }
+    bool triggers = (high < 0);  // nothing to re-pitch: make a rhythm too
+    if (triggers) {
+        low = (lastNote_ >= 0 && lastNote_ < 128) ? lastNote_ : 48;
+        high = low;
+        instrument = (lastInstr_ >= 0 && lastInstr_ < 0xFF) ? lastInstr_ : 0;
+    }
+    if (high - low < 12)
+        high = low + 12;  // at least an octave to move in
+    bool first = true;
+    for (int row = r.Top(); row <= r.Bottom(); row++) {
+        uchar &n = phrase_->note_[base + row];
+        if (triggers) {
+            if (rand() % 2)
+                continue;
+        } else if (n == 0xFF) {
+            continue;
+        }
+        int note = snapToScale(viewData_->project_, low + rand() % (high - low + 1));
+        if (note < 0) note = 0;
+        if (note > 127) note = 127;
+        n = (uchar)note;
+        if (triggers && first) {
+            phrase_->instr_[base + row] = instrument;
+            first = false;
+        }
+    }
+    SetNotification(triggers ? "Random notes + rhythm" : "Random notes (in scale)");
+    isDirty_ = true;
+}
+
+void PhraseView::fillSelection() {
+    GUIRect r = getSelectionRect();
+    int base = 16 * viewData_->currentPhrase_;
+    // The first note in the selection is what gets repeated
+    int source = -1;
+    for (int row = r.Top(); row <= r.Bottom() && source < 0; row++) {
+        if (phrase_->note_[base + row] != 0xFF)
+            source = row;
+    }
+    if (source < 0) {
+        SetNotification("Fill: put a note in first");
+        return;
+    }
+    static const int every[4] = {1, 2, 4, 8};
+    int step = every[fillMode_ % 4];
+    fillMode_++;
+    PhraseStep s = readStep(phrase_, base + source);
+    for (int row = r.Top(); row <= r.Bottom(); row++) {
+        if ((row - r.Top()) % step == 0) {
+            phrase_->note_[base + row] = s.note;
+            phrase_->instr_[base + row] = (row == r.Top()) ? s.instr : 0xFF;
+        } else {
+            phrase_->note_[base + row] = 0xFF;
+            phrase_->instr_[base + row] = 0xFF;
+        }
+    }
+    static char message[32];
+    snprintf(message, sizeof(message), "Fill: every %d step%s", step, step == 1 ? "" : "s");
+    SetNotification(message);
+    isDirty_ = true;
+}
+
+void PhraseView::shuffleSelection() {
+    GUIRect r = getSelectionRect();
+    int base = 16 * viewData_->currentPhrase_;
+    for (int row = r.Bottom(); row > r.Top(); row--) {
+        int other = r.Top() + rand() % (row - r.Top() + 1);
+        PhraseStep a = readStep(phrase_, base + row);
+        PhraseStep b = readStep(phrase_, base + other);
+        writeStep(phrase_, base + row, b);
+        writeStep(phrase_, base + other, a);
+    }
+    SetNotification("Steps shuffled");
+    isDirty_ = true;
+}
+
+void PhraseView::reverseSelection() {
+    GUIRect r = getSelectionRect();
+    int base = 16 * viewData_->currentPhrase_;
+    for (int a = r.Top(), b = r.Bottom(); a < b; a++, b--) {
+        PhraseStep x = readStep(phrase_, base + a);
+        PhraseStep y = readStep(phrase_, base + b);
+        writeStep(phrase_, base + a, y);
+        writeStep(phrase_, base + b, x);
+    }
+    SetNotification("Steps reversed");
+    isDirty_ = true;
+}
 
 GUIRect PhraseView::getSelectionRect() {
     GUIRect r(clipboard_.col_, clipboard_.row_, col_, row_);
@@ -1198,9 +1347,16 @@ void PhraseView::processSelectionButtonMask(unsigned short mask) {
                 processNormalButtonMask(mask);
 
             } else {
-                // L Modifier
+                // L Modifier: generate / rearrange the selected steps
                 if (mask & EPBM_L) {
-
+                    if (mask & EPBM_RIGHT)
+                        randomizeSelection();
+                    if (mask & EPBM_LEFT)
+                        fillSelection();
+                    if (mask & EPBM_UP)
+                        shuffleSelection();
+                    if (mask & EPBM_DOWN)
+                        reverseSelection();
                 } else {
                     // No modifier
 

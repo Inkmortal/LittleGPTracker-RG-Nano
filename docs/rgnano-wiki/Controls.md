@@ -43,7 +43,8 @@ Hold **RB** and press a direction:
 | Groove | — | — | — | Phrase |
 | Project | — | — | — | Song |
 | Mixer | — | — | Song | FX |
-| FX | — | — | Mixer | — |
+| FX | EQ | — | Mixer | — |
+| EQ | — | FX | — | — |
 
 If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a direction moves one screen, however long you hold it.
 
@@ -120,6 +121,17 @@ A cued cell blinks in green until it starts. A track keeps looping its chain unt
 | **Start** | loop this bar |
 | **LB + Start** | record this bar into a new sample ([render to sample](Samples#render-to-sample)) |
 
+With a selection (**B + LB**, then move to grow it), **LB + D-pad** writes for you:
+
+| Input | Does |
+| --- | --- |
+| **LB + Right** | random notes in the song's Key/Scale, keeping the rhythm (no notes selected: random notes on random steps). Again for another roll |
+| **LB + Left** | fill: repeat the first selected note on every step; again for every 2nd, 4th, 8th step |
+| **LB + Up** | shuffle the selected steps |
+| **LB + Down** | reverse them |
+
+Didn't like it? **B + Select** undoes.
+
 ## Instrument
 
 | Input | Does |
@@ -136,12 +148,12 @@ A cued cell blinks in green until it starts. A track keeps looping its chain unt
 
 Sample instruments have their own pages and trim controls — see [Samples](Samples).
 
-## Mixer and FX
+## Mixer, FX and EQ
 
 | Input | Does |
 | --- | --- |
 | **Left/Right** | pick a strip (Mixer) |
-| **Up/Down** | pick a knob (FX) |
+| **Up/Down** | pick a knob (FX, EQ) |
 | **A + Up/Down** / **A + Left/Right** | big / small step |
 | **B + A** | back to default (fader to `C0`, master to 100, knob to its default) |
 | **B + RB** / **A + RB** | mute / solo the track (Mixer); **RB + LB** unmutes all |

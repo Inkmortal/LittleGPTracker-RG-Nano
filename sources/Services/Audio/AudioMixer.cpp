@@ -11,6 +11,7 @@ AudioMixer::AudioMixer(const char *name):
 	enableRendering_(0),
 	writer_(0),
 	capture_(0),
+	insert_(0),
 	captureLeft_(0),
 	captureTotal_(0),
 	name_(name)
@@ -99,6 +100,11 @@ bool AudioMixer::Render(fixed *buffer,int samplecount) {
                }
             }
          }
+     }
+
+     // The mixer's insert effect (master EQ) on the sum
+     if (gotData && insert_) {
+         insert_->Process(buffer,samplecount) ;
      }
 
      //  Apply volume

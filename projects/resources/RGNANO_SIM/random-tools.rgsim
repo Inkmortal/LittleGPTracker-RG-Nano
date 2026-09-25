@@ -1,0 +1,133 @@
+# Randomness: LB + direction on a phrase selection (fill, random notes,
+# reverse, shuffle), and the CHNC / RAND commands while playing.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+wait 100
+expect_screen_text 0 C  3I00
+# Select the whole bar
+down b
+press m 80
+up b
+
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+press d 60
+wait 100
+down m
+press l 80
+up m
+wait 100
+expect_screen_text Fill: every 1 step
+expect_screen_text F C  3I--
+down m
+press l 80
+up m
+wait 100
+expect_screen_text Fill: every 2 steps
+expect_screen_text 1 ----I--
+expect_screen_text 2 C  3I--
+down m
+press r 80
+up m
+wait 100
+expect_screen_text Random notes (in scale)
+screenshot_app random-notes.bmp
+down m
+press d 80
+up m
+wait 100
+expect_screen_text Steps reversed
+down m
+press u 80
+up m
+wait 100
+expect_screen_text Steps shuffled
+# B copies and leaves the selection; undo takes everything back one by one
+press b 80
+wait 100
+# CHNC 0000 on every step: nothing plays
+
+sim_set_phrase_note 0 0 C3 0
+sim_set_phrase_command 0 0 1 CHNC 0000
+sim_set_phrase_note 0 1 C3 0
+sim_set_phrase_command 0 1 1 CHNC 0000
+sim_set_phrase_note 0 2 C3 0
+sim_set_phrase_command 0 2 1 CHNC 0000
+sim_set_phrase_note 0 3 C3 0
+sim_set_phrase_command 0 3 1 CHNC 0000
+sim_set_phrase_note 0 4 C3 0
+sim_set_phrase_command 0 4 1 CHNC 0000
+sim_set_phrase_note 0 5 C3 0
+sim_set_phrase_command 0 5 1 CHNC 0000
+sim_set_phrase_note 0 6 C3 0
+sim_set_phrase_command 0 6 1 CHNC 0000
+sim_set_phrase_note 0 7 C3 0
+sim_set_phrase_command 0 7 1 CHNC 0000
+sim_set_phrase_note 0 8 C3 0
+sim_set_phrase_command 0 8 1 CHNC 0000
+sim_set_phrase_note 0 9 C3 0
+sim_set_phrase_command 0 9 1 CHNC 0000
+sim_set_phrase_note 0 10 C3 0
+sim_set_phrase_command 0 10 1 CHNC 0000
+sim_set_phrase_note 0 11 C3 0
+sim_set_phrase_command 0 11 1 CHNC 0000
+sim_set_phrase_note 0 12 C3 0
+sim_set_phrase_command 0 12 1 CHNC 0000
+sim_set_phrase_note 0 13 C3 0
+sim_set_phrase_command 0 13 1 CHNC 0000
+sim_set_phrase_note 0 14 C3 0
+sim_set_phrase_command 0 14 1 CHNC 0000
+sim_set_phrase_note 0 15 C3 0
+sim_set_phrase_command 0 15 1 CHNC 0000
+press s 80
+wait 600
+reset_audio_stats
+wait 1500
+expect_audio_silence 0
+press s 80
+wait 300
+# RAND on its own: random notes, still playing every step
+
+sim_set_phrase_command 0 0 1 RAND 000C
+sim_set_phrase_command 0 1 1 RAND 000C
+sim_set_phrase_command 0 2 1 RAND 000C
+sim_set_phrase_command 0 3 1 RAND 000C
+sim_set_phrase_command 0 4 1 RAND 000C
+sim_set_phrase_command 0 5 1 RAND 000C
+sim_set_phrase_command 0 6 1 RAND 000C
+sim_set_phrase_command 0 7 1 RAND 000C
+sim_set_phrase_command 0 8 1 RAND 000C
+sim_set_phrase_command 0 9 1 RAND 000C
+sim_set_phrase_command 0 10 1 RAND 000C
+sim_set_phrase_command 0 11 1 RAND 000C
+sim_set_phrase_command 0 12 1 RAND 000C
+sim_set_phrase_command 0 13 1 RAND 000C
+sim_set_phrase_command 0 14 1 RAND 000C
+sim_set_phrase_command 0 15 1 RAND 000C
+press s 80
+wait 600
+reset_audio_stats
+wait 1200
+expect_audio_activity 32
+press s 80
+wait 300
+goto song
+expect_no_error
+quit

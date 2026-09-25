@@ -92,6 +92,12 @@ void FXView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	}
 	FieldView::ProcessButtonMask(mask) ;
 	if (mask&EPBM_R) {
+		if (mask&EPBM_RIGHT) {
+			ViewType vt=VT_EQ ;
+			ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
+			SetChanged() ;
+			NotifyObservers(&ve) ;
+		}
 		if (mask&EPBM_UP) {
 			ViewType vt=VT_MIXER ;
 			ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
@@ -174,7 +180,7 @@ void FXView::DrawView() {
 	}
 	SetColor(CD_MUTE) ;
 	DrawString(1,HELP_ROW+3,"sends: instrument MIX page",props) ;
-	DrawString(1,HELP_ROW+4,"RB+Up Mixer",props) ;
+	DrawString(1,HELP_ROW+4,"RB+Up Mixer  RB+Right EQ",props) ;
 	SetColor(CD_NORMAL) ;
 }
 

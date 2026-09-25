@@ -153,6 +153,21 @@ $suite = @(
     Args = @("-OpenDemo=NeonDrive")
   },
   @{
+    Name = "eq-screen"
+    Script = "eq-screen.rgsim"
+    Args = @("-OpenDemo=NeonDrive")
+  },
+  @{
+    Name = "random-tools"
+    Script = "random-tools.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "help-topics"
+    Script = "help-topics.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "undo"
     Script = "undo.rgsim"
     Args = @("-ResetLastProject")

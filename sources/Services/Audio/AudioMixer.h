@@ -1,6 +1,7 @@
 #ifndef _AUDIO_MIXER_H_
 #define _AUDIO_MIXER_H_
 
+#include "Services/Audio/AudioInsert.h"
 #include "AudioModule.h"
 #include "Foundation/T_SimpleList.h"
 #include "Application/Instruments/WavFileWriter.h"
@@ -36,6 +37,8 @@ public:
 	bool CaptureActive() { return capture_!=0 ; } ;
 	// 0..100 of the frames asked for
 	int CaptureProgress() ;
+	// Runs on the summed output before volume and clipping (0 = none)
+	void SetInsert(AudioInsert *insert) { insert_=insert ; } ;
 	
 private:
   fixed hardClip(fixed sample);
@@ -44,6 +47,7 @@ private:
   bool enableRendering_;
   std::string renderPath_;
   WavFileWriter *writer_;
+  AudioInsert *insert_;
   WavFileWriter *capture_;
   int captureLeft_;
   int captureTotal_;

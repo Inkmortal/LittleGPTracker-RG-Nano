@@ -13,6 +13,10 @@ class CommandSelectorModal : public ModalView {
     virtual ~CommandSelectorModal();
 
     virtual void ProcessButtonMask(unsigned short mask, bool pressed);
+    virtual void GetGuideTopic(const char *&page, const char *&section) {
+        page = "commands";
+        section = "";
+    }
     virtual void DrawView();
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int tick = 0);
     virtual void OnFocus();

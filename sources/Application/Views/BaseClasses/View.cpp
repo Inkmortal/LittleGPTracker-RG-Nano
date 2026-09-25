@@ -196,7 +196,7 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 	const char *row4="  |       |       |";
 	const char *row5="Mixer   Table   Instr";
 	const char *row6="  |";
-	const char *row7="  FX";
+	const char *row7="  FX > EQ";
 	drawOverlayLine(x,y,width,row1,props);
 	drawOverlayLine(x,y+1,width,row2,props);
 	drawOverlayLine(x,y+2,width,row3,props);
@@ -241,6 +241,11 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 			hx=x+2;
 			hy=y+6;
 			label="FX";
+			break;
+		case VT_EQ:
+			hx=x+7;
+			hy=y+6;
+			label="EQ";
 			break;
 		case VT_TABLE:
 			hx=x+8;
@@ -438,7 +443,20 @@ void View::drawContextOverlay() {
 			cmd4="Instruments send to FX";
 			cmd5="Mixer C D R = returns";
 			cmd6="Start play the song";
-			cmd7="RB+Up Mixer";
+			cmd7="RB+Up Mixer RB+Right EQ";
+			break;
+		case VT_EQ:
+			name="EQ";
+			where="RB+Left FX";
+			edit="A+Dpad edit value";
+			field="Master low/mid/high";
+			cmd1="Up/Down pick a knob";
+			cmd2="A+Left/Right small step";
+			cmd3="A+Up/Down big step";
+			cmd4="gain 80 = flat";
+			cmd5="B+A back to flat";
+			cmd6="Start play the song";
+			cmd7="RB+Left FX";
 			break;
 		default:
 			break;
@@ -525,9 +543,9 @@ int View::getMoreKeys(const char **lines,int max) {
 		"B+LB select, then B copy","A+LB paste","2nd column: transpose",
 		"B+RB mute  A+RB solo","RB+LB unmute all"};
 	static const char *phrase[]={"B+Dpad other phrase/track","B+A delete",
-		"B+LB select, then B copy","A+LB paste","A+Up/Dn on cmd: A to Z",
-		"LB+Start render to sample","RB+Up Groove RB+Dn Table","B+RB mute  A+RB solo",
-		"RB+LB unmute all"};
+		"B+LB select, then B copy","A+LB paste","Sel LB+R random  LB+L fill",
+		"Sel LB+U shuffle LB+D rev","A+Up/Dn on cmd: A to Z",
+		"LB+Start render to sample","RB+Up Groove RB+Dn Table"};
 	static const char *instrument[]={"B+Dpad other instrument","B+A clear sample/table",
 		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song"};
 	static const char *table[]={"B+Left/Right other table","B+A delete",
@@ -538,7 +556,9 @@ int View::getMoreKeys(const char **lines,int max) {
 	static const char *mixer[]={"B+RB mute  A+RB solo","A+Left/Right fine step","RB+LB unmute all",
 		"C/D/R = FX returns M=master","RB+Down FX settings"};
 	static const char *fx[]={"Up/Down next knob","A+Left/Right small step",
-		"A+Up/Down big step","Start play/stop the song"};
+		"A+Up/Down big step","B+A knob to default","RB+Right EQ","Start play/stop the song"};
+	static const char *eq[]={"Up/Down next knob","A+Left/Right small step",
+		"A+Up/Down big step","B+A back to flat","RB+Left FX","Start play/stop the song"};
 	const char **list=0;
 	int count=0;
 #define MORE_KEYS(a) list=a; count=sizeof(a)/sizeof(a[0]);
@@ -553,6 +573,7 @@ int View::getMoreKeys(const char **lines,int max) {
 		case VT_PROJECT: MORE_KEYS(project); break;
 		case VT_MIXER: MORE_KEYS(mixer); break;
 		case VT_FX: MORE_KEYS(fx); break;
+		case VT_EQ: MORE_KEYS(eq); break;
 		default: break;
 	}
 #undef MORE_KEYS
@@ -649,6 +670,15 @@ void View::getHowToSteps(const char **lines) {
 			lines[4]="Chorus: speed, depth";
 			lines[5]="Echo: time, repeats";
 			lines[6]="Reverb: size, damp";
+			break;
+		case VT_EQ:
+			lines[0]="Shapes the whole mix.";
+			lines[1]="LOW: bass shelf,";
+			lines[2]="MID: a bell in the middle,";
+			lines[3]="HIGH: treble shelf.";
+			lines[4]="gain 80 = flat, +-12 dB";
+			lines[5]="freq moves each band";
+			lines[6]="B+A puts a knob back";
 			break;
 		default:
 			break;
@@ -1000,7 +1030,9 @@ void View::GetGuideTopic(const char *&page, const char *&section) {
 	page="screens";
 	section="";
 	switch(viewType_) {
-		case VT_SONG: section="Song"; break;
+		case VT_SONG:
+			section=(Player::GetInstance()->GetSequencerMode()==SM_LIVE)?"Live mode":"Song" ;
+			break;
 		case VT_CHAIN: section="Chain"; break;
 		case VT_PHRASE: section="Phrase"; break;
 		case VT_INSTRUMENT: section="Instrument (synth)"; break;
@@ -1010,6 +1042,7 @@ void View::GetGuideTopic(const char *&page, const char *&section) {
 		case VT_PROJECT: section="Project"; break;
 		case VT_MIXER: section="Mixer"; break;
 		case VT_FX: section="FX"; break;
+		case VT_EQ: section="EQ"; break;
 		default: page=""; break;
 	}
 }

@@ -1,4 +1,8 @@
 #include "System/Console/CrashLog.h"
+#include "Application/Model/Scale.h"
+
+// RAND / CHNC randomness (defined with playCursorPosition)
+static int randomUpTo(int range) ;
 #include "Application/Instruments/SynthInstrument.h"
 #include "Application/Mixer/SendFX.h"
 #include "Player.h"
@@ -753,6 +757,14 @@ void Player::ProcessCommands() {
 					int pos=viewData_->phrasePlayPos_[i] ;
 					FourCC cc=viewData_->song_->phrase_->cmd1_[phrase*16+pos] ;
 					ushort param=viewData_->song_->phrase_->param1_[phrase*16+pos] ;
+					FourCC other=viewData_->song_->phrase_->cmd2_[phrase*16+pos] ;
+					// RAND in the other column: this command's value moves by
+					// a random amount up to RAND's value
+					if (other==I_CMD_RAND && cc!=I_CMD_RAND && cc!=I_CMD_CHNC) {
+						int range=viewData_->song_->phrase_->param2_[phrase*16+pos]&0xFF ;
+						int v=(param&0xFF)+randomUpTo(range) ;
+						param=(param&0xFF00)|(v>0xFF?0xFF:v) ;
+					}
 					
 					// if there's any command to trigger, first pass it on the player
 					// then pass it on to the instrument
@@ -770,6 +782,12 @@ void Player::ProcessCommands() {
 
 					cc=viewData_->song_->phrase_->cmd2_[phrase*16+pos] ;
 					param=viewData_->song_->phrase_->param2_[phrase*16+pos] ;
+					other=viewData_->song_->phrase_->cmd1_[phrase*16+pos] ;
+					if (other==I_CMD_RAND && cc!=I_CMD_RAND && cc!=I_CMD_CHNC) {
+						int range=viewData_->song_->phrase_->param1_[phrase*16+pos]&0xFF ;
+						int v=(param&0xFF)+randomUpTo(range) ;
+						param=(param&0xFF00)|(v>0xFF?0xFF:v) ;
+					}
 
 					// if there's any command to trigger, first pass it on the player
 					// then pass it on to the instrument
@@ -793,6 +811,9 @@ bool Player::ProcessChannelCommand(int channel,FourCC cmd,ushort param) {
 	I_Instrument *instr=mixer_->GetInstrument(channel) ;
 
 	switch(cmd) {
+		case I_CMD_RAND:
+		case I_CMD_CHNC:
+			return true ;  // applied when the step plays (see above)
 		case I_CMD_KILL:
 			if (instr) {
                 int timeToLive=(param&0xFF) ;
@@ -945,6 +966,39 @@ void Player::updatePhrasePos(int pos,int channel) {
 	}
 }
 
+// Randomness for RAND / CHNC: a small fast generator (xorshift), plenty for
+// music and safe to call from the audio thread
+static unsigned int randomState_ = 0x9E3779B9 ;
+static unsigned int nextRandom() {
+	unsigned int x=randomState_ ;
+	x^=x<<13 ;
+	x^=x>>17 ;
+	x^=x<<5 ;
+	randomState_=x ;
+	return x ;
+}
+
+// 0..range inclusive
+static int randomUpTo(int range) {
+	if (range<=0) return 0 ;
+	return (int)(nextRandom()%(unsigned int)(range+1)) ;
+}
+
+// A random note up to range semitones above, moved onto the song's scale
+static int randomNoteOffset(Project *project,int note,int range) {
+	int offset=randomUpTo(range) ;
+	int key=project->GetScaleKey() ;
+	if (key<0) return offset ;
+	int scale=project->GetScale() ;
+	for (int tries=0;tries<12;tries++) {
+		int inKey=(note+offset-key)%12 ;
+		if (inKey<0) inKey+=12 ;
+		if (scaleSteps[scale][inKey]) break ;
+		offset=(offset>0)?offset-1:offset+1 ;
+	}
+	return offset ;
+}
+
 void Player::playCursorPosition(int channel) {
 
 	int pos=viewData_->phrasePlayPos_[channel] ;
@@ -958,6 +1012,29 @@ void Player::playCursorPosition(int channel) {
 		Phrase *phrase=song->phrase_ ;
 		unsigned char note=phrase->note_[16*currentPhrase+pos]  ;
 		unsigned char instr=phrase->instr_[16*currentPhrase+pos]  ;
+
+		// CHNC: sometimes the note doesn't play (as if the step were empty).
+		// RAND with no other command: a random note, in the song's scale.
+		FourCC c1=phrase->cmd1_[16*currentPhrase+pos] ;
+		FourCC c2=phrase->cmd2_[16*currentPhrase+pos] ;
+		ushort p1=phrase->param1_[16*currentPhrase+pos] ;
+		ushort p2=phrase->param2_[16*currentPhrase+pos] ;
+		if (note!=0xFF) {
+			int chance=(c1==I_CMD_CHNC)?(p1&0xFF):((c2==I_CMD_CHNC)?(p2&0xFF):-1) ;
+			if (chance>=0 && randomUpTo(254)>=chance) {
+				note=0xFF ;
+				instr=0xFF ;
+			}
+		}
+		if (note!=0xFF) {
+			bool alone1=(c1==I_CMD_RAND)&&(c2==I_CMD_NONE||c2==I_CMD_RAND||c2==I_CMD_CHNC) ;
+			bool alone2=(c2==I_CMD_RAND)&&(c1==I_CMD_NONE||c1==I_CMD_CHNC) ;
+			if (alone1 || alone2) {
+				int range=(alone1?p1:p2)&0xFF ;
+				int n=note+randomNoteOffset(project_,note,range) ;
+				note=(unsigned char)(n>127?127:n) ;
+			}
+		}
 
 		TableHolder *th=TableHolder::GetInstance() ;
 		TablePlayback &tpb=TablePlayback::GetTablePlayback(channel) ;

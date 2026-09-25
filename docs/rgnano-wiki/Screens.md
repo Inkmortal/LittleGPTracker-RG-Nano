@@ -143,7 +143,7 @@ Faders for the 8 tracks, the three effect returns (**C** chorus, **D** echo, **R
 
 <img src="images/fx.png" width="300" align="right" alt="FX">
 
-The three effects every instrument can send to, each with a picture of what it does:
+The three effects every instrument can send to, each with a picture of what it does (**RB + Right** goes on to the [EQ](#eq)):
 
 | Effect | Knobs | Picture |
 | --- | --- | --- |
@@ -152,6 +152,24 @@ The three effects every instrument can send to, each with a picture of what it d
 | Reverb | `size`, `damp` | the tail over four seconds; the bright line is the highs, which `damp` takes away faster |
 
 Each heading shows the real values (Hz, ms, tail length) and how many sounds send to it. **Up/Down** walks the six knobs, **A + D-pad** edits. Turn up an instrument's `chorus`/`delay`/`reverb` send to hear it; the Mixer's C/D/R faders set how loud each effect comes back.
+
+<br clear="right">
+
+## EQ
+
+<img src="images/eq.png" width="300" align="right" alt="EQ">
+
+A three-band EQ on the whole mix, after the effects: **RB + Right** from FX.
+
+| Band | Knobs | Shape |
+| --- | --- | --- |
+| LOW | `gain`, `freq` (30–400 Hz) | a shelf: everything below `freq` up or down |
+| MID | `gain`, `freq` (150 Hz–6 kHz) | a wide bell around `freq` |
+| HIGH | `gain`, `freq` (1.5–16 kHz) | a shelf: everything above `freq` |
+
+`gain 80` is flat; each step is about 0.1 dB, from −12 to +12 dB. The heading shows the real values, and the curve underneath shows the result from 20 Hz to 20 kHz (marks at 100 Hz, 1 kHz, 10 kHz). **Up/Down** picks a knob, **A + D-pad** edits, **B + A** puts a knob back. It saves with the song; a flat EQ costs nothing.
+
+Try: low `+3 dB` at 80 Hz for weight, mid `−3 dB` at 400 Hz to clear mud, high `+2 dB` at 8 kHz for air.
 
 <br clear="right">
 

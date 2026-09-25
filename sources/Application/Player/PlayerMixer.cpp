@@ -1,3 +1,4 @@
+#include "Application/Mixer/MasterEQ.h"
 #include "PlayerMixer.h"
 #include "Application/Mixer/MixerService.h"
 #include "Application/Mixer/SendFX.h"
@@ -34,6 +35,7 @@ bool PlayerMixer::Init(Project *project) {
 
 	project_=project ;
 	SendFX::GetInstance()->SetProject(project) ;
+	MasterEQ::GetInstance()->SetProject(project) ;
 
 	// Init states
 

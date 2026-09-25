@@ -77,12 +77,20 @@ void GuideDialog::OnFocus() {
         if (guidePages[i].id != wantedPage_)
             continue;
         int line = 0;
+        bool found = wantedSection_.empty();
         const Page &p = guidePages[i];
         for (int s = 0; s < (int)p.sections.size(); s++) {
             if (p.lines[p.sections[s]].substr(1) == wantedSection_) {
                 line = p.sections[s];
+                found = true;
                 break;
             }
+        }
+        // (a screen pointing at a heading that no longer exists shows here)
+        Trace::Log("GUIDE", "open %s / %s", wantedPage_.c_str(), wantedSection_.c_str());
+        if (!found) {
+            Trace::Error("GUIDE section missing: %s / %s", wantedPage_.c_str(),
+                         wantedSection_.c_str());
         }
         openPage(i, line);
         break;

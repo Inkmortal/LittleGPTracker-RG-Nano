@@ -1,3 +1,4 @@
+#include "MasterEQ.h"
 #include "MixerService.h"
 #include "Application/Audio/DummyAudioOut.h"
 #include "Application/Model/Config.h"
@@ -37,6 +38,8 @@ bool MixerService::Init() {
 	}
 	// Send effects render last so every channel has added its sends
 	master_.Insert(*SendFX::GetInstance());
+	// The master EQ shapes the whole mix, effects included
+	master_.SetInsert(MasterEQ::GetInstance());
 
 	bool result = false;
 	if (out_) {
