@@ -143,7 +143,7 @@ instrument 0A            # B+Left/Right/Up/Down to instrument 0A
 row 0C                   # move the Song/Chain/Phrase cursor to row 0C
 ```
 
-`goto` knows the view graph (Song, Chain, Phrase, Instrument, Table, Groove, Project, Mixer). `focus`/`set` work on any field screen (Instrument, Project). Each command logs `=> reached in N steps`.
+`goto` knows the view graph (Song, Chain, Phrase, Instrument, Table, Groove, Project, Mixer, FX, EQ, Limit: `goto limit`). `focus`/`set` work on any field screen (Instrument, Project, FX, EQ, Limit). Each command logs `=> reached in N steps`.
 
 ## Synth Script Commands
 
@@ -280,6 +280,13 @@ end_audio_capture
 
 # fail unless no measured tracker audio has been produced since reset_audio_stats
 expect_audio_silence 0
+
+# fail unless audio played but its loudest sample (of 32767) stayed at or under N
+expect_audio_peak_max 1745
+
+# fail unless the master limiter's most gain reduction over its meter history
+# (the last few seconds) is within min..max tenths of a dB (0 0 = not limiting)
+expect_limiter_gr 60 700
 
 # fail if the simulator log contains an error marker
 expect_no_error

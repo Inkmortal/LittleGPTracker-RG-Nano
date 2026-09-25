@@ -39,7 +39,7 @@ Imported samples live inside the song folder (`lgpt_<name>/samples/`), so the so
 
 ## Sample pages
 
-**LB + Left/Right** switches between the six sample pages:
+**LB + Left/Right** switches between the seven sample pages:
 
 | Page | What it edits |
 | --- | --- |
@@ -49,6 +49,13 @@ Imported samples live inside the song folder (`lgpt_<name>/samples/`), so the so
 | Loop | loop mode, start, loop start, end |
 | Mod | two envelopes/LFOs on volume, cutoff, reso, pitch or pan — see [Synth → MOD](Synth#mod--envelopes-and-lfos) |
 | Motion | instrument table, feedback |
+| EQ | the instrument's own low / mid / high EQ, drawn as a curve — see [Instrument EQ](#instrument-eq) |
+
+## Instrument EQ
+
+The last page. Each sample instrument has its own three-band EQ, the same as a synth's ([Synth → EQ](Synth#eq--its-own-tone)): `l.gain`/`l.freq` a bass shelf (30–400 Hz), `m.gain`/`m.freq` a bell (150 Hz–6 kHz), `h.gain`/`h.freq` a treble shelf (1.5–16 kHz). Gains `80` = flat, −12 … +12 dB. It shapes only this sound, before its effect sends; flat bands cost nothing. The curve above the knobs shows the result, and the focused knob's value is shown in dB or Hz.
+
+**Try:** thin a loop with `l.gain` `−8 dB` so the kick has the bottom to itself, or brighten a dull vocal chop with `h.gain` `+4 dB`.
 
 ## Trimming
 

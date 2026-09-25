@@ -72,6 +72,13 @@ void InstrumentView::onInstrumentChange() {
 	T_SimpleList<UIField>::Empty() ;
 
 	InstrumentType it=getInstrumentType() ;
+	// The type field mirrors this instrument from now on. It is only shown
+	// on the first page, but applyTypeChange() reads it after every key:
+	// left at an earlier instrument's type, a key press on another page
+	// turned this instrument into that type.
+	if (i<MAX_SAMPLEINSTRUMENT_COUNT) {
+		typeVar_->SetInt(it==IT_SYNTH?1:0,false) ;
+	}
 
     switch (it) {
 		case IT_MIDI:
@@ -147,6 +154,9 @@ void InstrumentView::fillSampleParameters() {
 			break;
 		case INSTRUMENT_MOD_PAGE:
 			fillModPage(instrument,position);
+			break;
+		case INSTRUMENT_EQ_PAGE:
+			fillEQPage(instrument,position);
 			break;
 		default:
 			fillSampleMotionPage(instrument,position);
@@ -335,6 +345,7 @@ const char *InstrumentView::getLabPageName() {
 		case 2: return "FILTER";
 		case 3: return "LOOP";
 		case INSTRUMENT_MOD_PAGE: return "MOD";
+		case INSTRUMENT_EQ_PAGE: return "EQ";
 		default: return "MOTION";
 	}
 }
@@ -886,6 +897,19 @@ void InstrumentView::drawSampleLabVisuals() {
 				SetColor(CD_NORMAL);
 			}
 		}
+	} else if (labPage_==INSTRUMENT_EQ_PAGE) {
+		drawEQPlot(instrument,10,36,220,52);
+		// The focused knob in real units (dB, Hz)
+		UIIntVarField *field=(UIIntVarField *)GetFocus();
+		if (field) {
+			char l1[40],l2[40],value[40];
+			getEQFieldHelp(field->GetVariableID(),instrument,l1,l2,value);
+			if (value[0]) {
+				SetColor(CD_HILITE1);
+				drawLabText((30-(int)strlen(value))/2,13,value,props);
+				SetColor(CD_NORMAL);
+			}
+		}
 	} else {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 		// The instrument's table: 16 steps down three command columns, a
@@ -1375,10 +1399,10 @@ void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
 	// Samples have a page of their own (packs, trimming, root, slices)
 	if (getInstrumentType()==IT_SAMPLE) {
 		page="samples";
-		section="Sample pages";
+		section=(labPage_==INSTRUMENT_EQ_PAGE)?"Instrument EQ":"Sample pages";
 	} else {
 		page="synth";
-		section="";
+		section=(labPage_==INSTRUMENT_EQ_PAGE)?"EQ - its own tone":"";
 	}
 }
 
@@ -1405,6 +1429,8 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 		name="INSTR LOOP";
 	} else if (labPage_==INSTRUMENT_MOD_PAGE) {
 		name="INSTR MOD";
+	} else if (labPage_==INSTRUMENT_EQ_PAGE) {
+		name="INSTR EQ";
 	} else {
 		name="INSTR MOTION";
 	}
@@ -1466,6 +1492,25 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
 			int i=viewData_->currentInstrument_;
 			I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
 			getModFieldHelp(focused->GetVariableID(),instr,help1,help2,value);
+			where=help1;
+			edit=help2;
+		}
+	} else if (labPage_==INSTRUMENT_EQ_PAGE) {
+		field="Its own low/mid/high EQ";
+		edit="A+Dpad edit value";
+		cmd1="l/m/h gain: 80 = flat";
+		cmd2="freq: where the band sits";
+		cmd3="A+Left/Right small step";
+		cmd4="A+Up/Down big step";
+		cmd5="LB+Left/Right page";
+		cmd6="A+Start hear  B+A flat";
+		// The focused knob explained
+		UIIntVarField *focused=(UIIntVarField *)GetFocus();
+		if (focused && isEQField(focused->GetVariableID())) {
+			static char help1[40],help2[40],value[40];
+			int i=viewData_->currentInstrument_;
+			I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
+			getEQFieldHelp(focused->GetVariableID(),instr,help1,help2,value);
 			where=help1;
 			edit=help2;
 		}

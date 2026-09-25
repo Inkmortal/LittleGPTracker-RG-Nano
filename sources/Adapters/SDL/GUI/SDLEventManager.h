@@ -126,6 +126,8 @@ private:
 	bool ExpectSimGroove(int channel, int groove);
 	bool ExpectSimTableActive(int channel, int table);
 	bool ExpectSimTempo(int bpm);
+	bool ExpectSimLimiterGr(int minTenths,int maxTenths);
+	bool ExpectSimAudioPeakMax(int maxPeak);
 	bool ExpectSimInstrumentSample(int instrument, const std::string &sampleName);
 	bool ExpectSimInstrumentRoot(int instrument, int note);
 	bool ExpectSimInstrumentRootSuggestion(int instrument, int note);

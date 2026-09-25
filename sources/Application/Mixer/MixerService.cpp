@@ -1,4 +1,5 @@
 #include "MasterEQ.h"
+#include "MasterLimiter.h"
 #include "MixerService.h"
 #include "Application/Audio/DummyAudioOut.h"
 #include "Application/Model/Config.h"
@@ -40,6 +41,9 @@ bool MixerService::Init() {
 	master_.Insert(*SendFX::GetInstance());
 	// The master EQ shapes the whole mix, effects included
 	master_.SetInsert(MasterEQ::GetInstance());
+	// Then the limiter keeps it under the ceiling (the Project's soft
+	// clip and master volume come after, on the output)
+	master_.AddInsert(MasterLimiter::GetInstance());
 
 	bool result = false;
 	if (out_) {

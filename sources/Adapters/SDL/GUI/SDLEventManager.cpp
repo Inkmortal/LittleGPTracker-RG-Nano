@@ -3,6 +3,7 @@
 #include "Application/Application.h"
 #include "Application/AppWindow.h"
 #include "Application/Mixer/SendFX.h"
+#include "Application/Mixer/MasterLimiter.h"
 #include "Application/Instruments/InstrumentBank.h"
 #include "Application/Instruments/CommandList.h"
 #include "Application/Instruments/SampleInstrument.h"
@@ -763,7 +764,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 			command.arg2.erase(0,1);
 		}
 	} else if (command.op=="expect_no_error" || command.op=="expect_skin_frame_clean" || command.op=="reset_audio_stats" || command.op=="end_audio_capture" || command.op=="sim_save_project" || command.op=="quit") {
-	} else if (command.op=="expect_colors" || command.op=="expect_audio_activity" || command.op=="expect_audio_silence" || command.op=="expect_audio_capture_bytes" || command.op=="expect_tempo" || command.op=="expect_render_mode" || command.op=="sim_set_tempo" || command.op=="sim_set_render_mode" || command.op=="sim_set_scale" || command.op=="sim_set_key") {
+	} else if (command.op=="expect_colors" || command.op=="expect_audio_activity" || command.op=="expect_audio_silence" || command.op=="expect_audio_peak_max" || command.op=="expect_audio_capture_bytes" || command.op=="expect_tempo" || command.op=="expect_render_mode" || command.op=="sim_set_tempo" || command.op=="sim_set_render_mode" || command.op=="sim_set_scale" || command.op=="sim_set_key") {
 		iss >> command.value;
 	} else if (command.op=="expect_project_file_bytes") {
 		iss >> command.arg >> command.value;
@@ -773,7 +774,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		iss >> command.value >> command.value2 >> command.arg;
 	} else if (command.op=="expect_phrase_command" || command.op=="expect_phrase_param") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2;
-	} else if (command.op=="expect_groove" || command.op=="expect_table_active") {
+	} else if (command.op=="expect_groove" || command.op=="expect_table_active" || command.op=="expect_limiter_gr") {
 		iss >> command.value >> command.value2;
 	} else if (command.op=="expect_phrase_row_count" || command.op=="expect_size") {
 		iss >> command.value >> command.value2;
@@ -1077,6 +1078,11 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			FailSimScript("audio silence assertion failed");
 			return;
 		}
+	} else if (command.op=="expect_audio_peak_max") {
+		if (!ExpectSimAudioPeakMax(command.value)) {
+			FailSimScript("audio peak assertion failed");
+			return;
+		}
 	} else if (command.op=="expect_audio_capture_bytes") {
 		if (!ExpectSimAudioCaptureBytes(command.value)) {
 			FailSimScript("audio capture assertion failed");
@@ -1125,6 +1131,11 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_tempo") {
 		if (!ExpectSimTempo(command.value)) {
 			FailSimScript("tempo assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_limiter_gr") {
+		if (!ExpectSimLimiterGr(command.value,command.value2)) {
+			FailSimScript("limiter gain reduction assertion failed");
 			return;
 		}
 	} else if (command.op=="expect_render_mode") {
@@ -1563,7 +1574,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 	struct Edge { const char *from; int key; const char *to; };
 	static const Edge edges[]={
 		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},
-		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},{"mixer",SDLK_d,"fx"},{"fx",SDLK_u,"mixer"},{"fx",SDLK_r,"eq"},{"eq",SDLK_l,"fx"},
+		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},{"mixer",SDLK_d,"fx"},{"fx",SDLK_u,"mixer"},{"fx",SDLK_r,"eq"},{"eq",SDLK_l,"fx"},{"eq",SDLK_r,"limit"},{"limit",SDLK_l,"eq"},
 		{"chain",SDLK_l,"song"},{"chain",SDLK_r,"phrase"},
 		{"phrase",SDLK_l,"chain"},{"phrase",SDLK_r,"instrument"},
 		{"phrase",SDLK_d,"table"},{"phrase",SDLK_u,"groove"},
@@ -1571,11 +1582,11 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		{"instrument",SDLK_l,"phrase"},{"instrument",SDLK_d,"table"},
 	};
 	const int count=sizeof(edges)/sizeof(Edge);
-	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq"};
-	const int nodeCount=10;
-	int prev[10];
-	int via[10];
-	bool seen[10];
+	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq","limit"};
+	const int nodeCount=11;
+	int prev[11];
+	int via[11];
+	bool seen[11];
 	int start=-1;
 	int goal=-1;
 	for (int i=0;i<nodeCount;i++) {
@@ -1586,7 +1597,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		if (to==nodes[i]) goal=i;
 	}
 	if (start<0 || goal<0) return 0;
-	int queue[10];
+	int queue[11];
 	int head=0;
 	int tail=0;
 	queue[tail++]=start;
@@ -1693,7 +1704,7 @@ int SDLEventManager::StepSimGoal(SDLGUIWindowImp *window, SimCommand &command)
 	}
 
 	if (command.op=="page") {
-		// Instrument pages show "<LB n/5 NAME LB>"
+		// Instrument pages show "<LB n/7 NAME LB>"
 		std::string wanted=std::string(" ")+command.arg+" LB>";
 		if (appWindow->ScreenContains(wanted.c_str())) return 0;
 		PressSimCombo(window,SDLK_m,SDLK_r);
@@ -1920,6 +1931,20 @@ bool SDLEventManager::ExpectSimAudioSilence(int maxPeak)
 	return silent;
 }
 
+// Sound is playing, but its loudest sample since reset_audio_stats stays
+// at or under maxPeak (e.g. the limiter's ceiling, an EQ cut)
+bool SDLEventManager::ExpectSimAudioPeakMax(int maxPeak)
+{
+	int peak=AudioDriver::GetSimAudioPeak();
+	unsigned long nonSilentBytes=AudioDriver::GetSimAudioNonSilentBytes();
+	bool ok=peak<=maxPeak && nonSilentBytes>0;
+	Trace::Log("RGNANO_SIM","expect_audio_peak_max peak=%d nonSilentBytes=%lu maxPeak=%d => %s",peak,nonSilentBytes,maxPeak,ok?"match":"mismatch");
+	if (!ok) {
+		Trace::Error("RGNANO_SIM audio peak assertion failed");
+	}
+	return ok;
+}
+
 bool SDLEventManager::ExpectSimAudioCaptureBytes(int minBytes)
 {
 	if (minBytes<=0) {
@@ -2126,6 +2151,24 @@ bool SDLEventManager::ExpectSimTempo(int bpm)
 	int actual=tempo->GetInt();
 	bool matches=(actual==bpm);
 	Trace::Log("RGNANO_SIM","expect_tempo actual=%d expected=%d => %s",actual,bpm,matches?"match":"mismatch");
+	return matches;
+}
+
+// The most gain reduction the master limiter applied over its meter
+// history (the last few seconds), in tenths of a dB, within min..max
+bool SDLEventManager::ExpectSimLimiterGr(int minTenths,int maxTenths)
+{
+	MasterLimiter *lim=MasterLimiter::GetInstance();
+	float most=0.0f;
+	for (int i=0;i<LIMITER_HISTORY;i++) {
+		float gr=lim->GetHistoryGrDb(i);
+		if (gr>most) most=gr;
+	}
+	int tenths=(int)(most*10.0f+0.5f);
+	bool matches=(tenths>=minTenths && tenths<=maxTenths);
+	Trace::Log("RGNANO_SIM","expect_limiter_gr enabled=%d max=%.1fdB now=%.1fdB in=%.1fdB out=%.1fdB range=%d..%d tenths => %s",
+	           lim->Enabled()?1:0,most,lim->GetGainReductionDb(),lim->GetInputPeakDb(),lim->GetOutputPeakDb(),
+	           minTenths,maxTenths,matches?"match":"mismatch");
 	return matches;
 }
 

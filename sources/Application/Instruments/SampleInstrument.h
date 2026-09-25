@@ -5,6 +5,7 @@
 #include "SampleRenderingParams.h"
 #include "SRPUpdaters.h"
 #include "ModSources.h"
+#include "InstrumentEQ.h"
 
 #include "SoundSource.h"
 #include "Application/Model/Song.h" 
@@ -152,6 +153,7 @@ private:
 	   Variable *delay_;
 	   Variable *chorus_;
 	   InstrumentMods mods_;
+	   InstrumentEQ eq_;
 	   Variable *customName_;
 	   int suggestedRootNote_;
 

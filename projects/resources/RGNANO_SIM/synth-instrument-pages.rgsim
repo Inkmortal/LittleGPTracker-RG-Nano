@@ -51,7 +51,7 @@ screenshot_app synth-page-3-filter.bmp
 page LFO
 screenshot_app synth-page-4-lfo.bmp
 page MOD
-expect_screen_text 5/6 MOD
+expect_screen_text 5/7 MOD
 screenshot_app synth-page-5-mod.bmp
 page MIX
 set reverb 0x40

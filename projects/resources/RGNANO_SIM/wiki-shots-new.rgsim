@@ -98,6 +98,14 @@ focus rate1
 screenshot_app wiki-synth-5-mod.bmp
 page MIX
 screenshot_app wiki-synth-6-mix.bmp
+page EQ
+set l.gain 0xB0
+set m.gain 0x60
+set m.freq 0x50
+set h.gain 0xA8
+set h.freq 0x60
+focus l.gain
+screenshot_app wiki-synth-7-eq.bmp
 page SOUND
 goto phrase
 goto table

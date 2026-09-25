@@ -158,6 +158,16 @@ $suite = @(
     Args = @("-OpenDemo=NeonDrive")
   },
   @{
+    Name = "master-limiter"
+    Script = "master-limiter.rgsim"
+    Args = @("-OpenDemo=NeonDrive")
+  },
+  @{
+    Name = "instrument-eq"
+    Script = "instrument-eq.rgsim"
+    Args = @("-OpenDemo=JadeSword")
+  },
+  @{
     Name = "random-tools"
     Script = "random-tools.rgsim"
     Args = @("-ResetLastProject")

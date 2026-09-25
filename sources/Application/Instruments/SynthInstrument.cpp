@@ -394,6 +394,7 @@ SynthInstrument::SynthInstrument() {
 	tableAuto_=new Variable("table automation",SYP_TABLEAUTO,false) ;
 	Insert(tableAuto_) ;
 	mods_.Create(*this) ;
+	eq_.Create(*this) ;
 	customName_=new Variable("name",INSTRUMENT_NAME_ID,"") ;
 	Insert(customName_) ;
 
@@ -490,6 +491,7 @@ void SynthInstrument::ApplyPreset(int preset) {
 	}
 	lfoAmt_->SetInt(0) ;
 	mods_.Reset() ;
+	eq_.Reset() ;
 	reverb_->SetInt(0) ;
 	delay_->SetInt(0) ;
 	chorus_->SetInt(0) ;
@@ -674,6 +676,7 @@ void SynthInstrument::startVoice(int channel,unsigned char note,bool cleanStart)
 	v.subPhase_=0.0f ;
 	for (int m=0;m<6;m++) v.metalPhase_[m]=0.13f*m ;
 	v.ic1eq_=v.ic2eq_=0.0f ;
+	eq_.ResetVoice(channel) ;
 	if (!v.hasPlayed_ || glide_->GetInt()==0) {
 		v.glideNote_=(float)note ;
 	}
@@ -1110,6 +1113,7 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	float delaySend=delay_->GetInt()/255.0f ;
 	float chorusSend=chorus_->GetInt()/255.0f ;
 	bool sending=(reverbSend>0.0f || delaySend>0.0f || chorusSend>0.0f) ;
+	bool eqOn=eq_.Prepare() ;
 	int rendered=0 ;
 
 	fixed *out=buffer ;
@@ -1274,6 +1278,8 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			break ;
 		}
 		sig*=v.level_*ampMod ;
+		// The instrument's own EQ (EQ page), before pan and the sends
+		if (eqOn) sig=eq_.TickMono(channel,sig) ;
 		if (sig>2.0f) sig=2.0f ;
 		if (sig<-2.0f) sig=-2.0f ;
 

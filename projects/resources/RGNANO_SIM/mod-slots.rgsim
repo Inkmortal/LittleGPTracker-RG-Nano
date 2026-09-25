@@ -13,7 +13,7 @@ expect_screen_text Instrument 00 SYNTH
 # Synth: slot 1 = decay envelope sweeping the filter, slot 2 = vibrato
 set preset pad
 page MOD
-expect_screen_text 5/6 MOD
+expect_screen_text 5/7 MOD
 set mod1 decay
 set dest1 cutoff
 set amt1 80
@@ -46,20 +46,20 @@ set preset keys
 expect_instrument_param 0 mod1_type off
 expect_instrument_param 0 mod2_type off
 
-# Sample instrument: same page, sixth page is still MOTION
+# Sample instrument: same page, sixth page is still MOTION (EQ is 7th)
 instrument 01
 page SOUND
 set type sample
 expect_instrument_type 1 Sample
 page MOD
-expect_screen_text 5/6 MOD
+expect_screen_text 5/7 MOD
 set mod1 square
 set dest1 volume
 set amt1 -60
 expect_instrument_param 1 mod1_type square
 expect_instrument_param 1 mod1_amount -60
 page MOTION
-expect_screen_text 6/6 MOTION
+expect_screen_text 6/7 MOTION
 screenshot_app mod-sample.bmp
 
 goto song

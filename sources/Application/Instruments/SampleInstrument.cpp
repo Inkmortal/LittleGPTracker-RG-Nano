@@ -140,6 +140,7 @@ SampleInstrument::SampleInstrument() {
      Insert(chorus_);
 
      mods_.Create(*this);
+     eq_.Create(*this);
 
      customName_ = new Variable("name", INSTRUMENT_NAME_ID, "");
      Insert(customName_);
@@ -409,7 +410,9 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 		// Envelopes and LFOs from the MOD page restart with every note
 		float krateHz=Audio::GetInstance()->GetSampleRate()/(float)KRATE_SAMPLE_COUNT ;
 		mods_.StartVoice(rp->mods_,rp->activeUpdaters_,krateHz,channel*131+midinote) ;
-	}	
+		// The EQ page's filters start from silence, like the voice
+		eq_.ResetVoice(channel) ;
+	}
 	return true ;
 }
 
@@ -1035,6 +1038,10 @@ bool SampleInstrument::Render(int channel,fixed *buffer,int size,bool updateTick
     }
 
     if (somethingToMix) {
+      // The instrument's own EQ (EQ page), before the sends
+      if (eq_.Prepare()) {
+        eq_.ProcessStereo(channel,buffer,size) ;
+      }
       sendToEffects(channel,buffer,size) ;
     }
     return somethingToMix ; 

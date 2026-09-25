@@ -44,7 +44,8 @@ Hold **RB** and press a direction:
 | Project | — | — | — | Song |
 | Mixer | — | — | Song | FX |
 | FX | EQ | — | Mixer | — |
-| EQ | — | FX | — | — |
+| EQ | Limit | FX | — | — |
+| Limit | — | EQ | — | — |
 
 If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a direction moves one screen, however long you hold it.
 
@@ -136,7 +137,7 @@ Didn't like it? **B + Select** undoes.
 
 | Input | Does |
 | --- | --- |
-| **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX for synths) |
+| **LB + Left/Right** | change page (SOUND, ENV, FILTER, LFO, MOD, MIX, EQ for synths) |
 | **A + Left/Right** on `preset` | browse ready-made sounds |
 | **A + D-pad** | change the focused knob |
 | **B + Left/Right** | previous / next instrument (**B + Down/Up**: 16 forward / back) |
@@ -148,12 +149,12 @@ Didn't like it? **B + Select** undoes.
 
 Sample instruments have their own pages and trim controls — see [Samples](Samples).
 
-## Mixer, FX and EQ
+## Mixer, FX, EQ and Limit
 
 | Input | Does |
 | --- | --- |
 | **Left/Right** | pick a strip (Mixer) |
-| **Up/Down** | pick a knob (FX, EQ) |
+| **Up/Down** | pick a knob (FX, EQ, Limit) |
 | **A + Up/Down** / **A + Left/Right** | big / small step |
 | **B + A** | back to default (fader to `C0`, master to 100, knob to its default) |
 | **B + RB** / **A + RB** | mute / solo the track (Mixer); **RB + LB** unmutes all |
