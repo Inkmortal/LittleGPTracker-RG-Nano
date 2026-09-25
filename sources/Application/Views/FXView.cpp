@@ -60,7 +60,9 @@ int FXView::sendCount(FourCC sampleId,FourCC synthId) {
 	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
 		I_Instrument *instr=bank->GetInstrument(i) ;
 		if (!instr) continue ;
-		Variable *v=instr->FindVariable(instr->GetType()==IT_SYNTH?synthId:sampleId) ;
+		// The macro synth uses the synth's send ids
+		bool synthIds=(instr->GetType()==IT_SYNTH || instr->GetType()==IT_MACRO) ;
+		Variable *v=instr->FindVariable(synthIds?synthId:sampleId) ;
 		if (v && v->GetInt()>0) count++ ;
 	}
 	return count ;

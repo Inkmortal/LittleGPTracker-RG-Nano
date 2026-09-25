@@ -4,6 +4,7 @@
 // RAND / CHNC randomness (defined with playCursorPosition)
 static int randomUpTo(int range) ;
 #include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/MacroInstrument.h"
 #include "Application/Mixer/SendFX.h"
 #include "Player.h"
 #include "Application/Views/BaseClasses/ViewEvent.h"
@@ -407,10 +408,18 @@ int Player::GetChannelInstrumentIndex(int channel) {
 }
 
 bool Player::GetChannelTailVoice(int channel,int &stage,float &level) {
-	SynthInstrument *synth=dynamic_cast<SynthInstrument *>(mixer_->GetTailInstrument(channel)) ;
-	if (!synth) return false ;
-	synth->GetVoiceDebug(channel,stage,level) ;
-	return true ;
+	I_Instrument *tail=mixer_->GetTailInstrument(channel) ;
+	SynthInstrument *synth=dynamic_cast<SynthInstrument *>(tail) ;
+	if (synth) {
+		synth->GetVoiceDebug(channel,stage,level) ;
+		return true ;
+	}
+	MacroInstrument *macro=dynamic_cast<MacroInstrument *>(tail) ;
+	if (macro) {
+		macro->GetVoiceDebug(channel,stage,level) ;
+		return true ;
+	}
+	return false ;
 }
 
 int Player::GetChannelTailIndex(int channel) {

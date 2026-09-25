@@ -4,6 +4,7 @@
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Instruments/MidiInstrument.h"
 #include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/MacroInstrument.h"
 #include "Application/Player/Player.h"
 #include "System/io/Status.h"
 #include "System/Console/Trace.h"
@@ -15,7 +16,8 @@
 char *InstrumentTypeData[IT_LAST]= {
 	"Sample",
 	"Midi",
-	"Synth"
+	"Synth",
+	"Macro"
 } ;
 
 // New projects start with a playable synth kit so the first note makes sound.
@@ -31,6 +33,8 @@ static I_Instrument *createInstrument(InstrumentType type) {
 			return new MidiInstrument() ;
 		case IT_SYNTH:
 			return new SynthInstrument() ;
+		case IT_MACRO:
+			return new MacroInstrument() ;
 		default:
 			return new SampleInstrument() ;
 	}
@@ -79,7 +83,7 @@ void InstrumentBank::AssignDefaults() {
 
 bool InstrumentBank::SetInstrumentType(int i,InstrumentType type) {
 	if (i<0 || i>=MAX_SAMPLEINSTRUMENT_COUNT) return false ;
-	if (type!=IT_SAMPLE && type!=IT_SYNTH) return false ;
+	if (type!=IT_SAMPLE && type!=IT_SYNTH && type!=IT_MACRO) return false ;
 	I_Instrument *old=instrument_[i] ;
 	if (old && old->GetType()==type) return true ;
 

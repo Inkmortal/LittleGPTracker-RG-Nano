@@ -55,6 +55,12 @@ protected:
 	bool isModField(FourCC id) ;
 	void getModFieldHelp(FourCC id, I_Instrument *instr, char *line1, char *line2, char *value) ;
 	void drawModPlot(I_Instrument *instr, int bx, int by, int bw, int bh) ;
+	// Macro synth (InstrumentViewMacro.cpp): its own SOUND and MOTION
+	// pages; ENV, FILTER, MOD and MIX are the synth's
+	bool isMacroPage() ;
+	void fillMacroPage(I_Instrument *instr, GUIPoint position) ;
+	bool getMacroFieldHelp(FourCC id, I_Instrument *instr, char *line1, char *line2, char *value) ;
+	void drawMacroPicture(I_Instrument *instr, int bx, int by, int bw, int bh) ;
 	void customizeSynthOverlay(const char *&name, const char *&where,
 	                           const char *&edit, const char *&field,
 	                           const char *&cmd1, const char *&cmd2,

@@ -60,6 +60,7 @@ COMMONDIRS := \
 	../sources/Foundation/Variables \
 	../sources/Externals/Compression \
 	../sources/Externals/Soundfont \
+	../sources/Externals/Braids \
 	../sources/Externals/TinyXML
 
 #---------------------------------------------------------------------------------
@@ -259,7 +260,7 @@ COMMONFILES := \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
 	MixerView.o FXView.o EQView.o NullView.o \
-	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMod.o UIController.o \
+	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewMacro.o InstrumentViewMod.o UIController.o \
 	View.o ModalView.o FieldView.o UIField.o UIIntField.o \
 	UIIntVarOffField.o UIIntVarField.o ViewEvent.o I_Action.o\
 	UITempoField.o UIActionField.o \
@@ -270,7 +271,7 @@ COMMONFILES := \
 	char.o n_assert.o fixed.o wildcard.o RecentSongs.o UndoHistory.o\
 	SyncMaster.o TablePlayback.o Player.o \
 	Table.o TableView.o\
-	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SynthInstrument.o ModSources.o SamplePool.o CommandList.o FxPrinter.o\
+	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SynthInstrument.o MacroInstrument.o ModSources.o SamplePool.o CommandList.o FxPrinter.o\
 	PersistencyService.o Persistent.o \
 	Observable.o SingletonRegistry.o \
 	Audio.o AudioMixer.o AudioOutDriver.o AudioDriver.o \
@@ -283,6 +284,7 @@ COMMONFILES := \
 	SoundFontPreset.o SoundFontManager.o SoundFontSample.o \
 	ENAB.o HYDRA.o OMEGA.o RIFF.o SFDETECT.o SFLOOKUP.o SFNAV.o SFREADER.o WIN_MEM.o \
 	HexBuffers.o lz.o \
+	BraidsMacroOscillator.o BraidsAnalogOscillator.o BraidsDigitalOscillator.o BraidsResources.o BraidsRandom.o \
 	tinyxmlparser.o tinyxml.o tinyxmlerror.o tinystr.o Tiny2NosStub.o
 
 #---------------------------------------------------------------------------------

@@ -1,0 +1,187 @@
+# Macro synth: make one from the type field, pick shapes and presets, hear
+# it, every page and its helper text, TIMB/COLR in a phrase, then save
+# (macro-synth-reopen checks it comes back).
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+expect_phrase_row_count 0 1
+goto instrument
+expect_screen_text Instrument 00 SYNTH
+
+# synth -> macro from the type field
+set type macro
+expect_instrument_type 0 Macro
+expect_screen_text Instrument 00 MACRO
+expect_screen_text 1/6 SOUND
+expect_screen_text MACRO CSAW
+expect_instrument_param 0 preset init
+screenshot_app macro-sound-init.bmp
+
+# Shapes by name, knobs, degrade/redux
+set shape FM
+expect_instrument_param 0 shape FM
+expect_screen_text MACRO FM
+set timbre 0x60
+expect_instrument_param 0 timbre 0x60
+expect_screen_text 38%
+set color 0x20
+expect_instrument_param 0 color 0x20
+screenshot_app macro-sound-fm.bmp
+set shape VOWEL
+expect_instrument_param 0 shape VOWEL
+set degrade 0x80
+expect_screen_text 19.5 kHz
+set redux 0xC0
+expect_screen_text 5 bit
+screenshot_app macro-sound-crushed.bmp
+set degrade 0
+set redux 0
+set shape SWARM
+screenshot_app macro-sound-swarm.bmp
+
+# The helper explains what timbre and color do on this shape
+focus shape
+down n
+press k 80
+up n
+expect_screen_text timbre: detune of 7 saws
+expect_screen_text color: highpass
+screenshot_app macro-helper-shape.bmp
+# A in the helper opens the guide at this page's own section
+press a 80
+wait 200
+expect_log GUIDE] open macro / SOUND - shape and knobs
+press b 80
+press b 80
+wait 150
+
+# Presets: plucks, bells, drums, vowels, basses
+set preset pluck
+expect_instrument_name 0 PLUCK
+expect_instrument_param 0 shape PLUCK
+screenshot_app macro-preset-pluck.bmp
+set preset bell
+expect_instrument_param 0 shape BELL
+screenshot_app macro-preset-bell.bmp
+set preset kick
+expect_instrument_param 0 shape KICK
+screenshot_app macro-preset-kick.bmp
+set preset snare
+expect_instrument_param 0 shape SNARE
+screenshot_app macro-preset-snare.bmp
+set preset fmbass
+expect_instrument_name 0 FMBASS
+set preset vowels
+expect_instrument_param 0 lfo_dest timbre
+screenshot_app macro-preset-vowels.bmp
+
+# A+Start hears it (the model makes sound through the voice)
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_player_running yes
+expect_play_mode audition
+expect_audio_activity 64
+down a
+press s 80
+up a
+wait 200
+
+# The pages: ENV/FILTER/MOD/MIX are the synth's, MOTION is the macro's own
+page ENV
+expect_screen_text 2/6 ENV
+set decay 0x60
+expect_instrument_param 0 decay 0x60
+screenshot_app macro-page-2-env.bmp
+page FILTER
+set filter lowpass
+set cutoff 0x90
+expect_instrument_param 0 filter lowpass
+expect_instrument_param 0 cutoff 0x90
+screenshot_app macro-page-3-filter.bmp
+page MOTION
+expect_screen_text 4/6 MOTION
+set lfo color
+expect_instrument_param 0 lfo_dest color
+set t.env 0x30
+expect_instrument_param 0 timbre_env 0x30
+expect_screen_text +37%
+set c.env -32
+expect_instrument_param 0 color_env -32
+screenshot_app macro-page-4-motion.bmp
+down n
+press k 80
+up n
+expect_screen_text MACRO MOTION
+press a 80
+wait 200
+expect_log GUIDE] open macro / MOTION - movement
+press b 80
+press b 80
+wait 150
+page MOD
+expect_screen_text 5/6 MOD
+screenshot_app macro-page-5-mod.bmp
+page MIX
+set reverb 0x40
+expect_instrument_param 0 reverb 0x40
+screenshot_app macro-page-6-mix.bmp
+
+# The instrument list shows it as MAC with the model's picture
+page SOUND
+down n
+press u 80
+up n
+wait 150
+expect_screen_text MAC
+expect_screen_text macro synth
+screenshot_app macro-instrument-list.bmp
+press b 80
+wait 100
+
+# In a phrase: the note plays the macro, TIMB/COLR move it
+set preset wavescan
+sim_set_phrase_command 0 0 1 TIMB 1080
+sim_set_phrase_command 0 0 2 COLR 00FF
+expect_phrase_command 0 0 1 TIMB
+goto phrase
+reset_audio_stats
+press s 80
+wait 600
+expect_player_running yes
+expect_audio_activity 64
+press s 80
+wait 300
+
+# A second macro in another slot, made directly
+sim_set_macro 2 kick
+expect_instrument_type 2 Macro
+expect_instrument_name 2 KICK
+goto instrument
+instrument 02
+expect_screen_text Instrument 02 MACRO
+screenshot_app macro-slot-02-kick.bmp
+
+# Back to sample, and to macro again, on slot 02
+set type sample
+expect_instrument_type 2 Sample
+set type macro
+expect_instrument_type 2 Macro
+expect_instrument_param 2 preset init
+
+# Keys on a non-first page never change the type
+instrument 00
+page ENV
+set attack 0x10
+expect_instrument_type 0 Macro
+
+sim_save_project
+goto song
+expect_no_error
+quit

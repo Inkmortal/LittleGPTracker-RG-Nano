@@ -14,6 +14,7 @@ enum InstrumentType {
 	IT_SAMPLE=0,
 	IT_MIDI,
 	IT_SYNTH,
+	IT_MACRO,     // macro oscillator synth (MacroInstrument)
 	IT_LAST
 } ;
 

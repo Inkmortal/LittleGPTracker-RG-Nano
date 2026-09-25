@@ -64,13 +64,13 @@ Under the grid is a piano roll of the whole bar: each note sits at its pitch, wi
 
 Six pages (SOUND, ENV, FILTER, LFO, MOD, MIX), switched with **LB + Left/Right**. The top half draws what the page does — waveform, envelope, filter curve, LFO, modulation, levels — and shows the preset name and the focused value in real units (`32 ms`, `641 Hz`). The knobs are listed below. Full details on the **[Synth](Synth)** page.
 
-The first row, `type`, switches the slot between **synth** and **sample**.
+The first row, `type`, switches the slot between **synth**, **sample** and **macro** — the [Macro Synth](Macro-Synth): 47 synthesis models played with two knobs, timbre and color. It has the same pages; SOUND and the 4th page (MOTION) are its own.
 
 ## Instrument list
 
 <img src="images/demo-instrument-list.png" width="300" align="right" alt="Instrument list">
 
-**RB + Up** on the Instrument screen opens every instrument at once: number, type (`SMP`, `SYN`, `MID`, `---` for an empty slot), name, and how many phrases use it. A green dot marks instruments that are playing right now, and the box underneath draws the selected sound: a sample's waveform, or a synth's wave shape.
+**RB + Up** on the Instrument screen opens every instrument at once: number, type (`SMP`, `SYN`, `MAC`, `MID`, `---` for an empty slot), name, and how many phrases use it. A green dot marks instruments that are playing right now, and the box underneath draws the selected sound: a sample's waveform, a synth's wave shape, or a macro synth's model output.
 
 | Button | Does |
 | --- | --- |

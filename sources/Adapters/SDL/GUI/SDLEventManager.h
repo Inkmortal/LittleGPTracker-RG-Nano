@@ -144,6 +144,7 @@ private:
 	bool SimSetChainPhrase(int chain, int row, int phrase, int transpose);
 	bool SimSetPhraseNote(int phrase, int row, int note, int instrument);
 	bool SimSetSynth(int instrument, const std::string &preset);
+	bool SimSetMacro(int instrument, const std::string &preset);
 	bool SimSetInstrumentParam(int instrument, const std::string &name, const std::string &value);
 	bool ExpectSimInstrumentType(int instrument, const std::string &type);
 	bool ExpectSimInstrumentName(int instrument, const std::string &name);

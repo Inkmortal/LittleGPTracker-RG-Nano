@@ -10,6 +10,7 @@
 **Reference**
 - [Screens](Screens)
 - [Synth](Synth)
+- [Macro Synth](Macro-Synth)
 - [Commands](Commands)
 - [Music Theory Cheat Sheet](Music-Theory-Cheat-Sheet)
 - [Samples](Samples)

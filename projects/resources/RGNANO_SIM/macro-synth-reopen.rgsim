@@ -1,0 +1,31 @@
+# Macro synth persistence: the project saved by macro-synth comes back
+# through AUTO_LOAD_LAST with its macro instruments and their knobs, and
+# plays.
+wait 1200
+expect_view song
+expect_instrument_type 0 Macro
+expect_instrument_param 0 preset wavescan
+expect_instrument_param 0 shape WMAP
+expect_instrument_param 0 attack 0x10
+expect_instrument_type 2 Macro
+expect_instrument_param 2 preset init
+expect_instrument_param 2 shape CSAW
+expect_phrase_command 0 0 1 TIMB
+expect_phrase_param 0 0 1 1080
+expect_phrase_command 0 0 2 COLR
+goto chain
+goto phrase
+reset_audio_stats
+press s 80
+wait 600
+expect_player_running yes
+expect_audio_activity 64
+press s 80
+wait 200
+goto instrument
+expect_screen_text Instrument 00 MACRO
+expect_screen_text WAVESCAN
+screenshot_app macro-reopen.bmp
+goto song
+expect_no_error
+quit

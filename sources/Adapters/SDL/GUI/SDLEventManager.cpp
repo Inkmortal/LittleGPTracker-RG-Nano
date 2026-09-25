@@ -7,6 +7,7 @@
 #include "Application/Instruments/CommandList.h"
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/MacroInstrument.h"
 #include "Services/Audio/AudioDriver.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Mixer/MixerService.h"
@@ -327,7 +328,7 @@ static void logAudioLoad() {
 		voices+=one;
 	}
 	char broken[32];
-	snprintf(broken,sizeof(broken)," broken=%d",SynthInstrument::BrokenVoiceCount());
+	snprintf(broken,sizeof(broken)," broken=%d",SynthInstrument::BrokenVoiceCount()+MacroInstrument::BrokenVoiceCount());
 	voices+=broken;
 	bool fxInput=false;
 	int fxTail=0,fxFade=0;
@@ -796,7 +797,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		iss >> command.arg >> command.arg2;
 		// Parameter names with spaces are written with '_' (mod1_type)
 		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
-	} else if (command.op=="sim_set_synth" || command.op=="expect_instrument_type" || command.op=="expect_instrument_name") {
+	} else if (command.op=="sim_set_synth" || command.op=="sim_set_macro" || command.op=="expect_instrument_type" || command.op=="expect_instrument_name") {
 		iss >> command.value >> command.arg;
 	} else if (command.op=="sim_set_instrument_param" || command.op=="expect_instrument_param") {
 		iss >> command.value >> command.arg >> command.arg2;
@@ -1215,6 +1216,11 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="sim_set_synth") {
 		if (!SimSetSynth(command.value,command.arg)) {
 			FailSimScript("synth setup failed");
+			return;
+		}
+	} else if (command.op=="sim_set_macro") {
+		if (!SimSetMacro(command.value,command.arg)) {
+			FailSimScript("macro setup failed");
 			return;
 		}
 	} else if (command.op=="sim_set_instrument_param") {
@@ -2530,6 +2536,28 @@ bool SDLEventManager::SimSetSynth(int instrument, const std::string &preset)
 	return matches;
 }
 
+bool SDLEventManager::SimSetMacro(int instrument, const std::string &preset)
+{
+	ViewData *viewData=GetSimViewData();
+	if (!viewData || !viewData->project_ || instrument<0 || instrument>=MAX_SAMPLEINSTRUMENT_COUNT) {
+		Trace::Error("RGNANO_SIM sim_set_macro invalid instrument=%d",instrument);
+		return false;
+	}
+	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
+	if (!bank->SetInstrumentType(instrument,IT_MACRO)) {
+		return false;
+	}
+	MacroInstrument *macro=(MacroInstrument *)bank->GetInstrument(instrument);
+	macro->LoadPreset(preset.c_str());
+	bool matches=(preset==MacroInstrument::GetPresetName(macro->GetPreset()));
+	AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+	if (appWindow) {
+		appWindow->RefreshCurrentView();
+	}
+	Trace::Log("RGNANO_SIM","sim_set_macro inst=%02X preset=%s => %s",instrument,preset.c_str(),matches?"ok":"unknown preset");
+	return matches;
+}
+
 bool SDLEventManager::SimSetInstrumentParam(int instrument, const std::string &name, const std::string &value)
 {
 	I_Instrument *instr=GetSimInstrument(GetSimViewData(),instrument);
@@ -2554,6 +2582,7 @@ bool SDLEventManager::ExpectSimInstrumentType(int instrument, const std::string 
 	const char *actual="Sample";
 	if (instr->GetType()==IT_MIDI) actual="Midi";
 	if (instr->GetType()==IT_SYNTH) actual="Synth";
+	if (instr->GetType()==IT_MACRO) actual="Macro";
 	bool matches=(type==actual);
 	Trace::Log("RGNANO_SIM","expect_instrument_type inst=%02X actual=%s expected=%s => %s",instrument,actual,type.c_str(),matches?"match":"mismatch");
 	return matches;

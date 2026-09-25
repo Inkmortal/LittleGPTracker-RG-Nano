@@ -5,6 +5,7 @@
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/MacroInstrument.h"
 #include "Application/Model/Phrase.h"
 #include "Application/Player/Player.h"
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
@@ -90,6 +91,8 @@ static const char *typeTag(I_Instrument *instr) {
     switch (instr->GetType()) {
     case IT_SYNTH:
         return "SYN";
+    case IT_MACRO:
+        return "MAC";
     case IT_MIDI:
         return "MID";
     default:
@@ -130,6 +133,7 @@ void InstrumentListDialog::DrawView() {
     // What the selected slot is and where it's used
     I_Instrument *sel = bank->GetInstrument(selected_);
     const char *kind = sel->GetType() == IT_SYNTH  ? "synth"
+                       : sel->GetType() == IT_MACRO ? "macro synth"
                        : sel->GetType() == IT_MIDI ? "midi out"
                                                    : "sample";
     if (!status_.empty()) {
@@ -181,6 +185,18 @@ void InstrumentListDialog::cachePreview() {
             previewMin_[c] = (signed char)(y < prev ? y : prev);
             previewMax_[c] = (signed char)(y > prev ? y : prev);
             prev = y;
+        }
+        return;
+    }
+    if (instr->GetType() == IT_MACRO) {
+        // The model's own output, as on its SOUND page
+        float minv[200], maxv[200];
+        ((MacroInstrument *)instr)->RenderPreview(minv, maxv, previewColumns_);
+        for (int c = 0; c < previewColumns_; c++) {
+            int lo = (int)(minv[c] * 100.0f);
+            int hi = (int)(maxv[c] * 100.0f);
+            previewMin_[c] = (signed char)(lo < -100 ? -100 : lo);
+            previewMax_[c] = (signed char)(hi > 100 ? 100 : hi);
         }
         return;
     }

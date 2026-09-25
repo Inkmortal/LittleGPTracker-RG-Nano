@@ -4,6 +4,8 @@ Every instrument slot `00`–`7F` can be a **synth** or a **sample**. New projec
 
 Each track plays one synth voice at a time. A note stopped by `KILL` or replaced by a different instrument fades out with its release instead of cutting off.
 
+Want vowels, plucked strings, bells, 808 drums or wavetables? Set `type` to **macro**: the [Macro Synth](Macro-Synth) plays 47 ready synthesis models with two knobs, and keeps this page's ENV, FILTER, MOD and MIX pages.
+
 ## The starter kit
 
 | Slot | Preset | Slot | Preset |

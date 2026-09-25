@@ -40,6 +40,9 @@
 // CHNC 00bb plays the note with probability bb/FF
 #define I_CMD_RAND MAKE_FOURCC('R','A','N','D')
 #define I_CMD_CHNC MAKE_FOURCC('C','H','N','C')
+// Macro synth: timbre / color to bb at speed aa (like FCUT)
+#define I_CMD_TIMB MAKE_FOURCC('T','I','M','B')
+#define I_CMD_COLR MAKE_FOURCC('C','O','L','R')
 
 class CommandList {
 public:

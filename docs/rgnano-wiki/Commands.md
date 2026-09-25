@@ -58,6 +58,8 @@ Put them on a step with a note. Both can go on one step (`CHNC` in one column, `
 | `FLTR` | `aabb` | set cutoff `aa` and resonance `bb` instantly |
 | `PFIN` | `aabb` | fine pitch toward `bb` |
 | `CRSH` | `aa-b` | drive `aa`, bit crush `b` (samples); synths use `aa` as drive |
+| `TIMB` | `aabb` | [macro synth](Macro-Synth): timbre to `bb` at speed `aa` |
+| `COLR` | `aabb` | [macro synth](Macro-Synth): color to `bb` at speed `aa` |
 
 ## Samples only
 

@@ -149,8 +149,9 @@ row 0C                   # move the Song/Chain/Phrase cursor to row 0C
 
 ```text
 sim_set_synth 3 pluck                 # make slot 03 a synth with a preset
+sim_set_macro 2 kick                  # make slot 02 a macro synth with a preset
 sim_set_instrument_param 3 cutoff 0x60  # any instrument param by name ('_' for spaces)
-expect_instrument_type 0 Synth        # Synth / Sample / Midi
+expect_instrument_type 0 Synth        # Synth / Macro / Sample / Midi
 expect_instrument_name 0 KICK
 expect_instrument_param 0 env_amount 0x30
 ```

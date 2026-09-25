@@ -123,6 +123,16 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "macro-synth"
+    Script = "macro-synth.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "macro-synth-reopen"
+    Script = "macro-synth-reopen.rgsim"
+    Args = @()
+  },
+  @{
     Name = "looping-sample-stops"
     Script = "looping-sample-stops.rgsim"
     Args = @("-ResetLastProject", "-SeedLofiFixture")

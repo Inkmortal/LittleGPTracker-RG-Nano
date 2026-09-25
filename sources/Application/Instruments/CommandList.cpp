@@ -6,6 +6,7 @@ static FourCC _all[]= {
 	I_CMD_ARPG,
 	I_CMD_CHNC,
 	I_CMD_CHRD,
+	I_CMD_COLR,
 	I_CMD_CRSH,
 	I_CMD_DLAY,
 	I_CMD_FBMX,
@@ -30,6 +31,7 @@ static FourCC _all[]= {
 	I_CMD_RTRG,
 	I_CMD_STOP,
 	I_CMD_TABL,
+	I_CMD_TIMB,
 	I_CMD_TMPO,
 	I_CMD_VOLM
 } ;

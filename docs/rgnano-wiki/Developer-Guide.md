@@ -115,6 +115,7 @@ Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 
 | Area | Where |
 | --- | --- |
 | Synth engine and presets | `sources/Application/Instruments/SynthInstrument.*` |
+| Macro synth (voice, resampler, presets) | `sources/Application/Instruments/MacroInstrument.*`; its oscillator (Braids port, MIT) in `sources/Externals/Braids`; pages in `sources/Application/Views/InstrumentViewMacro.cpp`; ARM check `tools/dsp-harness/macro_check.cpp` |
 | Shared reverb / echo | `sources/Application/Mixer/SendFX.*` |
 | Instrument bank, type switching, starter kit | `sources/Application/Instruments/InstrumentBank.cpp` |
 | Synth screen | `sources/Application/Views/InstrumentViewSynth.cpp` |

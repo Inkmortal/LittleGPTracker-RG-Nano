@@ -5,6 +5,7 @@
 #include "Application/AppWindow.h"
 #include "InstrumentView.h"
 #include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/MacroInstrument.h"
 #include "Application/Mixer/SendFX.h"
 #include "Application/Player/Player.h"
 #include "BaseClasses/UIIntVarField.h"
@@ -43,7 +44,7 @@ const char *InstrumentView::getSynthPageName() {
 		case 0: return "SOUND";
 		case 1: return "ENV";
 		case 2: return "FILTER";
-		case 3: return "LFO";
+		case 3: return getInstrumentType()==IT_MACRO?"MOTION":"LFO";
 		case INSTRUMENT_MOD_PAGE: return "MOD";
 		default: return "MIX";
 	}
@@ -54,8 +55,9 @@ void InstrumentView::addTypeField(GUIPoint &position) {
 	if (i>=MAX_SAMPLEINSTRUMENT_COUNT) {
 		return;
 	}
-	typeVar_->SetInt(getInstrumentType()==IT_SYNTH?1:0,false);
-	UIIntVarField *f=new UIIntVarField(position,*typeVar_,"type   %s",0,1,1,1);
+	InstrumentType type=getInstrumentType();
+	typeVar_->SetInt(type==IT_MACRO?2:(type==IT_SYNTH?1:0),false);
+	UIIntVarField *f=new UIIntVarField(position,*typeVar_,"type   %s",0,2,1,1);
 	T_SimpleList<UIField>::Insert(f);
 	position._y+=1;
 }
@@ -67,7 +69,9 @@ bool InstrumentView::applyTypeChange() {
 	if (i>=MAX_SAMPLEINSTRUMENT_COUNT) {
 		return false;
 	}
-	InstrumentType wanted=(typeVar_->GetInt()==1)?IT_SYNTH:IT_SAMPLE;
+	static const InstrumentType types[3]={IT_SAMPLE,IT_SYNTH,IT_MACRO};
+	int index=typeVar_->GetInt();
+	InstrumentType wanted=types[(index<0 || index>2)?0:index];
 	if (wanted==getInstrumentType()) {
 		return false;
 	}
@@ -81,6 +85,8 @@ bool InstrumentView::applyTypeChange() {
 	bank->SetInstrumentType(i,wanted);
 	if (wanted==IT_SYNTH) {
 		((SynthInstrument *)bank->GetInstrument(i))->LoadPreset("init");
+	} else if (wanted==IT_MACRO) {
+		((MacroInstrument *)bank->GetInstrument(i))->LoadPreset("init");
 	}
 	labPage_=0;
 	lastFocusID_=INSTRUMENT_TYPE_FIELD;
@@ -92,10 +98,14 @@ bool InstrumentView::applyTypeChange() {
 void InstrumentView::fillSynthParameters() {
 	int i=viewData_->currentInstrument_;
 	InstrumentBank *bank=viewData_->project_->GetInstrumentBank();
-	SynthInstrument *s=(SynthInstrument *)bank->GetInstrument(i);
+	I_Instrument *s=bank->GetInstrument(i);
 	GUIPoint position=GetAnchor();
 	position._x=1;
 	position._y=14;
+	if (isMacroPage()) {
+		fillMacroPage(s,position);
+		return;
+	}
 	UIIntVarField *f;
 	Variable *v;
 
@@ -166,9 +176,12 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 	int x=synthInt(s,id);
 	char buf[32];
 	line1[0]=line2[0]=value[0]=0;
+	if (getInstrumentType()==IT_MACRO && getMacroFieldHelp(id,s,line1,line2,value)) {
+		return;
+	}
 	switch(id) {
 		case INSTRUMENT_TYPE_FIELD:
-			strcpy(line1,"synth: makes its own sound");
+			strcpy(line1,"synth/macro: own sound");
 			strcpy(line2,"sample: plays a WAV file");
 			break;
 		case SYP_PRESET:
@@ -378,7 +391,7 @@ static void synthPlot(SDLGUIWindowImp *imp, const int *ys, int count, int x, int
 void InstrumentView::drawSynthVisuals() {
 	int i=viewData_->currentInstrument_;
 	InstrumentBank *bank=viewData_->project_->GetInstrumentBank();
-	SynthInstrument *s=(SynthInstrument *)bank->GetInstrument(i);
+	I_Instrument *s=bank->GetInstrument(i);
 	GUITextProperties props;
 	char line[40];
 
@@ -401,10 +414,12 @@ void InstrumentView::drawSynthVisuals() {
 	int ys[240];
 	synthBox(imp,bx,by,bw,bh);
 
-	if (labPage_==0) {
+	if (isMacroPage()) {
+		drawMacroPicture(s,bx,by,bw,bh);
+	} else if (labPage_==0) {
 		// One cycle of the oscillator, twice, so the shape reads clearly
 		float cycle[110];
-		s->RenderCycle(cycle,110);
+		((SynthInstrument *)s)->RenderCycle(cycle,110);
 		for (int x=0;x<plotW;x++) {
 			float v=cycle[(x*220/plotW)%110];
 			ys[x]=mid-(int)(v*(bottom-top)/2*0.9f);
@@ -598,5 +613,23 @@ void InstrumentView::customizeSynthOverlay(const char *&name, const char *&where
 			field="Level, pan, reverb, echo";
 			cmd1="reverb/delay are sends";
 			break;
+	}
+	if (getInstrumentType()==IT_MACRO) {
+		switch(labPage_) {
+			case 0:
+				name="MACRO SOUND";
+				field="Shape, timbre, color";
+				cmd1="shape: A+LR pick a model";
+				break;
+			case 1: name="MACRO ENV"; break;
+			case 2: name="MACRO FILTER"; break;
+			case 3:
+				name="MACRO MOTION";
+				field="LFO + timbre/color env";
+				cmd1="lfo also moves timbre/color";
+				break;
+			case INSTRUMENT_MOD_PAGE: name="MACRO MOD"; break;
+			default: name="MACRO MIX"; break;
+		}
 	}
 }

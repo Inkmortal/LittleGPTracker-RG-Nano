@@ -40,6 +40,7 @@ PAGES = [
     ("How-Trackers-Work", "trackers"),
     ("Screens", "screens"),
     ("Synth", "synth"),
+    ("Macro-Synth", "macro"),
     ("Commands", "commands"),
     ("Music-Theory-Cheat-Sheet", "theory"),
     ("Demo-Songs", "demos"),

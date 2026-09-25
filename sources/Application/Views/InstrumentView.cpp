@@ -2,6 +2,7 @@
 #include "Application/Instruments/MidiInstrument.h"
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/MacroInstrument.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Instruments/CommandList.h"
 #include "Application/Model/Table.h"
@@ -23,7 +24,12 @@
 #include <string.h>
 
 
-static char *instrumentTypeNames[2]={(char *)"sample",(char *)"synth"} ;
+static char *instrumentTypeNames[3]={(char *)"sample",(char *)"synth",(char *)"macro"} ;
+
+// Synth and macro share the synth pages, keys and audition
+static bool isSynthLike(InstrumentType t) {
+	return t==IT_SYNTH || t==IT_MACRO ;
+}
 
 // Upstream c8b71bb: rebuild the fields after importing, so the sample
 // list includes the new files
@@ -40,7 +46,7 @@ InstrumentView::InstrumentView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	labPage_=0 ;
 	markerFocus_=SIP_START ;
 	previewLoop_=false ;
-	typeVar_=new Variable("type",INSTRUMENT_TYPE_FIELD,instrumentTypeNames,2,0) ;
+	typeVar_=new Variable("type",INSTRUMENT_TYPE_FIELD,instrumentTypeNames,3,0) ;
 	onInstrumentChange() ;
 }
 
@@ -72,6 +78,11 @@ void InstrumentView::onInstrumentChange() {
 	T_SimpleList<UIField>::Empty() ;
 
 	InstrumentType it=getInstrumentType() ;
+	// The type field mirrors this instrument from now on: applyTypeChange()
+	// reads it after every key, on every page
+	if (i<MAX_SAMPLEINSTRUMENT_COUNT) {
+		typeVar_->SetInt(it==IT_MACRO?2:(it==IT_SYNTH?1:0),false) ;
+	}
 
     switch (it) {
 		case IT_MIDI:
@@ -81,6 +92,7 @@ void InstrumentView::onInstrumentChange() {
 			fillSampleParameters() ;
 			break ;
 		case IT_SYNTH:
+		case IT_MACRO:
 			fillSynthParameters() ;
 			break ;
 		default:
@@ -90,7 +102,7 @@ void InstrumentView::onInstrumentChange() {
 	// Restore the remembered field; otherwise land on what you most likely
 	// want to change: the sound preset or the sample, not the type switch.
 	SetFocus(T_SimpleList<UIField>::GetFirst()) ;
-	FourCC preferred=(it==IT_SYNTH)?SYP_PRESET:SIP_SAMPLE ;
+	FourCC preferred=isSynthLike(it)?SYP_PRESET:SIP_SAMPLE ;
 	UIField *remembered=0 ;
 	UIField *fallback=0 ;
 	IteratorPtr<UIField> it2(T_SimpleList<UIField>::GetIterator()) ;
@@ -981,7 +993,7 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	isDirty_=false ;
 	syncReplacedInstrument() ;
 
-	if (getInstrumentType()==IT_SYNTH && (mask&EPBM_L) &&
+	if (isSynthLike(getInstrumentType()) && (mask&EPBM_L) &&
 	    !(mask&(EPBM_A|EPBM_B|EPBM_R|EPBM_START|EPBM_SELECT))) {
 		if (mask&EPBM_LEFT) {
 			switchLabPage(-1);
@@ -996,12 +1008,12 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	// A+Start: hear this instrument (again: stop), like the M8's EDIT+PLAY.
 	// RB+A+Left/Right hear it an octave down / up.
 	if (mask==(EPBM_A|EPBM_START) &&
-	    (getInstrumentType()==IT_SYNTH || getInstrumentType()==IT_SAMPLE)) {
+	    (isSynthLike(getInstrumentType()) || getInstrumentType()==IT_SAMPLE)) {
 		Player *player=Player::GetInstance();
 		if (player->IsRunning() && viewData_->playMode_==PM_AUDITION) {
 			player->Stop();
 			isDirty_=true;
-		} else if (getInstrumentType()==IT_SYNTH) {
+		} else if (isSynthLike(getInstrumentType())) {
 			auditionSynth(0);
 		} else {
 			auditionSamplePitch(0);
@@ -1025,7 +1037,7 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		}
 	}
 
-	if (getInstrumentType()==IT_SYNTH && (mask&EPBM_R) && (mask&EPBM_A) &&
+	if (isSynthLike(getInstrumentType()) && (mask&EPBM_R) && (mask&EPBM_A) &&
 	    !(mask&(EPBM_B|EPBM_L|EPBM_START|EPBM_SELECT))) {
 		if (mask&EPBM_LEFT) {
 			auditionSynth(-12);
@@ -1348,6 +1360,7 @@ void InstrumentView::DrawView() {
     switch (getInstrumentType()) {
         case IT_SAMPLE: kind = " SAMPLE"; break;
         case IT_SYNTH: kind = " SYNTH"; break;
+        case IT_MACRO: kind = " MACRO"; break;
         case IT_MIDI: kind = " MIDI"; break;
         default: break;
     }
@@ -1356,7 +1369,7 @@ void InstrumentView::DrawView() {
 
     if (getInstrumentType()==IT_SAMPLE) {
         drawSampleLabVisuals();
-    } else if (getInstrumentType()==IT_SYNTH) {
+    } else if (isSynthLike(getInstrumentType())) {
         drawSynthVisuals();
     }
     if (ultraCompactLayout_) {
@@ -1376,6 +1389,14 @@ void InstrumentView::GetGuideTopic(const char *&page, const char *&section) {
 	if (getInstrumentType()==IT_SAMPLE) {
 		page="samples";
 		section="Sample pages";
+	} else if (getInstrumentType()==IT_MACRO) {
+		// Its own page; the shared pages are explained there too
+		page="macro";
+		switch(labPage_) {
+			case 0: section="SOUND - shape and knobs"; break;
+			case 3: section="MOTION - movement"; break;
+			default: section="The other pages"; break;
+		}
 	} else {
 		page="synth";
 		section="";
@@ -1388,7 +1409,7 @@ void InstrumentView::CustomizeContextOverlay(const char *&name, const char *&whe
                                              const char *&cmd3, const char *&cmd4,
                                              const char *&cmd5, const char *&cmd6,
                                              const char *&cmd7) {
-	if (getInstrumentType()==IT_SYNTH) {
+	if (isSynthLike(getInstrumentType())) {
 		customizeSynthOverlay(name,where,edit,field,cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7);
 		return;
 	}
