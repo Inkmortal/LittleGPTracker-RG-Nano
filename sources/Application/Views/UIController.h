@@ -17,6 +17,8 @@ public:
 	void UnMuteAll() ;
 	void ToggleMute(int from,int to) ;
 	void SwitchSoloMode(int from,int to,bool clear) ;
+	// Tracks a and b trade places (their mute and solo state)
+	void SwapTracks(int a,int b) ;
 
 private:
 	Project *project_ ;

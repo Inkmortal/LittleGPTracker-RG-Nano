@@ -282,6 +282,7 @@ AppWindow::AppWindow(I_GUIWindowImp &imp) : GUIWindow(imp) {
     _mixerView = 0;
     _fxView = 0;
     _eqView = 0;
+    _scaleView = 0;
     _grooveView = 0;
     _closeProject = 0;
     _loadAfterSaveAsProject = 0;
@@ -633,6 +634,9 @@ void AppWindow::LoadProject(const Path &p) {
     _eqView = new EQView((*this), _viewData);
     _eqView->AddObserver(*this);
 
+    _scaleView = new ScaleView((*this), _viewData);
+    _scaleView->AddObserver(*this);
+
     _currentView = _songView;
     _currentView->OnFocus();
 
@@ -813,6 +817,8 @@ const char *AppWindow::GetCurrentViewName() const {
         return "fx";
     if (_currentView == _eqView)
         return "eq";
+    if (_currentView == _scaleView)
+        return "scale";
     if (_currentView == _nullView)
         return "null";
     return "unknown";
@@ -822,7 +828,8 @@ ViewData *AppWindow::GetViewData() const { return _viewData; }
 
 Variable *AppWindow::GetSimFocusedVariable() const {
     if (_currentView != _instrumentView && _currentView != _projectView &&
-        _currentView != _fxView && _currentView != _eqView) {
+        _currentView != _fxView && _currentView != _eqView &&
+        _currentView != _scaleView) {
         return 0;
     }
     UIField *focus = ((FieldView *)_currentView)->GetFocus();
@@ -1029,6 +1036,9 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
             break;
         case VT_EQ:
             _currentView = _eqView;
+            break;
+        case VT_SCALE:
+            _currentView = _scaleView;
             break;
         }
         _currentView->SetFocus(*vt);

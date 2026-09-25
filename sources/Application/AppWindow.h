@@ -7,6 +7,7 @@
 #include "Application/Views/GrooveView.h"
 #include "Application/Views/FXView.h"
 #include "Application/Views/EQView.h"
+#include "Application/Views/ScaleView.h"
 #include "Application/Views/InstrumentView.h"
 #include "Application/Views/MixerView.h"
 #include "Application/Views/NullView.h"
@@ -121,6 +122,7 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     GrooveView *_grooveView;
     FXView *_fxView;
     EQView *_eqView;
+    ScaleView *_scaleView;
     NullView *_nullView;
     MixerView *_mixerView;
 

@@ -18,6 +18,8 @@
 #define VAR_PREGAIN   		MAKE_FOURCC('P', 'R', 'G', 'N')
 #define VAR_SCALE_KEY 		MAKE_FOURCC('S', 'K', 'E', 'Y')
 #define VAR_SCALE 			MAKE_FOURCC('S', 'C', 'A', 'L')
+// The notes of the song's Custom scale, bit n = n semitones above the key
+#define VAR_SCALE_CUSTOM	MAKE_FOURCC('S', 'C', 'U', 'S')
 #define VAR_NOTE_NAMES 		MAKE_FOURCC('N', 'N', 'A', 'M')
 #define VAR_RENDER MAKE_FOURCC('R', 'N', 'D', 'R')
 #define VAR_REVERB_SIZE MAKE_FOURCC('R', 'V', 'S', 'Z')
@@ -62,6 +64,10 @@ public:
   int GetPregain();
   int GetRenderMode();
   int GetScaleKey();
+  // Custom scale notes (bit n = n semitones above the key)
+  int GetScaleCustomMask();
+  // Is this MIDI note in the song's Key/Scale? (always true with no key)
+  bool IsNoteInScale(int note);
   void Trigger();
 
   static const unsigned int MAX_RENDER_MODE = 3;

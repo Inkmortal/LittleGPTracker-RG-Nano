@@ -262,16 +262,12 @@ void PhraseView::updateCursorValue(ViewUpdateDirection direction, int xOffset,
         int offset = offsets_[col_ + xOffset][direction];
         // If note column and Key is enabled, apply the set scale.
         if (useScale && col_ + xOffset == 0) {
-            int scale = viewData_->project_->GetScale();
-            int key = viewData_->project_->GetScaleKey();
-            if (key>=0) {
-                int noteInKey = (*c + offset - key) % 12;
-                if (noteInKey<0) noteInKey += 12;
-                while (!scaleSteps[scale][noteInKey]) {
-                    offset > 0 ? offset++ : offset--;
-                    noteInKey = (*c + offset - key) % 12;
-                    if (noteInKey<0) noteInKey += 12;
-                }
+            // Walk on to the next note of the Key/Scale (custom scales
+            // included); at most an octave, a scale always has a note in it
+            Project *project = viewData_->project_;
+            for (int tries = 0; tries < 12 && !project->IsNoteInScale(*c + offset);
+                 tries++) {
+                offset > 0 ? offset++ : offset--;
             }
         }
         updateData(c, offset, limit, wrap);
@@ -492,15 +488,8 @@ static void writeStep(Phrase *p, int i, const PhraseStep &s) {
 
 // Nearest note at or below that fits the song's key/scale (any note if none)
 static int snapToScale(Project *project, int note) {
-    int key = project->GetScaleKey();
-    if (key < 0)
-        return note;
-    int scale = project->GetScale();
     for (int down = 0; down < 12; down++) {
-        int inKey = (note - down - key) % 12;
-        if (inKey < 0)
-            inKey += 12;
-        if (scaleSteps[scale][inKey])
+        if (project->IsNoteInScale(note - down))
             return note - down;
     }
     return note;

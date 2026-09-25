@@ -42,7 +42,8 @@ enum ViewType {
     VT_GROOVE,
     VT_MIXER,
     VT_FX,     // send effects, under the mixer
-    VT_EQ      // master EQ, right of FX
+    VT_EQ,     // master EQ, right of FX
+    VT_SCALE   // the song's key/scale on a keyboard, right of Project
 };
 
 enum ViewMode {

@@ -29,6 +29,7 @@ int blocks(Song *song, Block *out) {
 	const size_t steps = PHRASE_COUNT * 16;
 	TableHolder *tables = TableHolder::GetInstance();
 	out[n].ptr = song->data_; out[n++].bytes = SONG_CHANNEL_COUNT * SONG_ROW_COUNT;
+	out[n].ptr = song->bookmarks_; out[n++].bytes = sizeof(song->bookmarks_);
 	out[n].ptr = c->data_; out[n++].bytes = CHAIN_COUNT * 16;
 	out[n].ptr = c->transpose_; out[n++].bytes = CHAIN_COUNT * 16;
 	out[n].ptr = c->UsedFlags(); out[n++].bytes = CHAIN_COUNT * sizeof(bool);

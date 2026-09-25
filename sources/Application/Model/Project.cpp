@@ -46,6 +46,7 @@ tempoNudge_(0)
         new Variable("scale", VAR_SCALE, scaleNames, scaleCount, 0);
     this->Insert(scale);
     scale->SetInt(0);
+    this->Insert(new Variable("scale custom", VAR_SCALE_CUSTOM, scaleCustomDefault, 0xFFF));
     Variable *noteNames =
         new Variable("noteNames", VAR_NOTE_NAMES, noteNameModes, 2, NOTE_NAME_SHARPS);
     this->Insert(noteNames);
@@ -164,6 +165,20 @@ int Project::GetScaleKey() {
     if (key<-1) key=-1;
     if (key>11) key=11;
     return key;
+}
+
+int Project::GetScaleCustomMask() {
+    Variable *v = FindVariable(VAR_SCALE_CUSTOM);
+    NAssert(v);
+    return v->GetInt() & 0xFFF;
+}
+
+bool Project::IsNoteInScale(int note) {
+    int key = GetScaleKey();
+    if (key < 0) {
+        return true;
+    }
+    return scaleHasStep(GetScale(), note - key, GetScaleCustomMask());
 }
 
 void Project::NudgeTempo(int value) {

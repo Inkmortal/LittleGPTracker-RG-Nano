@@ -11,6 +11,7 @@
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Mixer/MixerService.h"
 #include "Application/Model/Groove.h"
+#include "Application/Model/Mixer.h"
 #include "Application/Model/Scale.h"
 #include "Application/Model/Table.h"
 #include "Application/Player/Player.h"
@@ -803,6 +804,30 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
 	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2 >> command.arg3;
+	} else if (command.op=="wait_player") {
+		iss >> command.arg >> command.value >> command.value2;
+	} else if (command.op=="expect_player") {
+		// expect_player <name> <channel> <value or >=value>  (Player::GetSimValue)
+		iss >> command.arg >> command.value >> command.arg2;
+	} else if (command.op=="expect_notes_repeat") {
+		// expect_notes_repeat <channel> <period> yes|no
+		iss >> command.value >> command.value2 >> command.arg;
+	} else if (command.op=="expect_project_param" || command.op=="sim_set_project_param") {
+		// <name_with_underscores> <value>
+		iss >> command.arg >> command.arg2;
+		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
+	} else if (command.op=="expect_bookmark" || command.op=="expect_track_muted") {
+		// <row or channel> yes|no
+		iss >> command.value >> command.arg;
+	} else if (command.op=="expect_phrase_note") {
+		// <phrase> <row> <midi note, or -- for none>
+		iss >> command.value >> command.value2 >> command.arg;
+	} else if (command.op=="expect_phrase_in_scale") {
+		// <phrase> <minimum number of notes>: every note fits the Key/Scale
+		iss >> command.value >> command.value2;
+	} else if (command.op=="expect_mixer_level" || command.op=="sim_set_mixer_level") {
+		// <level index> <hex value>
+		iss >> command.value >> command.arg;
 	}
 	simCommands_.push_back(command);
 	return true;
@@ -913,6 +938,29 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			simCommandIndex_++;
 			simNextCommandTime_=now+40;
 		}
+		return;
+	}
+
+	if (command.op=="wait_player") {
+		// wait_player <name> <channel> <value>: until the player value
+		// reaches it (a pass, a note count), polling every 20 ms, 10 s max
+		int actual=Player::GetInstance()->GetSimValue(command.arg,command.value);
+		if (actual>=command.value2) {
+			Trace::Log("RGNANO_SIM","wait_player %s ch=%d reached %d (wanted %d) after %d polls",
+			           command.arg.c_str(),command.value,actual,command.value2,simGoalSteps_);
+			simGoalSteps_=0;
+			simCommandIndex_++;
+			simNextCommandTime_=now+1;
+			return;
+		}
+		if (++simGoalSteps_>500) {
+			simGoalSteps_=0;
+			Trace::Error("RGNANO_SIM wait_player %s ch=%d stuck at %d (wanted %d)",
+			             command.arg.c_str(),command.value,actual,command.value2);
+			FailSimScript("wait_player timed out");
+			return;
+		}
+		simNextCommandTime_=now+20;
 		return;
 	}
 
@@ -1235,6 +1283,15 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_instrument_param") {
 		if (!ExpectSimInstrumentParam(command.value,command.arg,command.arg2)) {
 			FailSimScript("instrument param assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_player" || command.op=="expect_notes_repeat" ||
+	           command.op=="expect_project_param" || command.op=="sim_set_project_param" ||
+	           command.op=="expect_bookmark" || command.op=="expect_track_muted" ||
+	           command.op=="expect_phrase_note" || command.op=="expect_mixer_level" ||
+	           command.op=="sim_set_mixer_level" || command.op=="expect_phrase_in_scale") {
+		if (!RunSimSequencerCheck(command.op,command.arg,command.arg2,command.value,command.value2)) {
+			FailSimScript("sequencer check failed");
 			return;
 		}
 	} else if (command.op=="sim_set_phrase_command") {
@@ -1563,7 +1620,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 	struct Edge { const char *from; int key; const char *to; };
 	static const Edge edges[]={
 		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},
-		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},{"mixer",SDLK_d,"fx"},{"fx",SDLK_u,"mixer"},{"fx",SDLK_r,"eq"},{"eq",SDLK_l,"fx"},
+		{"project",SDLK_d,"song"},{"project",SDLK_r,"scale"},{"scale",SDLK_l,"project"},{"mixer",SDLK_u,"song"},{"mixer",SDLK_d,"fx"},{"fx",SDLK_u,"mixer"},{"fx",SDLK_r,"eq"},{"eq",SDLK_l,"fx"},
 		{"chain",SDLK_l,"song"},{"chain",SDLK_r,"phrase"},
 		{"phrase",SDLK_l,"chain"},{"phrase",SDLK_r,"instrument"},
 		{"phrase",SDLK_d,"table"},{"phrase",SDLK_u,"groove"},
@@ -1571,11 +1628,11 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		{"instrument",SDLK_l,"phrase"},{"instrument",SDLK_d,"table"},
 	};
 	const int count=sizeof(edges)/sizeof(Edge);
-	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq"};
-	const int nodeCount=10;
-	int prev[10];
-	int via[10];
-	bool seen[10];
+	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq","scale"};
+	const int nodeCount=11;
+	int prev[11];
+	int via[11];
+	bool seen[11];
 	int start=-1;
 	int goal=-1;
 	for (int i=0;i<nodeCount;i++) {
@@ -1586,7 +1643,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		if (to==nodes[i]) goal=i;
 	}
 	if (start<0 || goal<0) return 0;
-	int queue[10];
+	int queue[11];
 	int head=0;
 	int tail=0;
 	queue[tail++]=start;
@@ -1980,7 +2037,11 @@ static bool ParseSimCommandName(const std::string &name, FourCC *out)
 		char buffer[5];
 		fourCC2char(command,buffer);
 		buffer[4]=0;
-		if (name==buffer) {
+		// "NTH " can be written NTH or NTH_ in a script
+		std::string padded=name;
+		std::replace(padded.begin(),padded.end(),'_',' ');
+		while (padded.size()<4) padded+=' ';
+		if (name==buffer || padded==buffer) {
 			*out=command;
 			return true;
 		}
@@ -2585,6 +2646,109 @@ bool SDLEventManager::ExpectSimInstrumentParam(int instrument, const std::string
 	}
 	Trace::Log("RGNANO_SIM","expect_instrument_param inst=%02X %s actual=%s expected=%s => %s",instrument,v->GetName(),v->GetString(),value.c_str(),matches?"match":"mismatch");
 	return matches;
+}
+
+// Song tools and sequencer command checks (bookmarks, track reorder,
+// custom scale, ROLL/NTH/SEED...): one place for the small assertions
+static bool simYes(const std::string &text)
+{
+	return text=="yes" || text=="1" || text=="true";
+}
+
+bool SDLEventManager::RunSimSequencerCheck(const std::string &op, const std::string &arg,
+                                           const std::string &arg2, int value, int value2)
+{
+	ViewData *viewData=GetSimViewData();
+	if (!viewData || !viewData->project_ || !viewData->song_) {
+		Trace::Error("RGNANO_SIM %s: no song loaded",op.c_str());
+		return false;
+	}
+	Player *player=Player::GetInstance();
+	if (op=="expect_player") {
+		int actual=player->GetSimValue(arg,value);
+		bool atLeast=arg2.compare(0,2,">=")==0;
+		int wanted=(int)strtol(arg2.c_str()+(atLeast?2:0),0,0);
+		bool ok=atLeast?(actual>=wanted):(actual==wanted);
+		Trace::Log("RGNANO_SIM","expect_player %s ch=%d actual=%d expected=%s => %s",arg.c_str(),value,actual,arg2.c_str(),ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_notes_repeat") {
+		bool repeats=player->SimNotesRepeat(value,value2);
+		bool ok=(repeats==simYes(arg));
+		Trace::Log("RGNANO_SIM","expect_notes_repeat ch=%d period=%d repeats=%s expected=%s => %s",value,value2,repeats?"yes":"no",arg.c_str(),ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_project_param" || op=="sim_set_project_param") {
+		Variable *v=viewData->project_->FindVariable(arg.c_str());
+		if (!v) {
+			Trace::Error("RGNANO_SIM %s unknown project param %s",op.c_str(),arg.c_str());
+			return false;
+		}
+		bool listLike=(v->GetType()==Variable::CHAR_LIST || v->GetType()==Variable::BOOL);
+		if (op=="sim_set_project_param") {
+			if (listLike) v->SetString(arg2.c_str());
+			else v->SetInt((int)strtol(arg2.c_str(),0,0));
+			AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+			if (appWindow) appWindow->RefreshCurrentView();
+			Trace::Log("RGNANO_SIM","sim_set_project_param %s=%s",arg.c_str(),v->GetString());
+			return true;
+		}
+		// A list value can be given by name or by number (scale 21)
+		bool numeric=!arg2.empty() && (isdigit((unsigned char)arg2[0]) || arg2[0]=='-');
+		bool ok=(listLike && !numeric)?(arg2==v->GetString()):(v->GetInt()==(int)strtol(arg2.c_str(),0,0));
+		Trace::Log("RGNANO_SIM","expect_project_param %s actual=%s expected=%s => %s",arg.c_str(),v->GetString(),arg2.c_str(),ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_bookmark") {
+		bool marked=viewData->song_->IsBookmarked(value);
+		bool ok=(marked==simYes(arg));
+		Trace::Log("RGNANO_SIM","expect_bookmark row=%02X marked=%s expected=%s => %s",value,marked?"yes":"no",arg.c_str(),ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_track_muted") {
+		bool muted=player->IsChannelMuted(value);
+		bool ok=(muted==simYes(arg));
+		Trace::Log("RGNANO_SIM","expect_track_muted ch=%d muted=%s expected=%s => %s",value,muted?"yes":"no",arg.c_str(),ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_phrase_note") {
+		if (value<0 || value>=PHRASE_COUNT || value2<0 || value2>=16) return false;
+		int actual=viewData->song_->phrase_->note_[16*value+value2];
+		int expected=(arg=="--")?0xFF:atoi(arg.c_str());
+		bool ok=(actual==expected);
+		Trace::Log("RGNANO_SIM","expect_phrase_note phrase=%02X row=%d actual=%d expected=%d => %s",value,value2,actual,expected,ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_phrase_in_scale") {
+		if (value<0 || value>=PHRASE_COUNT) return false;
+		int notes=0,outside=0;
+		for (int row=0;row<16;row++) {
+			unsigned char n=viewData->song_->phrase_->note_[16*value+row];
+			if (n==0xFF) continue;
+			notes++;
+			if (!viewData->project_->IsNoteInScale(n)) {
+				outside++;
+				Trace::Log("RGNANO_SIM","expect_phrase_in_scale row %d note %d is outside the scale",row,n);
+			}
+		}
+		bool ok=(outside==0 && notes>=value2);
+		Trace::Log("RGNANO_SIM","expect_phrase_in_scale phrase=%02X notes=%d outside=%d min=%d => %s",value,notes,outside,value2,ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_mixer_level" || op=="sim_set_mixer_level") {
+		Mixer *mixer=Mixer::GetInstance();
+		int wanted=(int)strtol(arg.c_str(),0,16);
+		if (op=="sim_set_mixer_level") {
+			mixer->SetLevel(value,wanted);
+			Trace::Log("RGNANO_SIM","sim_set_mixer_level %d=%02X",value,wanted);
+			return true;
+		}
+		int actual=mixer->GetLevel(value);
+		bool ok=(actual==wanted);
+		Trace::Log("RGNANO_SIM","expect_mixer_level %d actual=%02X expected=%02X => %s",value,actual,wanted,ok?"match":"mismatch");
+		return ok;
+	}
+	return false;
 }
 
 bool SDLEventManager::SimSetPhraseCommand(int phrase, int row, int slot, const std::string &commandName, const std::string &paramText)

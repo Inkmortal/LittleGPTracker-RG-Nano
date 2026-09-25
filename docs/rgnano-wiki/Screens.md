@@ -15,6 +15,22 @@ The arrangement. Columns are the 8 tracks, rows are time. Each cell holds a chai
 
 <br clear="right">
 
+### Bookmarks and sections
+
+<img src="images/song-bookmark.png" width="300" align="right" alt="A bookmarked song row">
+
+**A + Select** bookmarks the row the cursor is on (again: removes it). A bookmarked row's number turns into an amber tag. **LB + Up/Down** jumps to the next or previous place a part starts: a bookmark, or the first chain of a block on the track you're on (a chain right under an empty cell). The screen says which it found (`Bookmark 20`, `Section 10`). Bookmarks are saved with the song, and **B + Select** undoes them like any edit.
+
+<br clear="right">
+
+### Moving tracks
+
+<img src="images/song-reorder.png" width="300" align="right" alt="Track reorder mode">
+
+On row `00`, press **Up** once more: the title says `MOVE TRACKS` and the track numbers appear above the grid. **Left/Right** picks a track, **A + Left/Right** carries it past its neighbour, with its chains on every row, its mixer fader and its mute. **Down** (or **B**) goes back to the grid. Stop the song first; the screen tells you if it's playing.
+
+<br clear="right">
+
 ### Live mode
 
 <img src="images/song-live.png" width="300" align="right" alt="Live mode">
@@ -115,11 +131,24 @@ The ruler on the right draws one bar twice: an even grid on top, and this groove
 | Master / Drive | output level / level into the soft clipper |
 | Clip | soft clipper strength (Bypass … Insane) |
 | Transpose | shifts every note in the song |
-| Key / Scale / Notes | note-editing helper and sharp/flat spelling |
+| Key / Scale / Notes | note-editing helper and sharp/flat spelling; **RB + Right** shows them on a keyboard ([Scale](#scale)) |
 | Song List / Save Song / Save Song As | back to the song list (offers to save first), save, save a copy |
 | Remove unused chains / sounds | tidy up chains, phrases and instruments nothing uses |
 | Quit | leave the app (offers to save first) |
 | Render | `Stereo` or `Stems`, then **Start** to export ([Export](Export)) |
+
+<br clear="right">
+
+## Scale
+
+<img src="images/scale.png" width="300" align="right" alt="Scale screen">
+
+**RB + Right** from Project. The song's `Key` and `Scale` on top, one octave of piano keys below: the notes of the scale are lit, the key note is amber. Under the keyboard the scale is spelled out (`7 notes from D`, `D E F G A B C#`).
+
+- **Up/Down** moves between `Key`, `Scale` and the keyboard; **A + D-pad** changes Key and Scale as on Project.
+- On the keyboard, **Left/Right** picks a note and **A** puts it in or out of the scale (you hear it when it goes in). **B + A** takes it out. The key note always stays in.
+- Editing a scale makes it the song's own `Custom` scale (the last one in the list), starting from the notes of the scale you had. It is saved with the song and moves with the Key.
+- Phrase note editing (**A + Left/Right**), the random-notes tool (**LB + Right** on a selection) and `RAND` all stay on the lit keys. The `SCAL` command switches Key and Scale while the song plays ([Commands](Commands#from-the-m8)).
 
 <br clear="right">
 

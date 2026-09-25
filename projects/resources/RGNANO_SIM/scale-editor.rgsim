@@ -1,0 +1,147 @@
+# Scale screen (RB+Right from Project): Key and Scale over a piano octave.
+# A on a key of the keyboard puts the note in or out, which makes the song's
+# Custom scale; phrase note entry, the random-notes tool and RAND follow it.
+route boot.new_project_random
+expect_view song
+sim_set_song_chain 0 0 0
+sim_set_chain_phrase 0 0 0 0
+sim_set_phrase_note 0 0 60 0
+
+goto scale
+expect_view scale
+expect_screen_text Scale: None (Chromatic)
+expect_screen_text No key: every note fits
+screenshot_app scale-nokey.bmp
+
+# D Dorian from the fields
+set key 2
+set scale Dorian
+expect_screen_text Key:   D
+expect_screen_text 7 notes from D
+expect_screen_text D E F G A B C
+
+# Down to the keyboard; the cursor starts on C (the key was off when the
+# screen opened). C is Dorian's 7th: A takes it out
+press d 80
+wait 60
+expect_screen_text A: note in or out
+press a 80
+wait 100
+expect_project_param scale Custom
+expect_project_param scale_custom 0x2AD
+expect_screen_text Now your Custom scale
+expect_screen_text 6 notes from D
+# C# in: D melodic minor
+press r 80
+press a 80
+wait 100
+expect_project_param scale_custom 0xAAD
+expect_screen_text 7 notes from D
+expect_screen_text D E F G A B C#
+# The key note can't go
+press r 80
+press a 80
+wait 100
+expect_screen_text The key note stays in
+expect_project_param scale_custom 0xAAD
+# B + A takes a note out (E), A puts it back
+press r 80
+press r 80
+down b
+press a 80
+up b
+wait 100
+expect_project_param scale_custom 0xAA9
+press a 80
+wait 100
+expect_project_param scale_custom 0xAAD
+screenshot_app scale-custom.bmp
+
+# Undo the last toggle (E back out), redo it
+down b
+press k 80
+up b
+wait 100
+expect_project_param scale_custom 0xAA9
+down m
+press k 80
+up m
+wait 100
+expect_project_param scale_custom 0xAAD
+
+# Phrase note entry walks the custom scale: C -> C# -> D -> E
+goto phrase
+expect_view phrase
+expect_phrase_note 0 0 60
+down a
+wait 60
+press r 80
+up a
+wait 100
+expect_phrase_note 0 0 61
+down a
+wait 60
+press r 80
+press r 80
+up a
+wait 100
+expect_phrase_note 0 0 64
+down a
+wait 60
+press l 80
+up a
+wait 100
+expect_phrase_note 0 0 62
+
+# The random-notes tool (selection, LB + Right) stays in the custom scale
+sim_set_phrase_note 0 1 62 0
+sim_set_phrase_note 0 2 62 0
+sim_set_phrase_note 0 3 62 0
+sim_set_phrase_note 0 4 62 0
+sim_set_phrase_note 0 5 62 0
+sim_set_phrase_note 0 6 62 0
+sim_set_phrase_note 0 7 62 0
+down b
+press m 80
+up b
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+down m
+press r 80
+up m
+wait 100
+expect_phrase_in_scale 0 8
+press b 80
+wait 60
+
+# RAND on its own picks notes in the custom scale while playing
+sim_set_phrase_command 0 0 1 RAND 000C
+sim_set_phrase_command 0 1 1 RAND 000C
+sim_set_phrase_command 0 2 1 RAND 000C
+sim_set_phrase_command 0 3 1 RAND 000C
+sim_set_phrase_command 0 4 1 RAND 000C
+sim_set_phrase_command 0 5 1 RAND 000C
+sim_set_phrase_command 0 6 1 RAND 000C
+sim_set_phrase_command 0 7 1 RAND 000C
+press s 80
+wait 2500
+press s 80
+wait 100
+expect_player notes 0 >=8
+expect_player out_of_scale 0 0
+expect_size 240 240
+expect_no_error
+quit

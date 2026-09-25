@@ -23,6 +23,11 @@ public:
 	int GetPlaybackPosition(int channel) ;
 	Table *GetTable() ;
 	bool GetAutomation() ;
+	// TICK: one row every 'ticks' ticks (0: follow the groove, the default)
+	void SetTickRate(int ticks) ;
+	int GetTickRate() ;
+	// THOP: every column jumps to this row
+	void JumpTo(int row) ;
 
 	static void Reset() ;
 	static void ForgetInstrument(I_Instrument *instrument) ;
@@ -37,6 +42,9 @@ private:
 	bool automated_ ;
 	uchar hopCount_[TABLE_STEPS][3] ;
 	ChannelGroove groove_ ;
+	int tickRate_ ;   // TICK, 0 = groove
+	int tickCount_ ;  // ticks spent on the current row with a tick rate
+	int jumpTo_ ;     // THOP row waiting for the next row, -1 none
 
 	static TablePlayback playback_[SONG_CHANNEL_COUNT] ;
 } ;

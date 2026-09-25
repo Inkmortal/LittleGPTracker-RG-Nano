@@ -70,8 +70,9 @@ void ViewData::checkSongBoundaries() {
 		songOffset_+=songY_-View::songRowCount_+1 ;
 		songY_=View::songRowCount_-1 ;
 	} ;
-	if (songOffset_>232) {
-		songOffset_=232 ;
+	// The last screenful ends on the last song row (FF)
+	if (songOffset_>SONG_ROW_COUNT-View::songRowCount_) {
+		songOffset_=SONG_ROW_COUNT-View::songRowCount_ ;
 	}
 	if (songOffset_<0) {
 		songOffset_=0 ;

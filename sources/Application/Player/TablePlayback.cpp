@@ -56,6 +56,9 @@ void TablePlayback::Init(int channel) {
 	groove_.ticks_=0 ;
 
 	automated_=false ;
+	tickRate_=0 ;
+	tickCount_=0 ;
+	jumpTo_=-1 ;
 }
 
 void TablePlayback::Start(I_Instrument *i,Table &table,bool automated) {
@@ -77,10 +80,28 @@ void TablePlayback::Start(I_Instrument *i,Table &table,bool automated) {
 		groove_.groove_=-1 ;
 		groove_.position_=0 ;
 		groove_.ticks_=0 ;
+		tickCount_=0 ;
+		jumpTo_=-1 ;
 
 		automated_=automated ;
 	}
 	table_=&table;
+}
+
+void TablePlayback::SetTickRate(int ticks) {
+	tickRate_=(ticks<0)?0:ticks ;
+	tickCount_=0 ;
+}
+
+int TablePlayback::GetTickRate() {
+	return tickRate_ ;
+}
+
+void TablePlayback::JumpTo(int row) {
+	// Taken at once: the next tick starts that row
+	jumpTo_=row&0xF ;
+	tickCount_=0 ;
+	groove_.ticks_=0 ;
 }
 
 void TablePlayback::Stop() {
@@ -156,6 +177,11 @@ bool TablePlayback::ProcessLocalCommand(int row,FourCC *commandList,ushort *para
 			groove_.groove_=(unsigned char)param ;
 			groove_.position_=0 ;
 			groove_.ticks_=0 ;
+			tickRate_=0 ;  // a groove replaces a TICK rate
+			break ;
+		case I_CMD_TICK:
+			tickRate_=param&0xFF ;
+			tickCount_=0 ;
 			break ;
 	}
 	return hopped ;
@@ -170,7 +196,8 @@ void TablePlayback::ProcessStep(TablePlayerChange &tpc) {
 
 			// See if groove tells us we need to process a step
 
-			if (groove_.ticks_==0) {
+			bool rowStart=(tickRate_>0)?(tickCount_==0):(groove_.ticks_==0) ;
+			if (rowStart) {
 
 				// If automated, restore state
 
@@ -179,6 +206,18 @@ void TablePlayback::ProcessStep(TablePlayerChange &tpc) {
 					instrument_->GetTableState(state) ;
 					memcpy(hopCount_,state.hopCount_,sizeof(uchar)*TABLE_STEPS*2) ;
 					memcpy(position_,state.position_,sizeof(int)*2) ;
+				}
+
+				// THOP from a phrase, or in any column of this row: all
+				// three columns go to that row
+				if (jumpTo_<0) {
+					if (table_->cmd1_[position_[0]]==I_CMD_THOP) jumpTo_=table_->param1_[position_[0]]&0xF ;
+					else if (table_->cmd2_[position_[1]]==I_CMD_THOP) jumpTo_=table_->param2_[position_[1]]&0xF ;
+					else if (table_->cmd3_[position_[2]]==I_CMD_THOP) jumpTo_=table_->param3_[position_[2]]&0xF ;
+				}
+				if (jumpTo_>=0) {
+					position_[0]=position_[1]=position_[2]=jumpTo_ ;
+					jumpTo_=-1 ;
 				}
 
 				// try local processing for if it changes current table or position
@@ -197,9 +236,16 @@ void TablePlayback::ProcessStep(TablePlayerChange &tpc) {
 
 			}
 
-			// if groove's end reached, update position
+			// if groove's end reached (or TICK's count), update position
 
-			if (gs->UpdateGroove(groove_,true)) {
+			bool rowEnd ;
+			if (tickRate_>0) {
+				rowEnd=(++tickCount_>=tickRate_) ;
+				if (rowEnd) tickCount_=0 ;
+			} else {
+				rowEnd=gs->UpdateGroove(groove_,true) ;
+			}
+			if (rowEnd) {
 
 				if ((table_->cmd1_[position_[0]]!=I_CMD_HOP)||(!hopped_[0])) {
 					position_[0]=(position_[0]+1)%16 ;

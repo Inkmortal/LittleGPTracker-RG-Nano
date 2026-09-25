@@ -190,7 +190,7 @@ void View::drawOverlayLine(int x, int y, int width, const char *text,
 }
 
 void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
-	const char *row1="Project     Groove";
+	const char *row1="Project>Scale Groove";
 	const char *row2="   |           |";
 	const char *row3="Song > Chain > Phrase";
 	const char *row4="  |       |       |";
@@ -215,9 +215,14 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 			label="Project";
 			break;
 		case VT_GROOVE:
-			hx=x+12;
+			hx=x+14;
 			hy=y;
 			label="Groove";
+			break;
+		case VT_SCALE:
+			hx=x+8;
+			hy=y;
+			label="Scale";
 			break;
 		case VT_CHAIN:
 			hx=x+7;
@@ -355,7 +360,7 @@ void View::drawContextOverlay() {
 			break;
 		case VT_PROJECT:
 			name="PROJECT";
-			where="RB+Down Song";
+			where="RB+Down Song RB+Rt Scale";
 			edit="Dpad field A+Dpad val";
 			field="Tempo key scale render";
 			cmd1="Dpad choose field";
@@ -364,7 +369,20 @@ void View::drawContextOverlay() {
 			cmd4="B secondary action";
 			cmd5="Set tempo/key/scale";
 			cmd6="Render/save here";
-			cmd7="RB+Down Song";
+			cmd7="RB+Right Scale screen";
+			break;
+		case VT_SCALE:
+			name="SCALE";
+			where="RB+Left Project";
+			edit="A+Dpad Key / Scale";
+			field="Song key, scale, keyboard";
+			cmd1="Up/Down Key, Scale, keys";
+			cmd2="A+Dpad change Key/Scale";
+			cmd3="Left/Right pick a note";
+			cmd4="A note in / out of scale";
+			cmd5="B+A note out / default";
+			cmd6="Start play/stop the song";
+			cmd7="RB+Left Project";
 			break;
 		case VT_INSTRUMENT:
 			// Synth and sample instruments replace this (MIDI keeps it)
@@ -535,10 +553,10 @@ void View::drawContextOverlay() {
 
 // Keys the 7 command lines have no room for, per screen (helper page 2)
 int View::getMoreKeys(const char **lines,int max) {
-	static const char *song[]={"Select  LIVE mode on/off","Live: Start cue a cell",
-		"Live: LB+Start cue the row","Live: RB+Start stop track","Live: B+Start stop all",
-		"B+Up/Dn 16 rows  B+A delete","B+LB select, then B copy","A+LB paste",
-		"B+RB mute  A+RB solo","RB+LB unmute all"};
+	static const char *song[]={"Select  LIVE mode on/off","Live St cue LB+St row",
+		"Live RB+St stop  B+St all","B+Up/Dn 16 rows  B+A delete",
+		"B+LB select  B copy","A+LB paste  RB+LB unmute","A+Select bookmark the row",
+		"LB+Up/Dn next mark/section","Up on row 00: move tracks"};
 	static const char *chain[]={"B+Dpad other chain/track","B+A delete",
 		"B+LB select, then B copy","A+LB paste","2nd column: transpose",
 		"B+RB mute  A+RB solo","RB+LB unmute all"};
@@ -552,7 +570,10 @@ int View::getMoreKeys(const char **lines,int max) {
 		"B+LB select, then B copy","A+LB paste","RB+Start play the song"};
 	static const char *groove[]={"B+Left/Right other groove","B+A clear the step",
 		"RB+Start play the song"};
-	static const char *project[]={"Start play/stop the song","B on Tempo: tap tempo"};
+	static const char *project[]={"Start play/stop the song","B on Tempo: tap tempo",
+		"RB+Right the Scale screen"};
+	static const char *scale[]={"Custom = your own notes","editing a scale copies it",
+		"key note always stays in","Key moves the whole scale","Start play/stop the song"};
 	static const char *mixer[]={"B+RB mute  A+RB solo","A+Left/Right fine step","RB+LB unmute all",
 		"C/D/R = FX returns M=master","RB+Down FX settings"};
 	static const char *fx[]={"Up/Down next knob","A+Left/Right small step",
@@ -571,6 +592,7 @@ int View::getMoreKeys(const char **lines,int max) {
 		case VT_TABLE2: MORE_KEYS(table); break;
 		case VT_GROOVE: MORE_KEYS(groove); break;
 		case VT_PROJECT: MORE_KEYS(project); break;
+		case VT_SCALE: MORE_KEYS(scale); break;
 		case VT_MIXER: MORE_KEYS(mixer); break;
 		case VT_FX: MORE_KEYS(fx); break;
 		case VT_EQ: MORE_KEYS(eq); break;
@@ -670,6 +692,15 @@ void View::getHowToSteps(const char **lines) {
 			lines[4]="Chorus: speed, depth";
 			lines[5]="Echo: time, repeats";
 			lines[6]="Reverb: size, damp";
+			break;
+		case VT_SCALE:
+			lines[0]="The song's key and scale:";
+			lines[1]="note editing and RAND stay";
+			lines[2]="on the lit keys.";
+			lines[3]="Down: go to the keyboard";
+			lines[4]="A on a key: in or out";
+			lines[5]="(makes a Custom scale)";
+			lines[6]="SCAL command: switch key";
 			break;
 		case VT_EQ:
 			lines[0]="Shapes the whole mix.";
@@ -1043,6 +1074,7 @@ void View::GetGuideTopic(const char *&page, const char *&section) {
 		case VT_MIXER: section="Mixer"; break;
 		case VT_FX: section="FX"; break;
 		case VT_EQ: section="EQ"; break;
+		case VT_SCALE: section="Scale"; break;
 		default: page=""; break;
 	}
 }

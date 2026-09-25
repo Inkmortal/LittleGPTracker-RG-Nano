@@ -24,6 +24,11 @@ public:
 	unsigned char *data_ ;
 	Chain *chain_ ;
 	Phrase *phrase_ ;
+	// Song rows marked on the Song screen (A + Select), 1 = bookmarked;
+	// LB + Up/Down stops at them
+	unsigned char bookmarks_[SONG_ROW_COUNT] ;
+	bool IsBookmarked(int row) ;
+	void ToggleBookmark(int row) ;
 } ;
 
 #endif
