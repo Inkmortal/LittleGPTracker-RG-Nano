@@ -283,6 +283,7 @@ AppWindow::AppWindow(I_GUIWindowImp &imp) : GUIWindow(imp) {
     _fxView = 0;
     _eqView = 0;
     _limiterView = 0;
+    _scaleView = 0;
     _grooveView = 0;
     _closeProject = 0;
     _loadAfterSaveAsProject = 0;
@@ -636,6 +637,8 @@ void AppWindow::LoadProject(const Path &p) {
 
     _limiterView = new LimiterView((*this), _viewData);
     _limiterView->AddObserver(*this);
+    _scaleView = new ScaleView((*this), _viewData);
+    _scaleView->AddObserver(*this);
 
     _currentView = _songView;
     _currentView->OnFocus();
@@ -819,6 +822,8 @@ const char *AppWindow::GetCurrentViewName() const {
         return "eq";
     if (_currentView == _limiterView)
         return "limit";
+    if (_currentView == _scaleView)
+        return "scale";
     if (_currentView == _nullView)
         return "null";
     return "unknown";
@@ -829,7 +834,8 @@ ViewData *AppWindow::GetViewData() const { return _viewData; }
 Variable *AppWindow::GetSimFocusedVariable() const {
     if (_currentView != _instrumentView && _currentView != _projectView &&
         _currentView != _fxView && _currentView != _eqView &&
-        _currentView != _limiterView) {
+        _currentView != _limiterView &&
+        _currentView != _scaleView) {
         return 0;
     }
     UIField *focus = ((FieldView *)_currentView)->GetFocus();
@@ -1039,6 +1045,9 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
             break;
         case VT_LIMIT:
             _currentView = _limiterView;
+            break;
+        case VT_SCALE:
+            _currentView = _scaleView;
             break;
         }
         _currentView->SetFocus(*vt);

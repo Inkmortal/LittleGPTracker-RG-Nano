@@ -1574,16 +1574,10 @@ void SynthInstrument::GetHyperNotes(int root,int *semis) {
 	if (!hyperScale_->GetBool()) return ;
 	Project *project=Player::GetInstance()->GetProject() ;
 	if (!project) return ;
-	int key=project->GetScaleKey() ;
-	if (key<0) return ;
-	int scale=project->GetScale() ;
-	if (scale<0 || scale>=scaleCount) return ;
+	// Same rule as the song's other scale tools (custom scales included)
 	for (int n=0;n<HYPER_NOTES;n++) {
 		int note=root+semis[n] ;
-		for (int tries=0;tries<12;tries++) {
-			int inKey=(note-key)%12 ;
-			if (inKey<0) inKey+=12 ;
-			if (scaleSteps[scale][inKey]) break ;
+		for (int tries=0;tries<12 && !project->IsNoteInScale(note);tries++) {
 			note-- ;
 		}
 		semis[n]=note-root ;

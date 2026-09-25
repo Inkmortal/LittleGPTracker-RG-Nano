@@ -50,9 +50,9 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[1].assign("approach pitch");
 			break;
 		case I_CMD_HOP:
-			result[0].assign("HOP:aabb");
-			result[1].assign("hop to bb");
-			result[2].assign("aa times");
+			result[0].assign("HOP:aabb go to row bb");
+			result[1].assign("table: aa times");
+			result[2].assign("phrase --FF: stop");
 			break;
 		case I_CMD_LEGA:
 			result[0].assign("LEGAto: slide from");
@@ -146,6 +146,46 @@ static inline std::string* getHelpLegend(FourCC command) {
 		case I_CMD_FBTN:
 			result[0].assign("FeedBack TuNe:aabb");
 			result[1].assign("feedback tune to");
+			break;
+		case I_CMD_ROLL:
+			result[0].assign("ROLL:xy re-strike");
+			result[1].assign("every y ticks, vol x");
+			result[2].assign("1-7 fade 9-F grow");
+			break;
+		case I_CMD_VIBR:
+			result[0].assign("VIBRato:xy wobble");
+			result[1].assign("x speed, y depth");
+			result[2].assign("0000 stops it");
+			break;
+		case I_CMD_SEED:
+			result[0].assign("SEED:--bb restart");
+			result[1].assign("this track's random");
+			result[2].assign("same bb = same loop");
+			break;
+		case I_CMD_NTH_:
+			result[0].assign("NTH:--xy note plays");
+			result[1].assign("on pass x of every y");
+			result[2].assign("0y: skip every y-th");
+			break;
+		case I_CMD_TICK:
+			result[0].assign("TICK:--bb table rows");
+			result[1].assign("last bb ticks each");
+			result[2].assign("0000: follow groove");
+			break;
+		case I_CMD_THOP:
+			result[0].assign("Table HOP:--0b");
+			result[1].assign("the track's table");
+			result[2].assign("jumps to row b");
+			break;
+		case I_CMD_TRSP:
+			result[0].assign("TRanSPose:--bb");
+			result[1].assign("whole song bb semis");
+			result[2].assign("F4 = octave down");
+			break;
+		case I_CMD_SCAL:
+			result[0].assign("SCALe:aabb song key");
+			result[1].assign("aa (0C = no key),");
+			result[2].assign("scale bb (15 major)");
 			break;
 		case I_CMD_STOP:
 			result[0].assign("STOP playing song");

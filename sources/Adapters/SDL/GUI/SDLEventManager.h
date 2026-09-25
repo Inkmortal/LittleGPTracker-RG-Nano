@@ -152,6 +152,8 @@ private:
 	bool ExpectSimInstrumentType(int instrument, const std::string &type);
 	bool ExpectSimInstrumentName(int instrument, const std::string &name);
 	bool ExpectSimInstrumentParam(int instrument, const std::string &name, const std::string &value);
+	bool RunSimSequencerCheck(const std::string &op, const std::string &arg,
+	                          const std::string &arg2, int value, int value2);
 	bool SimSetPhraseCommand(int phrase, int row, int slot, const std::string &command, const std::string &param);
 	bool SimSetTableCommand(int table, int row, int slot, const std::string &command, const std::string &param);
 	bool SimSaveProject();

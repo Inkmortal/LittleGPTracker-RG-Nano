@@ -1,8 +1,5 @@
 #include "System/Console/CrashLog.h"
 #include "Application/Model/Scale.h"
-
-// RAND / CHNC randomness (defined with playCursorPosition)
-static int randomUpTo(int range) ;
 #include "Application/Instruments/SynthInstrument.h"
 #include "Application/Mixer/SendFX.h"
 #include "Player.h"
@@ -19,6 +16,14 @@ static int randomUpTo(int range) ;
 #include <math.h>
 #include <string.h>
 #include "Services/Midi/MidiService.h"
+#include "Foundation/Variables/Variable.h"
+
+// A command whose value RAND in the other column may move (the step-level
+// ones - RAND, CHNC, SEED, NTH - are about the step, not a value)
+static bool randomizable(FourCC c) {
+	return c!=I_CMD_NONE && c!=I_CMD_RAND && c!=I_CMD_CHNC &&
+	       c!=I_CMD_SEED && c!=I_CMD_NTH_ ;
+}
 #include <sstream>
 
 // Private constructor - Singleton
@@ -49,7 +54,9 @@ Player::Player() {
 		liveQueueChainPosition_[i]=0 ;
 		timeToLive_[i]=0 ;
 		timeToStart_[i]=0 ;
+		seedRandom(i,i) ;
 	}
+	resetTrackEffects() ;
 
 } ;
 
@@ -137,7 +144,9 @@ void Player::Start(PlayMode mode,bool forceSongMode) {
 		timeToStart_[i]=0 ;
 		TablePlayback &tpb=TablePlayback::GetTablePlayback(i) ;
 		tpb.Stop();
+		tpb.SetTickRate(0) ;
   }
+  resetTrackEffects() ;
     
 	// Tell the instruments we're starting
 
@@ -675,6 +684,9 @@ void Player::Update(Observable &o,I_ObservableData *d) {
         // Process commands in current phrase
         ProcessCommands();
 
+        // ROLL re-strikes and VIBR wobbles, every tick
+        updateTrackEffects();
+
         // Initialise retrigger table
         int instrRetrigger[SONG_CHANNEL_COUNT];
         memset(instrRetrigger, -1, SONG_CHANNEL_COUNT * sizeof(int));
@@ -761,9 +773,9 @@ void Player::ProcessCommands() {
 					FourCC other=viewData_->song_->phrase_->cmd2_[phrase*16+pos] ;
 					// RAND in the other column: this command's value moves by
 					// a random amount up to RAND's value
-					if (other==I_CMD_RAND && cc!=I_CMD_RAND && cc!=I_CMD_CHNC) {
+					if (other==I_CMD_RAND && randomizable(cc)) {
 						int range=viewData_->song_->phrase_->param2_[phrase*16+pos]&0xFF ;
-						int v=(param&0xFF)+randomUpTo(range) ;
+						int v=(param&0xFF)+randomUpTo(i,range) ;
 						param=(param&0xFF00)|(v>0xFF?0xFF:v) ;
 					}
 					
@@ -784,9 +796,9 @@ void Player::ProcessCommands() {
 					cc=viewData_->song_->phrase_->cmd2_[phrase*16+pos] ;
 					param=viewData_->song_->phrase_->param2_[phrase*16+pos] ;
 					other=viewData_->song_->phrase_->cmd1_[phrase*16+pos] ;
-					if (other==I_CMD_RAND && cc!=I_CMD_RAND && cc!=I_CMD_CHNC) {
+					if (other==I_CMD_RAND && randomizable(cc)) {
 						int range=viewData_->song_->phrase_->param1_[phrase*16+pos]&0xFF ;
-						int v=(param&0xFF)+randomUpTo(range) ;
+						int v=(param&0xFF)+randomUpTo(i,range) ;
 						param=(param&0xFF00)|(v>0xFF?0xFF:v) ;
 					}
 
@@ -814,7 +826,67 @@ bool Player::ProcessChannelCommand(int channel,FourCC cmd,ushort param) {
 	switch(cmd) {
 		case I_CMD_RAND:
 		case I_CMD_CHNC:
-			return true ;  // applied when the step plays (see above)
+		case I_CMD_NTH_:
+		case I_CMD_SEED:
+			return true ;  // applied when the step plays (playCursorPosition)
+		case I_CMD_ROLL:
+			{
+				// Starts from the step's VOLM if there is one, else the
+				// instrument's volume
+				int volume=-1 ;
+				uchar phrase=viewData_->currentPlayPhrase_[channel] ;
+				if (phrase!=0xFF) {
+					int pos=phrase*16+viewData_->phrasePlayPos_[channel] ;
+					Phrase *ph=viewData_->song_->phrase_ ;
+					if (ph->cmd1_[pos]==I_CMD_VOLM) volume=ph->param1_[pos]&0xFF ;
+					if (ph->cmd2_[pos]==I_CMD_VOLM) volume=ph->param2_[pos]&0xFF ;
+				}
+				if (volume<0 && instr) {
+					Variable *v=instr->FindVariable("volume") ;
+					if (v) volume=v->GetInt() ;
+				}
+				startRoll(channel,param,volume<0?0x80:volume) ;
+			}
+			return true ;
+		case I_CMD_VIBR:
+			{
+				int speed=(param>>4)&0xF ;
+				int depth=param&0xF ;
+				if (speed==0 || depth==0) {
+					stopVibrato(channel) ;
+				} else {
+					if (vibratoSpeed_[channel]==0) vibratoPhase_[channel]=0 ;
+					vibratoSpeed_[channel]=speed ;
+					vibratoDepth_[channel]=depth ;
+				}
+			}
+			return true ;
+		case I_CMD_TICK:
+			TablePlayback::GetTablePlayback(channel).SetTickRate(param&0xFF) ;
+			return true ;
+		case I_CMD_THOP:
+			TablePlayback::GetTablePlayback(channel).JumpTo(param&0xF) ;
+			return true ;
+		case I_CMD_TRSP:
+			{
+				int semis=(signed char)(param&0xFF) ;
+				if (semis>48) semis=48 ;
+				if (semis<-48) semis=-48 ;
+				Variable *v=project_->FindVariable(VAR_TRANSPOSE) ;
+				if (v) v->SetInt(semis) ;
+			}
+			return true ;
+		case I_CMD_SCAL:
+			{
+				int key=(param>>8)&0xFF ;
+				int scale=param&0xFF ;
+				if (scale>=scaleCount) scale=scaleCount-1 ;
+				Variable *k=project_->FindVariable(VAR_SCALE_KEY) ;
+				Variable *sc=project_->FindVariable(VAR_SCALE) ;
+				if (k) k->SetInt(key<12?key:-1) ;
+				if (sc) sc->SetInt(scale) ;
+			}
+			return true ;
 		case I_CMD_KILL:
 			if (instr) {
                 int timeToLive=(param&0xFF) ;
@@ -927,6 +999,7 @@ void Player::updateChainPos(int pos,int channel,int hop) {
 		viewData_->chainPlayPos_[channel]=pos ;
 		unsigned char *data=viewData_->song_->chain_->data_+(16*chain+pos) ;
 		viewData_->currentPlayPhrase_[channel]=*data ;
+		countPhrasePass(channel) ;
 		if (*data==0xFF) { // This could happen if starting in song mode on a row
 			               // where a chain contains no phrase
 			mixer_->StopChannel(channel) ;
@@ -957,44 +1030,47 @@ void Player::updatePhrasePos(int pos,int channel) {
 	FourCC cc=viewData_->song_->phrase_->cmd1_[phrase*16+pos] ;
 	if (cc==I_CMD_DLAY) {
 		ushort param=viewData_->song_->phrase_->param1_[phrase*16+pos] ;
-		timeToStart_[channel]=(param&0x0F)+1 ;
+		timeToStart_[channel]=(param&0xFF)+1 ;
 	}
 
 	cc=viewData_->song_->phrase_->cmd2_[phrase*16+pos] ;
 	if (cc==I_CMD_DLAY) {
-		ushort param=viewData_->song_->phrase_->param1_[phrase*16+pos] ;
-		timeToStart_[channel]=(param&0x0F)+1 ;
+		ushort param=viewData_->song_->phrase_->param2_[phrase*16+pos] ;
+		timeToStart_[channel]=(param&0xFF)+1 ;
 	}
 }
 
-// Randomness for RAND / CHNC: a small fast generator (xorshift), plenty for
-// music and safe to call from the audio thread
-static unsigned int randomState_ = 0x9E3779B9 ;
-static unsigned int nextRandom() {
-	unsigned int x=randomState_ ;
+// Randomness for RAND / CHNC: a small fast generator (xorshift) per track,
+// plenty for music and safe to call from the audio thread. SEED restarts a
+// track's generator, so the same "random" values come back every loop.
+void Player::seedRandom(int channel,int seed) {
+	unsigned int x=(unsigned int)(seed+1)*0x9E3779B1u+(unsigned int)channel*0x85EBCA6Bu ;
+	x^=x>>15 ;
+	x*=0x2C1B3C6Du ;
+	x^=x>>12 ;
+	if (x==0) x=0x9E3779B9u ;  // xorshift never leaves 0
+	randomState_[channel]=x ;
+}
+
+int Player::nextRandom(int channel) {
+	unsigned int x=randomState_[channel] ;
 	x^=x<<13 ;
 	x^=x>>17 ;
 	x^=x<<5 ;
-	randomState_=x ;
-	return x ;
+	randomState_[channel]=x ;
+	return (int)(x>>1) ;
 }
 
 // 0..range inclusive
-static int randomUpTo(int range) {
+int Player::randomUpTo(int channel,int range) {
 	if (range<=0) return 0 ;
-	return (int)(nextRandom()%(unsigned int)(range+1)) ;
+	return nextRandom(channel)%(range+1) ;
 }
 
 // A random note up to range semitones above, moved onto the song's scale
-static int randomNoteOffset(Project *project,int note,int range) {
-	int offset=randomUpTo(range) ;
-	int key=project->GetScaleKey() ;
-	if (key<0) return offset ;
-	int scale=project->GetScale() ;
-	for (int tries=0;tries<12;tries++) {
-		int inKey=(note+offset-key)%12 ;
-		if (inKey<0) inKey+=12 ;
-		if (scaleSteps[scale][inKey]) break ;
+int Player::randomNoteOffset(int channel,int note,int range) {
+	int offset=randomUpTo(channel,range) ;
+	for (int tries=0;tries<12 && !project_->IsNoteInScale(note+offset);tries++) {
 		offset=(offset>0)?offset-1:offset+1 ;
 	}
 	return offset ;
@@ -1020,19 +1096,45 @@ void Player::playCursorPosition(int channel) {
 		FourCC c2=phrase->cmd2_[16*currentPhrase+pos] ;
 		ushort p1=phrase->param1_[16*currentPhrase+pos] ;
 		ushort p2=phrase->param2_[16*currentPhrase+pos] ;
+		// SEED before any random number of this step is drawn
+		if (c1==I_CMD_SEED) seedRandom(channel,p1&0xFF) ;
+		if (c2==I_CMD_SEED) seedRandom(channel,p2&0xFF) ;
+		if (note!=0xFF) {
+			// NTH xy: plays on pass x of every y (x=0: all but the y-th)
+			int nth=(c1==I_CMD_NTH_)?(p1&0xFF):((c2==I_CMD_NTH_)?(p2&0xFF):-1) ;
+			if (nth>=0) {
+				int every=nth&0xF ;
+				int which=(nth>>4)&0xF ;
+				int pass=phrasePass_[channel][currentPhrase] ;
+				if (pass<1) pass=1 ;
+				bool plays=true ;
+				if (every>0) {
+					if (which==0) {
+						plays=(pass%every)!=0 ;
+					} else {
+						plays=((pass-1)%every)==((which-1)%every) ;
+					}
+				}
+				if (!plays) {
+					note=0xFF ;
+					instr=0xFF ;
+				}
+			}
+		}
 		if (note!=0xFF) {
 			int chance=(c1==I_CMD_CHNC)?(p1&0xFF):((c2==I_CMD_CHNC)?(p2&0xFF):-1) ;
-			if (chance>=0 && randomUpTo(254)>=chance) {
+			if (chance>=0 && randomUpTo(channel,254)>=chance) {
 				note=0xFF ;
 				instr=0xFF ;
 			}
 		}
 		if (note!=0xFF) {
-			bool alone1=(c1==I_CMD_RAND)&&(c2==I_CMD_NONE||c2==I_CMD_RAND||c2==I_CMD_CHNC) ;
-			bool alone2=(c2==I_CMD_RAND)&&(c1==I_CMD_NONE||c1==I_CMD_CHNC) ;
+			// "Alone": the other column holds nothing RAND could move
+			bool alone1=(c1==I_CMD_RAND)&&(c2==I_CMD_RAND||!randomizable(c2)) ;
+			bool alone2=(c2==I_CMD_RAND)&&!randomizable(c1) ;
 			if (alone1 || alone2) {
 				int range=(alone1?p1:p2)&0xFF ;
-				int n=note+randomNoteOffset(project_,note,range) ;
+				int n=note+randomNoteOffset(channel,note,range) ;
 				note=(unsigned char)(n>127?127:n) ;
 			}
 		}
@@ -1078,6 +1180,7 @@ void Player::playCursorPosition(int channel) {
 
 				if (note<128) {
 					mixer_->StartInstrument(channel,instrument,note,newInstrument) ;
+					onNoteStarted(channel,note,newInstrument) ;
 					int instrTable=instrument->GetTable() ;
 	
 					// If an instrument number has been specified && instrument has table,
@@ -1116,14 +1219,17 @@ void Player::playCursorPosition(int channel) {
 
 int Player::getChannelHop(int channel,int pos) {
 
+  // HOP --FF: the track stops here (0xFF); otherwise the row to hop to
   int phrase=viewData_->currentPlayPhrase_[channel] ;
 	FourCC cc=viewData_->song_->phrase_->cmd1_[phrase*16+pos] ;
   if (cc==I_CMD_HOP) {
-      return (viewData_->song_->phrase_->param1_[phrase*16+pos])&0xF ;
+      ushort p=viewData_->song_->phrase_->param1_[phrase*16+pos] ;
+      return ((p&0xFF)==0xFF)?0xFF:(p&0xF) ;
   }
 	cc=viewData_->song_->phrase_->cmd2_[phrase*16+pos] ;
   if (cc==I_CMD_HOP) {
-      return (viewData_->song_->phrase_->param2_[phrase*16+pos])&0xF ;
+      ushort p=viewData_->song_->phrase_->param2_[phrase*16+pos] ;
+      return ((p&0xFF)==0xFF)?0xFF:(p&0xF) ;
   }
   return -1 ;
 }
@@ -1177,7 +1283,13 @@ void Player::moveToNextStep()
           if (pos!=16)
           {
             int hop=getChannelHop(i,pos) ;
-            if (hop>=0)
+            if (hop==0xFF)
+            {
+              mixer_->StopChannel(i) ;
+              rollTicks_[i]=0 ;
+              stopVibrato(i) ;
+            }
+            else if (hop>=0)
             {
               if (mode_!=PM_PHRASE)
               {
@@ -1185,6 +1297,7 @@ void Player::moveToNextStep()
               }
               else
               {
+                countPhrasePass(i) ;
                 updatePhrasePos(hop,i) ;
               }
             }
@@ -1201,6 +1314,7 @@ void Player::moveToNextStep()
               moveToNextPhrase(i) ;
             } else
             {
+              countPhrasePass(i) ;
               updatePhrasePos(0,i) ;
             }
           }
@@ -1366,6 +1480,138 @@ void Player::moveToNextChain(int channel,int hop) {
     }
 } ;
 
+/********************************************************
+ Per-track sequencer effects (the M8's RET, PVB, SED, NTH)
+ ********************************************************/
+
+void Player::resetTrackEffects() {
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		rollTicks_[i]=0 ;
+		rollCount_[i]=0 ;
+		rollVolume_[i]=0 ;
+		rollStep_[i]=0 ;
+		rollOnce_[i]=false ;
+		vibratoSpeed_[i]=0 ;
+		vibratoDepth_[i]=0 ;
+		vibratoPhase_[i]=0 ;
+		notesStarted_[i]=0 ;
+		memset(noteHistory_[i],0xFF,sizeof(noteHistory_[i])) ;
+		memset(phrasePass_[i],0,sizeof(phrasePass_[i])) ;
+	}
+}
+
+void Player::countPhrasePass(int channel) {
+	uchar phrase=viewData_->currentPlayPhrase_[channel] ;
+	if (phrase>=PHRASE_COUNT) return ;
+	if (phrasePass_[channel][phrase]<0xFFFF) {
+		phrasePass_[channel][phrase]++ ;
+	}
+}
+
+static void pushNote(unsigned char *history,int size,unsigned char note) {
+	memmove(history+1,history,size-1) ;
+	history[0]=note ;
+}
+
+void Player::onNoteStarted(int channel,unsigned char note,bool newInstrument) {
+	notesStarted_[channel]++ ;
+	pushNote(noteHistory_[channel],sizeof(noteHistory_[channel]),note) ;
+	// A new note ends the roll of the previous one; a new instrument
+	// number also ends its vibrato (like every other ramp)
+	rollTicks_[channel]=0 ;
+	rollOnce_[channel]=false ;
+	if (newInstrument) {
+		stopVibrato(channel) ;
+	}
+}
+
+// ROLL xy: y ticks between hits, each hit x louder (9-F) or quieter (1-7);
+// y=0: one re-strike after x ticks; 0000 stops
+void Player::startRoll(int channel,ushort param,int volume) {
+	int x=(param>>4)&0xF ;
+	int y=param&0xF ;
+	rollOnce_[channel]=false ;
+	rollStep_[channel]=0 ;
+	rollVolume_[channel]=volume ;
+	if (y==0) {
+		rollTicks_[channel]=x ;
+		rollCount_[channel]=x ;
+		rollOnce_[channel]=(x>0) ;
+		return ;
+	}
+	rollTicks_[channel]=y ;
+	rollCount_[channel]=y ;
+	if (x>=1 && x<=7) {
+		rollStep_[channel]=-x*8 ;
+	} else if (x>=9) {
+		rollStep_[channel]=(x-8)*8 ;
+	}
+}
+
+void Player::stopVibrato(int channel) {
+	if (vibratoSpeed_[channel]>0) {
+		I_Instrument *instr=mixer_->GetInstrument(channel) ;
+		if (instr) {
+			instr->ProcessCommand(channel,I_CMD_PFIN,0) ;
+		}
+	}
+	vibratoSpeed_[channel]=0 ;
+	vibratoDepth_[channel]=0 ;
+}
+
+void Player::updateTrackEffects() {
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		bool playing=mixer_->IsChannelPlaying(i) ;
+		if (rollTicks_[i]>0) {
+			if (!playing) {
+				rollTicks_[i]=0 ;
+			} else if (--rollCount_[i]<=0) {
+				rollCount_[i]=rollTicks_[i] ;
+				if (rollOnce_[i]) {
+					rollTicks_[i]=0 ;
+				}
+				int note=mixer_->GetChannelNote(i) ;
+				I_Instrument *instr=mixer_->GetInstrument(i) ;
+				if (note==0xFF || instr==0) {
+					rollTicks_[i]=0 ;  // nothing ringing to re-strike
+				} else {
+					int volume=rollVolume_[i]+rollStep_[i] ;
+					if (volume>0xFF) volume=0xFF ;
+					if (rollStep_[i]<0 && volume<=0) {
+						// Faded all the way out: silence the tail and stop
+						instr->ProcessCommand(i,I_CMD_VOLM,0) ;
+						rollTicks_[i]=0 ;
+					} else {
+						mixer_->StopInstrument(i) ;
+						mixer_->StartInstrument(i,instr,(unsigned char)note,false) ;
+						notesStarted_[i]++ ;
+						pushNote(noteHistory_[i],sizeof(noteHistory_[i]),(unsigned char)note) ;
+						if (rollStep_[i]!=0) {
+							rollVolume_[i]=volume ;
+							instr->ProcessCommand(i,I_CMD_VOLM,(ushort)volume) ;
+						}
+					}
+				}
+			}
+		}
+		if (vibratoSpeed_[i]>0) {
+			I_Instrument *instr=mixer_->GetInstrument(i) ;
+			if (!playing || instr==0) {
+				vibratoSpeed_[i]=0 ;
+				vibratoDepth_[i]=0 ;
+				continue ;
+			}
+			// One cycle every 64/x ticks; depth y sixteenths of a semitone
+			vibratoPhase_[i]=(vibratoPhase_[i]+vibratoSpeed_[i]*1024)&0xFFFF ;
+			float semis=vibratoDepth_[i]/16.0f*
+			            sinf(vibratoPhase_[i]*(6.2831853f/65536.0f)) ;
+			int value=(int)floorf(semis*128.0f+0.5f) ;
+			if (value<0) value+=256 ;
+			instr->ProcessCommand(i,I_CMD_PFIN,(ushort)(value&0xFF)) ;
+		}
+	}
+}
+
 double Player::GetPlayTime() {
 	AudioOut *out=mixer_->GetAudioOut() ;
 	double currentTime = out->GetStreamTime() ;
@@ -1506,6 +1752,41 @@ std::string Player::GetSimStreamingPath() const {
 
 bool Player::IsSimStreaming() const {
 	return simStreaming_;
+}
+
+int Player::GetSimValue(const std::string &name,int channel) {
+	if (channel<0 || channel>=SONG_CHANNEL_COUNT) return -1 ;
+	if (name=="notes") return (int)notesStarted_[channel] ;
+	if (name=="last_note") return noteHistory_[channel][0] ;
+	if (name=="pass") {
+		uchar phrase=viewData_?viewData_->currentPlayPhrase_[channel]:0xFF ;
+		return (phrase<PHRASE_COUNT)?phrasePass_[channel][phrase]:0 ;
+	}
+	if (name=="out_of_scale") {
+		// Notes started lately that are not in the song's Key/Scale
+		int count=0 ;
+		for (int i=0;i<32;i++) {
+			unsigned char n=noteHistory_[channel][i] ;
+			if (n!=0xFF && project_ && !project_->IsNoteInScale(n)) count++ ;
+		}
+		return count ;
+	}
+	if (name=="playing") return mixer_->IsChannelPlaying(channel)?1:0 ;
+	if (name=="roll_volume") return rollVolume_[channel] ;
+	if (name=="roll") return rollTicks_[channel] ;
+	if (name=="vibrato") return vibratoSpeed_[channel]*16+vibratoDepth_[channel] ;
+	if (name=="table_tick") return TablePlayback::GetTablePlayback(channel).GetTickRate() ;
+	if (name=="table_row") return TablePlayback::GetTablePlayback(channel).GetPlaybackPosition(0) ;
+	return -1 ;
+}
+
+bool Player::SimNotesRepeat(int channel,int period) {
+	if (channel<0 || channel>=SONG_CHANNEL_COUNT || period<=0 || period*2>32) return false ;
+	for (int i=0;i<period;i++) {
+		if (noteHistory_[channel][i]==0xFF) return false ;
+		if (noteHistory_[channel][i]!=noteHistory_[channel][i+period]) return false ;
+	}
+	return true ;
 }
 #endif
 

@@ -43,7 +43,8 @@ enum ViewType {
     VT_MIXER,
     VT_FX,     // send effects, under the mixer
     VT_EQ,     // master EQ, right of FX
-    VT_LIMIT   // master limiter, right of EQ
+    VT_LIMIT,  // master limiter, right of EQ
+    VT_SCALE   // the song's key/scale on a keyboard, right of Project
 };
 
 enum ViewMode {

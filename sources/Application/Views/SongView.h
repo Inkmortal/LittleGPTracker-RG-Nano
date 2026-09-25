@@ -48,6 +48,12 @@ class SongView : public View {
 
     void jumpToNextSection(int dir);
 
+    // A + Select: bookmark the cursor's row (drawn on the row number)
+    void toggleBookmark();
+    // Up on row 00: move whole tracks left/right (M8's track reorder)
+    void processReorderButtonMask(unsigned int mask);
+    void moveTrack(int direction);
+
   private:
     bool updatingChain_; // .Flag that tells we're updating chain
                          //  so we don't allocate chains while
@@ -88,6 +94,8 @@ class SongView : public View {
     void nudgeTempo(int direction);
     void drawSideMeters(bool force);
     uint8_t jumpLength_; // When jumping columns with B
+    bool reorder_;        // track reorder mode (header row above the grid)
+    bool pastedOnA_;      // the last press was A pasting into an empty cell
 };
 
 #endif

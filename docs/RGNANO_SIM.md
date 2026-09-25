@@ -143,7 +143,7 @@ instrument 0A            # B+Left/Right/Up/Down to instrument 0A
 row 0C                   # move the Song/Chain/Phrase cursor to row 0C
 ```
 
-`goto` knows the view graph (Song, Chain, Phrase, Instrument, Table, Groove, Project, Mixer, FX, EQ, Limit: `goto limit`). `focus`/`set` work on any field screen (Instrument, Project, FX, EQ, Limit). Each command logs `=> reached in N steps`.
+`goto` knows the view graph (Song, Chain, Phrase, Instrument, Table, Groove, Project, Scale, Mixer, FX, EQ, Limit: `goto limit`). `focus`/`set` work on any field screen (Instrument, Project, Scale, FX, EQ, Limit). Each command logs `=> reached in N steps`.
 
 ## Synth Script Commands
 
@@ -154,6 +154,25 @@ expect_instrument_type 0 Synth        # Synth / Sample / Midi
 expect_instrument_name 0 KICK
 expect_instrument_param 0 env_amount 0x30
 ```
+
+## Sequencer and Song Tool Commands
+
+```text
+wait_player pass 0 4             # wait (max 10 s) until track 0's phrase starts its 4th pass
+expect_player notes 0 >=20       # Player::GetSimValue: notes, last_note, pass, playing,
+                                 # roll, roll_volume, vibrato, table_tick, table_row, out_of_scale
+expect_notes_repeat 0 16 yes     # the last 32 notes on track 0 repeat every 16 (SEED)
+expect_project_param scale Custom        # any project value by name ('_' for spaces), or by number
+sim_set_project_param scale_custom 0x2AD
+expect_phrase_note 0 0 62        # phrase 00 row 0 holds MIDI note 62 (-- for empty)
+expect_phrase_in_scale 0 8       # at least 8 notes, all in the song's Key/Scale
+expect_bookmark 6 yes            # song row 06 is bookmarked
+expect_track_muted 1 yes
+sim_set_mixer_level 0 80         # mixer level index (0-7 tracks), hex
+expect_mixer_level 1 80
+```
+
+Commands with a trailing space (`NTH `, `HOP `) can be written `NTH` or `NTH_` in `sim_set_phrase_command`.
 
 ## Music Tools
 

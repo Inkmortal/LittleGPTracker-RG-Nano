@@ -57,6 +57,7 @@ const char *scaleNames[scaleCount] = {"None (Chromatic)",
                                      "Tercera Alta",
                                      "Ukranian",
                                      "Whole tone",
+                                     "Custom",
                                     };
 
 const bool scaleSteps[scaleCount][scaleNoteCount] = {
@@ -194,6 +195,39 @@ const bool scaleSteps[scaleCount][scaleNoteCount] = {
      false},
     // "Whole tone"
     {true, false, true, false, true, false, true, false, true, false, true,
-     false}
-    
+     false},
+    // "Custom": not used, the notes come from the song (scaleMask)
+    {true, true, true, true, true, true, true, true, true, true, true, true}
+
 };
+
+int scaleMask(int scale, int customMask) {
+    if (scale == scaleCustom) {
+        return customMask & 0xFFF;
+    }
+    if (scale < 0 || scale >= scaleCount) {
+        return 0xFFF;
+    }
+    int mask = 0;
+    for (int i = 0; i < scaleNoteCount; i++) {
+        if (scaleSteps[scale][i]) {
+            mask |= 1 << i;
+        }
+    }
+    return mask;
+}
+
+bool scaleHasStep(int scale, int step, int customMask) {
+    step %= scaleNoteCount;
+    if (step < 0) {
+        step += scaleNoteCount;
+    }
+    int mask = scaleMask(scale, customMask);
+    // A scale with no notes at all would trap the note editor: treat it as
+    // chromatic (the Scale screen never lets the root go, so this is only a
+    // damaged song file)
+    if (mask == 0) {
+        return true;
+    }
+    return (mask >> step) & 1;
+}

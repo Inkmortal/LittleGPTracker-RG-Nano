@@ -262,6 +262,13 @@ void ProjectView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			SetChanged();
             NotifyObservers(&ve);
         }
+        if (mask&EPBM_RIGHT) {
+            // The Key/Scale on a keyboard, with the custom scale editor
+			ViewType vt=VT_SCALE;
+			ViewEvent ve(VET_SWITCH_VIEW,&vt) ;
+			SetChanged();
+            NotifyObservers(&ve);
+        }
     } else {
         if (mask==EPBM_START) {
             Player *player = Player::GetInstance();
@@ -304,6 +311,9 @@ void ProjectView::DrawView() {
     for (int i = 0; i < 4; i++) {
         DrawString(hx, headingRow_[i], headings[i], props);
     }
+    // The Scale screen is one move away
+    SetColor(CD_MUTE);
+    DrawString(hx + 5, headingRow_[1], "RB+Right: keyboard", props);
     SetColor(CD_NORMAL);
 
     FieldView::Redraw();

@@ -15,7 +15,18 @@ Song::Song():Persistent("SONG") {
 	
 	chain_=new Chain() ;   // Allocate chain datas
 	phrase_=new Phrase() ; // Allocate phrase datas
+	memset(bookmarks_,0,sizeof(bookmarks_)) ;
 } ;
+
+bool Song::IsBookmarked(int row) {
+	return row>=0 && row<SONG_ROW_COUNT && bookmarks_[row]!=0 ;
+}
+
+void Song::ToggleBookmark(int row) {
+	if (row>=0 && row<SONG_ROW_COUNT) {
+		bookmarks_[row]=bookmarks_[row]?0:1 ;
+	}
+}
 
 Song::~Song() {
 	if (data_!=NULL) SYS_FREE (data_) ;
@@ -38,6 +49,14 @@ void Song::SaveContent(TiXmlNode *node) {
 	saveHexBuffer(node,"PARAM1",phrase_->param1_,PHRASE_COUNT*16) ;
 	saveHexBuffer(node,"COMMAND2",phrase_->cmd2_,PHRASE_COUNT*16) ;
 	saveHexBuffer(node,"PARAM2",phrase_->param2_,PHRASE_COUNT*16) ;
+	// Only songs with bookmarks carry them (older builds skip the element)
+	bool anyBookmark=false ;
+	for (int i=0;i<SONG_ROW_COUNT;i++) {
+		if (bookmarks_[i]) anyBookmark=true ;
+	}
+	if (anyBookmark) {
+		saveHexBuffer(node,"BOOKMARKS",bookmarks_,SONG_ROW_COUNT) ;
+	}
 
 } ;
 
@@ -73,16 +92,20 @@ void Song::RestoreContent(TiXmlElement *element) {
 		if (!strcmp("PARAM2",value)) {
 			restoreHexBuffer(current,(uchar *)phrase_->param2_) ;
 		} ;
-		
-		
-		for (int i=0; i<PHRASE_COUNT*16; i++)
-		{
-			phrase_->param1_[i] = Swap16(phrase_->param1_[i]);
-			phrase_->param2_[i] = Swap16(phrase_->param2_[i]);
-		}
-		
+		if (!strcmp("BOOKMARKS",value)) {
+			restoreHexBuffer(current,bookmarks_) ;
+		} ;
+
 		current=current->NextSiblingElement() ;
 	} ;
+
+	// Once, after every element is read (inside the loop the swap ran once
+	// per element, which only worked while PARAM2 happened to come last)
+	for (int i=0; i<PHRASE_COUNT*16; i++)
+	{
+		phrase_->param1_[i] = Swap16(phrase_->param1_[i]);
+		phrase_->param2_[i] = Swap16(phrase_->param2_[i]);
+	}
 	
 	Status::Set("Restoring allocation") ;
 

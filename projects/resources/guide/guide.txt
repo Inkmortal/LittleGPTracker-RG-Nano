@@ -622,7 +622,7 @@
    move (chromatic note,
    instrument page, trim
    marker, MOD slot, song
-   section)
+   section or bookmark)
 *B + RB / A + RB
    mute / solo the track;
    RB + LB unmutes all
@@ -641,6 +641,9 @@
    Live mode, sample
    import/root/editor,
    rename, sort
+*A + Select
+   mark it: bookmark the
+   Song row
 *B + Select / LB + Select
    undo / redo any change,
    on every screen (hold B
@@ -705,10 +708,15 @@
    RB + Up: -
    RB + Down: Phrase
 *Project
-   -
+   Scale
    RB + Left: -
    RB + Up: -
    RB + Down: Song
+*Scale
+   -
+   RB + Left: Project
+   RB + Up: -
+   RB + Down: -
 *Mixer
    -
    RB + Left: -
@@ -796,8 +804,17 @@
 *B + Up/Down
    16 rows up / down
 *LB + Up/Down
-   jump through song
-   sections
+   jump to the next /
+   previous bookmark or
+   section start
+*A + Select
+   bookmark this row
+   (again: remove the
+   bookmark)
+*Up on row 00
+   move tracks: A +
+   Left/Right carries the
+   track over, Down is done
 *LB + Left/Right
    nudge the tempo
 *Start
@@ -987,6 +1004,44 @@
  sample editor (Select on
  the Source or Loop page) -
  see Samples.
+ 
+=Moving tracks
+ 
+ Up on the Song's row 00
+ switches to track moving
+ (the title says MOVE
+ TRACKS):
+ 
+*Left/Right
+   pick a track
+*A + Left/Right
+   move the track one
+   place, with its chains,
+   mixer level and mute
+*Down or B
+   back to the song grid
+ 
+=Scale
+ 
+*Up/Down
+   Key -> Scale -> keyboard
+*A + D-pad on Key/Scale
+   change it (Up/Down: 10
+   scales at a time)
+*Left/Right on the keyboard
+   pick a note
+*A on a note
+   in or out of the scale
+   (makes it your Custom
+   scale)
+*B + A
+   on a note: take it out;
+   on Key/Scale: back to
+   none / chromatic
+*Start
+   play / stop the song
+*RB + Left
+   back to Project
  
 =Mixer, FX, EQ and Limit
  
@@ -1230,6 +1285,43 @@
    gets an amber cap when
    it's close to full.
  
+=Bookmarks and sections
+ 
+ A + Select bookmarks the
+ row the cursor is on
+ (again: removes it). A
+ bookmarked row's number
+ turns into an amber tag.
+ LB + Up/Down jumps to the
+ next or previous place a
+ part starts: a bookmark,
+ or the first chain of a
+ block on the track you're
+ on (a chain right under an
+ empty cell). The screen
+ says which it found
+ (Bookmark 20, Section 10).
+ Bookmarks are saved with
+ the song, and B + Select
+ undoes them like any edit.
+ 
+=Moving tracks
+ 
+ On row 00, press Up once
+ more: the title says MOVE
+ TRACKS and the track
+ numbers appear above the
+ grid. Left/Right picks a
+ track, A + Left/Right
+ carries it past its
+ neighbour, with its chains
+ on every row, its mixer
+ fader and its mute. Down
+ (or B) goes back to the
+ grid. Stop the song first;
+ the screen tells you if
+ it's playing.
+ 
 =Live mode
  
  Select turns the Song
@@ -1423,7 +1515,9 @@
    song
 *Key / Scale / Notes
    note-editing helper and
-   sharp/flat spelling
+   sharp/flat spelling; RB
+   + Right shows them on a
+   keyboard (Scale)
 *Song List / Save Song / Sa
    back to the song list
    (offers to save first),
@@ -1438,6 +1532,49 @@
 *Render
    Stereo or Stems, then
    Start to export (Export)
+ 
+=Scale
+ 
+ RB + Right from Project.
+ The song's Key and Scale
+ on top, one octave of
+ piano keys below: the
+ notes of the scale are
+ lit, the key note is
+ amber. Under the keyboard
+ the scale is spelled out
+ (7 notes from D, D E F G A
+ B C#).
+ 
+ - Up/Down moves between
+   Key, Scale and the
+   keyboard; A + D-pad
+   changes Key and Scale as
+   on Project.
+ - On the keyboard,
+   Left/Right picks a note
+   and A puts it in or out
+   of the scale (you hear
+   it when it goes in). B +
+   A takes it out. The key
+   note always stays in.
+ - Editing a scale makes it
+   the song's own Custom
+   scale (the last one in
+   the list), starting from
+   the notes of the scale
+   you had. It is saved
+   with the song and moves
+   with the Key.
+ - Phrase note editing (A +
+   Left/Right), the
+   random-notes tool (LB +
+   Right on a selection)
+   and RAND all stay on the
+   lit keys. The SCAL
+   command switches Key and
+   Scale while the song
+   plays (Commands).
  
 =Mixer
  
@@ -2745,7 +2882,8 @@
 *DLAY
    --bb
    Does: start the note bb
-   ticks late
+   ticks late (up to the
+   step's length)
    Try: DLAY 0003 push a
    note behind the beat
  
@@ -2785,6 +2923,155 @@
  step (CHNC in one column,
  RAND in the other).
  
+ Random numbers are drawn
+ per track. SEED (below)
+ makes them repeat.
+ 
+=From the M8
+ 
+ Sequencer commands after
+ the Dirtywave M8's (RET,
+ NTH, SED, PVB, TIC, THO,
+ TSP, SCG). They work the
+ same with synth, sample
+ and MIDI instruments,
+ because the sequencer runs
+ them. ROLL, VIBR, SEED,
+ NTH, TRSP and SCAL go in a
+ phrase; TICK and THOP also
+ work inside a table.
+ 
+*ROLL
+   --xy
+   Does: strike the note
+   again every y ticks
+   until the next note.
+   Each hit changes the
+   volume by x: 1-7 quieter
+   (xx8 per hit, the roll
+   stops when it reaches
+   silence), 9-F louder
+   ((x-8)x8), 0/8 steady.
+   The first hit starts
+   from the step's VOLM, or
+   the instrument's volume.
+   y=0: one extra hit, x
+   ticks later. 0000 stops
+   Try: ROLL 0003 snare
+   roll  VOLM 0020 + ROLL
+   00F2 a roll that swells
+   in  ROLL 0043 echoing
+   stutter  ROLL 0030 flam
+*VIBR
+   --xy
+   Does: vibrato: speed x
+   (a cycle every 64/x
+   ticks, so it follows the
+   tempo), depth y
+   sixteenths of a
+   semitone. Ends with VIBR
+   0000 or the next note
+   with an instrument
+   number
+   Try: VIBR 0048 singer's
+   vibrato  VIBR 00C3 fast
+   shimmer on a pad
+*SEED
+   --bb
+   Does: restart this
+   track's random numbers
+   from seed bb: every RAND
+   and CHNC after it comes
+   out the same each time.
+   Put it on step 0 to
+   freeze a random melody
+   you like
+   Try: SEED 0007 on step 0
+   + RAND 000C on every
+   step: one "random" tune
+   that loops. Change bb
+   for another
+*NTH
+   --xy
+   Does: the note plays
+   only on pass x of every
+   y times its phrase plays
+   on this track (passes
+   count from when you
+   press Start). x=0: on
+   every pass except each
+   y-th
+   Try: NTH 0014 a crash
+   only on the first of 4
+   bars  NTH 0044 a fill on
+   the 4th  NTH 0002 a hat
+   that skips every other
+   bar
+*TICK
+   --bb
+   Does: this track's table
+   moves one row every bb
+   ticks instead of every
+   tick (in a table: that
+   table's own speed). 0000
+   goes back to the groove
+   Try: TABL 0003 + TICK
+   0006 a table that steps
+   once per step, like a
+   slow arpeggio
+*THOP
+   --0b
+   Does: this track's table
+   jumps to row b, all
+   three columns (in a
+   table: jump there on
+   this row)
+   Try: restart a filter
+   sweep half way through a
+   phrase
+*TRSP
+   --bb
+   Does: transpose the
+   whole song by bb
+   semitones (01-30 up,
+   FF-D0 down), like
+   Project -> Transpose
+   Try: TRSP 0002 up a tone
+   for the last chorus
+   TRSP 00F4 an octave down
+*SCAL
+   aabb
+   Does: set the song's Key
+   to aa (00 C ... 0B B, 0C
+   no key) and its Scale to
+   number bb (the order on
+   the Scale screen: 15
+   major, 03 minor, 20
+   minor pentatonic, 2E
+   your Custom scale). Note
+   editing and RAND follow
+   it from then on
+   Try: SCAL 0915 A major
+   for a bridge, back with
+   SCAL 0003
+ 
+ TRSP and SCAL change the
+ song's settings, the same
+ way TMPO sets the tempo:
+ the song keeps them when
+ it stops.
+ 
+ A ROLL on a step with a
+ note re-strikes that note;
+ on a step without one it
+ re-strikes whatever is
+ still ringing. The random
+ numbers SEED restarts
+ belong to its track only,
+ so a seeded bassline
+ doesn't freeze the drums'
+ CHNC.
+ 
 =Song-level
  
 *TMPO
@@ -2800,10 +3087,15 @@
    Does: start table bb on
    this track
 *HOP
-   aabb
-   Does: jump to step bb,
-   aa times (make short or
-   odd-length loops)
+   --bb
+   Does: when the phrase
+   reaches this step, go on
+   to the next phrase at
+   its step bb (a 12-step
+   bar: HOP 0000 on step
+   C). HOP 00FF stops the
+   track there. In a table:
+   jump to row bb, aa times
 *STOP
    ----
    Does: stop the song
@@ -2890,6 +3182,15 @@
 |02  HOP  0000   (jump back
 | to row 00)
  
+ Example - a slow arpeggio,
+ one row per step (TICK in
+ the table itself):
+ 
+|00  PTCH 0000   TICK 0006
+|01  PTCH 000C
+|02  PTCH 0007
+|03  HOP  0000
+ 
  Example - a fast octave,
  root, fifth arpeggio:
  
@@ -2916,6 +3217,16 @@
  outside the scale when you
  want a "wrong" note on
  purpose.
+ 
+ To see the scale on a
+ keyboard, or make your
+ own, press RB + Right on
+ Project (Scale screen): A
+ on a key puts that note in
+ or out. Five notes you
+ like, say A C D E G, and
+ every edit and every RAND
+ stays on them.
  
 =Scales
  

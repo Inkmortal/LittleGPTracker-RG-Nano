@@ -2,6 +2,7 @@
 #include <string.h>
 #include "Application/Commands/ApplicationCommandDispatcher.h"
 #include "Application/Mixer/MixerService.h"
+#include "Application/Model/Mixer.h"
 #include "Application/Model/ProjectDatas.h"
 #include "Application/Player/Player.h"
 #include "Application/Utils/char.h"
@@ -39,6 +40,8 @@ SongView::SongView(GUIWindow &w, ViewData *viewData, const char *song)
     invertBatt_ = false;
     canDeepClone_ = false;
     jumpLength_ = 0x10; // B-jump 16 rows like LSDJ
+    reorder_ = false;
+    pastedOnA_ = false;
 }
 
 /****************
@@ -291,7 +294,10 @@ void SongView::extendSelection() {
         called when current view is becoming active
  ******************************************************/
 
-void SongView::OnFocus() { clipboard_.active_ = false; };
+void SongView::OnFocus() {
+    clipboard_.active_ = false;
+    reorder_ = false;
+};
 
 GUIRect SongView::getSelectionRect() {
 
@@ -545,52 +551,122 @@ void SongView::onStop() {
     player->OnSongStartButton(from, to, true, false);
 };
 
+// LB + Up/Down: the next place a part starts, going that way (wrapping
+// round the song): a bookmarked row, or the first chain of a block on this
+// track (a chain right under an empty cell or at row 00)
 void SongView::jumpToNextSection(int direction) {
 
-    int current = viewData_->songY_ + viewData_->songOffset_;
-    bool foundGap = false;
-    for (int i = 0; i < SONG_ROW_COUNT; i++) {
-        unsigned char *start = viewData_->song_->data_ + viewData_->songX_ +
-                               SONG_CHANNEL_COUNT * current;
-        if (foundGap && (*start != 0xFF)) {
-            break;
-        } else {
-            if (*start == 0xFF) {
-                foundGap = true;
-            }
-        }
-        current += direction;
-        if (current < 0) {
-            current += SONG_ROW_COUNT;
-        }
-        if (current >= SONG_ROW_COUNT) {
-            current -= SONG_ROW_COUNT;
+    Song *song = viewData_->song_;
+    int x = viewData_->songX_;
+    int from = viewData_->songY_ + viewData_->songOffset_;
+    int target = -1;
+    bool bookmark = false;
+    for (int i = 1; i < SONG_ROW_COUNT && target < 0; i++) {
+        int row = (from + direction * i + SONG_ROW_COUNT) % SONG_ROW_COUNT;
+        unsigned char cell = song->data_[x + SONG_CHANNEL_COUNT * row];
+        bool blockStart =
+            cell != 0xFF &&
+            (row == 0 || song->data_[x + SONG_CHANNEL_COUNT * (row - 1)] == 0xFF);
+        if (song->IsBookmarked(row) || blockStart) {
+            target = row;
+            bookmark = song->IsBookmarked(row);
         }
     }
-    // If we go backwards, we stil have to go to the beginning of the block
-
-    if (direction < 0) {
-        while (current > 0) {
-            unsigned char *start = viewData_->song_->data_ + viewData_->songX_ +
-                                   SONG_CHANNEL_COUNT * current;
-            if (*start == 0xFF) {
-                current++;
-                break;
-            };
-            current--;
-        };
+    if (target < 0) {
+        SetNotification("No sections or bookmarks");
+        return;
     }
 
-    // Update viewdata position from current
-
-    if ((current - viewData_->songOffset_ > 0x17) ||
-        (current - viewData_->songOffset_ < 0)) {
-        viewData_->songOffset_ = current - 4;
+    // Show the target a few rows from the top, like the B jumps
+    int visible = View::songRowCount_;
+    if (target < viewData_->songOffset_ ||
+        target >= viewData_->songOffset_ + visible) {
+        viewData_->songOffset_ = target - 4;
+        if (viewData_->songOffset_ > SONG_ROW_COUNT - visible) {
+            viewData_->songOffset_ = SONG_ROW_COUNT - visible;
+        }
         if (viewData_->songOffset_ < 0) {
             viewData_->songOffset_ = 0;
         }
     }
-    viewData_->songY_ = current - viewData_->songOffset_;
+    viewData_->songY_ = target - viewData_->songOffset_;
+    static char hint[32];
+    sprintf(hint, bookmark ? "Bookmark %2.2X" : "Section %2.2X", target);
+    SetNotification(hint);
+    isDirty_ = true;
+}
+
+void SongView::toggleBookmark() {
+    int row = viewData_->songY_ + viewData_->songOffset_;
+    viewData_->song_->ToggleBookmark(row);
+    static char hint[32];
+    sprintf(hint, viewData_->song_->IsBookmarked(row) ? "Bookmark %2.2X set"
+                                                      : "Bookmark %2.2X removed",
+            row);
+    SetNotification(hint);
+    isDirty_ = true;
+}
+
+// Track reorder mode (Up on row 00, as on the M8): Left/Right pick a track,
+// A + Left/Right carries it over its neighbour with its chains, mute and
+// mixer level; Down or B goes back to the grid
+void SongView::processReorderButtonMask(unsigned int mask) {
+    if (mask & EPBM_R) {
+        // Screen moves, mute/solo and the song play as usual
+        reorder_ = false;
+        isDirty_ = true;
+        processNormalButtonMask(mask);
+        return;
+    }
+    if (mask == EPBM_DOWN || mask == EPBM_B) {
+        reorder_ = false;
+        SetNotification("Tracks done");
+        isDirty_ = true;
+        return;
+    }
+    if (mask & EPBM_A) {
+        if (mask & EPBM_LEFT) {
+            moveTrack(-1);
+        } else if (mask & EPBM_RIGHT) {
+            moveTrack(1);
+        }
+        return;
+    }
+    if (mask == EPBM_LEFT || mask == EPBM_RIGHT) {
+        updateCursor(mask == EPBM_LEFT ? -1 : 1, 0);
+        return;
+    }
+    if (mask == EPBM_START) {
+        onStart();
+    }
+}
+
+void SongView::moveTrack(int direction) {
+    int a = viewData_->songX_;
+    int b = a + direction;
+    if (b < 0 || b >= SONG_CHANNEL_COUNT) {
+        SetNotification(b < 0 ? "Already the first track" : "Already the last track");
+        return;
+    }
+    if (Player::GetInstance()->IsRunning()) {
+        SetNotification("Stop playing to move tracks");
+        return;
+    }
+    unsigned char *data = viewData_->song_->data_;
+    for (int row = 0; row < SONG_ROW_COUNT; row++) {
+        unsigned char t = data[row * SONG_CHANNEL_COUNT + a];
+        data[row * SONG_CHANNEL_COUNT + a] = data[row * SONG_CHANNEL_COUNT + b];
+        data[row * SONG_CHANNEL_COUNT + b] = t;
+    }
+    Mixer *mixer = Mixer::GetInstance();
+    int level = mixer->GetLevel(a);
+    mixer->SetLevel(a, mixer->GetLevel(b));
+    mixer->SetLevel(b, level);
+    UIController::GetInstance()->SwapTracks(a, b);
+    viewData_->songX_ = b;
+    static char hint[32];
+    sprintf(hint, "Track %d -> %d", a + 1, b + 1);
+    SetNotification(hint);
     isDirty_ = true;
 }
 
@@ -615,6 +691,20 @@ void SongView::ProcessButtonMask(unsigned short mask, bool pressed) {
         };
         return;
     };
+
+    // Was the previous press an A that pasted into an empty cell? (only
+    // A + Select looks at it, on this press)
+    bool pastedOnA = pastedOnA_;
+    pastedOnA_ = pastedOnA && mask == (EPBM_A | EPBM_SELECT);
+
+    if (reorder_) {
+        processReorderButtonMask(mask);
+        return;
+    }
+
+    if (viewMode_ == VM_NEW && mask == (EPBM_A | EPBM_SELECT)) {
+        viewMode_ = VM_NORMAL;
+    }
 
     if (viewMode_ == VM_NEW) {
         if (mask == EPBM_A) {
@@ -691,6 +781,16 @@ void SongView::processNormalButtonMask(unsigned int mask) {
         return;
     }
 
+    if (mask == (EPBM_A | EPBM_SELECT)) {
+        // A + Select bookmarks the row. Holding A on an empty cell has just
+        // pasted a chain there: that press was the start of this combo
+        if (pastedOnA_) {
+            *viewData_->GetCurrentSongPointer() = 0xFF;
+        }
+        toggleBookmark();
+        return;
+    }
+
     // B Modifier
 
     if (mask & EPBM_B) {
@@ -740,6 +840,7 @@ void SongView::processNormalButtonMask(unsigned int mask) {
                 // filled one A would keep replacing it with a new number
                 if (pasteLast()) {
                     viewMode_ = VM_NEW;
+                    pastedOnA_ = true;
                 }
             }
             if (mask & EPBM_R) {
@@ -807,6 +908,14 @@ void SongView::processNormalButtonMask(unsigned int mask) {
 
                     // No modifier
 
+                    if (mask == EPBM_UP && viewData_->songY_ == 0 &&
+                        viewData_->songOffset_ == 0) {
+                        // Up past row 00: move whole tracks (M8's Up Up)
+                        reorder_ = true;
+                        SetNotification("Move track: A+Left/Right");
+                        isDirty_ = true;
+                        return;
+                    }
                     if (mask & EPBM_DOWN)
                         updateCursor(0, 1);
                     if (mask & EPBM_UP)
@@ -991,13 +1100,17 @@ void SongView::DrawView() {
 
     std::ostringstream os;
 
-    os << ((player->GetSequencerMode() == SM_SONG) ? "Song" : "Live");
-
-    os << " - ";
-    if (songname_.substr(0, 5) == "lgpt_") {
-        os << songname_.substr(5);
+    if (reorder_) {
+        os << "Song - MOVE TRACKS";
     } else {
-        os << songname_;
+        os << ((player->GetSequencerMode() == SM_SONG) ? "Song" : "Live");
+
+        os << " - ";
+        if (songname_.substr(0, 5) == "lgpt_") {
+            os << songname_.substr(5);
+        } else {
+            os << songname_;
+        }
     }
     std::string buffer(os.str());
 
@@ -1013,11 +1126,29 @@ void SongView::DrawView() {
     pos = anchor;
     pos._x -= 3;
     for (int j = 0; j < View::songRowCount_; j++) {
-        char p = j + viewData_->songOffset_;
+        int p = j + viewData_->songOffset_;
         ((p / altRowNumber_) % 2) ? SetColor(CD_ROW) : SetColor(CD_ROW2);
-        hex2char(p, row);
+        // Bookmarked rows: the number drawn as an amber tag
+        if (viewData_->song_->IsBookmarked(p)) {
+            SetColor(CD_CURSOR);
+            props.invert_ = true;
+        }
+        hex2char((unsigned char)p, row);
         DrawString(pos._x, pos._y, row, props);
+        props.invert_ = false;
         pos._y += 1;
+    }
+
+    if (reorder_) {
+        // Track numbers above the grid, the one being moved lit
+        for (int i = 0; i < SONG_CHANNEL_COUNT; i++) {
+            char label[3] = {' ', (char)('1' + i), 0};
+            bool current = (i == viewData_->songX_);
+            SetColor(current ? CD_HILITE2 : CD_MUTE);
+            props.invert_ = current;
+            DrawString(anchor._x + i * 3, anchor._y - 1, label, props);
+        }
+        props.invert_ = false;
     }
 
     SetColor(CD_NORMAL);
@@ -1094,7 +1225,12 @@ void SongView::DrawView() {
 
     drawMap();
     drawNotes();
-    if (player->GetSequencerMode() == SM_LIVE) {
+    if (reorder_) {
+        int y = anchor._y + View::songRowCount_ + 4;
+        SetColor(CD_HILITE2);
+        DrawString(0, y, "A+Left/Right move  Down done", props);
+        SetColor(CD_NORMAL);
+    } else if (player->GetSequencerMode() == SM_LIVE) {
         // Live mode's buttons, under the track strip (the title says Live;
         // the helper lists the rest)
         int y = anchor._y + View::songRowCount_ + 4;

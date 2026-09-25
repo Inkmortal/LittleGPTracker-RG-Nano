@@ -122,6 +122,11 @@ set preset hyper_init
 focus scale
 set scale true
 expect_instrument_param 0 hyper_scale true
+# In D major the chord drawn on C (C E G) becomes B E G: the root moves down
+sim_set_key 2
+press d 80
+wait 100
+expect_screen_text   -1
 screenshot_app engine-hyper-scale.bmp
 
 # --- WAV ---

@@ -16,10 +16,11 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **Start** | play / stop what this screen shows |
 | **RB + Start** | play / stop the whole song (on the Song screen in Live mode: stop this track) |
 | **LB + Start** | capture or launch: record this bar/chain into a sample, or on the Song launch the row live |
-| **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, MOD slot, song section) |
+| **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, MOD slot, song section or bookmark) |
 | **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
 | **B + LB** | start a selection (again: grow it to whole rows, then the whole block). In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
 | **Select** | this screen's special tool: command picker, Live mode, sample import/root/editor, rename, sort |
+| **A + Select** | mark it: bookmark the Song row |
 | **B + Select** / **LB + Select** | undo / redo any change, on every screen (hold B or LB first) |
 | **RB + Select** | the helper, on every screen |
 
@@ -41,7 +42,8 @@ Hold **RB** and press a direction:
 | Instrument | — | Phrase | list of all sounds | Instrument table |
 | Table | Instrument table | Table (from the instrument table) | back up | — |
 | Groove | — | — | — | Phrase |
-| Project | — | — | — | Song |
+| Project | Scale | — | — | Song |
+| Scale | — | Project | — | — |
 | Mixer | — | — | Song | FX |
 | FX | EQ | — | Mixer | — |
 | EQ | Limit | FX | — | — |
@@ -75,7 +77,9 @@ The small label at the top right says what is playing: `PLAY:SONG`, `PLAY:CHAIN`
 | **A + D-pad** | change the chain number |
 | **B + A** | delete the chain from this cell |
 | **B + Up/Down** | 16 rows up / down |
-| **LB + Up/Down** | jump through song sections |
+| **LB + Up/Down** | jump to the next / previous bookmark or section start |
+| **A + Select** | bookmark this row (again: remove the bookmark) |
+| **Up** on row `00` | move tracks: **A + Left/Right** carries the track over, **Down** is done |
 | **LB + Left/Right** | nudge the tempo |
 | **Start** | play the song from this row |
 | **B + Start** | while playing, jump every track to this row right away |
@@ -150,6 +154,28 @@ Didn't like it? **B + Select** undoes.
 | **RB + A + Left/Right** | hear it an octave down / up |
 
 Sample instruments have their own pages, play modes, trim controls and a sample editor (**Select** on the Source or Loop page) — see [Samples](Samples).
+
+## Moving tracks
+
+**Up** on the Song's row `00` switches to track moving (the title says `MOVE TRACKS`):
+
+| Input (moving tracks) | Does |
+| --- | --- |
+| **Left/Right** | pick a track |
+| **A + Left/Right** | move the track one place, with its chains, mixer level and mute |
+| **Down** or **B** | back to the song grid |
+
+## Scale
+
+| Input | Does |
+| --- | --- |
+| **Up/Down** | Key → Scale → keyboard |
+| **A + D-pad** on Key/Scale | change it (Up/Down: 10 scales at a time) |
+| **Left/Right** on the keyboard | pick a note |
+| **A** on a note | in or out of the scale (makes it your Custom scale) |
+| **B + A** | on a note: take it out; on Key/Scale: back to none / chromatic |
+| **Start** | play / stop the song |
+| **RB + Left** | back to Project |
 
 ## Mixer, FX, EQ and Limit
 

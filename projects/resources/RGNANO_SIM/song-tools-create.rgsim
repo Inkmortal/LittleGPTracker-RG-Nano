@@ -1,0 +1,136 @@
+# Song tools (the M8's): bookmarks and track reorder.
+# A + Select bookmarks a row (drawn on the row number), LB + Up/Down stops at
+# bookmarks and section starts, Up on row 00 enters track reorder mode where
+# A + Left/Right carries a track (chains, mute, mixer level) over its
+# neighbour. Saved here, checked after a restart by song-tools-reopen.
+route boot.new_project_random
+expect_view song
+
+# Track 1: blocks at rows 00 and 04 and 08; track 2: a chain at row 00
+sim_set_song_chain 0 0 0
+sim_set_song_chain 4 0 2
+sim_set_song_chain 8 0 3
+sim_set_song_chain 0 1 1
+sim_set_chain_phrase 0 0 0 0
+sim_set_chain_phrase 1 0 1 0
+sim_set_chain_phrase 2 0 2 0
+sim_set_chain_phrase 3 0 3 0
+sim_set_phrase_note 0 0 48 0
+sim_set_phrase_note 1 0 55 0
+sim_set_phrase_note 2 0 50 0
+sim_set_phrase_note 3 0 52 0
+sim_set_mixer_level 0 80
+
+# Bookmark row 06, an empty cell: A pastes a chain, A + Select takes it back
+row 06
+down a
+wait 60
+press k 80
+up a
+wait 100
+expect_bookmark 6 yes
+expect_song_chain 6 0 FF
+expect_screen_text Bookmark 06 set
+screenshot_app song-bookmark.bmp
+
+# A bookmark on a filled row keeps the chain
+row 08
+down a
+wait 60
+press k 80
+up a
+wait 100
+expect_bookmark 8 yes
+expect_song_chain 8 0 03
+
+# ...and B + Select undoes it
+down b
+press k 80
+up b
+wait 100
+expect_bookmark 8 no
+expect_bookmark 6 yes
+
+# LB + Down: section 04, bookmark 06, section 08, back to 00 (wraps)
+row 00
+down m
+press d 80
+up m
+wait 60
+expect_screen_text Section 04
+down m
+press d 80
+up m
+wait 60
+expect_screen_text Bookmark 06
+down m
+press d 80
+up m
+wait 60
+expect_screen_text Section 08
+down m
+press u 80
+up m
+wait 60
+expect_screen_text Bookmark 06
+
+# Track reorder: mute track 1, then Up on row 00
+row 00
+down b
+press n 80
+up b
+wait 100
+expect_track_muted 0 yes
+press u 80
+wait 100
+expect_screen_text Song - MOVE TRACKS
+expect_screen_text A+Left/Right move  Down done
+screenshot_app song-reorder.bmp
+# Right alone only moves the cursor
+press r 80
+press l 80
+expect_song_chain 0 0 00
+# A + Right: track 1 goes to 2 with its chains, level and mute
+down a
+wait 60
+press r 80
+up a
+wait 100
+expect_screen_text Track 1 -> 2
+expect_song_chain 0 0 01
+expect_song_chain 0 1 00
+expect_song_chain 4 1 02
+expect_song_chain 8 1 03
+expect_mixer_level 0 C0
+expect_mixer_level 1 80
+expect_track_muted 0 no
+expect_track_muted 1 yes
+# Can't go past the edges
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+press r 80
+down a
+wait 60
+press r 80
+up a
+wait 100
+expect_screen_text Already the last track
+# Down leaves reorder mode
+press d 80
+wait 100
+expect_screen_text Tracks done
+expect_view song
+
+# Unmute (RB + LB), save, reopen in song-tools-reopen
+down n
+press m 80
+up n
+wait 100
+expect_track_muted 1 no
+sim_save_project
+expect_size 240 240
+expect_no_error
+quit
