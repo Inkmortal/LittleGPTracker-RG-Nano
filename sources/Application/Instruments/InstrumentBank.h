@@ -21,6 +21,8 @@ public:
 	unsigned short Clone(unsigned short i) ;
 	// Swap a sample slot between the sample and synth engines
 	bool SetInstrumentType(int i,InstrumentType type) ;
+	// Apply one saved parameter the way a song load does (old names too)
+	static void RestoreParam(I_Instrument *instr,const char *name,const char *value) ;
 private:
 	I_Instrument *instrument_[MAX_INSTRUMENT_COUNT] ;
 } ;

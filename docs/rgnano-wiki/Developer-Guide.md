@@ -119,6 +119,8 @@ Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 
 | Master EQ, instrument EQ design (shared biquads) | `sources/Application/Mixer/ThreeBandEQ.*`, `MasterEQ.*` |
 | Master limiter (look-ahead) | `sources/Application/Mixer/MasterLimiter.*`, screen `Views/LimiterView.cpp` |
 | Instrument EQ (per voice) | `sources/Application/Instruments/InstrumentEQ.*`, page `Views/InstrumentViewEQ.cpp` |
+| Sampler play modes (forward, reverse, loops, ping-pong, osc) | `sources/Application/Instruments/SampleInstrument.*` (`setupVoicePlayback`, `Render`) |
+| Sample editor (normalize, crop, fades, reverse, trim) | `sources/Application/Instruments/SampleProcessor.*`, `Views/ModalDialogs/SampleEditDialog.*` |
 | Instrument bank, type switching, starter kit | `sources/Application/Instruments/InstrumentBank.cpp` |
 | Synth screen | `sources/Application/Views/InstrumentViewSynth.cpp` |
 | Helper overlay | `sources/Application/Views/BaseClasses/View.cpp` |

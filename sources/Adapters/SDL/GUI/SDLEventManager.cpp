@@ -802,6 +802,15 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 	} else if (command.op=="sim_set_instrument_param" || command.op=="expect_instrument_param") {
 		iss >> command.value >> command.arg >> command.arg2;
 		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
+	} else if (command.op=="sim_load_instrument_param") {
+		// the value is the rest of the line, spaces and all, as a song
+		// file holds it (old names like "ping pong")
+		iss >> command.value >> command.arg;
+		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
+		std::getline(iss,command.arg2);
+		if (!command.arg2.empty() && command.arg2[0]==' ') command.arg2.erase(0,1);
+	} else if (command.op=="expect_sample_stats") {
+		iss >> command.arg >> command.arg2 >> command.value >> command.value2;
 	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2 >> command.arg3;
 	}
@@ -1231,6 +1240,16 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="sim_set_instrument_param") {
 		if (!SimSetInstrumentParam(command.value,command.arg,command.arg2)) {
 			FailSimScript("instrument param setup failed");
+			return;
+		}
+	} else if (command.op=="sim_load_instrument_param") {
+		if (!SimLoadInstrumentParam(command.value,command.arg,command.arg2)) {
+			FailSimScript("instrument param load failed");
+			return;
+		}
+	} else if (command.op=="expect_sample_stats") {
+		if (!ExpectSimSampleStats(command.arg,command.arg2,command.value,command.value2)) {
+			FailSimScript("sample stats assertion failed");
 			return;
 		}
 	} else if (command.op=="expect_instrument_type") {
@@ -2588,6 +2607,53 @@ bool SDLEventManager::SimSetInstrumentParam(int instrument, const std::string &n
 	}
 	Trace::Log("RGNANO_SIM","sim_set_instrument_param inst=%02X %s=%s",instrument,v->GetName(),v->GetString());
 	return true;
+}
+
+bool SDLEventManager::SimLoadInstrumentParam(int instrument, const std::string &name, const std::string &value)
+{
+	I_Instrument *instr=GetSimInstrument(GetSimViewData(),instrument);
+	Variable *v=FindSimInstrumentVariable(instr,name);
+	if (!v) {
+		Trace::Error("RGNANO_SIM sim_load_instrument_param unknown inst=%d param=%s",instrument,name.c_str());
+		return false;
+	}
+	// Exactly what a song load does with a saved PARAM
+	InstrumentBank::RestoreParam(instr,v->GetName(),value.c_str());
+	Trace::Log("RGNANO_SIM","sim_load_instrument_param inst=%02X %s saved=\"%s\" now=%s",instrument,v->GetName(),value.c_str(),v->GetString());
+	return true;
+}
+
+// A sample in the song's pool: frame count ("-" to skip) and the peak level
+// of channel 0..n between minPeak and maxPeak
+bool SDLEventManager::ExpectSimSampleStats(const std::string &sampleName, const std::string &framesText, int minPeak, int maxPeak)
+{
+	SamplePool *pool=SamplePool::GetInstance();
+	int index=-1;
+	for (int i=0;i<pool->GetNameListSize();i++) {
+		const char *name=pool->GetName(i);
+		if (name && sampleName==name) {
+			index=i;
+			break;
+		}
+	}
+	if (index<0 || !pool->GetSource(index)) {
+		Trace::Log("RGNANO_SIM","expect_sample_stats %s => missing",sampleName.c_str());
+		return false;
+	}
+	SoundSource *source=pool->GetSource(index);
+	int frames=source->GetSize(-1);
+	int channels=source->GetChannelCount(-1);
+	const short *samples=(const short *)source->GetSampleBuffer(-1);
+	int peak=0;
+	for (int i=0;samples && i<frames*channels;i++) {
+		int v=samples[i]<0?-samples[i]:samples[i];
+		if (v>peak) peak=v;
+	}
+	bool framesOk=(framesText=="-") || (frames==(int)strtol(framesText.c_str(),0,0));
+	bool peakOk=(peak>=minPeak && peak<=maxPeak);
+	Trace::Log("RGNANO_SIM","expect_sample_stats %s frames=%d (want %s) channels=%d peak=%d (want %d..%d) => %s",
+	           sampleName.c_str(),frames,framesText.c_str(),channels,peak,minPeak,maxPeak,(framesOk&&peakOk)?"match":"mismatch");
+	return framesOk && peakOk;
 }
 
 bool SDLEventManager::ExpectSimInstrumentType(int instrument, const std::string &type)

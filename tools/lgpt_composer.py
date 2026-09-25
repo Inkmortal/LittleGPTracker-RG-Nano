@@ -321,7 +321,9 @@ class Project:
         samples folder (as `filename` when given, so packs with the same file
         names can share a song). root is the note the recording plays at
         (C3 = 60, or a name like "A3"); other params use the save names with
-        '_' for spaces (e.g. reverb=0x60, delay=0x20, loopmode="none")."""
+        '_' for spaces (e.g. reverb=0x60, delay=0x20, loopmode="reverse"; the
+        play modes are forward reverse loop rev-loop pingpong rev-pingpong osc
+        osc-rev osc-pingpong loop-sync)."""
         wav = Path(wav)
         name = filename or wav.name
         with wave.open(str(wav), "rb") as w:
@@ -331,7 +333,7 @@ class Project:
             "sample": name,
             "volume": volume,
             "root note": root_note,
-            "loopmode": "none",
+            "loopmode": "forward",
             "start": 0,
             "end": frames,
         }

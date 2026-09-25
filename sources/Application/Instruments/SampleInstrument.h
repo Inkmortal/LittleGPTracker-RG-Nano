@@ -13,13 +13,21 @@
 #include "Foundation/Types/Types.h"
 #include "Foundation/Variables/WatchedVariable.h"
 
+// Play modes, as on the M8 sampler (FWD, REV, FWDLOOP, REVLOOP, FWD PP,
+// REV PP, OSC, OSC REV, OSC PP) plus LGPT's tempo-locked loop. Songs save
+// the name (see loopModeNames), so this order is free to change; old names
+// are translated by SampleInstrument::CanonicalLoopModeName.
 enum SampleInstrumentLoopMode {
-    SILM_ONESHOT = 0,
-    SILM_LOOP,
-    SILM_LOOP_PINGPONG,
-    SILM_OSC,
-    //	SILM_OSCFINE,
-    SILM_LOOPSYNC,
+    SILM_ONESHOT = 0,    // forward: S to E, once
+    SILM_REVERSE,        // E back to S, once
+    SILM_LOOP,           // S to E, then L to E again and again
+    SILM_REVLOOP,        // E back to L, again and again
+    SILM_LOOP_PINGPONG,  // S to E, then back and forth between L and E
+    SILM_REV_PINGPONG,   // E back to L, then back and forth
+    SILM_OSC,            // L..E is one wave cycle, pitched by the note
+    SILM_OSC_REV,        // the cycle played backwards
+    SILM_OSC_PINGPONG,   // the cycle there and back
+    SILM_LOOPSYNC,       // L..E stretched to one bar at the song tempo
     SILM_LAST
 };
 
@@ -82,6 +90,23 @@ public:
 	   virtual void SetTableState(TableSaveState &state) ;	 
 
 	   bool IsMulti() ;
+
+	   // Play mode helpers (see SampleInstrumentLoopMode)
+	   static bool IsReverseMode(int mode) ;
+	   static bool IsLoopingMode(int mode) ;
+	   static bool IsPingPongMode(int mode) ;
+	   static bool IsOscMode(int mode) ;
+	   // The same direction, looping or not (the preview's once/loop)
+	   static int WithLooping(int mode,bool loop) ;
+	   // A note's path through the markers: it starts at first, each pass
+	   // ends at end (either way round), a loop jumps back to restart
+	   static void PlayPath(int mode,int S,int L,int E,int &first,int &end,int &restart) ;
+	   // Saved name of an old song -> today's name ("none" -> "forward")
+	   static const char *CanonicalLoopModeName(const char *saved) ;
+	   static const char *GetLoopModeName(int mode) ;
+	   // Put a new sample on this instrument now (even while it plays) and
+	   // set its markers: sample editing keeps S/L/E where they belong
+	   void ReplaceSample(int index,int start,int loopStart,int end) ;
 	   int DetectRootNoteSuggestion() ;
 	   int DetectRootNoteSuggestionFromTrim() ;
 	   int GetSuggestedRootNote() ;
@@ -111,6 +136,9 @@ protected:
 		void doTickUpdate(int channel) ;
 		void doKRateUpdate(int channel) ;
 		void updateFeedback(renderParams *rp) ;
+		// Where a voice starts, where each pass ends and where a loop
+		// restarts, for its play mode; reposition: move the playhead there
+		void setupVoicePlayback(renderParams *rp,bool cleanstart,bool reposition) ;
 
 private:
        int DetectRootNoteSuggestionInRange(int rangeStart, int rangeEnd) ;

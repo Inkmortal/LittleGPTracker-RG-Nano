@@ -19,7 +19,7 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, song section) |
 | **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
 | **B + LB** | start a selection (again: grow it to whole rows, then the whole block). In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
-| **Select** | this screen's special tool: command picker, Live mode, sample import/root, rename, sort |
+| **Select** | this screen's special tool: command picker, Live mode, sample import/root/editor, rename, sort |
 | **B + Select** / **LB + Select** | undo / redo any change, on every screen (hold B or LB first) |
 | **RB + Select** | the helper, on every screen |
 
@@ -147,7 +147,7 @@ Didn't like it? **B + Select** undoes.
 | **A + Start** | hear the instrument (synth at C3, sample at its root); again to stop |
 | **RB + A + Left/Right** | hear it an octave down / up |
 
-Sample instruments have their own pages and trim controls — see [Samples](Samples).
+Sample instruments have their own pages, play modes, trim controls and a sample editor (**Select** on the Source or Loop page) — see [Samples](Samples).
 
 ## Mixer, FX, EQ and Limit
 

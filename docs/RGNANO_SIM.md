@@ -222,6 +222,13 @@ expect_file rgnano-sim-data/samples/rgnano-test-tone.wav
 # fail unless a sample was imported into the active project's samples folder
 expect_project_sample rgnano-test-tone.wav
 
+# a pool sample's frame count ("-" to skip) and peak level within min..max
+expect_sample_stats lofi-chord_nrm.wav 32000 32700 32767
+
+# apply a saved PARAM the way a song load does (old names like "ping pong"
+# are translated); the value is the rest of the line
+sim_load_instrument_param 0 loopmode ping pong
+
 # fail unless the simulator log contains text
 expect_log Loaded
 

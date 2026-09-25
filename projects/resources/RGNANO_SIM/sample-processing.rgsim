@@ -1,0 +1,232 @@
+# Sampler play modes (M8: FWD REV loops ping-pong OSC) and the sample
+# editor (normalize, crop, fades, reverse, trim): each edit writes a new WAV
+# next to the original, puts it on the instrument, and B+Select undoes it.
+route boot.new_project_random
+expect_view song
+sim_import_sample_to_instrument 0 lofi-chord.wav
+expect_instrument_sample 0 lofi-chord.wav
+
+# Old songs: the loop mode names they saved still mean the same thing
+sim_load_instrument_param 0 loopmode none
+expect_instrument_param 0 loopmode forward
+sim_load_instrument_param 0 loopmode ping pong
+expect_instrument_param 0 loopmode pingpong
+sim_load_instrument_param 0 loopmode oscillator
+expect_instrument_param 0 loopmode osc
+sim_load_instrument_param 0 loopmode looper sync
+expect_instrument_param 0 loopmode loop-sync
+sim_load_instrument_param 0 loopmode loop
+expect_instrument_param 0 loopmode loop
+sim_load_instrument_param 0 loopmode none
+expect_instrument_param 0 loopmode forward
+
+# A phrase with one note of instrument 00
+press a 80
+goto chain
+press a 80
+goto phrase
+row 00
+press a 80
+wait 300
+goto instrument
+instrument 00
+page SOURCE
+expect_screen_text play   forward
+
+# Play reverse: the note starts at E and runs back to S
+set play reverse
+expect_instrument_param 0 loopmode reverse
+expect_screen_text play   reverse
+screenshot_app sampler-play-reverse.bmp
+# The helper lists the sampler's keys and a how-to
+down n
+press k 80
+up n
+press d 80
+wait 150
+expect_screen_text Sel elsewhere: edit sample
+screenshot_app sampler-helper-keys.bmp
+press d 80
+wait 150
+expect_screen_text Sampler: plays a WAV.
+screenshot_app sampler-helper-howto.bmp
+down n
+press k 80
+up n
+wait 150
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_audio_activity 16
+down a
+press s 80
+up a
+wait 200
+
+# Reverse ping-pong on the LOOP page, with its picture
+page LOOP
+set play rev-pingpong
+expect_instrument_param 0 loopmode rev-pingpong
+screenshot_app sampler-play-revpp.bmp
+set play loop
+page SOURCE
+set play forward
+
+# PLAY command: the phrase's note plays reverse, the instrument stays forward
+sim_set_phrase_command 0 0 1 PLAY 0001
+goto phrase
+reset_audio_stats
+press s 80
+wait 600
+expect_log SAMPLE_PLAY] channel 0 mode=reverse restart
+expect_audio_activity 16
+press s 80
+wait 300
+expect_instrument_param 0 loopmode forward
+goto instrument
+page SOURCE
+
+# The sample editor: Select anywhere on the waveform pages but sample/root
+focus detune
+press k 80
+wait 200
+expect_screen_text SAMPLE EDIT
+expect_screen_text normalize
+screenshot_app sample-edit-normalize.bmp
+press a 80
+wait 300
+expect_screen_text lofi-chord_nrm.wav
+expect_project_sample lofi-chord_nrm.wav
+expect_instrument_sample 0 lofi-chord_nrm.wav
+expect_sample_stats lofi-chord_nrm.wav 32000 32700 32767
+expect_log SAMPLE_EDIT] normalize: lofi-chord.wav -> lofi-chord_nrm.wav
+# Normalizing again changes nothing
+press a 80
+wait 200
+expect_screen_text already as loud as it gets
+press b 80
+wait 200
+expect_screen_text SOURCE
+
+# Crop to S..E: the markers move with the sound
+sim_set_sample_trim 0 4000 20000
+press k 80
+wait 200
+press d 80
+wait 200
+expect_screen_text crop to S..E
+screenshot_app sample-edit-crop.bmp
+press a 80
+wait 300
+expect_screen_text lofi-chord_nrm_crop.wav
+expect_instrument_sample 0 lofi-chord_nrm_crop.wav
+expect_sample_stats lofi-chord_nrm_crop.wav 16000 1 32767
+expect_sample_trim 0 0 0 16000
+
+# Reverse it, then hear the result
+press d 80
+press d 80
+press d 80
+wait 200
+expect_screen_text reverse S..E
+press a 80
+wait 300
+expect_screen_text nrm_crop_rev.wav
+expect_sample_stats lofi-chord_nrm_crop_rev.wav 16000 1 32767
+screenshot_app sample-edit-reverse.bmp
+press b 80
+wait 200
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_audio_activity 16
+down a
+press s 80
+up a
+wait 200
+
+# B+Select steps back through the edits; the original file is untouched
+down b
+press k 80
+up b
+wait 200
+expect_instrument_sample 0 lofi-chord_nrm_crop.wav
+down b
+press k 80
+up b
+wait 200
+expect_instrument_sample 0 lofi-chord_nrm.wav
+expect_sample_trim 0 4000 4000 20000
+down b
+press k 80
+up b
+wait 200
+expect_instrument_sample 0 lofi-chord.wav
+expect_project_sample lofi-chord.wav
+expect_sample_stats lofi-chord.wav 32000 1 32767
+
+# Fade out, then trim the silence it leaves, from the LOOP page
+page LOOP
+press k 80
+wait 200
+expect_screen_text SAMPLE EDIT
+# The editor's helper, and A opens its guide section
+down n
+press k 80
+up n
+press d 80
+wait 150
+expect_screen_text Up/Down pick an edit
+screenshot_app sample-edit-helper.bmp
+press a 80
+wait 300
+expect_log GUIDE] open samples / Sample editing
+press b 80
+press b 80
+wait 200
+expect_screen_text SAMPLE EDIT
+# a sustained chord has no silence to trim yet
+press u 80
+wait 200
+expect_screen_text trim silence
+press a 80
+wait 200
+expect_screen_text no silence at the ends
+press u 80
+press u 80
+wait 200
+expect_screen_text fade out S..E
+press a 80
+wait 300
+expect_screen_text made a new file
+expect_screen_text lofi-chord_fout.wav
+expect_instrument_sample 0 lofi-chord_fout.wav
+screenshot_app sample-edit-fadeout.bmp
+press d 80
+press d 80
+wait 200
+expect_screen_text trim silence
+screenshot_app sample-edit-trim.bmp
+press a 80
+wait 300
+expect_screen_text lofi-chord_fout_trim.wav
+expect_instrument_sample 0 lofi-chord_fout_trim.wav
+expect_log SAMPLE_EDIT] trim silence: lofi-chord_fout.wav -> lofi-chord_fout_trim.wav frames=32000->
+press b 80
+wait 200
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_audio_activity 16
+down a
+press s 80
+up a
+
+expect_no_error
+quit

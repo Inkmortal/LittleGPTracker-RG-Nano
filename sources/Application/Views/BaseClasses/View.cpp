@@ -551,6 +551,13 @@ void View::drawContextOverlay() {
 	SetColor(CD_NORMAL);
 }
 
+// Sample or synth: the Instrument screen's help differs
+InstrumentType View::currentInstrumentType() {
+	if (!viewData_ || !viewData_->project_) return IT_LAST;
+	I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(viewData_->currentInstrument_);
+	return instr?instr->GetType():IT_LAST;
+}
+
 // Keys the 7 command lines have no room for, per screen (helper page 2)
 int View::getMoreKeys(const char **lines,int max) {
 	static const char *song[]={"Select  LIVE mode on/off","Live: Start cue a cell",
@@ -566,6 +573,9 @@ int View::getMoreKeys(const char **lines,int max) {
 		"LB+Start render to sample","RB+Up Groove RB+Dn Table"};
 	static const char *instrument[]={"B+Dpad other instrument","B+A clear sample/table",
 		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song"};
+	static const char *sampler[]={"B+Dpad other instrument","B+A clear sample/table",
+		"Sel on SOURCE/LOOP: edit","  normalize crop fade rev","PLAY cmd: mode per note",
+		"RB+Up list of all sounds","RB+Down instrument table"};
 	static const char *table[]={"B+Left/Right other table","B+A delete",
 		"B+LB select, then B copy","A+LB paste","RB+Start play the song"};
 	static const char *groove[]={"B+Left/Right other groove","B+A clear the step",
@@ -587,7 +597,13 @@ int View::getMoreKeys(const char **lines,int max) {
 		case VT_SONG: MORE_KEYS(song); break;
 		case VT_CHAIN: MORE_KEYS(chain); break;
 		case VT_PHRASE: MORE_KEYS(phrase); break;
-		case VT_INSTRUMENT: MORE_KEYS(instrument); break;
+		case VT_INSTRUMENT:
+			if (currentInstrumentType()==IT_SAMPLE) {
+				MORE_KEYS(sampler);
+			} else {
+				MORE_KEYS(instrument);
+			}
+			break;
 		case VT_TABLE:
 		case VT_TABLE2: MORE_KEYS(table); break;
 		case VT_GROOVE: MORE_KEYS(groove); break;
@@ -639,6 +655,16 @@ void View::getHowToSteps(const char **lines) {
 			lines[6]="Start: loop this bar";
 			break;
 		case VT_INSTRUMENT:
+			if (currentInstrumentType()==IT_SAMPLE) {
+				lines[0]="Sampler: plays a WAV.";
+				lines[1]="Sel on sample: import one";
+				lines[2]="play: forward, reverse,";
+				lines[3]="loop, pingpong, osc";
+				lines[4]="LB+Up/Dn + LB+A+L/R: S L E";
+				lines[5]="Sel: edit (normalize...)";
+				lines[6]="A+Start hear it";
+				break;
+			}
 			lines[0]="Instrument = the sound.";
 			lines[1]="preset: A+Left/Right tries";
 			lines[2]="sounds. A+Start = hear";
