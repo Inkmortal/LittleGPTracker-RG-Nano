@@ -228,6 +228,11 @@ $suite = @(
     Args = @("-OpenDemo=EngineRoom")
   },
   @{
+    Name = "sample-select"
+    Script = "sample-select.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "undo"
     Script = "undo.rgsim"
     Args = @("-ResetLastProject")

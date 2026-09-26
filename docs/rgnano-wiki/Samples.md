@@ -93,13 +93,13 @@ Source and Loop show the waveform with three markers: **S** start, **L** loop st
 | **LB + A + Left/Right** | nudge it |
 | **A + Start** | hear the sample from S to E (**RB + A + Left/Right**: an octave down/up) |
 | **RB + Start** | switch that preview between once and loop (`PREV:` on screen), in the play mode's direction |
-| **Select** | open the [sample editor](#sample-editing) (on `sample`: import; on `root`: find the root) |
+| **Select** | open the [sample editor](#sample-editing) from any page (on `sample`: import; on `root`: find the root; no sample yet: the sample browser) |
 
 ## Sample editing
 
 <img src="images/sample-edit.png" width="300" align="right" alt="The sample editor: before and after">
 
-Like the M8's sample editor, with the same processes. On the Source or Loop page press **Select** (anywhere but on `sample` and `root`). The editor works on the part between **S** and **E**, shaded in the pictures: **BEFORE** is the sample now, **AFTER** what the edit will make.
+Like the M8's sample editor, with the same processes. On any sample page press **Select** (anywhere but on `sample` and `root`). The editor works on the part between **S** and **E**, shaded in the pictures: **BEFORE** is the sample now, **AFTER** what the edit will make.
 
 | Edit | Does |
 | --- | --- |

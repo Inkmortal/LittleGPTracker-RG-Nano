@@ -2854,8 +2854,8 @@
  their own pages, play
  modes, trim controls and a
  sample editor (Select on
- the Source or Loop page) -
- see Samples.
+ any of its pages) - see
+ Samples.
  
 =Moving tracks
  
@@ -6374,15 +6374,17 @@
    direction
 *Select
    open the sample editor
-   (on sample: import; on
-   root: find the root)
+   from any page (on
+   sample: import; on root:
+   find the root; no sample
+   yet: the sample browser)
  
 =Sample editing
  
  Like the M8's sample
  editor, with the same
- processes. On the Source
- or Loop page press Select
+ processes. On any sample
+ page press Select
  (anywhere but on sample
  and root). The editor
  works on the part between

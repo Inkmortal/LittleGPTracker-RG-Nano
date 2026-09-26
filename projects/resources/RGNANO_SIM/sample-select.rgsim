@@ -1,0 +1,43 @@
+# Select on a sample instrument always does something: the browser when
+# there is no sample (from any page), the sample editor on every page
+# once there is one (except on sample = browser, root = root helper).
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+goto instrument
+set type sample
+page SHAPE
+press k 80
+wait 300
+expect_screen_text Listen
+press b 80
+wait 200
+expect_view instrument
+page SOURCE
+route instrument.make_sample
+route instrument.open_sample_import
+route sample_import.to_first_file
+route sample_import.quick_import_selected
+wait 300
+# B closes the browser
+press b 80
+wait 200
+expect_view instrument
+page FILTER
+press k 80
+wait 300
+expect_screen_text SAMPLE EDIT
+press b 80
+wait 200
+page EQ
+press k 80
+wait 300
+expect_screen_text SAMPLE EDIT
+press b 80
+wait 200
+expect_no_error
+quit

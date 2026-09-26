@@ -153,7 +153,7 @@ Didn't like it? **B + Select** undoes.
 | **A + Start** | hear the instrument (synth at C3, sample at its root); again to stop |
 | **RB + A + Left/Right** | hear it an octave down / up |
 
-Sample instruments have their own pages, play modes, trim controls and a sample editor (**Select** on the Source or Loop page) — see [Samples](Samples).
+Sample instruments have their own pages, play modes, trim controls and a sample editor (**Select** on any of its pages) — see [Samples](Samples).
 
 ## Moving tracks
 

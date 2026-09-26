@@ -1058,8 +1058,17 @@ static void SampleEditCallback(View &v, ModalView &dialog) {
 void InstrumentView::openSampleEditor() {
 	int i=viewData_->currentInstrument_;
 	I_Instrument *instr=viewData_->project_->GetInstrumentBank()->GetInstrument(i);
-	if (!instr || instr->GetType()!=IT_SAMPLE || instr->IsEmpty()) {
-		View::SetNotification("no sample: Sel on sample");
+	if (!instr || instr->GetType()!=IT_SAMPLE) {
+		return;
+	}
+	if (instr->IsEmpty()) {
+		// Nothing to edit yet: pick a sample first
+		Path sampleLib(SamplePool::GetInstance()->GetSampleLib()) ;
+		if (FileSystem::GetInstance()->GetFileType(sampleLib.GetPath().c_str())!=FT_DIR) {
+			DoModal(new MessageBox(*this,"Can't access the samplelib",MBBF_OK)) ;
+		} else {
+			DoModal(new ImportSampleDialog(*this), ImportSampleDialogCallback) ;
+		}
 		isDirty_=true;
 		return;
 	}
@@ -1253,11 +1262,10 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			isDirty_=true;
 			return;
 		}
-		// Anywhere else on the waveform pages: the sample editor
-		if (isWaveMarkerPage()) {
-			openSampleEditor();
-			return;
-		}
+		// Anywhere else, on every page: the sample editor (or the browser
+		// when there is no sample yet) - Select always does something here
+		openSampleEditor();
+		return;
 	}
 
 	if (viewMode_==VM_NEW) {
