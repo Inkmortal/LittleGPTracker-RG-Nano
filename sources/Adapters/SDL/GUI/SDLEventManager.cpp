@@ -759,7 +759,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (command.arg.empty()) {
 			command.arg="80";
 		}
-	} else if (command.op=="expect_log" || command.op=="expect_screens_differ") {
+	} else if (command.op=="expect_log" || command.op=="expect_screens_differ" || command.op=="expect_screens_same") {
 		iss >> command.arg;
 		std::getline(iss,command.arg2);
 		if (!command.arg2.empty() && command.arg2[0]==' ') {
@@ -1076,8 +1076,8 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			FailSimScript("log error assertion failed");
 			return;
 		}
-	} else if (command.op=="expect_screens_differ") {
-		if (!ExpectSimScreensDiffer(command.arg,command.arg2)) {
+	} else if (command.op=="expect_screens_differ" || command.op=="expect_screens_same") {
+		if (!ExpectSimScreensDiffer(command.arg,command.arg2,command.op=="expect_screens_differ")) {
 			FailSimScript("screen difference assertion failed");
 			return;
 		}
@@ -1618,7 +1618,8 @@ bool SDLEventManager::ExpectSimNoError()
 	return clean;
 }
 
-bool SDLEventManager::ExpectSimScreensDiffer(const std::string &firstPath, const std::string &secondPath)
+// wantDiffer false: the two screenshots must be identical (nothing moved)
+bool SDLEventManager::ExpectSimScreensDiffer(const std::string &firstPath, const std::string &secondPath, bool wantDiffer)
 {
 	if (firstPath.empty() || secondPath.empty()) {
 		Trace::Error("RGNANO_SIM expect_screens_differ missing path");
@@ -1642,10 +1643,10 @@ bool SDLEventManager::ExpectSimScreensDiffer(const std::string &firstPath, const
 		}
 	}
 	Trace::Log("RGNANO_SIM","expect_screens_differ %s %s => %s",firstPath.c_str(),secondPath.c_str(),differs?"different":"same");
-	if (!differs) {
-		Trace::Error("RGNANO_SIM expected screenshots to differ");
+	if (differs!=wantDiffer) {
+		Trace::Error("RGNANO_SIM expected screenshots to be %s",wantDiffer?"different":"the same");
 	}
-	return differs;
+	return differs==wantDiffer;
 }
 
 void SDLEventManager::PressSimCombo(SDLGUIWindowImp *window, int modifier, int key)

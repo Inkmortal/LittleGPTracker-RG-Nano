@@ -877,7 +877,19 @@ void AppWindow::drawPendingPlayerUpdates() {
     if (count == 0 || !_currentView) return;
     SysMutexLocker locker(drawMutex_);
     for (int i = 0; i < count; i++) {
-        _currentView->OnPlayerUpdate((PlayerEventType)pending[i].type_, pending[i].tick_);
+        drawPlayerUpdate((PlayerEventType)pending[i].type_, pending[i].tick_);
+    }
+}
+
+// Caller holds drawMutex_
+void AppWindow::drawPlayerUpdate(PlayerEventType type, unsigned int tick) {
+    if (View::contextOverlay_) {
+        // The helper covers the screen: the view's live drawing
+        // (meters, play markers) would paint over it. An open
+        // dialog still hears the tick (e.g. render to sample).
+        _currentView->View::OnPlayerUpdate(type, tick);
+    } else {
+        _currentView->OnPlayerUpdate(type, tick);
     }
 }
 
@@ -1163,14 +1175,7 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
         }
         if (_currentView) {
             SysMutexLocker locker(drawMutex_);
-            if (View::contextOverlay_) {
-                // The helper covers the screen: the view's live drawing
-                // (meters, play markers) would paint over it. An open
-                // dialog still hears the tick (e.g. render to sample).
-                _currentView->View::OnPlayerUpdate(pt->GetType(), pt->GetTickCount());
-            } else {
-                _currentView->OnPlayerUpdate(pt->GetType(), pt->GetTickCount());
-            }
+            drawPlayerUpdate(pt->GetType(), pt->GetTickCount());
             Invalidate();
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
             const char *dumpInput = Config::GetInstance()->GetValue("DUMPEVENT");

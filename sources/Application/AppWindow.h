@@ -191,6 +191,7 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     unsigned int uiThread_;
     void queuePlayerUpdate(int type, unsigned int tick);
     void drawPendingPlayerUpdates();
+    void drawPlayerUpdate(PlayerEventType type, unsigned int tick);
 
     Path GetLastProjectPath();
 };

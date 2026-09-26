@@ -13,6 +13,8 @@ screenshot_app helper-playing-1.bmp
 wait 700
 screenshot_app helper-playing-2.bmp
 expect_screen_text MAP
+# Nothing under the helper may move while the song plays
+expect_screens_same helper-playing-1.bmp helper-playing-2.bmp
 down n
 press k 80
 up n
