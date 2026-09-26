@@ -364,8 +364,10 @@ foreach ($case in $suite) {
   & $runner @caseParams
   $exitCode = $LASTEXITCODE
   $caseEnded = Get-Date
-  Get-ChildItem -LiteralPath $root -File -Include "*.bmp","*.wav" -ErrorAction SilentlyContinue |
-    Where-Object { $_.LastWriteTime -ge $caseStarted } |
+  # Screenshots and captures a case left in the repo root (-Include is
+  # ignored with -LiteralPath in PowerShell 5.1: it matched every file)
+  Get-ChildItem -LiteralPath $root -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.Extension -in ".bmp", ".wav" -and $_.LastWriteTime -ge $caseStarted } |
     Remove-Item -Force
   $results += [pscustomobject]@{
     name = $case.Name
