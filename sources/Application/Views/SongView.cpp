@@ -840,6 +840,8 @@ void SongView::processNormalButtonMask(unsigned int mask) {
                 if (pastedOnA_) {
                     *viewData_->GetCurrentSongPointer() = 0xFF;
                     pastedOnA_ = false;
+                    // ...and its "Reused 00. A again = new" hint is gone too
+                    View::SetNotification("Pasted");
                 }
                 pasteClipboard();
             }
