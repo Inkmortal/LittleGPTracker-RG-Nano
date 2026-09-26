@@ -1,5 +1,6 @@
 
 #include "AudioDriver.h"
+#include "AudioProfiler.h"
 #include "System/System/System.h"
 #include "System/Console/Trace.h"
 #include "System/Console/n_assert.h"
@@ -13,6 +14,9 @@
 
 static double gRenderLoad = 0.0;   // smoothed, 1.0 == real time
 static double gRenderLoadPeak = 0.0;
+static double gRenderLoadAvgPeak = 0.0;  // highest smoothed wall load
+static double gRenderCpuLoad = 0.0;      // smoothed, render thread CPU time
+static double gRenderCpuLoadPeak = 0.0;
 static int gLastBufferSamples = 0;
 static volatile unsigned long gUnderruns = 0;
 
@@ -163,15 +167,24 @@ void AudioDriver::AddBuffer(short *buffer,int samplecount) {
 
 void AudioDriver::OnNewBufferNeeded() {
   double start = nowMicros() ;
+  // The render thread's own CPU time: wall time minus the time other
+  // threads (the screen) had the CPU while this buffer was being made
+  double cpuStart = AudioProfiler::ThreadMicros() ;
   gLastBufferSamples = 0 ;
+  AudioProfiler::BeginBuffer() ;
   SetChanged() ;
   Event event(Event::ADET_BUFFERNEEDED);
   NotifyObservers(&event) ;
+  AudioProfiler::EndBuffer(gLastBufferSamples) ;
   if (gLastBufferSamples > 0) {
     double budget = gLastBufferSamples * 1000000.0 / 44100.0 ;
     double load = (nowMicros() - start) / budget ;
+    double cpuLoad = (AudioProfiler::ThreadMicros() - cpuStart) / budget ;
     gRenderLoad = gRenderLoad * 0.95 + load * 0.05 ;
     if (load > gRenderLoadPeak) gRenderLoadPeak = load ;
+    gRenderCpuLoad = gRenderCpuLoad * 0.95 + cpuLoad * 0.05 ;
+    if (gRenderCpuLoad > gRenderCpuLoadPeak) gRenderCpuLoadPeak = gRenderCpuLoad ;
+    if (gRenderLoad > gRenderLoadAvgPeak) gRenderLoadAvgPeak = gRenderLoad ;
 #ifdef PLATFORM_RGNANO_SIM
     static int buffers = 0 ;
     if (++buffers % 400 == 0) {
@@ -190,6 +203,13 @@ int AudioDriver::TakeRenderLoadPeak() {
   int peak = (int)(gRenderLoadPeak * 100.0 + 0.5) ;
   gRenderLoadPeak = 0.0 ;
   return peak ;
+}
+
+void AudioDriver::TakeSmoothedLoadPeaks(int &wall, int &cpu) {
+  wall = (int)(gRenderLoadAvgPeak * 100.0 + 0.5) ;
+  cpu = (int)(gRenderCpuLoadPeak * 100.0 + 0.5) ;
+  gRenderLoadAvgPeak = 0.0 ;
+  gRenderCpuLoadPeak = 0.0 ;
 }
 
 unsigned long AudioDriver::GetUnderrunCount() {

@@ -198,6 +198,11 @@ $suite = @(
     Args = @("-OpenDemo=NeonDrive")
   },
   @{
+    Name = "engine-room-load"
+    Script = "engine-room-load.rgsim"
+    Args = @("-OpenDemo=EngineRoom")
+  },
+  @{
     Name = "instrument-eq"
     Script = "instrument-eq.rgsim"
     Args = @("-OpenDemo=JadeSword")

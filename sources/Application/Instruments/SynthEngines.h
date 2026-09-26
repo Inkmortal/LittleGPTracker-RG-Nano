@@ -23,6 +23,9 @@
 // functions are inline and avoid libm.
 
 #include <math.h>
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+#include <arm_neon.h>
+#endif
 
 enum SynthEngine {
 	SE_SYNTH=0,
@@ -42,14 +45,14 @@ extern float synthSineTable[SYNTH_SINE_SIZE+1] ;
 void SynthEnginesInit() ;
 
 // Sine of a 32-bit phase (one cycle = 2^32), linear interpolation
-static inline float synthSinU32(unsigned int ph) {
+static inline __attribute__((always_inline)) float synthSinU32(unsigned int ph) {
 	unsigned int i=ph>>(32-SYNTH_SINE_BITS) ;
 	float frac=(float)(ph&((1u<<(32-SYNTH_SINE_BITS))-1))*(1.0f/(float)(1u<<(32-SYNTH_SINE_BITS))) ;
 	return synthSineTable[i]+(synthSineTable[i+1]-synthSineTable[i])*frac ;
 }
 
 // Cycles (-64..64) to a 32-bit phase offset; wraps like the accumulator
-static inline unsigned int synthCyclesToU32(float cycles) {
+static inline __attribute__((always_inline)) unsigned int synthCyclesToU32(float cycles) {
 	return ((unsigned int)(int)(cycles*16777216.0f))<<8 ;
 }
 
@@ -57,7 +60,7 @@ static inline float synthU32ToFloat(unsigned int ph) {
 	return (float)(ph>>8)*(1.0f/16777216.0f) ;
 }
 
-static inline float synthPolyBlep(float t,float dt) {
+static inline __attribute__((always_inline)) float synthPolyBlep(float t,float dt) {
 	if (dt<=0.0f) return 0.0f ;
 	if (t<dt) {
 		t/=dt ;
@@ -164,7 +167,7 @@ void Fm4Start(Fm4Ops &o,unsigned int seed) ;
 // Advances the envelopes one block and sets the pitch and gain ramps
 void Fm4Block(Fm4Ops &o,const Fm4Params &p,float baseInc,int blockLength) ;
 
-static inline float fm4Shape(int shape,unsigned int ph,Fm4Ops &o,int op,unsigned int inc) {
+static inline __attribute__((always_inline)) float fm4Shape(int shape,unsigned int ph,Fm4Ops &o,int op,unsigned int inc) {
 	switch(shape) {
 		case F4S_SIN:
 			return synthSinU32(ph) ;
@@ -239,6 +242,200 @@ static inline float fm4Tick(Fm4Ops &o,const Fm4Params &p) {
 	return out*p.carrierNorm_ ;
 }
 
+// The longest run the block renderers below take at once
+#define SYNTH_ENGINE_MAX_RUN 64
+
+// One operator over a run of samples: the arithmetic of fm4Tick for that
+// operator, with its shape, feedback and routing fixed for the run (the
+// shape switch is resolved at compile time)
+// The buffers start unwritten: the first operator to feed a modulation
+// input or the output stores into it (first bit set in 'first': bit t for
+// in[t], bit 0 for out), the others add (0 + x is x, so the sums are the
+// same as from zeroed buffers); 'modulated' says whether an earlier
+// operator feeds this one at all.
+// What one operator does for one sample k (gain g already stepped)
+struct Fm4OpRun {
+	unsigned int phase ;
+	unsigned int inc ;
+	float fb0,fb1 ;
+	float fbDepth ;
+	unsigned char targets ;
+	bool carrier ;
+	float depth ;
+	unsigned char first ;
+	bool modulated ;
+} ;
+
+template <int SHAPE>
+static inline __attribute__((always_inline)) void fm4OpSample(Fm4OpRun &r,Fm4Ops &o,int op,
+                                  float in[FM4_OPS][SYNTH_ENGINE_MAX_RUN],float *out,int k,float g) {
+	if (g<=0.0f) {
+		r.fb0=r.fb1=0.0f ;
+		r.phase+=r.inc ;
+		// a silent operator still starts the buffers it is first in
+		if (r.first&2) in[1][k]=0.0f ;
+		if (r.first&4) in[2][k]=0.0f ;
+		if (r.first&8) in[3][k]=0.0f ;
+		if (r.first&1) out[k]=0.0f ;
+		return ;
+	}
+	float m=r.modulated?in[op][k]:0.0f ;
+	if (r.fbDepth>0.0f) {
+		m+=(r.fb0+r.fb1)*r.fbDepth ;
+	}
+	unsigned int ph=r.phase+synthCyclesToU32(m) ;
+	float y=fm4Shape(SHAPE,ph,o,op,r.inc)*g ;
+	r.fb0=r.fb1 ;
+	r.fb1=y ;
+	if (r.targets) {
+		float d=y*r.depth ;
+		if (r.targets&2) { if (r.first&2) in[1][k]=d ; else in[1][k]+=d ; }
+		if (r.targets&4) { if (r.first&4) in[2][k]=d ; else in[2][k]+=d ; }
+		if (r.targets&8) { if (r.first&8) in[3][k]=d ; else in[3][k]+=d ; }
+	}
+	if (r.carrier) {
+		if (r.first&1) out[k]=y ; else out[k]+=y ;
+	}
+	r.phase+=r.inc ;
+}
+
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+// Four samples of a sine operator without feedback, all four at once: the
+// phases are exact (integer steps), the table read and its interpolation
+// (a fused multiply-add, as the compiler makes of synthSinU32) and every
+// product are the same operations as fm4OpSample's, so the numbers are too
+static inline __attribute__((always_inline)) void fm4SineQuad(Fm4OpRun &r,int op,
+                                  float in[FM4_OPS][SYNTH_ENGINE_MAX_RUN],float *out,int k,
+                                  float32x4_t g,uint32x4_t incRamp) {
+	uint32x4_t ph=vaddq_u32(vdupq_n_u32(r.phase),incRamp) ;
+	if (r.modulated) {
+		int32x4_t off=vcvtq_n_s32_f32(vld1q_f32(&in[op][k]),24) ;
+		ph=vaddq_u32(ph,vshlq_n_u32(vreinterpretq_u32_s32(off),8)) ;
+	}
+	uint32x4_t idx=vshrq_n_u32(ph,32-SYNTH_SINE_BITS) ;
+	float32x4_t frac=vcvtq_n_f32_u32(vandq_u32(ph,vdupq_n_u32((1u<<(32-SYNTH_SINE_BITS))-1)),
+	                                 32-SYNTH_SINE_BITS) ;
+	unsigned int i[4] ;
+	vst1q_u32(i,idx) ;
+	float32x4_t t0=vdupq_n_f32(0.0f),t1=vdupq_n_f32(0.0f) ;
+	t0=vld1q_lane_f32(synthSineTable+i[0],t0,0) ;
+	t1=vld1q_lane_f32(synthSineTable+i[0]+1,t1,0) ;
+	t0=vld1q_lane_f32(synthSineTable+i[1],t0,1) ;
+	t1=vld1q_lane_f32(synthSineTable+i[1]+1,t1,1) ;
+	t0=vld1q_lane_f32(synthSineTable+i[2],t0,2) ;
+	t1=vld1q_lane_f32(synthSineTable+i[2]+1,t1,2) ;
+	t0=vld1q_lane_f32(synthSineTable+i[3],t0,3) ;
+	t1=vld1q_lane_f32(synthSineTable+i[3]+1,t1,3) ;
+	float32x4_t y=vmulq_f32(vfmaq_f32(t0,frac,vsubq_f32(t1,t0)),g) ;
+	if (r.targets) {
+		float32x4_t d=vmulq_f32(y,vdupq_n_f32(r.depth)) ;
+		for (int t=1;t<FM4_OPS;t++) {
+			if (!(r.targets&(1<<t))) continue ;
+			if (r.first&(1<<t)) vst1q_f32(&in[t][k],d) ;
+			else vst1q_f32(&in[t][k],vaddq_f32(vld1q_f32(&in[t][k]),d)) ;
+		}
+	}
+	if (r.carrier) {
+		if (r.first&1) vst1q_f32(out+k,y) ;
+		else vst1q_f32(out+k,vaddq_f32(vld1q_f32(out+k),y)) ;
+	}
+	r.fb0=vgetq_lane_f32(y,2) ;
+	r.fb1=vgetq_lane_f32(y,3) ;
+	r.phase+=4u*r.inc ;
+}
+#endif
+
+template <int SHAPE>
+static inline void fm4OperatorRun(Fm4Ops &o,const Fm4Params &p,const Fm4Algo &a,int op,
+                                  float in[FM4_OPS][SYNTH_ENGINE_MAX_RUN],float *out,int n,
+                                  unsigned char first,bool modulated) {
+	float g=o.gain_[op] ;
+	const float step=o.gainStep_[op] ;
+	Fm4OpRun r ;
+	r.phase=o.phase_[op] ;
+	r.inc=o.inc_[op] ;
+	r.fb0=o.fb_[op][0] ;
+	r.fb1=o.fb_[op][1] ;
+	r.fbDepth=p.fbDepth_[op] ;
+	r.targets=a.mods_[op] ;
+	r.carrier=(a.carriers_&(1<<op))!=0 ;
+	r.depth=FM4_MOD_DEPTH*p.modScale_ ;
+	r.first=first ;
+	r.modulated=modulated ;
+	int k=0 ;
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+	if (SHAPE==F4S_SIN && !(r.fbDepth>0.0f) && n>=4) {
+		// no feedback: the samples do not depend on each other
+		unsigned int rampInit[4]={0u,r.inc,2u*r.inc,3u*r.inc} ;
+		const uint32x4_t incRamp=vld1q_u32(rampInit) ;
+		for (;k+4<=n;k+=4) {
+			// the gain ramp still steps sample by sample (same rounding)
+			float g4[4] ;
+			g4[0]=g=g+step ;
+			g4[1]=g=g+step ;
+			g4[2]=g=g+step ;
+			g4[3]=g=g+step ;
+			if (g4[0]>0.0f && g4[1]>0.0f && g4[2]>0.0f && g4[3]>0.0f) {
+				fm4SineQuad(r,op,in,out,k,vld1q_f32(g4),incRamp) ;
+			} else {
+				for (int j=0;j<4;j++) fm4OpSample<SHAPE>(r,o,op,in,out,k+j,g4[j]) ;
+			}
+		}
+	}
+#endif
+	for (;k<n;k++) {
+		g=g+step ;
+		fm4OpSample<SHAPE>(r,o,op,in,out,k,g) ;
+	}
+	o.gain_[op]=g ;
+	o.phase_[op]=r.phase ;
+	o.fb_[op][0]=r.fb0 ;
+	o.fb_[op][1]=r.fb1 ;
+}
+
+// n (<= SYNTH_ENGINE_MAX_RUN) samples of the four operators: the same
+// numbers as n calls of fm4Tick. Operators only modulate later ones, so
+// each can run the whole block in turn. Two or more noise operators share
+// one random sequence, drawn in sample order: those go sample by sample.
+static inline void fm4Render(Fm4Ops &o,const Fm4Params &p,float *out,int n) {
+	int noiseOps=0 ;
+	for (int op=0;op<FM4_OPS;op++) {
+		if (p.shape_[op]==F4S_NOISE) noiseOps++ ;
+	}
+	if (noiseOps>1) {
+		for (int k=0;k<n;k++) out[k]=fm4Tick(o,p) ;
+		return ;
+	}
+	const Fm4Algo &a=fm4Algos[p.algo_] ;
+	float in[FM4_OPS][SYNTH_ENGINE_MAX_RUN] ;
+	unsigned char written=0 ;   // bit t: in[t] started, bit 0: out started
+	for (int op=0;op<FM4_OPS;op++) {
+		unsigned char wants=(unsigned char)(a.mods_[op]&0x0E) ;
+		if (a.carriers_&(1<<op)) wants|=1 ;
+		unsigned char first=(unsigned char)(wants&~written) ;
+		bool modulated=(written&(1<<op))!=0 ;
+		written|=wants ;
+		switch(p.shape_[op]) {
+			case F4S_SIN: fm4OperatorRun<F4S_SIN>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_SW2: fm4OperatorRun<F4S_SW2>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_SW3: fm4OperatorRun<F4S_SW3>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_SW4: fm4OperatorRun<F4S_SW4>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_SW5: fm4OperatorRun<F4S_SW5>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_SW6: fm4OperatorRun<F4S_SW6>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_TRI: fm4OperatorRun<F4S_TRI>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_SAW: fm4OperatorRun<F4S_SAW>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_SQU: fm4OperatorRun<F4S_SQU>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_PUL: fm4OperatorRun<F4S_PUL>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			case F4S_IMP: fm4OperatorRun<F4S_IMP>(o,p,a,op,in,out,n,first,modulated) ; break ;
+			default: fm4OperatorRun<F4S_NOISE>(o,p,a,op,in,out,n,first,modulated) ; break ;
+		}
+	}
+	if (!(written&1)) {
+		for (int k=0;k<n;k++) out[k]=0.0f ;
+	}
+	for (int k=0;k<n;k++) out[k]*=p.carrierNorm_ ;
+}
+
 /***************************************************************
  HYPER
  ***************************************************************/
@@ -252,8 +449,13 @@ extern const char *hyperChordNames[HYPER_CHORD_COUNT] ;
 // Index 0 is "custom" (the six notes as edited)
 extern const signed char hyperChords[HYPER_CHORD_COUNT][HYPER_NOTES] ;
 
+// The saws run on 32-bit integer phases (one cycle = 2^32, wrapping by
+// itself), as the FM operators and Braids do: the phase is exact to 2^-32
+// of a cycle whatever the note (a float phase near 1.0 keeps only 24 bits)
+// and four samples ahead is just four steps added - which lets the device
+// work four samples at a time.
 struct HyperOsc {
-	float phase_[HYPER_NOTES][2] ;
+	unsigned int phase_[HYPER_NOTES][2] ;
 	float subPhase_ ;
 } ;
 
@@ -275,12 +477,30 @@ void HyperShiftGains(int shift,float &first,float &second) ;
 // Sub oscillator: octaves below (1 or 2) and level 0..1
 void HyperSub(int sub,int &octaves,float &level) ;
 
-static inline float hyperSaw(float &ph,float inc) {
-	float t=ph ;
-	float s=2.0f*t-1.0f-synthPolyBlep(t,inc) ;
-	t+=inc ;
-	if (t>=1.0f) t-=1.0f ;
-	ph=t ;
+// Phase step of a saw: cycles per sample (0..0.45) as a 32-bit step
+static inline unsigned int hyperPhaseStep(float inc) {
+	return inc>0.0f?(unsigned int)(inc*4294967296.0f):0u ;
+}
+
+// The PolyBLEP correction of a saw at t (0..1), dt = its step, invDt =
+// 1/dt: the same polynomial as synthPolyBlep, a multiply for the division
+static inline __attribute__((always_inline)) float hyperBlep(float t,float dt,float invDt) {
+	if (dt<=0.0f) return 0.0f ;
+	if (t<dt) {
+		t*=invDt ;
+		return t+t-t*t-1.0f ;
+	} else if (t>1.0f-dt) {
+		t=(t-1.0f)*invDt ;
+		return t*t+t+t+1.0f ;
+	}
+	return 0.0f ;
+}
+
+static inline __attribute__((always_inline)) float hyperSaw(unsigned int &ph,unsigned int step,
+                                                            float dt,float invDt) {
+	float t=(float)ph*(1.0f/4294967296.0f) ;
+	float s=2.0f*t-1.0f-hyperBlep(t,dt,invDt) ;
+	ph+=step ;
 	return s ;
 }
 
@@ -289,8 +509,10 @@ static inline void hyperTick(HyperOsc &o,const HyperParams &p,float &left,float 
 	for (int n=0;n<HYPER_NOTES;n++) {
 		float g=p.gain_[n] ;
 		if (g<=0.0f) continue ;
-		a+=g*hyperSaw(o.phase_[n][0],p.inc_[n][0]) ;
-		b+=g*hyperSaw(o.phase_[n][1],p.inc_[n][1]) ;
+		float dt=p.inc_[n][0] ;
+		a+=g*hyperSaw(o.phase_[n][0],hyperPhaseStep(dt),dt,dt>0.0f?1.0f/dt:0.0f) ;
+		dt=p.inc_[n][1] ;
+		b+=g*hyperSaw(o.phase_[n][1],hyperPhaseStep(dt),dt,dt>0.0f?1.0f/dt:0.0f) ;
 	}
 	a*=p.norm_ ;
 	b*=p.norm_ ;
@@ -309,6 +531,96 @@ static inline void hyperTick(HyperOsc &o,const HyperParams &p,float &left,float 
 		s*=p.subLevel_*0.6f ;
 		left+=s ;
 		right+=s ;
+	}
+}
+
+// One PolyBLEP saw over n samples, times g, stored into (assign) or added
+// to acc. On the device four samples at a time in NEON: the plain ramp
+// 2t-1 for all four, and the correction only for the few groups of four
+// that sit next to the jump (it touches two samples per cycle); the
+// numbers are those of hyperSaw.
+static inline void hyperSawRun(unsigned int &phase,float inc,float g,float *acc,int n,bool assign) {
+	const unsigned int step=hyperPhaseStep(inc) ;
+	const float invDt=inc>0.0f?1.0f/inc:0.0f ;
+	int k=0 ;
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+	if (inc>0.0f && n>=4) {
+		const float32x4_t one=vdupq_n_f32(1.0f) ;
+		const float32x4_t two=vdupq_n_f32(2.0f) ;
+		const float32x4_t vg=vdupq_n_f32(g) ;
+		const float32x4_t vdt=vdupq_n_f32(inc) ;
+		const float32x4_t upper=vdupq_n_f32(1.0f-inc) ;
+		unsigned int rampInit[4]={0u,step,2u*step,3u*step} ;
+		const uint32x4_t ramp=vld1q_u32(rampInit) ;
+		unsigned int ph=phase ;
+		for (;k+4<=n;k+=4) {
+			uint32x4_t u=vaddq_u32(vdupq_n_u32(ph),ramp) ;
+			float32x4_t t=vcvtq_n_f32_u32(u,32) ;
+			float32x4_t s=vsubq_f32(vmulq_f32(two,t),one) ;
+			uint32x4_t near=vorrq_u32(vcltq_f32(t,vdt),vcgtq_f32(t,upper)) ;
+			uint32x2_t near2=vorr_u32(vget_low_u32(near),vget_high_u32(near)) ;
+			if (vget_lane_u32(near2,0)|vget_lane_u32(near2,1)) {
+				// a jump is near: correct those samples
+				float tt[4],ss[4] ;
+				vst1q_f32(tt,t) ;
+				vst1q_f32(ss,s) ;
+				for (int j=0;j<4;j++) ss[j]-=hyperBlep(tt[j],inc,invDt) ;
+				s=vld1q_f32(ss) ;
+			}
+			float32x4_t y=vmulq_f32(vg,s) ;
+			if (assign) {
+				vst1q_f32(acc+k,y) ;
+			} else {
+				vst1q_f32(acc+k,vaddq_f32(vld1q_f32(acc+k),y)) ;
+			}
+			ph+=4u*step ;
+		}
+		phase=ph ;
+	}
+#endif
+	for (;k<n;k++) {
+		float y=g*hyperSaw(phase,step,inc,invDt) ;
+		if (assign) acc[k]=y ; else acc[k]+=y ;
+	}
+}
+
+// n (<= SYNTH_ENGINE_MAX_RUN) samples of hyperTick: each saw runs through
+// the whole block in turn, summed per sample in the same order
+static inline void hyperRender(HyperOsc &o,const HyperParams &p,float *left,float *right,int n) {
+	float a[SYNTH_ENGINE_MAX_RUN] ;
+	float b[SYNTH_ENGINE_MAX_RUN] ;
+	bool first=true ;   // the first sounding note stores, the rest add
+	for (int note=0;note<HYPER_NOTES;note++) {
+		const float g=p.gain_[note] ;
+		if (g<=0.0f) continue ;
+		hyperSawRun(o.phase_[note][0],p.inc_[note][0],g,a,n,first) ;
+		hyperSawRun(o.phase_[note][1],p.inc_[note][1],g,b,n,first) ;
+		first=false ;
+	}
+	if (first) {
+		for (int k=0;k<n;k++) a[k]=b[k]=0.0f ;
+	}
+	for (int k=0;k<n;k++) {
+		float x=a[k]*p.norm_ ;
+		float y=b[k]*p.norm_ ;
+		left[k]=x*p.gainL_[0]+y*p.gainL_[1] ;
+		right[k]=x*p.gainR_[0]+y*p.gainR_[1] ;
+	}
+	if (p.subLevel_>0.0f) {
+		float st=o.subPhase_ ;
+		for (int k=0;k<n;k++) {
+			float s=(st<0.5f)?1.0f:-1.0f ;
+			s+=synthPolyBlep(st,p.subInc_) ;
+			float t2=st+0.5f ;
+			if (t2>=1.0f) t2-=1.0f ;
+			s-=synthPolyBlep(t2,p.subInc_) ;
+			st+=p.subInc_ ;
+			if (st>=1.0f) st-=1.0f ;
+			s*=p.subLevel_*0.6f ;
+			left[k]+=s ;
+			right[k]+=s ;
+		}
+		o.subPhase_=st ;
 	}
 }
 

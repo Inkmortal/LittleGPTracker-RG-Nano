@@ -73,13 +73,18 @@ int CrashLog::MemoryKB() {
 #endif
 }
 
+static bool heartbeatStarted = false;
+static unsigned long heartbeatLast = 0;
+
+bool CrashLog::HeartbeatDue() {
+	return !heartbeatStarted || UptimeSeconds() - heartbeatLast >= HEARTBEAT_SECONDS;
+}
+
 bool CrashLog::Heartbeat(const char *state) {
-	static bool started = false;
-	static unsigned long last = 0;
 	unsigned long now = UptimeSeconds();
-	if (started && now - last < HEARTBEAT_SECONDS) return false;
-	started = true;
-	last = now;
+	if (heartbeatStarted && now - heartbeatLast < HEARTBEAT_SECONDS) return false;
+	heartbeatStarted = true;
+	heartbeatLast = now;
 	Trace::Log("HEARTBEAT", "up %lus mem %dKB %s", now, MemoryKB(), state ? state : "");
 	return true;
 }

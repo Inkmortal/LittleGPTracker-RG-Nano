@@ -49,17 +49,44 @@ void MasterEQ::Process(fixed *buffer, int frames) {
 		memset(state_, 0, sizeof(state_));
 		return;
 	}
-	for (int i = 0; i < frames; i++) {
+	// A band at 0 dB is the identity: only the others run (like the
+	// instrument EQ)
+	int active[3];
+	int activeCount = 0;
+	for (int b = 0; b < 3; b++) {
+		if (ThreeBandEQ::BandFlat(params_, b)) {
+			state_[b][0][0] = state_[b][0][1] = state_[b][1][0] = state_[b][1][1] = 0.0;
+		} else {
+			active[activeCount++] = b;
+		}
+	}
+	// Each channel through each band in turn over a chunk, the filter
+	// state and coefficients held in registers (the same operations per
+	// sample as one sample through all bands, in the same order)
+	const int CHUNK = 128;
+	double x[CHUNK];
+	for (int start = 0; start < frames; start += CHUNK) {
+		int n = frames - start;
+		if (n > CHUNK) n = CHUNK;
 		for (int ch = 0; ch < 2; ch++) {
-			double x = fp2fl(buffer[i * 2 + ch]);
-			for (int b = 0; b < 3; b++) {
-				x = ThreeBandEQ::Step(coeffs_[b], state_[b][ch], x);
+			fixed *io = buffer + start * 2 + ch;
+			for (int i = 0; i < n; i++) x[i] = fp2fl(io[i * 2]);
+			for (int k = 0; k < activeCount; k++) {
+				int b = active[k];
+				const float *c = coeffs_[b];
+				double z[2] = {state_[b][ch][0], state_[b][ch][1]};
+				for (int i = 0; i < n; i++) x[i] = ThreeBandEQ::Step(c, z, x[i]);
+				state_[b][ch][0] = z[0];
+				state_[b][ch][1] = z[1];
 			}
-			// A boost on a loud mix must not wrap the fixed-point sample;
-			// the master clipper after this handles the rest
-			if (x > 65000.0) x = 65000.0;
-			if (x < -65000.0) x = -65000.0;
-			buffer[i * 2 + ch] = fl2fp((float)x);
+			for (int i = 0; i < n; i++) {
+				double v = x[i];
+				// A boost on a loud mix must not wrap the fixed-point sample;
+				// the master clipper after this handles the rest
+				if (v > 65000.0) v = 65000.0;
+				if (v < -65000.0) v = -65000.0;
+				io[i * 2] = fl2fp((float)v);
+			}
 		}
 	}
 }

@@ -16,6 +16,8 @@
 #include "Application/Views/ModalDialogs/SelectProjectDialog.h"
 #include "Foundation/Variables/WatchedVariable.h"
 #include "Player/Player.h"
+#include "Services/Audio/AudioDriver.h"
+#include "Services/Audio/AudioProfiler.h"
 #include "Services/Midi/MidiService.h"
 #include "System/Console/Trace.h"
 #include "UIFramework/Interfaces/I_GUIWindowFactory.h"
@@ -265,6 +267,11 @@ void AppWindow::defineAllColors() {
 AppWindow::AppWindow(I_GUIWindowImp &imp) : GUIWindow(imp) {
 
     instance = this;
+
+    // The window is made on the UI thread: play position updates from any
+    // other thread (the audio) are queued for it
+    uiThread_ = SDL_ThreadID();
+    playerUpdateCount_ = 0;
 
     // Init all members
 
@@ -552,10 +559,30 @@ void AppWindow::Flush() {
             int load = player->GetPlayedBufferPercentage();
             if (load > peakLoad) peakLoad = load;
         }
-        char state[64];
-        snprintf(state, sizeof(state), "view %s player %s load peak %d%%", GetCurrentViewName(),
-                 running ? "on" : "off", peakLoad);
-        if (CrashLog::Heartbeat(state)) {
+        if (CrashLog::HeartbeatDue()) {
+            // How the heaviest buffer since the last line was spent
+            // (percent of its play time per part of the mix), and the
+            // render thread's own CPU share: "smoothed" well above "cpu"
+            // means the screen took the CPU from the audio while it
+            // rendered
+            int shares[APS_COUNT];
+            int worst = AudioProfiler::TakePeak(shares);
+            char parts[160];
+            parts[0] = 0;
+            int used = 0;
+            for (int s = 0; s < APS_COUNT && used < (int)sizeof(parts) - 12; s++) {
+                if (shares[s] <= 0) continue;
+                used += snprintf(parts + used, sizeof(parts) - used, " %s %d",
+                                 AudioProfiler::SlotName(s), shares[s]);
+            }
+            int wallPeak = 0, cpuPeak = 0;
+            AudioDriver::TakeSmoothedLoadPeaks(wallPeak, cpuPeak);
+            char state[320];
+            snprintf(state, sizeof(state),
+                     "view %s player %s load peak %d%% (smoothed %d%% cpu %d%%) worst buffer %d%%:%s",
+                     GetCurrentViewName(), running ? "on" : "off", peakLoad, wallPeak, cpuPeak,
+                     worst, parts);
+            CrashLog::Heartbeat(state);
             peakLoad = 0;
         }
     }
@@ -728,6 +755,12 @@ void AppWindow::RefreshCurrentView() {
     Redraw();
 };
 
+void AppWindow::ForgetInstrument(I_Instrument *instrument) {
+    if (_instrumentView) {
+        _instrumentView->ForgetInstrument(instrument);
+    }
+};
+
 bool AppWindow::onEvent(GUIEvent &event) {
 
     // We need to tell the app to quit once we're out of the
@@ -806,8 +839,47 @@ void AppWindow::onUpdate() {
         LoadProject(_newProjectToLoad.c_str());
         return;
     }
+    drawPendingPlayerUpdates();
     Flush();
 };
+
+// Audio thread: remember the event (a short lock, no drawing). A full
+// queue keeps the newest position update in place of the last one.
+void AppWindow::queuePlayerUpdate(int type, unsigned int tick) {
+    SysMutexLocker locker(playerUpdateMutex_);
+    if (playerUpdateCount_ == PLAYER_UPDATE_QUEUE) {
+        PendingPlayerUpdate &last = playerUpdates_[PLAYER_UPDATE_QUEUE - 1];
+        if (type == PET_UPDATE && last.type_ == PET_UPDATE) {
+            last.tick_ = tick;
+            return;
+        }
+        // keep start/stop events: drop the oldest position update instead
+        for (int i = 0; i < PLAYER_UPDATE_QUEUE - 1; i++) {
+            playerUpdates_[i] = playerUpdates_[i + 1];
+        }
+        playerUpdateCount_--;
+    }
+    playerUpdates_[playerUpdateCount_].type_ = type;
+    playerUpdates_[playerUpdateCount_].tick_ = tick;
+    playerUpdateCount_++;
+}
+
+// UI thread: what the player queued, in order, as the views did it before
+void AppWindow::drawPendingPlayerUpdates() {
+    PendingPlayerUpdate pending[PLAYER_UPDATE_QUEUE];
+    int count = 0;
+    {
+        SysMutexLocker locker(playerUpdateMutex_);
+        count = playerUpdateCount_;
+        for (int i = 0; i < count; i++) pending[i] = playerUpdates_[i];
+        playerUpdateCount_ = 0;
+    }
+    if (count == 0 || !_currentView) return;
+    SysMutexLocker locker(drawMutex_);
+    for (int i = 0; i < count; i++) {
+        _currentView->OnPlayerUpdate((PlayerEventType)pending[i].type_, pending[i].tick_);
+    }
+}
 
 void AppWindow::LayoutChildren() {};
 
@@ -1082,6 +1154,13 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
     case VET_PLAYER_POSITION_UPDATE: {
         PlayerEvent *pt = (PlayerEvent *)ve;
 
+        if (SDL_ThreadID() != uiThread_) {
+            // The player's tick on the audio thread: drawn by the UI thread
+            // (onUpdate) instead of here
+            queuePlayerUpdate(pt->GetType(), pt->GetTickCount());
+            Invalidate();
+            break;
+        }
         if (_currentView) {
             SysMutexLocker locker(drawMutex_);
             if (View::contextOverlay_) {

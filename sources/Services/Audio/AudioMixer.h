@@ -46,9 +46,18 @@ public:
 	static const int MAX_INSERTS = 4 ;
 	
 private:
+  // The soft clip settings for one buffer
+  struct SoftClipCurve {
+    bool on;
+    float posMax, negMax;       // full scale, as float
+    float posScale, negScale;   // alphaInv / full scale
+    float alpha, alpha23, gain;
+  };
+  void prepareSoftClip(SoftClipCurve &curve);
   fixed hardClip(fixed sample);
-  fixed softClip(fixed sample);
-  void updateWaveform(fixed *buffer,int samplecount,int peak);
+  fixed softClip(fixed sample, const SoftClipCurve &curve);
+  void clipScan(fixed *buffer,int frames,int &peak,fixed &sumMin,fixed &sumMax);
+  void updateWaveform(fixed sumMin,fixed sumMax,int samplecount,int peak);
   bool enableRendering_;
   std::string renderPath_;
   WavFileWriter *writer_;

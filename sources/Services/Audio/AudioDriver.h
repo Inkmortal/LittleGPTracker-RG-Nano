@@ -71,6 +71,11 @@ public:
 	// Over 100 means the device cannot keep up and the output drops out.
 	static int GetRenderLoadPercent() ;
 	static int TakeRenderLoadPeak() ;
+	// Highest smoothed load since the last call, from wall time (what
+	// GetRenderLoadPercent shows) and from the render thread's own CPU
+	// time; wall well above cpu means other threads (the screen) took the
+	// CPU while a buffer was being rendered
+	static void TakeSmoothedLoadPeaks(int &wall,int &cpu) ;
 	// Times the output ran dry while playing (heard as clicks or crackle)
 	static unsigned long GetUnderrunCount() ;
 

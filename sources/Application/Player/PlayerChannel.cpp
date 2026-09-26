@@ -6,6 +6,7 @@
 #include "Application/Mixer/MixerService.h"
 #include "Application/Model/Mixer.h"
 #include "Services/Audio/AudioOut.h"
+#include "Services/Audio/AudioProfiler.h"
 
 static fixed tailBuffer_[MIX_BUFFER_SIZE*2] ;
 
@@ -16,6 +17,10 @@ PlayerChannel::PlayerChannel(int index) {
     muted_=false ;
 	mixBus_=0 ;
 	busIndex_=-1 ;
+	// The audio profiler charges this track's instruments to their own slot
+	if (index>=0 && index<SONG_CHANNEL_COUNT) {
+		SetProfileSlot(APS_CHANNEL0+index) ;
+	}
 }
 
 PlayerChannel::~PlayerChannel() {

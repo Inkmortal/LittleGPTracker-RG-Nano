@@ -2490,6 +2490,17 @@ bool SDLEventManager::SimSetScaleKey(int key)
 	return true;
 }
 
+// A sim command is about to change a slot's type, which deletes the
+// instrument there: the instrument screen must let go of it first (it may
+// still observe it from an earlier visit, or from being built)
+static void forgetSimInstrument(InstrumentBank *bank,int instrument,InstrumentType type)
+{
+	I_Instrument *old=bank->GetInstrument(instrument);
+	if (!old || old->GetType()==type) return;
+	AppWindow *appWindow=(AppWindow *)Application::GetInstance()->GetWindow();
+	if (appWindow) appWindow->ForgetInstrument(old);
+}
+
 bool SDLEventManager::SimImportSampleToInstrument(int instrument, const std::string &sampleName)
 {
 	ViewData *viewData=GetSimViewData();
@@ -2511,6 +2522,7 @@ bool SDLEventManager::SimImportSampleToInstrument(int instrument, const std::str
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
 	// Importing a sample makes the slot a sample instrument (new projects start with synths)
+	forgetSimInstrument(bank,instrument,IT_SAMPLE);
 	bank->SetInstrumentType(instrument,IT_SAMPLE);
 	SampleInstrument *sampleInstrument=(SampleInstrument *)bank->GetInstrument(instrument);
 	sampleInstrument->AssignSample(sampleIndex);
@@ -2647,6 +2659,7 @@ bool SDLEventManager::SimSetSynth(int instrument, const std::string &preset)
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
+	forgetSimInstrument(bank,instrument,IT_SYNTH);
 	if (!bank->SetInstrumentType(instrument,IT_SYNTH)) {
 		return false;
 	}
@@ -2669,6 +2682,7 @@ bool SDLEventManager::SimSetMacro(int instrument, const std::string &preset)
 		return false;
 	}
 	InstrumentBank *bank=viewData->project_->GetInstrumentBank();
+	forgetSimInstrument(bank,instrument,IT_MACRO);
 	if (!bank->SetInstrumentType(instrument,IT_MACRO)) {
 		return false;
 	}
