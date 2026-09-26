@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screens · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Screens.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html" class="active">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="screens">Screens</h1>
+<p>Every screen at a glance. For the full button list see <a href="Controls.html">Controls</a>.</p>
+<h2 id="song">Song</h2>
+<p><img src="images/demo-song-playing.png" width="300" align="right" alt="Song"></p>
+<p>The arrangement. Columns are the 8 tracks, rows are time. Each cell holds a chain number, or <code>--</code> for nothing.</p>
+<ul>
+<li>Everything on one row starts together.</li>
+<li>Rows play top to bottom; each track loops back to the top of its block when it reaches <code>--</code>.</li>
+<li>While playing, the strip at the bottom shows each track's current note and instrument.</li>
+<li>The eight thin bars to the right of the grid are level meters, one per track: the track you're on is highlighted, muted tracks go dim, and a bar gets an amber cap when it's close to full.</li>
+</ul>
+<p><br clear="right"></p>
+<h3 id="bookmarks-and-sections">Bookmarks and sections</h3>
+<p><img src="images/song-bookmark.png" width="300" align="right" alt="A bookmarked song row"></p>
+<p><strong>A + Select</strong> bookmarks the row the cursor is on (again: removes it). A bookmarked row's number turns into an amber tag. <strong>LB + Up/Down</strong> jumps to the next or previous place a part starts: a bookmark, or the first chain of a block on the track you're on (a chain right under an empty cell). The screen says which it found (<code>Bookmark 20</code>, <code>Section 10</code>). Bookmarks are saved with the song, and <strong>B + Select</strong> undoes them like any edit.</p>
+<p><br clear="right"></p>
+<h3 id="moving-tracks">Moving tracks</h3>
+<p><img src="images/song-reorder.png" width="300" align="right" alt="Track reorder mode"></p>
+<p>On row <code>00</code>, press <strong>Up</strong> once more: the title says <code>MOVE TRACKS</code> and the track numbers appear above the grid. <strong>Left/Right</strong> picks a track, <strong>A + Left/Right</strong> carries it past its neighbour, with its chains on every row, its mixer fader and its mute. <strong>Down</strong> (or <strong>B</strong>) goes back to the grid. Stop the song first; the screen tells you if it's playing.</p>
+<p><br clear="right"></p>
+<h3 id="live-mode">Live mode</h3>
+<p><img src="images/song-live.png" width="300" align="right" alt="Live mode"></p>
+<p><strong>Select</strong> turns the Song screen into a clip launcher. <strong>Start</strong> on a cell cues that chain on its track (it blinks green until it starts, then loops), <strong>LB + Start</strong> cues the whole row, <strong>RB + Start</strong> cues a track to stop, <strong>B + Start</strong> stops everything. The buttons are listed at the bottom of the screen. Full table: <a href="Controls.html#live-mode">Controls → Live mode</a>.</p>
+<p><br clear="right"></p>
+<h2 id="chain">Chain</h2>
+<p><img src="images/demo-chain.png" width="300" align="right" alt="Chain"></p>
+<p>One track's playlist of bars. Left column: phrase number. Right column: transpose in semitones (<code>0C</code> = up an octave, <code>F4</code> = down an octave).</p>
+<p>Next to each row is a tiny piano roll of that row's phrase, so you can see the melody or rhythm of every bar without opening it. The row that's playing lights up, with a playhead moving across it.</p>
+<p><br clear="right"></p>
+<h2 id="phrase">Phrase</h2>
+<p><img src="images/demo-phrase-melody.png" width="300" align="right" alt="Phrase"></p>
+<p>One bar, 16 steps. Columns:</p>
+<ol>
+<li><strong>Note</strong> — <code>C 3</code>, <code>----</code> for none</li>
+<li><strong>Instrument</strong> — <code>I00</code>…<code>I7F</code>; the name of the instrument under the cursor shows in the title</li>
+<li><strong>Command 1</strong> + value</li>
+<li><strong>Command 2</strong> + value</li>
+</ol>
+<p>Step numbers are one digit, <code>0</code>–<code>F</code>. Beat rows (<code>0 4 8 C</code>) are highlighted so you can see the grid, and the playing step lights up as a green tab.</p>
+<p><img src="images/demo-phrase-playing.png" width="300" align="right" alt="Phrase playing"></p>
+<p>Under the grid is a piano roll of the whole bar: each note sits at its pitch, with a thin line until the next note or <code>KILL</code>. A playhead follows playback and an amber mark shows the step your cursor is on. The line at the very bottom is a live waveform of the output.</p>
+<p><br clear="right"></p>
+<h2 id="instrument-synth">Instrument (synth)</h2>
+<p>
+<img src="images/synth-1-sound.png" width="190" alt="SOUND">
+<img src="images/synth-2-env.png" width="190" alt="ENV">
+<img src="images/synth-3-filter.png" width="190" alt="FILTER">
+<img src="images/synth-5-mod.png" width="190" alt="MOD">
+<img src="images/synth-6-mix.png" width="190" alt="MIX">
+<img src="images/synth-7-eq.png" width="190" alt="EQ">
+</p>
+
+<p>Seven pages (SOUND, ENV, FILTER, LFO, MOD, MIX, EQ), switched with <strong>LB + Left/Right</strong>. The top half draws what the page does — waveform, envelope, filter curve, LFO, modulation, levels, EQ curve — and shows the preset name and the focused value in real units (<code>32 ms</code>, <code>641 Hz</code>). The knobs are listed below. Full details on the <strong><a href="Synth.html">Synth</a></strong> page.</p>
+<p>The first row, <code>type</code>, switches the slot between <strong>synth</strong>, <strong>sample</strong> and <strong>macro</strong> — the <a href="Macro-Synth.html">Macro Synth</a>: 47 synthesis models played with two knobs, timbre and color. It has the same pages; SOUND and the 4th page (MOTION) are its own.</p>
+<h2 id="instrument-list">Instrument list</h2>
+<p><img src="images/demo-instrument-list.png" width="300" align="right" alt="Instrument list"></p>
+<p><strong>RB + Up</strong> on the Instrument screen opens every instrument at once: number, type (<code>SMP</code>, <code>SYN</code>, <code>MAC</code>, <code>MID</code>, <code>---</code> for an empty slot), name, and how many phrases use it. A green dot marks instruments that are playing right now, and the box underneath draws the selected sound: a sample's waveform, a synth's wave shape, or a macro synth's model output.</p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Up / Down</td>
+<td>pick an instrument (<strong>Left/Right</strong> jump a page)</td>
+</tr>
+<tr>
+<td>A</td>
+<td>open it on the Instrument screen</td>
+</tr>
+<tr>
+<td>Start</td>
+<td>hear it; Start again stops</td>
+</tr>
+<tr>
+<td>Select</td>
+<td>give it a name with the on-screen keyboard (clear the name to go back to the automatic one)</td>
+</tr>
+<tr>
+<td>LB + A</td>
+<td>copy it into the next free slot, to make a variation</td>
+</tr>
+<tr>
+<td>B</td>
+<td>back</td>
+</tr>
+</tbody>
+</table>
+<p><br clear="right"></p>
+<h2 id="instrument-sample">Instrument (sample)</h2>
+<p>Sample instruments have seven pages too: Source, Shape, Filter, Loop, Mod, Motion, EQ, with a waveform and start/loop/end markers. See <strong><a href="Samples.html">Samples</a></strong>.</p>
+<h2 id="table">Table</h2>
+<p><img src="images/table.png" width="300" align="right" alt="Table"></p>
+<p>Three command columns that step one row per tick and loop. Tables run on their own once triggered — by <code>TABL</code> in a phrase, or automatically by an instrument (<code>table</code> on the synth LFO page or the sample Motion page). Use them for arpeggios, stutters, pitch wobbles and filter wiggles you don't want to write note by note.</p>
+<p><br clear="right"></p>
+<h2 id="groove">Groove</h2>
+<p><img src="images/groove.png" width="300" align="right" alt="Groove"></p>
+<p>How many ticks each step lasts, cycling. <code>06 06</code> is straight. <code>07 05</code> swings (long-short). <code>08 04</code> shuffles hard. Groove <code>00</code> is used by default; the <code>GROV</code> command switches a track to another groove.</p>
+<p>The ruler on the right draws one bar twice: an even grid on top, and this groove underneath with each step as wide as its ticks. Late offbeats are the swing. Under it the feel is named in plain words (<code>straight</code>, <code>swing 58%</code>), and the step that's playing turns green.</p>
+<p><br clear="right"></p>
+<h2 id="project">Project</h2>
+<p><img src="images/project.png" width="300" align="right" alt="Project"></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tempo</td>
+<td>BPM</td>
+</tr>
+<tr>
+<td>Master / Drive</td>
+<td>output level / level into the soft clipper</td>
+</tr>
+<tr>
+<td>Clip</td>
+<td>soft clipper strength (Bypass … Insane)</td>
+</tr>
+<tr>
+<td>Transpose</td>
+<td>shifts every note in the song</td>
+</tr>
+<tr>
+<td>Key / Scale / Notes</td>
+<td>note-editing helper and sharp/flat spelling; <strong>RB + Right</strong> shows them on a keyboard (<a href="#scale">Scale</a>)</td>
+</tr>
+<tr>
+<td>Song List / Save Song / Save Song As</td>
+<td>back to the song list (offers to save first), save, save a copy</td>
+</tr>
+<tr>
+<td>Remove unused chains / sounds</td>
+<td>tidy up chains, phrases and instruments nothing uses</td>
+</tr>
+<tr>
+<td>Quit</td>
+<td>leave the app (offers to save first)</td>
+</tr>
+<tr>
+<td>Render</td>
+<td><code>Stereo</code> or <code>Stems</code>, then <strong>Start</strong> to export (<a href="Export.html">Export</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><br clear="right"></p>
+<h2 id="scale">Scale</h2>
+<p><img src="images/scale.png" width="300" align="right" alt="Scale screen"></p>
+<p><strong>RB + Right</strong> from Project. The song's <code>Key</code> and <code>Scale</code> on top, one octave of piano keys below: the notes of the scale are lit, the key note is amber. Under the keyboard the scale is spelled out (<code>7 notes from D</code>, <code>D E F G A B C#</code>).</p>
+<ul>
+<li><strong>Up/Down</strong> moves between <code>Key</code>, <code>Scale</code> and the keyboard; <strong>A + D-pad</strong> changes Key and Scale as on Project.</li>
+<li>On the keyboard, <strong>Left/Right</strong> picks a note and <strong>A</strong> puts it in or out of the scale (you hear it when it goes in). <strong>B + A</strong> takes it out. The key note always stays in.</li>
+<li>Editing a scale makes it the song's own <code>Custom</code> scale (the last one in the list), starting from the notes of the scale you had. It is saved with the song and moves with the Key.</li>
+<li>Phrase note editing (<strong>A + Left/Right</strong>), the random-notes tool (<strong>LB + Right</strong> on a selection) and <code>RAND</code> all stay on the lit keys. The <code>SCAL</code> command switches Key and Scale while the song plays (<a href="Commands.html#from-the-m8">Commands</a>).</li>
+</ul>
+<p><br clear="right"></p>
+<h2 id="mixer">Mixer</h2>
+<p><img src="images/demo-mixer.png" width="300" align="right" alt="Mixer"></p>
+<p>Faders for the 8 tracks, the three effect returns (<strong>C</strong> chorus, <strong>D</strong> echo, <strong>R</strong> reverb) and the master (<strong>M</strong>), each with a live level meter, plus the master waveform. Levels save with the song. When the <a href="#limit">limiter</a> is on, a white line hangs from the top of the master meter as long as it is limiting (12 dB = half the meter), and the master line reads <code>LIM -3.2dB</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Left/Right</strong></td>
+<td>pick a strip</td>
+</tr>
+<tr>
+<td><strong>A + Up/Down</strong></td>
+<td>fader big step (<code>C0</code> = unity, up to <code>FF</code> for a boost)</td>
+</tr>
+<tr>
+<td><strong>A + Left/Right</strong></td>
+<td>fader fine step</td>
+</tr>
+<tr>
+<td><strong>B + RB</strong> / <strong>A + RB</strong></td>
+<td>mute / solo the track (<strong>RB + LB</strong> unmutes all)</td>
+</tr>
+<tr>
+<td><strong>RB + Down</strong></td>
+<td>FX screen</td>
+</tr>
+</tbody>
+</table>
+<p><br clear="right"></p>
+<h2 id="fx">FX</h2>
+<p><img src="images/fx.png" width="300" align="right" alt="FX"></p>
+<p>The three effects every instrument can send to, each with a picture of what it does (<strong>RB + Right</strong> goes on to the <a href="#eq">EQ</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Effect</th>
+<th>Knobs</th>
+<th>Picture</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chorus</td>
+<td><code>speed</code> (0.1–5 Hz), <code>depth</code> (0.5–7.5 ms)</td>
+<td>the left and right delay sweeps</td>
+</tr>
+<tr>
+<td>Echo</td>
+<td><code>time</code> in 16ths (<code>3</code> = dotted 8th), <code>fdbk</code> repeats</td>
+<td>the dry hit and each echo over two bars</td>
+</tr>
+<tr>
+<td>Reverb</td>
+<td><code>size</code>, <code>damp</code></td>
+<td>the tail over four seconds; the bright line is the highs, which <code>damp</code> takes away faster</td>
+</tr>
+</tbody>
+</table>
+<p>Each heading shows the real values (Hz, ms, tail length) and how many sounds send to it. <strong>Up/Down</strong> walks the six knobs, <strong>A + D-pad</strong> edits. Turn up an instrument's <code>chorus</code>/<code>delay</code>/<code>reverb</code> send to hear it; the Mixer's C/D/R faders set how loud each effect comes back.</p>
+<p><br clear="right"></p>
+<h2 id="eq">EQ</h2>
+<p><img src="images/eq.png" width="300" align="right" alt="EQ"></p>
+<p>A three-band EQ on the whole mix, after the effects: <strong>RB + Right</strong> from FX.</p>
+<table>
+<thead>
+<tr>
+<th>Band</th>
+<th>Knobs</th>
+<th>Shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LOW</td>
+<td><code>gain</code>, <code>freq</code> (30–400 Hz)</td>
+<td>a shelf: everything below <code>freq</code> up or down</td>
+</tr>
+<tr>
+<td>MID</td>
+<td><code>gain</code>, <code>freq</code> (150 Hz–6 kHz)</td>
+<td>a wide bell around <code>freq</code></td>
+</tr>
+<tr>
+<td>HIGH</td>
+<td><code>gain</code>, <code>freq</code> (1.5–16 kHz)</td>
+<td>a shelf: everything above <code>freq</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>gain 80</code> is flat; each step is about 0.1 dB, from −12 to +12 dB. The heading shows the real values, and the curve underneath shows the result from 20 Hz to 20 kHz (marks at 100 Hz, 1 kHz, 10 kHz). <strong>Up/Down</strong> picks a knob, <strong>A + D-pad</strong> edits, <strong>B + A</strong> puts a knob back. It saves with the song; a flat EQ costs nothing.</p>
+<p>Try: low <code>+3 dB</code> at 80 Hz for weight, mid <code>−3 dB</code> at 400 Hz to clear mud, high <code>+2 dB</code> at 8 kHz for air.</p>
+<p><strong>RB + Right</strong> goes on to the <a href="#limit">limiter</a>. Every instrument also has an EQ of its own, on its EQ page.</p>
+<p><br clear="right"></p>
+<h2 id="limit">Limit</h2>
+<p><img src="images/limit.png" width="300" align="right" alt="LIMIT"></p>
+<p>The master limiter, <strong>RB + Right</strong> from EQ (like the M8's <code>LIM</code>): it keeps the whole mix under a ceiling, so you can make it louder without it clipping. It comes after the EQ; the Project's <code>clip</code> (soft clip) and master volume come after it.</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>drive</code></td>
+<td>pushes the mix into the limiter</td>
+<td><code>00</code> = <strong>off</strong> (the default), <code>01</code> = 0 dB .. <code>FF</code> = +25.4 dB</td>
+</tr>
+<tr>
+<td><code>ceil</code></td>
+<td>the loudest the mix may get</td>
+<td><code>00</code> = −25.5 dB .. <code>FF</code> = 0 dB, default <code>FC</code> = −0.3 dB</td>
+</tr>
+<tr>
+<td><code>attk</code></td>
+<td>how far it looks ahead: the gain is already down when a peak arrives</td>
+<td>0.1–10 ms, default <code>80</code> = 1 ms</td>
+</tr>
+<tr>
+<td><code>rels</code></td>
+<td>how fast it lets go afterwards</td>
+<td><code>00</code> = auto (100–900 ms: slower the harder it works), <code>01</code> = 4 ms .. <code>FF</code> = 1 s</td>
+</tr>
+</tbody>
+</table>
+<p>Under the knobs, the red <strong>GR</strong> bar shows how many dB it is taking off right now, with the peak going in (after drive) and coming out. The scope below scrolls the last few seconds: the mix level rises from the bottom, the limiting hangs from the top in red, the dotted line is the ceiling.</p>
+<p><strong>Up/Down</strong> picks a knob, <strong>A + D-pad</strong> edits, <strong>B + A</strong> puts a knob back (<code>drive</code> back to off), <strong>RB + Left</strong> returns to EQ. With <code>drive 00</code> the mix passes untouched; switched on, it delays the whole mix by the look-ahead (1 ms by default).</p>
+<p>Try: <code>drive</code> +3 to +6 dB with <code>rels</code> on auto. A few dB of GR on the loudest hits is transparent; if it pumps, lower <code>drive</code> or lengthen <code>rels</code>.</p>
+<p><br clear="right"></p>
+<h2 id="helper-rb-select">Helper (RB + Select)</h2>
+<p>
+<img src="images/help-1-map.png" width="240" alt="Map page">
+<img src="images/help-2-commands.png" width="240" alt="Commands page">
+<img src="images/help-3-howto.png" width="240" alt="How-to page">
+</p>
+
+<p>Available on every screen, including dialogs. <strong>Down/Up</strong> flips between:</p>
+<ol>
+<li><strong>Map</strong> — where you are and where RB + direction goes, plus the undo keys</li>
+<li><strong>Commands</strong> — the buttons for this screen, then <strong>MORE KEYS</strong> with the rest. On the synth pages it also explains the knob under the cursor.</li>
+<li><strong>How to</strong> — a short walkthrough for this screen</li>
+</ol>
+<p>On any page, <strong>A</strong> opens the built-in guide at the section for the current screen.</p>
+<p>While the helper is open, other buttons are ignored, so you can't change anything by accident.</p>
+<div class="pager"><a class="prev" href="Demo-Songs.html"><small>Previous</small>Demo Songs</a><a class="next" href="Synth.html"><small>Next</small>Synth</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

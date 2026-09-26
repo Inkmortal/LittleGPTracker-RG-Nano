@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Songs · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Demo Songs.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html" class="active">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="demo-songs">Demo Songs</h1>
+<p>A handful of finished songs to open, play and pull apart: the walkthrough song you can build yourself, synthwave, a wuxia epic on real Chinese instruments, chiptune, house, and a stress test that runs every engine at once. Open them from the project list (they're in <code>Applications/Tracks</code> after <a href="Install.html">Install</a>), press <strong>Start</strong> on the Song screen, then go poke around. Every idea in the other wiki pages is used somewhere in here.</p>
+<p>
+<img src="images/demo-song-playing.png" width="240" alt="Neon Drive playing">
+<img src="images/demo-phrase-melody.png" width="240" alt="Neon Drive lead phrase">
+<img src="images/demo-mixer.png" width="240" alt="Mixer during playback">
+</p>
+
+<h2 id="afterglow-the-walkthrough-song">Afterglow — the walkthrough song</h2>
+<p><code>lgpt_Afterglow</code> · C minor · 128 BPM with swing · 1:00</p>
+<p>The melodic house track <a href="Your-First-Song.html">Your First Song</a> builds press by press, finished. It starts from the synth kit every new song has and ends up using nearly everything the app does.</p>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Part</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Macro Synth kick, four on the floor</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Macro Synth snare with a reverb send; a <code>ROLL</code> + <code>VOLM</code> roll into each drop</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Macro Synth hats, 16ths made with the fill tool, every 4th one <code>CHNC 0080</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>rolling 8th-note bass (the starter kit's <code>bass</code>)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>HyperSynth <code>hyper pad</code>, chord <code>maj9</code> with <code>scale on</code>, ducked by the kick (MOD <code>trig</code>), lows cut with its EQ</td>
+</tr>
+<tr>
+<td>6</td>
+<td>FM4 <code>epiano</code> stabs on the off-beats, <code>CHRD 007E</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>HyperSynth <code>trance lead</code>: the hook</td>
+</tr>
+<tr>
+<td>8</td>
+<td>a reversed crash from the <code>drums-909</code> pack, and one bar of the pad rendered to a sample and reversed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Look at:</strong>
+- <strong>One bar, four chords</strong> — the bass, pad and keys chains play the same phrase four times with transposes <code>00 FC 03 FE</code>: Cm9, A♭maj9, E♭maj9, B♭9.
+- <strong>Song rows 00–07</strong> — intro, build, drop, drop, break, build, drop, outro. Chain <code>07</code> is the rest (a <code>KILL</code>), on every cell where a part drops out.
+- <strong>The Groove</strong> — <code>07 05</code> swings the 16ths.
+- <strong>Mix</strong> — Mixer (kick up, bass down), FX reverb size, master EQ, limiter, and Project <code>Drive: 70</code> for headroom.</p>
+<h2 id="neon-drive-synthwave">Neon Drive — synthwave</h2>
+<p><code>lgpt_NeonDrive</code> · A minor · 100 BPM · 1:55</p>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Part</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>kick (half-time verses, four-on-the-floor choruses)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>snare with reverb, fill at the end of every 4 bars</td>
+</tr>
+<tr>
+<td>3</td>
+<td>hats, accented 16ths in the chorus</td>
+</tr>
+<tr>
+<td>4</td>
+<td>octave-jumping 8th-note bass</td>
+</tr>
+<tr>
+<td>5</td>
+<td>pad chords, one note + <code>CHRD</code> per bar</td>
+</tr>
+<tr>
+<td>6</td>
+<td>pluck arpeggio</td>
+</tr>
+<tr>
+<td>7</td>
+<td>lead melody (a bell takes it in the break)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>crash and tom fills</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Look at:</strong>
+- <strong>Song rows 00–0B</strong> — each row is a section: intro, verse, chorus, break, build, outro.
+- <strong>Track 6 in the intro</strong> — only the first note has an instrument number, so the <code>FCUT 60C0</code> filter sweep keeps opening across four bars.
+- <strong>Track 5</strong> — chords are voiced as inversions (<code>C 3</code> + <code>CHRD 0059</code>), so they move smoothly instead of jumping.
+- <strong>The build</strong> — a snare crescendo with <code>VOLM</code>, then <code>RTRG 0003</code> for a 32nd-note roll into the drop.</p>
+<h2 id="jade-sword-wuxia-donghua">Jade Sword — wuxia / donghua</h2>
+<p><code>lgpt_JadeSword</code> · A minor pentatonic · 92 BPM · 2:05</p>
+<p>Neon Drive's song map re-scored for a martial-arts epic, played on <strong>recordings of real Chinese instruments</strong>. Compare the two projects screen by screen.</p>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Part</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>dagu (big drum) with rim hits</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Beijing-opera percussion: bangu clapper drum, small gong, cymbals</td>
+</tr>
+<tr>
+<td>3</td>
+<td>temple block in the verses, pipa plucks in the second chorus</td>
+</tr>
+<tr>
+<td>4</td>
+<td>sub bass on the chord roots (synth)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>soft string pad (synth)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>guzheng — flowing broken chords and glissandos</td>
+</tr>
+<tr>
+<td>7</td>
+<td>erhu — the chorus melody</td>
+</tr>
+<tr>
+<td>8</td>
+<td>dizi flute in the verses, the big opera gong on section starts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Look at:</strong>
+- <strong>Every melody uses only A C D E G</strong> — the pentatonic scale is what makes it sound Chinese.
+- <strong>Sample instruments</strong> — open any of them: each plays one recording, repitched from its <code>root</code> note. Erhu and dizi have two recordings each (low and high) so no note is stretched too far.
+- <strong>Grace notes</strong> — a quick step into a melody note (<code>D4 E4</code> at the start of a bar) is how erhu and dizi players ornament.
+- <strong>Soft second plucks</strong> — in the break the guzheng plucks its long notes again with <code>VOLM 50</code>, like a player letting the string ring. (Fast <code>RTRG</code> on a recorded instrument stutters, so it's saved for drums.)
+- <strong>Glissando</strong> — a fast pentatonic run with rising <code>VOLM</code> before the chorus.
+- <strong>Opera percussion on one track</strong> — each step picks its own instrument (clapper, small gong, cymbals).</p>
+<p>The recordings are CC0 and CC BY 4.0 from Freesound; <code>CREDITS.md</code> in the song folder lists every author.</p>
+<h2 id="pixel-quest-chiptune">Pixel Quest — chiptune</h2>
+<p><code>lgpt_PixelQuest</code> · C major · 140 BPM · 1:02</p>
+<p><strong>Look at:</strong>
+- <strong><code>ARPG 0047</code> / <code>0037</code></strong> — one held note becomes a buzzing 8-bit chord.
+- <strong>Drums from basic waves</strong> — a triangle with a pitch drop for the kick, crunchy noise for snare and hats.
+- <strong>Echo lead</strong> — track 7 plays the same melody with <code>DLAY 0003</code> and a delay send: a cheap stereo double.</p>
+<h2 id="engine-room-the-stress-test">Engine Room — the stress test</h2>
+<p><code>lgpt_EngineRoom</code> · A minor · 100 BPM · 0:38 loop</p>
+<p>Every heavy sound at once, on all 8 tracks the whole time: Macro Synth drums, FM4 bass, a HyperSynth pad (a six-note chord of detuned saws), FM4 e-piano chords (<code>CHRD</code> makes four FM voices per note), a HyperSynth lead and sampled piano, with chorus, echo, reverb, the master EQ and the limiter all working. If this plays cleanly, anything you write will. The device log's <code>[HEARTBEAT]</code> lines show the audio engine's <code>load peak</code> while it plays.</p>
+<h2 id="sunset-club-house">Sunset Club — house</h2>
+<p><code>lgpt_SunsetClub</code> · A minor · 124 BPM · 1:02</p>
+<p>Played on the <a href="Samples.html#sample-packs">sample packs</a>: 909 drums, piano chords and a finger bass.</p>
+<p><strong>Look at:</strong>
+- <strong>Four on the floor</strong> — the kick on every beat (steps <code>0 4 8 C</code>), the clap on 2 and 4, the open hat on every offbeat (<code>2 6 A E</code>).
+- <strong>House piano</strong> — one-shot min7/maj7 chords chopped into syncopated stabs, each cut short with <code>KILL</code>.
+- <strong>The bass between the kicks</strong> — it plays the offbeats, so bass and kick never fight.</p>
+<h2 id="make-them-yours">Make them yours</h2>
+<ul>
+<li>Change the tempo on the Project screen.</li>
+<li>Swap a preset: go to any instrument, <strong>A + Left/Right</strong> on <code>preset</code>.</li>
+<li>Mute tracks with <strong>B + RB</strong> to hear how each part is built.</li>
+<li><strong>Save Song As</strong> to keep your version and leave the original untouched.</li>
+</ul>
+<p>The songs are generated from Python in <code>tools/demos/</code> with the <a href="Developer-Guide.html#song-composer">song composer</a>, so they double as code examples of every technique.</p>
+<div class="pager"><a class="prev" href="Your-First-Song.html"><small>Previous</small>Your First Song</a><a class="next" href="Screens.html"><small>Next</small>Screens</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

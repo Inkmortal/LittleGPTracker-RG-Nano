@@ -1,0 +1,1523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your First Song · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Your First Song.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html" class="active">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="your-first-song">Your First Song</h1>
+<p>You'll build <strong>Afterglow</strong>, a melodic house track in C minor at 128 BPM: punchy Macro Synth drums with swung 16th hats, a rolling bass, huge HyperSynth chords that pump with the kick, FM electric piano stabs, a trance lead with a hook that sticks, snare rolls and reversed cymbals into every drop, and a proper arrangement: intro, build, drop, break, build, drop, outro.</p>
+<p>On the way you use nearly everything the app can do: the synth engines and the Macro Synth, a sample from the packs, commands, the fill and random tools, modulation, EQ and effects, resampling, undo, bookmarks, the mixer, Live mode and export. Plan on an hour or two; every chapter ends with something new to listen to.</p>
+<p>Want to hear where you're going first? <strong>Afterglow</strong> is in the <a href="Demo-Songs.html">Demo Songs</a>: open it and press <strong>Start</strong>.</p>
+<p><strong>How to follow along.</strong> Every step is one thing to press, with a picture of the screen right after it. Under each screen the RG Nano's buttons are drawn: the button to press is <strong>orange</strong>, a button to hold down first is <strong>cream</strong> and says <code>HOLD</code>, and <code>x4</code> means press it 4 times. So <strong>RB + Right</strong> means: hold <strong>RB</strong>, press <strong>Right</strong>, let go of both.</p>
+<p>Lost? <strong>RB + Select</strong> opens the helper on any screen, and <strong>B + Select</strong> undoes your last change.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#1-the-start-screen">1. The start screen</a> (steps 0-16)</li>
+<li><a href="#2-tempo-and-key">2. Tempo and key</a> (steps 17-26)</li>
+<li><a href="#3-the-kick">3. The kick</a> (steps 27-39)</li>
+<li><a href="#4-a-macro-synth-kick">4. A Macro Synth kick</a> (steps 40-55)</li>
+<li><a href="#5-snare-with-reverb">5. Snare, with reverb</a> (steps 56-87)</li>
+<li><a href="#6-hats-fill-and-chance">6. Hats: fill and chance</a> (steps 88-140)</li>
+<li><a href="#7-swing">7. Swing</a> (steps 141-151)</li>
+<li><a href="#8-bass">8. Bass</a> (steps 152-183)</li>
+<li><a href="#9-try-a-sound-then-undo">9. Try a sound, then undo</a> (steps 184-196)</li>
+<li><a href="#10-four-chords-one-bar">10. Four chords, one bar</a> (steps 197-205)</li>
+<li><a href="#11-the-hypersynth-pad">11. The HyperSynth pad</a> (steps 206-258)</li>
+<li><a href="#12-fm-keys-and-chrd">12. FM keys and CHRD</a> (steps 259-310)</li>
+<li><a href="#13-the-hook">13. The hook</a> (steps 311-405)</li>
+<li><a href="#14-copy-the-drop">14. Copy the drop</a> (steps 406-413)</li>
+<li><a href="#15-a-rest-chain">15. A rest chain</a> (steps 414-452)</li>
+<li><a href="#16-a-snare-roll">16. A snare roll</a> (steps 453-491)</li>
+<li><a href="#17-sample-reverse-cymbal">17. Sample: reverse cymbal</a> (steps 492-528)</li>
+<li><a href="#18-resample-reverse-pad">18. Resample: reverse pad</a> (steps 529-540)</li>
+<li><a href="#19-the-break">19. The break</a> (steps 541-575)</li>
+<li><a href="#20-build-drop-outro">20. Build, drop, outro</a> (steps 576-600)</li>
+<li><a href="#21-bookmarks">21. Bookmarks</a> (steps 601-615)</li>
+<li><a href="#22-mix">22. Mix</a> (steps 616-619)</li>
+<li><a href="#23-effects-eq-limiter">23. Effects, EQ, limiter</a> (steps 620-633)</li>
+<li><a href="#24-headroom-and-save">24. Headroom and save</a> (steps 634-639)</li>
+<li><a href="#25-play-it-live">25. Play it live</a> (steps 640-648)</li>
+<li><a href="#26-export-a-wav">26. Export a WAV</a> (steps 649-657)</li>
+</ul>
+<h2 id="1-the-start-screen">1. The start screen</h2>
+<p>Launching the app shows <strong>Your Songs</strong>. <strong>Up/Down</strong> picks a song, <strong>Left/Right</strong> picks a button along the bottom, <strong>A</strong> runs it; the line under the buttons says what <strong>A</strong> will do. The songs you opened last are at the top (<strong>Select</strong> sorts them A to Z and back). <code>Help</code> opens this whole guide, built into the app.</p>
+<p>You'll make a new song and call it GLOW.</p>
+<p><strong>0.</strong> The app opens on <strong>Your Songs</strong>. Along the bottom are four buttons; <code>Open</code> is lit.</p>
+<p><img src="images/walkthrough/000.png" width="240" alt="Look - The app opens on Your Songs. Along the bottom are four buttons; Open is lit."></p>
+<p><strong>1.</strong> <strong>Right</strong>: <code>New</code> is lit. The line under the buttons says what <strong>A</strong> will do.</p>
+<p><img src="images/walkthrough/001.png" width="240" alt="Right - New is lit. The line under the buttons says what A will do."></p>
+<p><strong>2.</strong> <strong>A</strong>: The <strong>New song</strong> box, with a made-up name typed in and <code>DONE</code> lit. Typing a letter replaces the name.</p>
+<p><img src="images/walkthrough/002.png" width="240" alt="A - The New song box, with a made-up name typed in and DONE lit. Typing a letter replaces the name."></p>
+<p><strong>3.</strong> <strong>Down</strong>: The cursor jumps up to the letters, on <code>J</code>.</p>
+<p><img src="images/walkthrough/003.png" width="240" alt="Down - The cursor jumps up to the letters, on J."></p>
+<p><strong>4.</strong> <strong>Left (3 times)</strong>: <code>G</code>.</p>
+<p><img src="images/walkthrough/004.png" width="240" alt="Left (3 times) - G."></p>
+<p><strong>5.</strong> <strong>A</strong>: <code>G</code> replaces the suggested name.</p>
+<p><img src="images/walkthrough/005.png" width="240" alt="A - G replaces the suggested name."></p>
+<p><strong>6.</strong> <strong>Down</strong>: <code>Q</code>, one row down.</p>
+<p><img src="images/walkthrough/006.png" width="240" alt="Down - Q, one row down."></p>
+<p><strong>7.</strong> <strong>Left (5 times)</strong>: <code>L</code>.</p>
+<p><img src="images/walkthrough/007.png" width="240" alt="Left (5 times) - L."></p>
+<p><strong>8.</strong> <strong>A</strong>: <code>GL</code>.</p>
+<p><img src="images/walkthrough/008.png" width="240" alt="A - GL."></p>
+<p><strong>9.</strong> <strong>Right (3 times)</strong>: <code>O</code>.</p>
+<p><img src="images/walkthrough/009.png" width="240" alt="Right (3 times) - O."></p>
+<p><strong>10.</strong> <strong>A</strong>: <code>GLO</code>.</p>
+<p><img src="images/walkthrough/010.png" width="240" alt="A - GLO."></p>
+<p><strong>11.</strong> <strong>Down</strong>: <code>Y</code>.</p>
+<p><img src="images/walkthrough/011.png" width="240" alt="Down - Y."></p>
+<p><strong>12.</strong> <strong>Left (2 times)</strong>: <code>W</code>.</p>
+<p><img src="images/walkthrough/012.png" width="240" alt="Left (2 times) - W."></p>
+<p><strong>13.</strong> <strong>A</strong>: <code>GLOW</code>.</p>
+<p><img src="images/walkthrough/013.png" width="240" alt="A - GLOW."></p>
+<p><strong>14.</strong> <strong>Start</strong>: <strong>Start</strong> creates the song. This is the <strong>Song</strong> screen: 8 tracks side by side, time running down.</p>
+<p><img src="images/walkthrough/014.png" width="240" alt="Start - Start creates the song. This is the Song screen: 8 tracks side by side, time running down."></p>
+<p><strong>15.</strong> <strong>RB + Select</strong>: The <strong>helper</strong>. Its map shows where you are (<code>SONG</code>) and which screen <strong>RB</strong> + each direction takes you to. It works on every screen.</p>
+<p><img src="images/walkthrough/015.png" width="240" alt="RB + Select - The helper. Its map shows where you are (SONG) and which screen RB + each direction takes you to. It works on every screen."></p>
+<p><strong>16.</strong> <strong>RB + Select</strong>: The helper closes.</p>
+<p><img src="images/walkthrough/016.png" width="240" alt="RB + Select - The helper closes."></p>
+<h2 id="2-tempo-and-key">2. Tempo and key</h2>
+<p>The Project screen holds the song's settings. You'll set the tempo and the key. With a key set, editing a note only walks through the notes of that key, so a wrong note is hard to hit.</p>
+<p><strong>17.</strong> <strong>RB + Up</strong>: The <strong>Project</strong> screen, which sits above Song on the map.</p>
+<p><img src="images/walkthrough/017.png" width="240" alt="RB + Up - The Project screen, which sits above Song on the map."></p>
+<p><strong>18.</strong> <strong>Down (3 times)</strong>: The cursor is on <code>Tempo: 138 bpm</code>.</p>
+<p><img src="images/walkthrough/018.png" width="240" alt="Down (3 times) - The cursor is on Tempo: 138 bpm."></p>
+<p><strong>19.</strong> <strong>A + Down</strong>: Holding <strong>A</strong>, <strong>Down</strong> takes 10 off: <code>128 bpm</code>, a house tempo. (<strong>A + Left/Right</strong> changes it by 1.)</p>
+<p><img src="images/walkthrough/019.png" width="240" alt="A + Down - Holding A, Down takes 10 off: 128 bpm, a house tempo. (A + Left/Right changes it by 1.)"></p>
+<p><strong>20.</strong> <strong>Down (2 times)</strong>: The cursor is on <code>Key: --</code>.</p>
+<p><img src="images/walkthrough/020.png" width="240" alt="Down (2 times) - The cursor is on Key: --."></p>
+<p><strong>21.</strong> <strong>A + Right</strong>: <code>Key: C</code>.</p>
+<p><img src="images/walkthrough/021.png" width="240" alt="A + Right - Key: C."></p>
+<p><strong>22.</strong> <strong>Down</strong>: The cursor is on <code>Scale: None (Chromatic)</code>.</p>
+<p><img src="images/walkthrough/022.png" width="240" alt="Down - The cursor is on Scale: None (Chromatic)."></p>
+<p><strong>23.</strong> <strong>A + Right (3 times)</strong>: <code>Scale: Aeolian mode (minor)</code>. The song is in <strong>C minor</strong>.</p>
+<p><img src="images/walkthrough/023.png" width="240" alt="A + Right (3 times) - Scale: Aeolian mode (minor). The song is in C minor."></p>
+<p><strong>24.</strong> <strong>RB + Right</strong>: The <strong>Scale</strong> screen draws the key on a keyboard: the lit keys are the notes of C minor.</p>
+<p><img src="images/walkthrough/024.png" width="240" alt="RB + Right - The Scale screen draws the key on a keyboard: the lit keys are the notes of C minor."></p>
+<p><strong>25.</strong> <strong>RB + Left</strong>: Back on Project.</p>
+<p><img src="images/walkthrough/025.png" width="240" alt="RB + Left - Back on Project."></p>
+<p><strong>26.</strong> <strong>RB + Down</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/026.png" width="240" alt="RB + Down - Back on the Song screen."></p>
+<h2 id="3-the-kick">3. The kick</h2>
+<p>A song is built from three kinds of blocks:</p>
+<ul>
+<li>a <strong>phrase</strong> is one bar: 16 steps, each with a note, an instrument and up to two commands;</li>
+<li>a <strong>chain</strong> is a list of phrases played one after the other. Our chains are 4 bars;</li>
+<li>the <strong>Song</strong> screen plays one chain per track, row after row.</li>
+</ul>
+<p>You'll start with a kick on every beat, in track 1.</p>
+<p><strong>27.</strong> <strong>A</strong>: Chain <code>00</code> goes into track 1, row <code>00</code>.</p>
+<p><img src="images/walkthrough/027.png" width="240" alt="A - Chain 00 goes into track 1, row 00."></p>
+<p><strong>28.</strong> <strong>RB + Right</strong>: The <strong>Chain</strong> screen of chain <code>00</code>. Each row holds one phrase; it's empty.</p>
+<p><img src="images/walkthrough/028.png" width="240" alt="RB + Right - The Chain screen of chain 00. Each row holds one phrase; it's empty."></p>
+<p><strong>29.</strong> <strong>A</strong>: Phrase <code>00</code> goes into row <code>0</code>.</p>
+<p><img src="images/walkthrough/029.png" width="240" alt="A - Phrase 00 goes into row 0."></p>
+<p><strong>30.</strong> <strong>RB + Right</strong>: The <strong>Phrase</strong> screen of phrase <code>00</code>: 16 steps, <code>0</code> to <code>F</code>, top to bottom. Each step is a 16th note.</p>
+<p><img src="images/walkthrough/030.png" width="240" alt="RB + Right - The Phrase screen of phrase 00: 16 steps, 0 to F, top to bottom. Each step is a 16th note."></p>
+<p><strong>31.</strong> <strong>A</strong>: A note: <code>C 3</code> played by instrument <code>I00</code>, the <strong>KICK</strong>. You hear it as it goes in.</p>
+<p><img src="images/walkthrough/031.png" width="240" alt="A - A note: C 3 played by instrument I00, the KICK. You hear it as it goes in."></p>
+<p><strong>32.</strong> <strong>Down (4 times)</strong>: Step <code>4</code>, the second beat.</p>
+<p><img src="images/walkthrough/032.png" width="240" alt="Down (4 times) - Step 4, the second beat."></p>
+<p><strong>33.</strong> <strong>A</strong>: Another kick: <strong>A</strong> on an empty step copies the last note.</p>
+<p><img src="images/walkthrough/033.png" width="240" alt="A - Another kick: A on an empty step copies the last note."></p>
+<p><strong>34.</strong> <strong>Down (4 times)</strong>: Step <code>8</code>, beat 3.</p>
+<p><img src="images/walkthrough/034.png" width="240" alt="Down (4 times) - Step 8, beat 3."></p>
+<p><strong>35.</strong> <strong>A</strong>: Kick.</p>
+<p><img src="images/walkthrough/035.png" width="240" alt="A - Kick."></p>
+<p><strong>36.</strong> <strong>Down (4 times)</strong>: Step <code>C</code>, beat 4.</p>
+<p><img src="images/walkthrough/036.png" width="240" alt="Down (4 times) - Step C, beat 4."></p>
+<p><strong>37.</strong> <strong>A</strong>: Kick. Four on the floor.</p>
+<p><img src="images/walkthrough/037.png" width="240" alt="A - Kick. Four on the floor."></p>
+<p><strong>38.</strong> <strong>Start</strong>: The bar plays on a loop: <code>PLAY:PHR</code>, and a marker runs down the steps.</p>
+<p><img src="images/walkthrough/038.png" width="240" alt="Start - The bar plays on a loop: PLAY:PHR, and a marker runs down the steps."></p>
+<p><strong>39.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/039.png" width="240" alt="Start - Stop."></p>
+<h2 id="4-a-macro-synth-kick">4. A Macro Synth kick</h2>
+<p><code>I00</code> is a plain synth kick, from the kit every new song starts with. The <strong>Macro Synth</strong> has a much punchier one. Switching an instrument over is the same few moves for every sound in this song.</p>
+<p><strong>40.</strong> <strong>RB + Right</strong>: The <strong>Instrument</strong> screen of <code>I00</code>, the KICK. The cursor is on <code>preset</code>.</p>
+<p><img src="images/walkthrough/040.png" width="240" alt="RB + Right - The Instrument screen of I00, the KICK. The cursor is on preset."></p>
+<p><strong>41.</strong> <strong>Up (2 times)</strong>: The cursor is on <code>type   synth</code>.</p>
+<p><img src="images/walkthrough/041.png" width="240" alt="Up (2 times) - The cursor is on type   synth."></p>
+<p><strong>42.</strong> <strong>A + Right</strong>: <code>type   macro</code>: a Macro Synth, starting from its plain <code>init</code> sound.</p>
+<p><img src="images/walkthrough/042.png" width="240" alt="A + Right - type   macro: a Macro Synth, starting from its plain init sound."></p>
+<p><strong>43.</strong> <strong>Down</strong>: The cursor is on <code>preset init</code>.</p>
+<p><img src="images/walkthrough/043.png" width="240" alt="Down - The cursor is on preset init."></p>
+<p><strong>44.</strong> <strong>A + Right (15 times)</strong>: <code>preset kick</code>. (Holding <strong>A</strong> and <strong>Right</strong> keeps going until you let go.)</p>
+<p><img src="images/walkthrough/044.png" width="240" alt="A + Right (15 times) - preset kick. (Holding A and Right keeps going until you let go.)"></p>
+<p><strong>45.</strong> <strong>Start</strong>: The phrase again, with the new kick. <strong>Start</strong> plays the phrase from the Instrument screen too.</p>
+<p><img src="images/walkthrough/045.png" width="240" alt="Start - The phrase again, with the new kick. Start plays the phrase from the Instrument screen too."></p>
+<p><strong>46.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/046.png" width="240" alt="Start - Stop."></p>
+<p><strong>47.</strong> <strong>RB + Left</strong>: Back on phrase <code>00</code>.</p>
+<p><img src="images/walkthrough/047.png" width="240" alt="RB + Left - Back on phrase 00."></p>
+<p><strong>48.</strong> <strong>RB + Left</strong>: Back on chain <code>00</code>.</p>
+<p><img src="images/walkthrough/048.png" width="240" alt="RB + Left - Back on chain 00."></p>
+<p><strong>49.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/049.png" width="240" alt="Down - Row 1."></p>
+<p><strong>50.</strong> <strong>A</strong>: Phrase <code>00</code>.</p>
+<p><img src="images/walkthrough/050.png" width="240" alt="A - Phrase 00."></p>
+<p><strong>51.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/051.png" width="240" alt="Down - Row 2."></p>
+<p><strong>52.</strong> <strong>A</strong>: Phrase <code>00</code>.</p>
+<p><img src="images/walkthrough/052.png" width="240" alt="A - Phrase 00."></p>
+<p><strong>53.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/053.png" width="240" alt="Down - Row 3."></p>
+<p><strong>54.</strong> <strong>A</strong>: Phrase <code>00</code>: four bars of chain <code>00</code>.</p>
+<p><img src="images/walkthrough/054.png" width="240" alt="A - Phrase 00: four bars of chain 00."></p>
+<p><strong>55.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/055.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="5-snare-with-reverb">5. Snare, with reverb</h2>
+<p>Track 2: a snare on beats 2 and 4. It needs its own chain and phrase: on an empty spot <strong>A</strong> reuses the last one, and <strong>A</strong> again makes a new one.</p>
+<p>The Chain and Phrase screens keep the cursor where you left it, even in a new chain or phrase, so some steps just move it back.</p>
+<p><strong>56.</strong> <strong>Right</strong>: Track 2, row <code>00</code>.</p>
+<p><img src="images/walkthrough/056.png" width="240" alt="Right - Track 2, row 00."></p>
+<p><strong>57.</strong> <strong>A</strong>: Chain <code>00</code> goes in: <strong>A</strong> reuses the last chain.</p>
+<p><img src="images/walkthrough/057.png" width="240" alt="A - Chain 00 goes in: A reuses the last chain."></p>
+<p><strong>58.</strong> <strong>A</strong>: <strong>A</strong> again: a brand-new chain <code>01</code>.</p>
+<p><img src="images/walkthrough/058.png" width="240" alt="A - A again: a brand-new chain 01."></p>
+<p><strong>59.</strong> <strong>RB + Right</strong>: Chain <code>01</code>, empty. The cursor is on row <code>3</code>, where you left chain <code>00</code>.</p>
+<p><img src="images/walkthrough/059.png" width="240" alt="RB + Right - Chain 01, empty. The cursor is on row 3, where you left chain 00."></p>
+<p><strong>60.</strong> <strong>Up (3 times)</strong>: Row <code>0</code>.</p>
+<p><img src="images/walkthrough/060.png" width="240" alt="Up (3 times) - Row 0."></p>
+<p><strong>61.</strong> <strong>A</strong>: Phrase <code>00</code> goes in.</p>
+<p><img src="images/walkthrough/061.png" width="240" alt="A - Phrase 00 goes in."></p>
+<p><strong>62.</strong> <strong>A</strong>: A new phrase <code>01</code>.</p>
+<p><img src="images/walkthrough/062.png" width="240" alt="A - A new phrase 01."></p>
+<p><strong>63.</strong> <strong>RB + Right</strong>: Phrase <code>01</code>, empty. The cursor is on step <code>C</code>, where you left the kick: beat 4, just right.</p>
+<p><img src="images/walkthrough/063.png" width="240" alt="RB + Right - Phrase 01, empty. The cursor is on step C, where you left the kick: beat 4, just right."></p>
+<p><strong>64.</strong> <strong>A</strong>: <code>C 3 I00</code>, a copy of the kick. The next steps turn it into a snare.</p>
+<p><img src="images/walkthrough/064.png" width="240" alt="A - C 3 I00, a copy of the kick. The next steps turn it into a snare."></p>
+<p><strong>65.</strong> <strong>Right</strong>: The cursor is on the instrument, <code>I00</code>.</p>
+<p><img src="images/walkthrough/065.png" width="240" alt="Right - The cursor is on the instrument, I00."></p>
+<p><strong>66.</strong> <strong>A + Right</strong>: <code>I01</code>, the <strong>SNARE</strong>. Every note picks its own instrument.</p>
+<p><img src="images/walkthrough/066.png" width="240" alt="A + Right - I01, the SNARE. Every note picks its own instrument."></p>
+<p><strong>67.</strong> <strong>Left</strong>: Back on the note.</p>
+<p><img src="images/walkthrough/067.png" width="240" alt="Left - Back on the note."></p>
+<p><strong>68.</strong> <strong>Up (8 times)</strong>: Step <code>4</code>, beat 2.</p>
+<p><img src="images/walkthrough/068.png" width="240" alt="Up (8 times) - Step 4, beat 2."></p>
+<p><strong>69.</strong> <strong>A</strong>: Snare (a copy of <code>C 3 I01</code>).</p>
+<p><img src="images/walkthrough/069.png" width="240" alt="A - Snare (a copy of C 3 I01)."></p>
+<p><strong>70.</strong> <strong>RB + Right</strong>: Instrument <code>I01</code>, the SNARE.</p>
+<p><img src="images/walkthrough/070.png" width="240" alt="RB + Right - Instrument I01, the SNARE."></p>
+<p><strong>71.</strong> <strong>Up (2 times)</strong>: The cursor is on <code>type</code>.</p>
+<p><img src="images/walkthrough/071.png" width="240" alt="Up (2 times) - The cursor is on type."></p>
+<p><strong>72.</strong> <strong>A + Right</strong>: <code>type   macro</code>.</p>
+<p><img src="images/walkthrough/072.png" width="240" alt="A + Right - type   macro."></p>
+<p><strong>73.</strong> <strong>Down</strong>: The cursor is on <code>preset init</code>.</p>
+<p><img src="images/walkthrough/073.png" width="240" alt="Down - The cursor is on preset init."></p>
+<p><strong>74.</strong> <strong>A + Right (16 times)</strong>: <code>preset snare</code>.</p>
+<p><img src="images/walkthrough/074.png" width="240" alt="A + Right (16 times) - preset snare."></p>
+<p><strong>75.</strong> <strong>LB + Right (5 times)</strong>: <strong>LB + Left/Right</strong> flips through the instrument's pages. Page 6, <strong>MIX</strong>: volume, pan and the three effect sends.</p>
+<p><img src="images/walkthrough/075.png" width="240" alt="LB + Right (5 times) - LB + Left/Right flips through the instrument's pages. Page 6, MIX: volume, pan and the three effect sends."></p>
+<p><strong>76.</strong> <strong>Down (2 times)</strong>: The cursor is on <code>reverb 00</code>.</p>
+<p><img src="images/walkthrough/076.png" width="240" alt="Down (2 times) - The cursor is on reverb 00."></p>
+<p><strong>77.</strong> <strong>A + Up (4 times)</strong>: <code>reverb 40</code>: the snare now sends a little of itself into the reverb. <strong>A + Up/Down</strong> moves in big steps.</p>
+<p><img src="images/walkthrough/077.png" width="240" alt="A + Up (4 times) - reverb 40: the snare now sends a little of itself into the reverb. A + Up/Down moves in big steps."></p>
+<p><strong>78.</strong> <strong>LB + Left (5 times)</strong>: Back on page 1, so the next instrument you open starts there too.</p>
+<p><img src="images/walkthrough/078.png" width="240" alt="LB + Left (5 times) - Back on page 1, so the next instrument you open starts there too."></p>
+<p><strong>79.</strong> <strong>RB + Left</strong>: Back on phrase <code>01</code>.</p>
+<p><img src="images/walkthrough/079.png" width="240" alt="RB + Left - Back on phrase 01."></p>
+<p><strong>80.</strong> <strong>RB + Left</strong>: Back on chain <code>01</code>.</p>
+<p><img src="images/walkthrough/080.png" width="240" alt="RB + Left - Back on chain 01."></p>
+<p><strong>81.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/081.png" width="240" alt="Down - Row 1."></p>
+<p><strong>82.</strong> <strong>A</strong>: Phrase <code>01</code>.</p>
+<p><img src="images/walkthrough/082.png" width="240" alt="A - Phrase 01."></p>
+<p><strong>83.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/083.png" width="240" alt="Down - Row 2."></p>
+<p><strong>84.</strong> <strong>A</strong>: Phrase <code>01</code>.</p>
+<p><img src="images/walkthrough/084.png" width="240" alt="A - Phrase 01."></p>
+<p><strong>85.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/085.png" width="240" alt="Down - Row 3."></p>
+<p><strong>86.</strong> <strong>A</strong>: Phrase <code>01</code>: four bars of chain <code>01</code>.</p>
+<p><img src="images/walkthrough/086.png" width="240" alt="A - Phrase 01: four bars of chain 01."></p>
+<p><strong>87.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/087.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="6-hats-fill-and-chance">6. Hats: fill and chance</h2>
+<p>Track 3: a hi-hat on every 16th. You'll enter one and let the <strong>fill</strong> tool copy it down the bar. Then every 4th hat gets <code>CHNC 0080</code>: it plays only half the time, so the pattern never loops exactly the same.</p>
+<p><strong>88.</strong> <strong>Right</strong>: Track 3, row <code>00</code>.</p>
+<p><img src="images/walkthrough/088.png" width="240" alt="Right - Track 3, row 00."></p>
+<p><strong>89.</strong> <strong>A</strong>: Chain <code>01</code> goes in.</p>
+<p><img src="images/walkthrough/089.png" width="240" alt="A - Chain 01 goes in."></p>
+<p><strong>90.</strong> <strong>A</strong>: A new chain <code>02</code>.</p>
+<p><img src="images/walkthrough/090.png" width="240" alt="A - A new chain 02."></p>
+<p><strong>91.</strong> <strong>RB + Right</strong>: Chain <code>02</code>, cursor on row <code>3</code>.</p>
+<p><img src="images/walkthrough/091.png" width="240" alt="RB + Right - Chain 02, cursor on row 3."></p>
+<p><strong>92.</strong> <strong>Up (3 times)</strong>: Row <code>0</code>.</p>
+<p><img src="images/walkthrough/092.png" width="240" alt="Up (3 times) - Row 0."></p>
+<p><strong>93.</strong> <strong>A</strong>: Phrase <code>01</code> goes in.</p>
+<p><img src="images/walkthrough/093.png" width="240" alt="A - Phrase 01 goes in."></p>
+<p><strong>94.</strong> <strong>A</strong>: A new phrase <code>02</code>.</p>
+<p><img src="images/walkthrough/094.png" width="240" alt="A - A new phrase 02."></p>
+<p><strong>95.</strong> <strong>RB + Right</strong>: Phrase <code>02</code>, empty, cursor on step <code>4</code>.</p>
+<p><img src="images/walkthrough/095.png" width="240" alt="RB + Right - Phrase 02, empty, cursor on step 4."></p>
+<p><strong>96.</strong> <strong>Up (4 times)</strong>: Step <code>0</code>.</p>
+<p><img src="images/walkthrough/096.png" width="240" alt="Up (4 times) - Step 0."></p>
+<p><strong>97.</strong> <strong>A</strong>: <code>C 3 I01</code>, a copy of the snare.</p>
+<p><img src="images/walkthrough/097.png" width="240" alt="A - C 3 I01, a copy of the snare."></p>
+<p><strong>98.</strong> <strong>Right</strong>: The cursor is on <code>I01</code>.</p>
+<p><img src="images/walkthrough/098.png" width="240" alt="Right - The cursor is on I01."></p>
+<p><strong>99.</strong> <strong>A + Right</strong>: <code>I02</code>, the <strong>HAT</strong>.</p>
+<p><img src="images/walkthrough/099.png" width="240" alt="A + Right - I02, the HAT."></p>
+<p><strong>100.</strong> <strong>Left</strong>: Back on the note.</p>
+<p><img src="images/walkthrough/100.png" width="240" alt="Left - Back on the note."></p>
+<p><strong>101.</strong> <strong>B + LB</strong>: <strong>B + LB</strong> starts a selection on step <code>0</code>.</p>
+<p><img src="images/walkthrough/101.png" width="240" alt="B + LB - B + LB starts a selection on step 0."></p>
+<p><strong>102.</strong> <strong>Down (15 times)</strong>: The selection covers the whole bar.</p>
+<p><img src="images/walkthrough/102.png" width="240" alt="Down (15 times) - The selection covers the whole bar."></p>
+<p><strong>103.</strong> <strong>LB + Left</strong>: <strong>LB + Left</strong> fills: the first selected note on every step. (Again: every 2nd step, then every 4th.)</p>
+<p><img src="images/walkthrough/103.png" width="240" alt="LB + Left - LB + Left fills: the first selected note on every step. (Again: every 2nd step, then every 4th.)"></p>
+<p><strong>104.</strong> <strong>B</strong>: <strong>B</strong> copies the selection and ends it; the cursor goes back to step <code>0</code>.</p>
+<p><img src="images/walkthrough/104.png" width="240" alt="B - B copies the selection and ends it; the cursor goes back to step 0."></p>
+<p><strong>105.</strong> <strong>Down (3 times)</strong>: Step <code>3</code>.</p>
+<p><img src="images/walkthrough/105.png" width="240" alt="Down (3 times) - Step 3."></p>
+<p><strong>106.</strong> <strong>Right (2 times)</strong>: The first command column.</p>
+<p><img src="images/walkthrough/106.png" width="240" alt="Right (2 times) - The first command column."></p>
+<p><strong>107.</strong> <strong>Select</strong>: <strong>Select</strong> opens the command list. The text under it explains the command under the cursor.</p>
+<p><img src="images/walkthrough/107.png" width="240" alt="Select - Select opens the command list. The text under it explains the command under the cursor."></p>
+<p><strong>108.</strong> <strong>Right</strong>: <code>CHNC</code>: the chance that the note plays.</p>
+<p><img src="images/walkthrough/108.png" width="240" alt="Right - CHNC: the chance that the note plays."></p>
+<p><strong>109.</strong> <strong>A</strong>: <code>CHNC 0000</code> goes into step <code>3</code>.</p>
+<p><img src="images/walkthrough/109.png" width="240" alt="A - CHNC 0000 goes into step 3."></p>
+<p><strong>110.</strong> <strong>Right</strong>: The cursor is on the value; its last digit is lit.</p>
+<p><img src="images/walkthrough/110.png" width="240" alt="Right - The cursor is on the value; its last digit is lit."></p>
+<p><strong>111.</strong> <strong>A + Left</strong>: Holding <strong>A</strong>, <strong>Left</strong> lights the next digit.</p>
+<p><img src="images/walkthrough/111.png" width="240" alt="A + Left - Holding A, Left lights the next digit."></p>
+<p><strong>112.</strong> <strong>A + Up (8 times)</strong>: <code>0080</code>: half the time (<code>FF</code> = always).</p>
+<p><img src="images/walkthrough/112.png" width="240" alt="A + Up (8 times) - 0080: half the time (FF = always)."></p>
+<p><strong>113.</strong> <strong>Left</strong>: Back on <code>CHNC</code>.</p>
+<p><img src="images/walkthrough/113.png" width="240" alt="Left - Back on CHNC."></p>
+<p><strong>114.</strong> <strong>B + LB</strong>: A selection on the command.</p>
+<p><img src="images/walkthrough/114.png" width="240" alt="B + LB - A selection on the command."></p>
+<p><strong>115.</strong> <strong>Right</strong>: It grows over the value too.</p>
+<p><img src="images/walkthrough/115.png" width="240" alt="Right - It grows over the value too."></p>
+<p><strong>116.</strong> <strong>B</strong>: Copied.</p>
+<p><img src="images/walkthrough/116.png" width="240" alt="B - Copied."></p>
+<p><strong>117.</strong> <strong>Down (4 times)</strong>: Step <code>7</code>.</p>
+<p><img src="images/walkthrough/117.png" width="240" alt="Down (4 times) - Step 7."></p>
+<p><strong>118.</strong> <strong>A + LB</strong>: <strong>A + LB</strong> pastes <code>CHNC 0080</code> here, and the cursor moves on to step <code>8</code>.</p>
+<p><img src="images/walkthrough/118.png" width="240" alt="A + LB - A + LB pastes CHNC 0080 here, and the cursor moves on to step 8."></p>
+<p><strong>119.</strong> <strong>Down (3 times)</strong>: Step <code>B</code>.</p>
+<p><img src="images/walkthrough/119.png" width="240" alt="Down (3 times) - Step B."></p>
+<p><strong>120.</strong> <strong>A + LB</strong>: Pasted.</p>
+<p><img src="images/walkthrough/120.png" width="240" alt="A + LB - Pasted."></p>
+<p><strong>121.</strong> <strong>Down (3 times)</strong>: Step <code>F</code>.</p>
+<p><img src="images/walkthrough/121.png" width="240" alt="Down (3 times) - Step F."></p>
+<p><strong>122.</strong> <strong>A + LB</strong>: Pasted.</p>
+<p><img src="images/walkthrough/122.png" width="240" alt="A + LB - Pasted."></p>
+<p><strong>123.</strong> <strong>RB + Right</strong>: Instrument <code>I02</code>, the HAT.</p>
+<p><img src="images/walkthrough/123.png" width="240" alt="RB + Right - Instrument I02, the HAT."></p>
+<p><strong>124.</strong> <strong>Up (2 times)</strong>: The cursor is on <code>type</code>.</p>
+<p><img src="images/walkthrough/124.png" width="240" alt="Up (2 times) - The cursor is on type."></p>
+<p><strong>125.</strong> <strong>A + Right</strong>: <code>type   macro</code>.</p>
+<p><img src="images/walkthrough/125.png" width="240" alt="A + Right - type   macro."></p>
+<p><strong>126.</strong> <strong>Down</strong>: The cursor is on <code>preset init</code>.</p>
+<p><img src="images/walkthrough/126.png" width="240" alt="Down - The cursor is on preset init."></p>
+<p><strong>127.</strong> <strong>A + Right (17 times)</strong>: <code>preset hat</code>.</p>
+<p><img src="images/walkthrough/127.png" width="240" alt="A + Right (17 times) - preset hat."></p>
+<p><strong>128.</strong> <strong>Start</strong>: Listen: some of the quiet in-between hats come and go.</p>
+<p><img src="images/walkthrough/128.png" width="240" alt="Start - Listen: some of the quiet in-between hats come and go."></p>
+<p><strong>129.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/129.png" width="240" alt="Start - Stop."></p>
+<p><strong>130.</strong> <strong>RB + Left</strong>: Back on phrase <code>02</code>.</p>
+<p><img src="images/walkthrough/130.png" width="240" alt="RB + Left - Back on phrase 02."></p>
+<p><strong>131.</strong> <strong>RB + Left</strong>: Back on chain <code>02</code>.</p>
+<p><img src="images/walkthrough/131.png" width="240" alt="RB + Left - Back on chain 02."></p>
+<p><strong>132.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/132.png" width="240" alt="Down - Row 1."></p>
+<p><strong>133.</strong> <strong>A</strong>: Phrase <code>02</code>.</p>
+<p><img src="images/walkthrough/133.png" width="240" alt="A - Phrase 02."></p>
+<p><strong>134.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/134.png" width="240" alt="Down - Row 2."></p>
+<p><strong>135.</strong> <strong>A</strong>: Phrase <code>02</code>.</p>
+<p><img src="images/walkthrough/135.png" width="240" alt="A - Phrase 02."></p>
+<p><strong>136.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/136.png" width="240" alt="Down - Row 3."></p>
+<p><strong>137.</strong> <strong>A</strong>: Phrase <code>02</code>: four bars of chain <code>02</code>.</p>
+<p><img src="images/walkthrough/137.png" width="240" alt="A - Phrase 02: four bars of chain 02."></p>
+<p><strong>138.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/138.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<p><strong>139.</strong> <strong>Start</strong>: The song plays from the cursor's row: kick, snare and hats.</p>
+<p><img src="images/walkthrough/139.png" width="240" alt="Start - The song plays from the cursor's row: kick, snare and hats."></p>
+<p><strong>140.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/140.png" width="240" alt="Start - Stop."></p>
+<h2 id="7-swing">7. Swing</h2>
+<p>Straight 16ths sound stiff. A <strong>groove</strong> sets how long each step lasts, in ticks: <code>06 06</code> is even, <code>07 05</code> makes every second 16th a little late. That's swing.</p>
+<p><strong>141.</strong> <strong>RB + Right</strong>: Chain <code>02</code>.</p>
+<p><img src="images/walkthrough/141.png" width="240" alt="RB + Right - Chain 02."></p>
+<p><strong>142.</strong> <strong>RB + Right</strong>: Phrase <code>02</code>.</p>
+<p><img src="images/walkthrough/142.png" width="240" alt="RB + Right - Phrase 02."></p>
+<p><strong>143.</strong> <strong>RB + Up</strong>: The <strong>Groove</strong> screen, above Phrase. The cursor is on the first <code>06</code>.</p>
+<p><img src="images/walkthrough/143.png" width="240" alt="RB + Up - The Groove screen, above Phrase. The cursor is on the first 06."></p>
+<p><strong>144.</strong> <strong>A + Right</strong>: <code>07</code>.</p>
+<p><img src="images/walkthrough/144.png" width="240" alt="A + Right - 07."></p>
+<p><strong>145.</strong> <strong>Down</strong>: The second <code>06</code>.</p>
+<p><img src="images/walkthrough/145.png" width="240" alt="Down - The second 06."></p>
+<p><strong>146.</strong> <strong>A + Left</strong>: <code>05</code>: <code>07 05</code>, swing.</p>
+<p><img src="images/walkthrough/146.png" width="240" alt="A + Left - 05: 07 05, swing."></p>
+<p><strong>147.</strong> <strong>Start</strong>: The hats now shuffle.</p>
+<p><img src="images/walkthrough/147.png" width="240" alt="Start - The hats now shuffle."></p>
+<p><strong>148.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/148.png" width="240" alt="Start - Stop."></p>
+<p><strong>149.</strong> <strong>RB + Down</strong>: Back on phrase <code>02</code>.</p>
+<p><img src="images/walkthrough/149.png" width="240" alt="RB + Down - Back on phrase 02."></p>
+<p><strong>150.</strong> <strong>RB + Left</strong>: Chain <code>02</code>.</p>
+<p><img src="images/walkthrough/150.png" width="240" alt="RB + Left - Chain 02."></p>
+<p><strong>151.</strong> <strong>RB + Left</strong>: Song.</p>
+<p><img src="images/walkthrough/151.png" width="240" alt="RB + Left - Song."></p>
+<h2 id="8-bass">8. Bass</h2>
+<p>Track 4: a rolling bass, a note on every 8th: <code>C C C(high) C C C C(high) G</code>. Just the root, its octave and its 5th, so it fits every chord once the chain moves it around.</p>
+<p><strong>152.</strong> <strong>Right</strong>: Track 4, row <code>00</code>.</p>
+<p><img src="images/walkthrough/152.png" width="240" alt="Right - Track 4, row 00."></p>
+<p><strong>153.</strong> <strong>A</strong>: Chain <code>02</code> goes in.</p>
+<p><img src="images/walkthrough/153.png" width="240" alt="A - Chain 02 goes in."></p>
+<p><strong>154.</strong> <strong>A</strong>: A new chain <code>03</code>.</p>
+<p><img src="images/walkthrough/154.png" width="240" alt="A - A new chain 03."></p>
+<p><strong>155.</strong> <strong>RB + Right</strong>: Chain <code>03</code>, empty, cursor on row <code>0</code>.</p>
+<p><img src="images/walkthrough/155.png" width="240" alt="RB + Right - Chain 03, empty, cursor on row 0."></p>
+<p><strong>156.</strong> <strong>A</strong>: Phrase <code>02</code> goes in.</p>
+<p><img src="images/walkthrough/156.png" width="240" alt="A - Phrase 02 goes in."></p>
+<p><strong>157.</strong> <strong>A</strong>: A new phrase <code>03</code>.</p>
+<p><img src="images/walkthrough/157.png" width="240" alt="A - A new phrase 03."></p>
+<p><strong>158.</strong> <strong>RB + Right</strong>: Phrase <code>03</code>, empty. The cursor is on step <code>0</code>, in the command column, where you left the hats.</p>
+<p><img src="images/walkthrough/158.png" width="240" alt="RB + Right - Phrase 03, empty. The cursor is on step 0, in the command column, where you left the hats."></p>
+<p><strong>159.</strong> <strong>Left (2 times)</strong>: The note column.</p>
+<p><img src="images/walkthrough/159.png" width="240" alt="Left (2 times) - The note column."></p>
+<p><strong>160.</strong> <strong>A</strong>: <code>C 3 I02</code>, a copy of the hat.</p>
+<p><img src="images/walkthrough/160.png" width="240" alt="A - C 3 I02, a copy of the hat."></p>
+<p><strong>161.</strong> <strong>Right</strong>: The cursor is on <code>I02</code>.</p>
+<p><img src="images/walkthrough/161.png" width="240" alt="Right - The cursor is on I02."></p>
+<p><strong>162.</strong> <strong>A + Right (3 times)</strong>: <code>I05</code>, the <strong>BASS</strong>: a saw and a sub, tuned two octaves down.</p>
+<p><img src="images/walkthrough/162.png" width="240" alt="A + Right (3 times) - I05, the BASS: a saw and a sub, tuned two octaves down."></p>
+<p><strong>163.</strong> <strong>Left</strong>: Back on the note.</p>
+<p><img src="images/walkthrough/163.png" width="240" alt="Left - Back on the note."></p>
+<p><strong>164.</strong> <strong>Down (2 times)</strong>: Step <code>2</code>.</p>
+<p><img src="images/walkthrough/164.png" width="240" alt="Down (2 times) - Step 2."></p>
+<p><strong>165.</strong> <strong>A</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/165.png" width="240" alt="A - C 3."></p>
+<p><strong>166.</strong> <strong>Down (2 times)</strong>: Step <code>4</code>.</p>
+<p><img src="images/walkthrough/166.png" width="240" alt="Down (2 times) - Step 4."></p>
+<p><strong>167.</strong> <strong>A</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/167.png" width="240" alt="A - C 3."></p>
+<p><strong>168.</strong> <strong>A + Up</strong>: <code>C 4</code>: <strong>A + Up</strong> moves a note up an octave.</p>
+<p><img src="images/walkthrough/168.png" width="240" alt="A + Up - C 4: A + Up moves a note up an octave."></p>
+<p><strong>169.</strong> <strong>Down (2 times)</strong>: Step <code>6</code>.</p>
+<p><img src="images/walkthrough/169.png" width="240" alt="Down (2 times) - Step 6."></p>
+<p><strong>170.</strong> <strong>A</strong>: <code>C 4</code>: a new note copies the last one, edit included.</p>
+<p><img src="images/walkthrough/170.png" width="240" alt="A - C 4: a new note copies the last one, edit included."></p>
+<p><strong>171.</strong> <strong>A + Down</strong>: <code>C 3</code>: an octave down.</p>
+<p><img src="images/walkthrough/171.png" width="240" alt="A + Down - C 3: an octave down."></p>
+<p><strong>172.</strong> <strong>Down (2 times)</strong>: Step <code>8</code>.</p>
+<p><img src="images/walkthrough/172.png" width="240" alt="Down (2 times) - Step 8."></p>
+<p><strong>173.</strong> <strong>A</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/173.png" width="240" alt="A - C 3."></p>
+<p><strong>174.</strong> <strong>Down (2 times)</strong>: Step <code>A</code>.</p>
+<p><img src="images/walkthrough/174.png" width="240" alt="Down (2 times) - Step A."></p>
+<p><strong>175.</strong> <strong>A</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/175.png" width="240" alt="A - C 3."></p>
+<p><strong>176.</strong> <strong>Down (2 times)</strong>: Step <code>C</code>.</p>
+<p><img src="images/walkthrough/176.png" width="240" alt="Down (2 times) - Step C."></p>
+<p><strong>177.</strong> <strong>A</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/177.png" width="240" alt="A - C 3."></p>
+<p><strong>178.</strong> <strong>A + Up</strong>: <code>C 4</code>.</p>
+<p><img src="images/walkthrough/178.png" width="240" alt="A + Up - C 4."></p>
+<p><strong>179.</strong> <strong>Down (2 times)</strong>: Step <code>E</code>.</p>
+<p><img src="images/walkthrough/179.png" width="240" alt="Down (2 times) - Step E."></p>
+<p><strong>180.</strong> <strong>A</strong>: <code>C 4</code>.</p>
+<p><img src="images/walkthrough/180.png" width="240" alt="A - C 4."></p>
+<p><strong>181.</strong> <strong>A + Left (3 times)</strong>: <code>G 3</code>. <strong>A + Left/Right</strong> walks through the notes of C minor: <code>A#3</code>, <code>G#3</code>, <code>G 3</code>.</p>
+<p><img src="images/walkthrough/181.png" width="240" alt="A + Left (3 times) - G 3. A + Left/Right walks through the notes of C minor: A#3, G#3, G 3."></p>
+<p><strong>182.</strong> <strong>Start</strong>: The bass line.</p>
+<p><img src="images/walkthrough/182.png" width="240" alt="Start - The bass line."></p>
+<p><strong>183.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/183.png" width="240" alt="Start - Stop."></p>
+<h2 id="9-try-a-sound-then-undo">9. Try a sound, then undo</h2>
+<p>Every synth has presets to flip through. Try one, and if you don't like it, <strong>B + Select</strong> undoes it (<strong>LB + Select</strong> redoes). Undo works for every change, on every screen.</p>
+<p><strong>184.</strong> <strong>RB + Right</strong>: Instrument <code>I05</code>, the BASS, cursor on <code>preset bass</code>.</p>
+<p><img src="images/walkthrough/184.png" width="240" alt="RB + Right - Instrument I05, the BASS, cursor on preset bass."></p>
+<p><strong>185.</strong> <strong>A + Right</strong>: <code>preset subbass</code>: a clean sine.</p>
+<p><img src="images/walkthrough/185.png" width="240" alt="A + Right - preset subbass: a clean sine."></p>
+<p><strong>186.</strong> <strong>Start</strong>: Deep, but too soft for this song.</p>
+<p><img src="images/walkthrough/186.png" width="240" alt="Start - Deep, but too soft for this song."></p>
+<p><strong>187.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/187.png" width="240" alt="Start - Stop."></p>
+<p><strong>188.</strong> <strong>B + Select</strong>: Undo: <code>preset bass</code> is back, with all its settings.</p>
+<p><img src="images/walkthrough/188.png" width="240" alt="B + Select - Undo: preset bass is back, with all its settings."></p>
+<p><strong>189.</strong> <strong>RB + Left</strong>: Back on phrase <code>03</code>.</p>
+<p><img src="images/walkthrough/189.png" width="240" alt="RB + Left - Back on phrase 03."></p>
+<p><strong>190.</strong> <strong>RB + Left</strong>: Back on chain <code>03</code>.</p>
+<p><img src="images/walkthrough/190.png" width="240" alt="RB + Left - Back on chain 03."></p>
+<p><strong>191.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/191.png" width="240" alt="Down - Row 1."></p>
+<p><strong>192.</strong> <strong>A</strong>: Phrase <code>03</code>.</p>
+<p><img src="images/walkthrough/192.png" width="240" alt="A - Phrase 03."></p>
+<p><strong>193.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/193.png" width="240" alt="Down - Row 2."></p>
+<p><strong>194.</strong> <strong>A</strong>: Phrase <code>03</code>.</p>
+<p><img src="images/walkthrough/194.png" width="240" alt="A - Phrase 03."></p>
+<p><strong>195.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/195.png" width="240" alt="Down - Row 3."></p>
+<p><strong>196.</strong> <strong>A</strong>: Phrase <code>03</code>: four bars of chain <code>03</code>.</p>
+<p><img src="images/walkthrough/196.png" width="240" alt="A - Phrase 03: four bars of chain 03."></p>
+<h2 id="10-four-chords-one-bar">10. Four chords, one bar</h2>
+<p>The second column of a chain <strong>transposes</strong> its row: every note of that bar moves up or down, in semitones. So one bar of bass plays four chords:</p>
+<table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Transpose</th>
+<th>Chord</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>00</code></td>
+<td>C minor</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>FC</code> (4 down)</td>
+<td>A♭ major</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>03</code> (3 up)</td>
+<td>E♭ major</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>FE</code> (2 down)</td>
+<td>B♭ major</td>
+</tr>
+</tbody>
+</table>
+<p>That's the song's chord progression. The pad and the keys use the same trick.</p>
+<p><strong>197.</strong> <strong>Right</strong>: Row <code>3</code>'s transpose, <code>00</code>.</p>
+<p><img src="images/walkthrough/197.png" width="240" alt="Right - Row 3's transpose, 00."></p>
+<p><strong>198.</strong> <strong>A + Left (2 times)</strong>: <code>FE</code>: two semitones down.</p>
+<p><img src="images/walkthrough/198.png" width="240" alt="A + Left (2 times) - FE: two semitones down."></p>
+<p><strong>199.</strong> <strong>Up</strong>: Row <code>2</code>'s transpose.</p>
+<p><img src="images/walkthrough/199.png" width="240" alt="Up - Row 2's transpose."></p>
+<p><strong>200.</strong> <strong>A + Right (3 times)</strong>: <code>03</code>: three up.</p>
+<p><img src="images/walkthrough/200.png" width="240" alt="A + Right (3 times) - 03: three up."></p>
+<p><strong>201.</strong> <strong>Up</strong>: Row <code>1</code>'s transpose.</p>
+<p><img src="images/walkthrough/201.png" width="240" alt="Up - Row 1's transpose."></p>
+<p><strong>202.</strong> <strong>A + Left (4 times)</strong>: <code>FC</code>: four down.</p>
+<p><img src="images/walkthrough/202.png" width="240" alt="A + Left (4 times) - FC: four down."></p>
+<p><strong>203.</strong> <strong>Start</strong>: <strong>Start</strong> on a chain loops this track's chain: the bass walks through the four chords.</p>
+<p><img src="images/walkthrough/203.png" width="240" alt="Start - Start on a chain loops this track's chain: the bass walks through the four chords."></p>
+<p><strong>204.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/204.png" width="240" alt="Start - Stop."></p>
+<p><strong>205.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/205.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="11-the-hypersynth-pad">11. The HyperSynth pad</h2>
+<p>Track 5 gets the big chords. The <strong>HyperSynth</strong> engine plays a six-note chord from every note, and with its <code>scale</code> switch on, every chord stays in C minor whatever the transpose: a C makes C minor 9, an A♭ makes A♭ major 9.</p>
+<p>Two more things make it sit in the mix: a <strong>MOD</strong> slot that ducks it every time the kick hits (the "pumping" of house music), and its own <strong>EQ</strong> taking out the low end, which belongs to the kick and bass.</p>
+<p><strong>206.</strong> <strong>Right</strong>: Track 5, row <code>00</code>.</p>
+<p><img src="images/walkthrough/206.png" width="240" alt="Right - Track 5, row 00."></p>
+<p><strong>207.</strong> <strong>A</strong>: Chain <code>03</code> goes in.</p>
+<p><img src="images/walkthrough/207.png" width="240" alt="A - Chain 03 goes in."></p>
+<p><strong>208.</strong> <strong>A</strong>: A new chain <code>04</code>.</p>
+<p><img src="images/walkthrough/208.png" width="240" alt="A - A new chain 04."></p>
+<p><strong>209.</strong> <strong>RB + Right</strong>: Chain <code>04</code>. The cursor is where you left chain <code>03</code>: row <code>1</code>, on the transpose.</p>
+<p><img src="images/walkthrough/209.png" width="240" alt="RB + Right - Chain 04. The cursor is where you left chain 03: row 1, on the transpose."></p>
+<p><strong>210.</strong> <strong>Left</strong>: The phrase column.</p>
+<p><img src="images/walkthrough/210.png" width="240" alt="Left - The phrase column."></p>
+<p><strong>211.</strong> <strong>Up</strong>: Row <code>0</code>.</p>
+<p><img src="images/walkthrough/211.png" width="240" alt="Up - Row 0."></p>
+<p><strong>212.</strong> <strong>A</strong>: Phrase <code>03</code> goes in.</p>
+<p><img src="images/walkthrough/212.png" width="240" alt="A - Phrase 03 goes in."></p>
+<p><strong>213.</strong> <strong>A</strong>: A new phrase <code>04</code>.</p>
+<p><img src="images/walkthrough/213.png" width="240" alt="A - A new phrase 04."></p>
+<p><strong>214.</strong> <strong>RB + Right</strong>: Phrase <code>04</code>, cursor on step <code>E</code>.</p>
+<p><img src="images/walkthrough/214.png" width="240" alt="RB + Right - Phrase 04, cursor on step E."></p>
+<p><strong>215.</strong> <strong>Up (14 times)</strong>: Step <code>0</code>.</p>
+<p><img src="images/walkthrough/215.png" width="240" alt="Up (14 times) - Step 0."></p>
+<p><strong>216.</strong> <strong>A</strong>: <code>G 3 I05</code>, a copy of the last bass note.</p>
+<p><img src="images/walkthrough/216.png" width="240" alt="A - G 3 I05, a copy of the last bass note."></p>
+<p><strong>217.</strong> <strong>A + Left (4 times)</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/217.png" width="240" alt="A + Left (4 times) - C 3."></p>
+<p><strong>218.</strong> <strong>Right</strong>: The cursor is on <code>I05</code>.</p>
+<p><img src="images/walkthrough/218.png" width="240" alt="Right - The cursor is on I05."></p>
+<p><strong>219.</strong> <strong>A + Right (2 times)</strong>: <code>I07</code>, the <strong>PAD</strong>.</p>
+<p><img src="images/walkthrough/219.png" width="240" alt="A + Right (2 times) - I07, the PAD."></p>
+<p><strong>220.</strong> <strong>Left</strong>: Back on the note. One note for the whole bar: it holds until the next one.</p>
+<p><img src="images/walkthrough/220.png" width="240" alt="Left - Back on the note. One note for the whole bar: it holds until the next one."></p>
+<p><strong>221.</strong> <strong>RB + Right</strong>: Instrument <code>I07</code>, the PAD.</p>
+<p><img src="images/walkthrough/221.png" width="240" alt="RB + Right - Instrument I07, the PAD."></p>
+<p><strong>222.</strong> <strong>Up</strong>: The cursor is on <code>engine synth</code>.</p>
+<p><img src="images/walkthrough/222.png" width="240" alt="Up - The cursor is on engine synth."></p>
+<p><strong>223.</strong> <strong>A + Right (2 times)</strong>: <code>engine hyper</code>: the HyperSynth, starting from its <code>hyper init</code> sound.</p>
+<p><img src="images/walkthrough/223.png" width="240" alt="A + Right (2 times) - engine hyper: the HyperSynth, starting from its hyper init sound."></p>
+<p><strong>224.</strong> <strong>Down</strong>: The cursor is on <code>preset hyper init</code>.</p>
+<p><img src="images/walkthrough/224.png" width="240" alt="Down - The cursor is on preset hyper init."></p>
+<p><strong>225.</strong> <strong>A + Right</strong>: <code>preset hyper pad</code>: slow, wide and warm.</p>
+<p><img src="images/walkthrough/225.png" width="240" alt="A + Right - preset hyper pad: slow, wide and warm."></p>
+<p><strong>226.</strong> <strong>Down</strong>: The cursor is on <code>chord min9</code>. The two rows under it are the six notes it plays.</p>
+<p><img src="images/walkthrough/226.png" width="240" alt="Down - The cursor is on chord min9. The two rows under it are the six notes it plays."></p>
+<p><strong>227.</strong> <strong>A + Left</strong>: <code>chord maj9</code>.</p>
+<p><img src="images/walkthrough/227.png" width="240" alt="A + Left - chord maj9."></p>
+<p><strong>228.</strong> <strong>Down (7 times)</strong>: The cursor is on <code>scale off</code>.</p>
+<p><img src="images/walkthrough/228.png" width="240" alt="Down (7 times) - The cursor is on scale off."></p>
+<p><strong>229.</strong> <strong>A + Right</strong>: <code>scale on</code>.</p>
+<p><img src="images/walkthrough/229.png" width="240" alt="A + Right - scale on."></p>
+<p><strong>230.</strong> <strong>Start</strong>: One lush chord.</p>
+<p><img src="images/walkthrough/230.png" width="240" alt="Start - One lush chord."></p>
+<p><strong>231.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/231.png" width="240" alt="Start - Stop."></p>
+<p><strong>232.</strong> <strong>LB + Right (4 times)</strong>: Page 5, <strong>MOD</strong>: four modulation slots, all off.</p>
+<p><img src="images/walkthrough/232.png" width="240" alt="LB + Right (4 times) - Page 5, MOD: four modulation slots, all off."></p>
+<p><strong>233.</strong> <strong>Down</strong>: The cursor is on slot 1's <code>type off</code>.</p>
+<p><img src="images/walkthrough/233.png" width="240" alt="Down - The cursor is on slot 1's type off."></p>
+<p><strong>234.</strong> <strong>A + Right (5 times)</strong>: <code>type trig</code>: an envelope fired by the notes of another track, <code>source track 1</code>: the kick.</p>
+<p><img src="images/walkthrough/234.png" width="240" alt="A + Right (5 times) - type trig: an envelope fired by the notes of another track, source track 1: the kick."></p>
+<p><strong>235.</strong> <strong>Down</strong>: The cursor is on <code>dest cutoff</code>, what it moves.</p>
+<p><img src="images/walkthrough/235.png" width="240" alt="Down - The cursor is on dest cutoff, what it moves."></p>
+<p><strong>236.</strong> <strong>A + Left</strong>: <code>dest volume</code>.</p>
+<p><img src="images/walkthrough/236.png" width="240" alt="A + Left - dest volume."></p>
+<p><strong>237.</strong> <strong>Down</strong>: The cursor is on <code>amount +64</code>.</p>
+<p><img src="images/walkthrough/237.png" width="240" alt="Down - The cursor is on amount +64."></p>
+<p><strong>238.</strong> <strong>A + Down (8 times)</strong>: A minus amount: every kick pushes the pad's volume down, and it swells back up.</p>
+<p><img src="images/walkthrough/238.png" width="240" alt="A + Down (8 times) - A minus amount: every kick pushes the pad's volume down, and it swells back up."></p>
+<p><strong>239.</strong> <strong>LB + Right (2 times)</strong>: Page 7, <strong>EQ</strong>: the pad's own three-band EQ.</p>
+<p><img src="images/walkthrough/239.png" width="240" alt="LB + Right (2 times) - Page 7, EQ: the pad's own three-band EQ."></p>
+<p><strong>240.</strong> <strong>A + Down (3 times)</strong>: <code>l.gain 50</code>: the lows cut, so the kick and bass have them to themselves.</p>
+<p><img src="images/walkthrough/240.png" width="240" alt="A + Down (3 times) - l.gain 50: the lows cut, so the kick and bass have them to themselves."></p>
+<p><strong>241.</strong> <strong>LB + Left (6 times)</strong>: Back on page 1.</p>
+<p><img src="images/walkthrough/241.png" width="240" alt="LB + Left (6 times) - Back on page 1."></p>
+<p><strong>242.</strong> <strong>RB + Left</strong>: Back on phrase <code>04</code>.</p>
+<p><img src="images/walkthrough/242.png" width="240" alt="RB + Left - Back on phrase 04."></p>
+<p><strong>243.</strong> <strong>RB + Left</strong>: Back on chain <code>04</code>.</p>
+<p><img src="images/walkthrough/243.png" width="240" alt="RB + Left - Back on chain 04."></p>
+<p><strong>244.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/244.png" width="240" alt="Down - Row 1."></p>
+<p><strong>245.</strong> <strong>A</strong>: Phrase <code>04</code>.</p>
+<p><img src="images/walkthrough/245.png" width="240" alt="A - Phrase 04."></p>
+<p><strong>246.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/246.png" width="240" alt="Down - Row 2."></p>
+<p><strong>247.</strong> <strong>A</strong>: Phrase <code>04</code>.</p>
+<p><img src="images/walkthrough/247.png" width="240" alt="A - Phrase 04."></p>
+<p><strong>248.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/248.png" width="240" alt="Down - Row 3."></p>
+<p><strong>249.</strong> <strong>A</strong>: Phrase <code>04</code>: four bars of chain <code>04</code>.</p>
+<p><img src="images/walkthrough/249.png" width="240" alt="A - Phrase 04: four bars of chain 04."></p>
+<p><strong>250.</strong> <strong>Right</strong>: Row <code>3</code>'s transpose, <code>00</code>.</p>
+<p><img src="images/walkthrough/250.png" width="240" alt="Right - Row 3's transpose, 00."></p>
+<p><strong>251.</strong> <strong>A + Left (2 times)</strong>: <code>FE</code>: two semitones down.</p>
+<p><img src="images/walkthrough/251.png" width="240" alt="A + Left (2 times) - FE: two semitones down."></p>
+<p><strong>252.</strong> <strong>Up</strong>: Row <code>2</code>'s transpose.</p>
+<p><img src="images/walkthrough/252.png" width="240" alt="Up - Row 2's transpose."></p>
+<p><strong>253.</strong> <strong>A + Right (3 times)</strong>: <code>03</code>: three up.</p>
+<p><img src="images/walkthrough/253.png" width="240" alt="A + Right (3 times) - 03: three up."></p>
+<p><strong>254.</strong> <strong>Up</strong>: Row <code>1</code>'s transpose.</p>
+<p><img src="images/walkthrough/254.png" width="240" alt="Up - Row 1's transpose."></p>
+<p><strong>255.</strong> <strong>A + Left (4 times)</strong>: <code>FC</code>: four down. The same chords as the bass.</p>
+<p><img src="images/walkthrough/255.png" width="240" alt="A + Left (4 times) - FC: four down. The same chords as the bass."></p>
+<p><strong>256.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/256.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<p><strong>257.</strong> <strong>Start</strong>: Drums, bass and pumping chords.</p>
+<p><img src="images/walkthrough/257.png" width="240" alt="Start - Drums, bass and pumping chords."></p>
+<p><strong>258.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/258.png" width="240" alt="Start - Stop."></p>
+<h2 id="12-fm-keys-and-chrd">12. FM keys and CHRD</h2>
+<p>Track 6: an FM electric piano stabbing on the off-beats. The <code>CHRD</code> command turns one note into a chord: each digit of its value adds a note that many semitones up. <code>007E</code> adds 7 (the 5th) and <code>E</code> = 14 (the 9th): an open sound that fits all four chords.</p>
+<p><strong>259.</strong> <strong>Right</strong>: Track 6, row <code>00</code>.</p>
+<p><img src="images/walkthrough/259.png" width="240" alt="Right - Track 6, row 00."></p>
+<p><strong>260.</strong> <strong>A</strong>: Chain <code>04</code> goes in.</p>
+<p><img src="images/walkthrough/260.png" width="240" alt="A - Chain 04 goes in."></p>
+<p><strong>261.</strong> <strong>A</strong>: A new chain <code>05</code>.</p>
+<p><img src="images/walkthrough/261.png" width="240" alt="A - A new chain 05."></p>
+<p><strong>262.</strong> <strong>RB + Right</strong>: Chain <code>05</code>, cursor on row <code>0</code>'s transpose.</p>
+<p><img src="images/walkthrough/262.png" width="240" alt="RB + Right - Chain 05, cursor on row 0's transpose."></p>
+<p><strong>263.</strong> <strong>Left</strong>: The phrase column.</p>
+<p><img src="images/walkthrough/263.png" width="240" alt="Left - The phrase column."></p>
+<p><strong>264.</strong> <strong>A</strong>: Phrase <code>04</code> goes in.</p>
+<p><img src="images/walkthrough/264.png" width="240" alt="A - Phrase 04 goes in."></p>
+<p><strong>265.</strong> <strong>A</strong>: A new phrase <code>05</code>.</p>
+<p><img src="images/walkthrough/265.png" width="240" alt="A - A new phrase 05."></p>
+<p><strong>266.</strong> <strong>RB + Right</strong>: Phrase <code>05</code>, cursor on step <code>0</code>.</p>
+<p><img src="images/walkthrough/266.png" width="240" alt="RB + Right - Phrase 05, cursor on step 0."></p>
+<p><strong>267.</strong> <strong>Down (2 times)</strong>: Step <code>2</code>.</p>
+<p><img src="images/walkthrough/267.png" width="240" alt="Down (2 times) - Step 2."></p>
+<p><strong>268.</strong> <strong>A</strong>: <code>C 3 I07</code>.</p>
+<p><img src="images/walkthrough/268.png" width="240" alt="A - C 3 I07."></p>
+<p><strong>269.</strong> <strong>Right</strong>: The cursor is on <code>I07</code>.</p>
+<p><img src="images/walkthrough/269.png" width="240" alt="Right - The cursor is on I07."></p>
+<p><strong>270.</strong> <strong>A + Right (2 times)</strong>: <code>I09</code>, the <strong>KEYS</strong>.</p>
+<p><img src="images/walkthrough/270.png" width="240" alt="A + Right (2 times) - I09, the KEYS."></p>
+<p><strong>271.</strong> <strong>Right</strong>: The command column.</p>
+<p><img src="images/walkthrough/271.png" width="240" alt="Right - The command column."></p>
+<p><strong>272.</strong> <strong>Select</strong>: The command list. It always opens on <code>ARPG</code>, top left.</p>
+<p><img src="images/walkthrough/272.png" width="240" alt="Select - The command list. It always opens on ARPG, top left."></p>
+<p><strong>273.</strong> <strong>Right (2 times)</strong>: <code>CHRD</code>: "note picks chord".</p>
+<p><img src="images/walkthrough/273.png" width="240" alt="Right (2 times) - CHRD: note picks chord."></p>
+<p><strong>274.</strong> <strong>A</strong>: <code>CHRD 0000</code>.</p>
+<p><img src="images/walkthrough/274.png" width="240" alt="A - CHRD 0000."></p>
+<p><strong>275.</strong> <strong>Right</strong>: The value. The second digit is lit: the last one you edited.</p>
+<p><img src="images/walkthrough/275.png" width="240" alt="Right - The value. The second digit is lit: the last one you edited."></p>
+<p><strong>276.</strong> <strong>A + Up (7 times)</strong>: <code>0070</code>.</p>
+<p><img src="images/walkthrough/276.png" width="240" alt="A + Up (7 times) - 0070."></p>
+<p><strong>277.</strong> <strong>A + Right</strong>: Holding <strong>A</strong>, <strong>Right</strong> lights the last digit.</p>
+<p><img src="images/walkthrough/277.png" width="240" alt="A + Right - Holding A, Right lights the last digit."></p>
+<p><strong>278.</strong> <strong>A + Up (14 times)</strong>: <code>007E</code>: after <code>9</code> come <code>A</code> to <code>F</code>.</p>
+<p><img src="images/walkthrough/278.png" width="240" alt="A + Up (14 times) - 007E: after 9 come A to F."></p>
+<p><strong>279.</strong> <strong>Left (3 times)</strong>: Back on the note of step <code>2</code>.</p>
+<p><img src="images/walkthrough/279.png" width="240" alt="Left (3 times) - Back on the note of step 2."></p>
+<p><strong>280.</strong> <strong>B + LB</strong>: A selection on the note...</p>
+<p><img src="images/walkthrough/280.png" width="240" alt="B + LB - A selection on the note..."></p>
+<p><strong>281.</strong> <strong>Right (3 times)</strong>: ...grown over the instrument, command and value.</p>
+<p><img src="images/walkthrough/281.png" width="240" alt="Right (3 times) - ...grown over the instrument, command and value."></p>
+<p><strong>282.</strong> <strong>B</strong>: Copied.</p>
+<p><img src="images/walkthrough/282.png" width="240" alt="B - Copied."></p>
+<p><strong>283.</strong> <strong>Down (4 times)</strong>: Step <code>6</code>.</p>
+<p><img src="images/walkthrough/283.png" width="240" alt="Down (4 times) - Step 6."></p>
+<p><strong>284.</strong> <strong>A + LB</strong>: Pasted: a second stab. The cursor moves on to step <code>7</code>.</p>
+<p><img src="images/walkthrough/284.png" width="240" alt="A + LB - Pasted: a second stab. The cursor moves on to step 7."></p>
+<p><strong>285.</strong> <strong>Down (3 times)</strong>: Step <code>A</code>.</p>
+<p><img src="images/walkthrough/285.png" width="240" alt="Down (3 times) - Step A."></p>
+<p><strong>286.</strong> <strong>A + LB</strong>: A third.</p>
+<p><img src="images/walkthrough/286.png" width="240" alt="A + LB - A third."></p>
+<p><strong>287.</strong> <strong>Down (3 times)</strong>: Step <code>E</code>.</p>
+<p><img src="images/walkthrough/287.png" width="240" alt="Down (3 times) - Step E."></p>
+<p><strong>288.</strong> <strong>A + LB</strong>: And a fourth.</p>
+<p><img src="images/walkthrough/288.png" width="240" alt="A + LB - And a fourth."></p>
+<p><strong>289.</strong> <strong>RB + Right</strong>: Instrument <code>I09</code>, the KEYS.</p>
+<p><img src="images/walkthrough/289.png" width="240" alt="RB + Right - Instrument I09, the KEYS."></p>
+<p><strong>290.</strong> <strong>Up</strong>: The cursor is on <code>engine synth</code>.</p>
+<p><img src="images/walkthrough/290.png" width="240" alt="Up - The cursor is on engine synth."></p>
+<p><strong>291.</strong> <strong>A + Right</strong>: <code>engine fm4</code>: four-operator FM, starting from <code>fm init</code>.</p>
+<p><img src="images/walkthrough/291.png" width="240" alt="A + Right - engine fm4: four-operator FM, starting from fm init."></p>
+<p><strong>292.</strong> <strong>Down</strong>: The cursor is on <code>preset fm init</code>.</p>
+<p><img src="images/walkthrough/292.png" width="240" alt="Down - The cursor is on preset fm init."></p>
+<p><strong>293.</strong> <strong>A + Right</strong>: <code>preset epiano</code>: a classic FM electric piano.</p>
+<p><img src="images/walkthrough/293.png" width="240" alt="A + Right - preset epiano: a classic FM electric piano."></p>
+<p><strong>294.</strong> <strong>Start</strong>: The stabs.</p>
+<p><img src="images/walkthrough/294.png" width="240" alt="Start - The stabs."></p>
+<p><strong>295.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/295.png" width="240" alt="Start - Stop."></p>
+<p><strong>296.</strong> <strong>RB + Left</strong>: Back on phrase <code>05</code>.</p>
+<p><img src="images/walkthrough/296.png" width="240" alt="RB + Left - Back on phrase 05."></p>
+<p><strong>297.</strong> <strong>RB + Left</strong>: Back on chain <code>05</code>.</p>
+<p><img src="images/walkthrough/297.png" width="240" alt="RB + Left - Back on chain 05."></p>
+<p><strong>298.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/298.png" width="240" alt="Down - Row 1."></p>
+<p><strong>299.</strong> <strong>A</strong>: Phrase <code>05</code>.</p>
+<p><img src="images/walkthrough/299.png" width="240" alt="A - Phrase 05."></p>
+<p><strong>300.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/300.png" width="240" alt="Down - Row 2."></p>
+<p><strong>301.</strong> <strong>A</strong>: Phrase <code>05</code>.</p>
+<p><img src="images/walkthrough/301.png" width="240" alt="A - Phrase 05."></p>
+<p><strong>302.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/302.png" width="240" alt="Down - Row 3."></p>
+<p><strong>303.</strong> <strong>A</strong>: Phrase <code>05</code>: four bars of chain <code>05</code>.</p>
+<p><img src="images/walkthrough/303.png" width="240" alt="A - Phrase 05: four bars of chain 05."></p>
+<p><strong>304.</strong> <strong>Right</strong>: Row <code>3</code>'s transpose, <code>00</code>.</p>
+<p><img src="images/walkthrough/304.png" width="240" alt="Right - Row 3's transpose, 00."></p>
+<p><strong>305.</strong> <strong>A + Left (2 times)</strong>: <code>FE</code>: two semitones down.</p>
+<p><img src="images/walkthrough/305.png" width="240" alt="A + Left (2 times) - FE: two semitones down."></p>
+<p><strong>306.</strong> <strong>Up</strong>: Row <code>2</code>'s transpose.</p>
+<p><img src="images/walkthrough/306.png" width="240" alt="Up - Row 2's transpose."></p>
+<p><strong>307.</strong> <strong>A + Right (3 times)</strong>: <code>03</code>: three up.</p>
+<p><img src="images/walkthrough/307.png" width="240" alt="A + Right (3 times) - 03: three up."></p>
+<p><strong>308.</strong> <strong>Up</strong>: Row <code>1</code>'s transpose.</p>
+<p><img src="images/walkthrough/308.png" width="240" alt="Up - Row 1's transpose."></p>
+<p><strong>309.</strong> <strong>A + Left (4 times)</strong>: <code>FC</code>: four down.</p>
+<p><img src="images/walkthrough/309.png" width="240" alt="A + Left (4 times) - FC: four down."></p>
+<p><strong>310.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/310.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="13-the-hook">13. The hook</h2>
+<p>Track 7: the lead. First let the app write a random melody, just to hear what it does, and undo it. Then enter the real hook, three bars (bars 1 and 3 are the same):</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>0</th>
+<th>3</th>
+<th>6</th>
+<th>A</th>
+<th>C</th>
+<th>E</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phrase <code>06</code> (bars 1, 3)</td>
+<td><code>G 4</code></td>
+<td><code>G 4</code></td>
+<td><code>A#4</code></td>
+<td><code>G 4</code></td>
+<td><code>F 4</code></td>
+<td><code>D#4</code></td>
+</tr>
+<tr>
+<td>Phrase <code>07</code> (bar 2)</td>
+<td><code>D#4</code></td>
+<td><code>D#4</code></td>
+<td><code>G 4</code></td>
+<td><code>F 4</code></td>
+<td><code>D#4</code></td>
+<td><code>C 4</code></td>
+</tr>
+<tr>
+<td>Phrase <code>08</code> (bar 4)</td>
+<td><code>F 4</code></td>
+<td><code>F 4</code></td>
+<td><code>A#4</code></td>
+<td><code>C 5</code></td>
+<td><code>A#4</code></td>
+<td><code>F 4</code></td>
+</tr>
+</tbody>
+</table>
+<p>The same rhythm every bar with a new shape each time: that's what makes a hook stick.</p>
+<p><strong>311.</strong> <strong>Right</strong>: Track 7, row <code>00</code>.</p>
+<p><img src="images/walkthrough/311.png" width="240" alt="Right - Track 7, row 00."></p>
+<p><strong>312.</strong> <strong>A</strong>: Chain <code>05</code> goes in.</p>
+<p><img src="images/walkthrough/312.png" width="240" alt="A - Chain 05 goes in."></p>
+<p><strong>313.</strong> <strong>A</strong>: A new chain <code>06</code>.</p>
+<p><img src="images/walkthrough/313.png" width="240" alt="A - A new chain 06."></p>
+<p><strong>314.</strong> <strong>RB + Right</strong>: Chain <code>06</code>, cursor on row <code>1</code>'s transpose.</p>
+<p><img src="images/walkthrough/314.png" width="240" alt="RB + Right - Chain 06, cursor on row 1's transpose."></p>
+<p><strong>315.</strong> <strong>Left</strong>: The phrase column.</p>
+<p><img src="images/walkthrough/315.png" width="240" alt="Left - The phrase column."></p>
+<p><strong>316.</strong> <strong>Up</strong>: Row <code>0</code>.</p>
+<p><img src="images/walkthrough/316.png" width="240" alt="Up - Row 0."></p>
+<p><strong>317.</strong> <strong>A</strong>: Phrase <code>05</code> goes in.</p>
+<p><img src="images/walkthrough/317.png" width="240" alt="A - Phrase 05 goes in."></p>
+<p><strong>318.</strong> <strong>A</strong>: A new phrase <code>06</code>.</p>
+<p><img src="images/walkthrough/318.png" width="240" alt="A - A new phrase 06."></p>
+<p><strong>319.</strong> <strong>RB + Right</strong>: Phrase <code>06</code>, cursor on step <code>F</code>.</p>
+<p><img src="images/walkthrough/319.png" width="240" alt="RB + Right - Phrase 06, cursor on step F."></p>
+<p><strong>320.</strong> <strong>Up (15 times)</strong>: Step <code>0</code>.</p>
+<p><img src="images/walkthrough/320.png" width="240" alt="Up (15 times) - Step 0."></p>
+<p><strong>321.</strong> <strong>B + LB</strong>: A selection...</p>
+<p><img src="images/walkthrough/321.png" width="240" alt="B + LB - A selection..."></p>
+<p><strong>322.</strong> <strong>Down (15 times)</strong>: ...over the whole bar.</p>
+<p><img src="images/walkthrough/322.png" width="240" alt="Down (15 times) - ...over the whole bar."></p>
+<p><strong>323.</strong> <strong>LB + Right</strong>: <strong>LB + Right</strong>: random notes in C minor on random steps.</p>
+<p><img src="images/walkthrough/323.png" width="240" alt="LB + Right - LB + Right: random notes in C minor on random steps."></p>
+<p><strong>324.</strong> <strong>Start</strong>: A melody out of nowhere. Press <strong>LB + Right</strong> again for another.</p>
+<p><img src="images/walkthrough/324.png" width="240" alt="Start - A melody out of nowhere. Press LB + Right again for another."></p>
+<p><strong>325.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/325.png" width="240" alt="Start - Stop."></p>
+<p><strong>326.</strong> <strong>B + Select</strong>: Undo: the phrase is empty again, and the selection is gone. You'll write this one yourself.</p>
+<p><img src="images/walkthrough/326.png" width="240" alt="B + Select - Undo: the phrase is empty again, and the selection is gone. You'll write this one yourself."></p>
+<p><strong>327.</strong> <strong>A</strong>: <code>C 3 I09</code>.</p>
+<p><img src="images/walkthrough/327.png" width="240" alt="A - C 3 I09."></p>
+<p><strong>328.</strong> <strong>Right</strong>: The cursor is on <code>I09</code>.</p>
+<p><img src="images/walkthrough/328.png" width="240" alt="Right - The cursor is on I09."></p>
+<p><strong>329.</strong> <strong>A + Left (3 times)</strong>: <code>I06</code>, the <strong>LEAD</strong>.</p>
+<p><img src="images/walkthrough/329.png" width="240" alt="A + Left (3 times) - I06, the LEAD."></p>
+<p><strong>330.</strong> <strong>Left</strong>: Back on the note.</p>
+<p><img src="images/walkthrough/330.png" width="240" alt="Left - Back on the note."></p>
+<p><strong>331.</strong> <strong>A + Up</strong>: <code>C 4</code>.</p>
+<p><img src="images/walkthrough/331.png" width="240" alt="A + Up - C 4."></p>
+<p><strong>332.</strong> <strong>A + Right (4 times)</strong>: <code>G 4</code>, through <code>D 4</code>, <code>D#4</code> and <code>F 4</code>.</p>
+<p><img src="images/walkthrough/332.png" width="240" alt="A + Right (4 times) - G 4, through D 4, D#4 and F 4."></p>
+<p><strong>333.</strong> <strong>Down (3 times)</strong>: Step <code>3</code>.</p>
+<p><img src="images/walkthrough/333.png" width="240" alt="Down (3 times) - Step 3."></p>
+<p><strong>334.</strong> <strong>A</strong>: <code>G 4</code>.</p>
+<p><img src="images/walkthrough/334.png" width="240" alt="A - G 4."></p>
+<p><strong>335.</strong> <strong>Down (3 times)</strong>: Step <code>6</code>.</p>
+<p><img src="images/walkthrough/335.png" width="240" alt="Down (3 times) - Step 6."></p>
+<p><strong>336.</strong> <strong>A</strong>: <code>G 4</code>.</p>
+<p><img src="images/walkthrough/336.png" width="240" alt="A - G 4."></p>
+<p><strong>337.</strong> <strong>A + Right (2 times)</strong>: <code>A#4</code>.</p>
+<p><img src="images/walkthrough/337.png" width="240" alt="A + Right (2 times) - A#4."></p>
+<p><strong>338.</strong> <strong>Down (4 times)</strong>: Step <code>A</code>.</p>
+<p><img src="images/walkthrough/338.png" width="240" alt="Down (4 times) - Step A."></p>
+<p><strong>339.</strong> <strong>A</strong>: <code>A#4</code>.</p>
+<p><img src="images/walkthrough/339.png" width="240" alt="A - A#4."></p>
+<p><strong>340.</strong> <strong>A + Left (2 times)</strong>: <code>G 4</code>.</p>
+<p><img src="images/walkthrough/340.png" width="240" alt="A + Left (2 times) - G 4."></p>
+<p><strong>341.</strong> <strong>Down (2 times)</strong>: Step <code>C</code>.</p>
+<p><img src="images/walkthrough/341.png" width="240" alt="Down (2 times) - Step C."></p>
+<p><strong>342.</strong> <strong>A</strong>: <code>G 4</code>.</p>
+<p><img src="images/walkthrough/342.png" width="240" alt="A - G 4."></p>
+<p><strong>343.</strong> <strong>A + Left</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/343.png" width="240" alt="A + Left - F 4."></p>
+<p><strong>344.</strong> <strong>Down (2 times)</strong>: Step <code>E</code>.</p>
+<p><img src="images/walkthrough/344.png" width="240" alt="Down (2 times) - Step E."></p>
+<p><strong>345.</strong> <strong>A</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/345.png" width="240" alt="A - F 4."></p>
+<p><strong>346.</strong> <strong>A + Left</strong>: <code>D#4</code>.</p>
+<p><img src="images/walkthrough/346.png" width="240" alt="A + Left - D#4."></p>
+<p><strong>347.</strong> <strong>RB + Right</strong>: Instrument <code>I06</code>, the LEAD.</p>
+<p><img src="images/walkthrough/347.png" width="240" alt="RB + Right - Instrument I06, the LEAD."></p>
+<p><strong>348.</strong> <strong>Up</strong>: The cursor is on <code>engine synth</code>.</p>
+<p><img src="images/walkthrough/348.png" width="240" alt="Up - The cursor is on engine synth."></p>
+<p><strong>349.</strong> <strong>A + Right (2 times)</strong>: <code>engine hyper</code>.</p>
+<p><img src="images/walkthrough/349.png" width="240" alt="A + Right (2 times) - engine hyper."></p>
+<p><strong>350.</strong> <strong>Down</strong>: The cursor is on <code>preset hyper init</code>.</p>
+<p><img src="images/walkthrough/350.png" width="240" alt="Down - The cursor is on preset hyper init."></p>
+<p><strong>351.</strong> <strong>A + Right (2 times)</strong>: <code>preset trance lead</code>: detuned saws, with echo and reverb already dialled in.</p>
+<p><img src="images/walkthrough/351.png" width="240" alt="A + Right (2 times) - preset trance lead: detuned saws, with echo and reverb already dialled in."></p>
+<p><strong>352.</strong> <strong>Start</strong>: Bar 1 of the hook.</p>
+<p><img src="images/walkthrough/352.png" width="240" alt="Start - Bar 1 of the hook."></p>
+<p><strong>353.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/353.png" width="240" alt="Start - Stop."></p>
+<p><strong>354.</strong> <strong>RB + Left</strong>: Back on phrase <code>06</code>.</p>
+<p><img src="images/walkthrough/354.png" width="240" alt="RB + Left - Back on phrase 06."></p>
+<p><strong>355.</strong> <strong>RB + Left</strong>: Back on chain <code>06</code>.</p>
+<p><img src="images/walkthrough/355.png" width="240" alt="RB + Left - Back on chain 06."></p>
+<p><strong>356.</strong> <strong>Down (2 times)</strong>: Row <code>2</code>: bar 3 is bar 1 again.</p>
+<p><img src="images/walkthrough/356.png" width="240" alt="Down (2 times) - Row 2: bar 3 is bar 1 again."></p>
+<p><strong>357.</strong> <strong>A</strong>: Phrase <code>06</code>.</p>
+<p><img src="images/walkthrough/357.png" width="240" alt="A - Phrase 06."></p>
+<p><strong>358.</strong> <strong>Up</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/358.png" width="240" alt="Up - Row 1."></p>
+<p><strong>359.</strong> <strong>A</strong>: Phrase <code>06</code>...</p>
+<p><img src="images/walkthrough/359.png" width="240" alt="A - Phrase 06..."></p>
+<p><strong>360.</strong> <strong>A</strong>: ...and <strong>A</strong> again: a new phrase <code>07</code> for bar 2.</p>
+<p><img src="images/walkthrough/360.png" width="240" alt="A - ...and A again: a new phrase 07 for bar 2."></p>
+<p><strong>361.</strong> <strong>RB + Right</strong>: Phrase <code>07</code>, cursor on step <code>E</code>.</p>
+<p><img src="images/walkthrough/361.png" width="240" alt="RB + Right - Phrase 07, cursor on step E."></p>
+<p><strong>362.</strong> <strong>Up (14 times)</strong>: Step <code>0</code>.</p>
+<p><img src="images/walkthrough/362.png" width="240" alt="Up (14 times) - Step 0."></p>
+<p><strong>363.</strong> <strong>A</strong>: <code>D#4 I06</code>: the last note you entered, and its instrument.</p>
+<p><img src="images/walkthrough/363.png" width="240" alt="A - D#4 I06: the last note you entered, and its instrument."></p>
+<p><strong>364.</strong> <strong>Down (3 times)</strong>: Step <code>3</code>.</p>
+<p><img src="images/walkthrough/364.png" width="240" alt="Down (3 times) - Step 3."></p>
+<p><strong>365.</strong> <strong>A</strong>: <code>D#4</code>.</p>
+<p><img src="images/walkthrough/365.png" width="240" alt="A - D#4."></p>
+<p><strong>366.</strong> <strong>Down (3 times)</strong>: Step <code>6</code>.</p>
+<p><img src="images/walkthrough/366.png" width="240" alt="Down (3 times) - Step 6."></p>
+<p><strong>367.</strong> <strong>A</strong>: <code>D#4</code>.</p>
+<p><img src="images/walkthrough/367.png" width="240" alt="A - D#4."></p>
+<p><strong>368.</strong> <strong>A + Right (2 times)</strong>: <code>G 4</code>.</p>
+<p><img src="images/walkthrough/368.png" width="240" alt="A + Right (2 times) - G 4."></p>
+<p><strong>369.</strong> <strong>Down (4 times)</strong>: Step <code>A</code>.</p>
+<p><img src="images/walkthrough/369.png" width="240" alt="Down (4 times) - Step A."></p>
+<p><strong>370.</strong> <strong>A</strong>: <code>G 4</code>.</p>
+<p><img src="images/walkthrough/370.png" width="240" alt="A - G 4."></p>
+<p><strong>371.</strong> <strong>A + Left</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/371.png" width="240" alt="A + Left - F 4."></p>
+<p><strong>372.</strong> <strong>Down (2 times)</strong>: Step <code>C</code>.</p>
+<p><img src="images/walkthrough/372.png" width="240" alt="Down (2 times) - Step C."></p>
+<p><strong>373.</strong> <strong>A</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/373.png" width="240" alt="A - F 4."></p>
+<p><strong>374.</strong> <strong>A + Left</strong>: <code>D#4</code>.</p>
+<p><img src="images/walkthrough/374.png" width="240" alt="A + Left - D#4."></p>
+<p><strong>375.</strong> <strong>Down (2 times)</strong>: Step <code>E</code>.</p>
+<p><img src="images/walkthrough/375.png" width="240" alt="Down (2 times) - Step E."></p>
+<p><strong>376.</strong> <strong>A</strong>: <code>D#4</code>.</p>
+<p><img src="images/walkthrough/376.png" width="240" alt="A - D#4."></p>
+<p><strong>377.</strong> <strong>A + Left (2 times)</strong>: <code>C 4</code>.</p>
+<p><img src="images/walkthrough/377.png" width="240" alt="A + Left (2 times) - C 4."></p>
+<p><strong>378.</strong> <strong>RB + Left</strong>: Back on chain <code>06</code>.</p>
+<p><img src="images/walkthrough/378.png" width="240" alt="RB + Left - Back on chain 06."></p>
+<p><strong>379.</strong> <strong>Down (2 times)</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/379.png" width="240" alt="Down (2 times) - Row 3."></p>
+<p><strong>380.</strong> <strong>A</strong>: Phrase <code>07</code>...</p>
+<p><img src="images/walkthrough/380.png" width="240" alt="A - Phrase 07..."></p>
+<p><strong>381.</strong> <strong>A</strong>: ...and a new phrase <code>08</code> for bar 4.</p>
+<p><img src="images/walkthrough/381.png" width="240" alt="A - ...and a new phrase 08 for bar 4."></p>
+<p><strong>382.</strong> <strong>RB + Right</strong>: Phrase <code>08</code>, cursor on step <code>E</code>.</p>
+<p><img src="images/walkthrough/382.png" width="240" alt="RB + Right - Phrase 08, cursor on step E."></p>
+<p><strong>383.</strong> <strong>Up (14 times)</strong>: Step <code>0</code>.</p>
+<p><img src="images/walkthrough/383.png" width="240" alt="Up (14 times) - Step 0."></p>
+<p><strong>384.</strong> <strong>A</strong>: <code>C 4 I06</code>.</p>
+<p><img src="images/walkthrough/384.png" width="240" alt="A - C 4 I06."></p>
+<p><strong>385.</strong> <strong>A + Right (3 times)</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/385.png" width="240" alt="A + Right (3 times) - F 4."></p>
+<p><strong>386.</strong> <strong>Down (3 times)</strong>: Step <code>3</code>.</p>
+<p><img src="images/walkthrough/386.png" width="240" alt="Down (3 times) - Step 3."></p>
+<p><strong>387.</strong> <strong>A</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/387.png" width="240" alt="A - F 4."></p>
+<p><strong>388.</strong> <strong>Down (3 times)</strong>: Step <code>6</code>.</p>
+<p><img src="images/walkthrough/388.png" width="240" alt="Down (3 times) - Step 6."></p>
+<p><strong>389.</strong> <strong>A</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/389.png" width="240" alt="A - F 4."></p>
+<p><strong>390.</strong> <strong>A + Right (3 times)</strong>: <code>A#4</code>.</p>
+<p><img src="images/walkthrough/390.png" width="240" alt="A + Right (3 times) - A#4."></p>
+<p><strong>391.</strong> <strong>Down (4 times)</strong>: Step <code>A</code>.</p>
+<p><img src="images/walkthrough/391.png" width="240" alt="Down (4 times) - Step A."></p>
+<p><strong>392.</strong> <strong>A</strong>: <code>A#4</code>.</p>
+<p><img src="images/walkthrough/392.png" width="240" alt="A - A#4."></p>
+<p><strong>393.</strong> <strong>A + Right</strong>: <code>C 5</code>: the top of the hook.</p>
+<p><img src="images/walkthrough/393.png" width="240" alt="A + Right - C 5: the top of the hook."></p>
+<p><strong>394.</strong> <strong>Down (2 times)</strong>: Step <code>C</code>.</p>
+<p><img src="images/walkthrough/394.png" width="240" alt="Down (2 times) - Step C."></p>
+<p><strong>395.</strong> <strong>A</strong>: <code>C 5</code>.</p>
+<p><img src="images/walkthrough/395.png" width="240" alt="A - C 5."></p>
+<p><strong>396.</strong> <strong>A + Left</strong>: <code>A#4</code>.</p>
+<p><img src="images/walkthrough/396.png" width="240" alt="A + Left - A#4."></p>
+<p><strong>397.</strong> <strong>Down (2 times)</strong>: Step <code>E</code>.</p>
+<p><img src="images/walkthrough/397.png" width="240" alt="Down (2 times) - Step E."></p>
+<p><strong>398.</strong> <strong>A</strong>: <code>A#4</code>.</p>
+<p><img src="images/walkthrough/398.png" width="240" alt="A - A#4."></p>
+<p><strong>399.</strong> <strong>A + Left (3 times)</strong>: <code>F 4</code>.</p>
+<p><img src="images/walkthrough/399.png" width="240" alt="A + Left (3 times) - F 4."></p>
+<p><strong>400.</strong> <strong>RB + Left</strong>: Back on chain <code>06</code>.</p>
+<p><img src="images/walkthrough/400.png" width="240" alt="RB + Left - Back on chain 06."></p>
+<p><strong>401.</strong> <strong>Start</strong>: The whole hook, four bars.</p>
+<p><img src="images/walkthrough/401.png" width="240" alt="Start - The whole hook, four bars."></p>
+<p><strong>402.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/402.png" width="240" alt="Start - Stop."></p>
+<p><strong>403.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/403.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<p><strong>404.</strong> <strong>Start</strong>: Everything together: this is the drop.</p>
+<p><img src="images/walkthrough/404.png" width="240" alt="Start - Everything together: this is the drop."></p>
+<p><strong>405.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/405.png" width="240" alt="Start - Stop."></p>
+<h2 id="14-copy-the-drop">14. Copy the drop</h2>
+<p>Row <code>00</code> is the whole drop. The arrangement is that row, copied and changed: parts drop out, fills lead into each drop. First, copy it to rows <code>01</code> to <code>03</code>.</p>
+<p><strong>406.</strong> <strong>Left (6 times)</strong>: Track 1.</p>
+<p><img src="images/walkthrough/406.png" width="240" alt="Left (6 times) - Track 1."></p>
+<p><strong>407.</strong> <strong>B + LB</strong>: A selection on the cell...</p>
+<p><img src="images/walkthrough/407.png" width="240" alt="B + LB - A selection on the cell..."></p>
+<p><strong>408.</strong> <strong>Right (7 times)</strong>: ...over the whole row.</p>
+<p><img src="images/walkthrough/408.png" width="240" alt="Right (7 times) - ...over the whole row."></p>
+<p><strong>409.</strong> <strong>B</strong>: Copied.</p>
+<p><img src="images/walkthrough/409.png" width="240" alt="B - Copied."></p>
+<p><strong>410.</strong> <strong>Down</strong>: Row <code>01</code>.</p>
+<p><img src="images/walkthrough/410.png" width="240" alt="Down - Row 01."></p>
+<p><strong>411.</strong> <strong>A + LB</strong>: Pasted: row <code>01</code> plays the drop too. The cursor moves on to the next row.</p>
+<p><img src="images/walkthrough/411.png" width="240" alt="A + LB - Pasted: row 01 plays the drop too. The cursor moves on to the next row."></p>
+<p><strong>412.</strong> <strong>A + LB</strong>: Row <code>02</code>.</p>
+<p><img src="images/walkthrough/412.png" width="240" alt="A + LB - Row 02."></p>
+<p><strong>413.</strong> <strong>A + LB</strong>: Row <code>03</code>.</p>
+<p><img src="images/walkthrough/413.png" width="240" alt="A + LB - Row 03."></p>
+<h2 id="15-a-rest-chain">15. A rest chain</h2>
+<p>A track only goes quiet where it plays something silent: a chain whose phrase says <code>KILL</code> (stop the note). Chain <code>07</code> is that rest. You'll put it everywhere a part should drop out, and every track needs something on every row: a track that reaches an empty cell stops for the rest of the song.</p>
+<p><strong>414.</strong> <strong>Up (4 times)</strong>: Row <code>00</code>: it becomes the intro, just hats, pad and keys.</p>
+<p><img src="images/walkthrough/414.png" width="240" alt="Up (4 times) - Row 00: it becomes the intro, just hats, pad and keys."></p>
+<p><strong>415.</strong> <strong>Right (7 times)</strong>: Track 8, still empty.</p>
+<p><img src="images/walkthrough/415.png" width="240" alt="Right (7 times) - Track 8, still empty."></p>
+<p><strong>416.</strong> <strong>A</strong>: The last chain goes in...</p>
+<p><img src="images/walkthrough/416.png" width="240" alt="A - The last chain goes in..."></p>
+<p><strong>417.</strong> <strong>A</strong>: ...and <strong>A</strong> again: a new chain <code>07</code>.</p>
+<p><img src="images/walkthrough/417.png" width="240" alt="A - ...and A again: a new chain 07."></p>
+<p><strong>418.</strong> <strong>RB + Right</strong>: Chain <code>07</code>, empty.</p>
+<p><img src="images/walkthrough/418.png" width="240" alt="RB + Right - Chain 07, empty."></p>
+<p><strong>419.</strong> <strong>A</strong>: Phrase <code>08</code> goes in.</p>
+<p><img src="images/walkthrough/419.png" width="240" alt="A - Phrase 08 goes in."></p>
+<p><strong>420.</strong> <strong>A</strong>: A new phrase <code>09</code>.</p>
+<p><img src="images/walkthrough/420.png" width="240" alt="A - A new phrase 09."></p>
+<p><strong>421.</strong> <strong>RB + Right</strong>: Phrase <code>09</code>, cursor on step <code>E</code>.</p>
+<p><img src="images/walkthrough/421.png" width="240" alt="RB + Right - Phrase 09, cursor on step E."></p>
+<p><strong>422.</strong> <strong>Up (14 times)</strong>: Step <code>0</code>.</p>
+<p><img src="images/walkthrough/422.png" width="240" alt="Up (14 times) - Step 0."></p>
+<p><strong>423.</strong> <strong>Right (2 times)</strong>: The command column.</p>
+<p><img src="images/walkthrough/423.png" width="240" alt="Right (2 times) - The command column."></p>
+<p><strong>424.</strong> <strong>Select</strong>: The command list.</p>
+<p><img src="images/walkthrough/424.png" width="240" alt="Select - The command list."></p>
+<p><strong>425.</strong> <strong>Down (2 times)</strong>: Down two rows...</p>
+<p><img src="images/walkthrough/425.png" width="240" alt="Down (2 times) - Down two rows..."></p>
+<p><strong>426.</strong> <strong>Right (4 times)</strong>: ...<code>KILL</code>: stop the note.</p>
+<p><img src="images/walkthrough/426.png" width="240" alt="Right (4 times) - ...KILL: stop the note."></p>
+<p><strong>427.</strong> <strong>A</strong>: <code>KILL 0000</code>: whatever this track plays stops right here.</p>
+<p><img src="images/walkthrough/427.png" width="240" alt="A - KILL 0000: whatever this track plays stops right here."></p>
+<p><strong>428.</strong> <strong>RB + Left</strong>: Back on chain <code>07</code>.</p>
+<p><img src="images/walkthrough/428.png" width="240" alt="RB + Left - Back on chain 07."></p>
+<p><strong>429.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/429.png" width="240" alt="Down - Row 1."></p>
+<p><strong>430.</strong> <strong>A</strong>: Phrase <code>09</code>.</p>
+<p><img src="images/walkthrough/430.png" width="240" alt="A - Phrase 09."></p>
+<p><strong>431.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/431.png" width="240" alt="Down - Row 2."></p>
+<p><strong>432.</strong> <strong>A</strong>: Phrase <code>09</code>.</p>
+<p><img src="images/walkthrough/432.png" width="240" alt="A - Phrase 09."></p>
+<p><strong>433.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/433.png" width="240" alt="Down - Row 3."></p>
+<p><strong>434.</strong> <strong>A</strong>: Phrase <code>09</code>: four bars of chain <code>07</code>.</p>
+<p><img src="images/walkthrough/434.png" width="240" alt="A - Phrase 09: four bars of chain 07."></p>
+<p><strong>435.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/435.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<p><strong>436.</strong> <strong>Down</strong>: Row <code>01</code>, track 8.</p>
+<p><img src="images/walkthrough/436.png" width="240" alt="Down - Row 01, track 8."></p>
+<p><strong>437.</strong> <strong>A</strong>: <code>07</code>: rest.</p>
+<p><img src="images/walkthrough/437.png" width="240" alt="A - 07: rest."></p>
+<p><strong>438.</strong> <strong>Down</strong>: Row <code>02</code>.</p>
+<p><img src="images/walkthrough/438.png" width="240" alt="Down - Row 02."></p>
+<p><strong>439.</strong> <strong>A</strong>: <code>07</code>.</p>
+<p><img src="images/walkthrough/439.png" width="240" alt="A - 07."></p>
+<p><strong>440.</strong> <strong>Down</strong>: Row <code>03</code>.</p>
+<p><img src="images/walkthrough/440.png" width="240" alt="Down - Row 03."></p>
+<p><strong>441.</strong> <strong>A</strong>: <code>07</code>.</p>
+<p><img src="images/walkthrough/441.png" width="240" alt="A - 07."></p>
+<p><strong>442.</strong> <strong>Up (3 times)</strong>: Row <code>00</code>.</p>
+<p><img src="images/walkthrough/442.png" width="240" alt="Up (3 times) - Row 00."></p>
+<p><strong>443.</strong> <strong>Left (7 times)</strong>: Track 1, the kick.</p>
+<p><img src="images/walkthrough/443.png" width="240" alt="Left (7 times) - Track 1, the kick."></p>
+<p><strong>444.</strong> <strong>A + Right (7 times)</strong>: <code>07</code>: <strong>A + Right</strong> counts the chain number up. No kick in the intro.</p>
+<p><img src="images/walkthrough/444.png" width="240" alt="A + Right (7 times) - 07: A + Right counts the chain number up. No kick in the intro."></p>
+<p><strong>445.</strong> <strong>Right</strong>: Track 2.</p>
+<p><img src="images/walkthrough/445.png" width="240" alt="Right - Track 2."></p>
+<p><strong>446.</strong> <strong>A + Right (6 times)</strong>: <code>07</code>.</p>
+<p><img src="images/walkthrough/446.png" width="240" alt="A + Right (6 times) - 07."></p>
+<p><strong>447.</strong> <strong>Right (2 times)</strong>: Track 4.</p>
+<p><img src="images/walkthrough/447.png" width="240" alt="Right (2 times) - Track 4."></p>
+<p><strong>448.</strong> <strong>A + Right (4 times)</strong>: <code>07</code>.</p>
+<p><img src="images/walkthrough/448.png" width="240" alt="A + Right (4 times) - 07."></p>
+<p><strong>449.</strong> <strong>Right (3 times)</strong>: Track 7.</p>
+<p><img src="images/walkthrough/449.png" width="240" alt="Right (3 times) - Track 7."></p>
+<p><strong>450.</strong> <strong>A + Right</strong>: <code>07</code>.</p>
+<p><img src="images/walkthrough/450.png" width="240" alt="A + Right - 07."></p>
+<p><strong>451.</strong> <strong>Down</strong>: Row <code>01</code>, track 7.</p>
+<p><img src="images/walkthrough/451.png" width="240" alt="Down - Row 01, track 7."></p>
+<p><strong>452.</strong> <strong>A + Right</strong>: <code>07</code>: no lead before the first drop.</p>
+<p><img src="images/walkthrough/452.png" width="240" alt="A + Right - 07: no lead before the first drop."></p>
+<h2 id="16-a-snare-roll">16. A snare roll</h2>
+<p>Row <code>01</code> is the build before the drop. Its snare plays three bars of snare, then a roll: a new chain <code>08</code>. The roll is one note with two commands: <code>ROLL 0093</code> strikes it again every 3 ticks, each hit 8 louder, starting from <code>VOLM 0020</code>, quiet.</p>
+<p><strong>453.</strong> <strong>Left (5 times)</strong>: Track 2.</p>
+<p><img src="images/walkthrough/453.png" width="240" alt="Left (5 times) - Track 2."></p>
+<p><strong>454.</strong> <strong>A + Right (7 times)</strong>: <code>08</code>: a chain nobody uses yet, so it's new and empty.</p>
+<p><img src="images/walkthrough/454.png" width="240" alt="A + Right (7 times) - 08: a chain nobody uses yet, so it's new and empty."></p>
+<p><strong>455.</strong> <strong>RB + Right</strong>: Chain <code>08</code>, cursor on row <code>3</code>.</p>
+<p><img src="images/walkthrough/455.png" width="240" alt="RB + Right - Chain 08, cursor on row 3."></p>
+<p><strong>456.</strong> <strong>Up (3 times)</strong>: Row <code>0</code>.</p>
+<p><img src="images/walkthrough/456.png" width="240" alt="Up (3 times) - Row 0."></p>
+<p><strong>457.</strong> <strong>A + Left (8 times)</strong>: <strong>A</strong> puts the last phrase (<code>09</code>) in, <strong>Left</strong> counts it down to <code>01</code>, the snare.</p>
+<p><img src="images/walkthrough/457.png" width="240" alt="A + Left (8 times) - A puts the last phrase (09) in, Left counts it down to 01, the snare."></p>
+<p><strong>458.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/458.png" width="240" alt="Down - Row 1."></p>
+<p><strong>459.</strong> <strong>A</strong>: Phrase <code>01</code>.</p>
+<p><img src="images/walkthrough/459.png" width="240" alt="A - Phrase 01."></p>
+<p><strong>460.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/460.png" width="240" alt="Down - Row 2."></p>
+<p><strong>461.</strong> <strong>A</strong>: Phrase <code>01</code>.</p>
+<p><img src="images/walkthrough/461.png" width="240" alt="A - Phrase 01."></p>
+<p><strong>462.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/462.png" width="240" alt="Down - Row 3."></p>
+<p><strong>463.</strong> <strong>A</strong>: Phrase <code>01</code>...</p>
+<p><img src="images/walkthrough/463.png" width="240" alt="A - Phrase 01..."></p>
+<p><strong>464.</strong> <strong>A</strong>: ...and a new phrase <code>0A</code> for the roll.</p>
+<p><img src="images/walkthrough/464.png" width="240" alt="A - ...and a new phrase 0A for the roll."></p>
+<p><strong>465.</strong> <strong>RB + Right</strong>: Phrase <code>0A</code>, cursor on step <code>0</code>, in the command column.</p>
+<p><img src="images/walkthrough/465.png" width="240" alt="RB + Right - Phrase 0A, cursor on step 0, in the command column."></p>
+<p><strong>466.</strong> <strong>Left (2 times)</strong>: The note column.</p>
+<p><img src="images/walkthrough/466.png" width="240" alt="Left (2 times) - The note column."></p>
+<p><strong>467.</strong> <strong>A</strong>: <code>F 4 I06</code>, the last note you entered.</p>
+<p><img src="images/walkthrough/467.png" width="240" alt="A - F 4 I06, the last note you entered."></p>
+<p><strong>468.</strong> <strong>A + Down</strong>: <code>F 3</code>.</p>
+<p><img src="images/walkthrough/468.png" width="240" alt="A + Down - F 3."></p>
+<p><strong>469.</strong> <strong>A + Left (3 times)</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/469.png" width="240" alt="A + Left (3 times) - C 3."></p>
+<p><strong>470.</strong> <strong>Right</strong>: The instrument.</p>
+<p><img src="images/walkthrough/470.png" width="240" alt="Right - The instrument."></p>
+<p><strong>471.</strong> <strong>A + Left (5 times)</strong>: <code>I01</code>, the SNARE.</p>
+<p><img src="images/walkthrough/471.png" width="240" alt="A + Left (5 times) - I01, the SNARE."></p>
+<p><strong>472.</strong> <strong>Right</strong>: The command column.</p>
+<p><img src="images/walkthrough/472.png" width="240" alt="Right - The command column."></p>
+<p><strong>473.</strong> <strong>Select</strong>: The command list.</p>
+<p><img src="images/walkthrough/473.png" width="240" alt="Select - The command list."></p>
+<p><strong>474.</strong> <strong>Down (5 times)</strong>: Down five rows...</p>
+<p><img src="images/walkthrough/474.png" width="240" alt="Down (5 times) - Down five rows..."></p>
+<p><strong>475.</strong> <strong>Right (2 times)</strong>: ...<code>ROLL</code>.</p>
+<p><img src="images/walkthrough/475.png" width="240" alt="Right (2 times) - ...ROLL."></p>
+<p><strong>476.</strong> <strong>A</strong>: <code>ROLL 0000</code>.</p>
+<p><img src="images/walkthrough/476.png" width="240" alt="A - ROLL 0000."></p>
+<p><strong>477.</strong> <strong>Right</strong>: The value. The last digit is lit.</p>
+<p><img src="images/walkthrough/477.png" width="240" alt="Right - The value. The last digit is lit."></p>
+<p><strong>478.</strong> <strong>A + Up (3 times)</strong>: <code>0003</code>: a hit every 3 ticks.</p>
+<p><img src="images/walkthrough/478.png" width="240" alt="A + Up (3 times) - 0003: a hit every 3 ticks."></p>
+<p><strong>479.</strong> <strong>A + Left</strong>: The next digit.</p>
+<p><img src="images/walkthrough/479.png" width="240" alt="A + Left - The next digit."></p>
+<p><strong>480.</strong> <strong>A + Up (9 times)</strong>: <code>0093</code>: <code>9</code> = each hit 8 louder.</p>
+<p><img src="images/walkthrough/480.png" width="240" alt="A + Up (9 times) - 0093: 9 = each hit 8 louder."></p>
+<p><strong>481.</strong> <strong>Right</strong>: The second command column.</p>
+<p><img src="images/walkthrough/481.png" width="240" alt="Right - The second command column."></p>
+<p><strong>482.</strong> <strong>Select</strong>: The command list.</p>
+<p><img src="images/walkthrough/482.png" width="240" alt="Select - The command list."></p>
+<p><strong>483.</strong> <strong>Down (7 times)</strong>: The bottom row...</p>
+<p><img src="images/walkthrough/483.png" width="240" alt="Down (7 times) - The bottom row..."></p>
+<p><strong>484.</strong> <strong>Right (4 times)</strong>: ...<code>VOLM</code>, volume.</p>
+<p><img src="images/walkthrough/484.png" width="240" alt="Right (4 times) - ...VOLM, volume."></p>
+<p><strong>485.</strong> <strong>A</strong>: <code>VOLM 0000</code>.</p>
+<p><img src="images/walkthrough/485.png" width="240" alt="A - VOLM 0000."></p>
+<p><strong>486.</strong> <strong>Right</strong>: The value, its second digit lit.</p>
+<p><img src="images/walkthrough/486.png" width="240" alt="Right - The value, its second digit lit."></p>
+<p><strong>487.</strong> <strong>A + Up (2 times)</strong>: <code>0020</code>: the roll starts quiet.</p>
+<p><img src="images/walkthrough/487.png" width="240" alt="A + Up (2 times) - 0020: the roll starts quiet."></p>
+<p><strong>488.</strong> <strong>Start</strong>: The roll swells.</p>
+<p><img src="images/walkthrough/488.png" width="240" alt="Start - The roll swells."></p>
+<p><strong>489.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/489.png" width="240" alt="Start - Stop."></p>
+<p><strong>490.</strong> <strong>RB + Left</strong>: Back on chain <code>08</code>.</p>
+<p><img src="images/walkthrough/490.png" width="240" alt="RB + Left - Back on chain 08."></p>
+<p><strong>491.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/491.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="17-sample-reverse-cymbal">17. Sample: reverse cymbal</h2>
+<p>Track 8 plays effects. The first is a crash cymbal from the sample packs, played backwards: it swells up into the drop. Instrument <code>03</code> (the kit's open hat, unused) becomes a sample.</p>
+<p>The crash is 2.5 seconds long and a bar is 1.9. Played at <code>F 3</code>, five semitones up, it's faster and lasts exactly one bar.</p>
+<p><strong>492.</strong> <strong>Right (6 times)</strong>: Track 8, row <code>01</code>.</p>
+<p><img src="images/walkthrough/492.png" width="240" alt="Right (6 times) - Track 8, row 01."></p>
+<p><strong>493.</strong> <strong>A + Right (2 times)</strong>: <code>09</code>, a new chain.</p>
+<p><img src="images/walkthrough/493.png" width="240" alt="A + Right (2 times) - 09, a new chain."></p>
+<p><strong>494.</strong> <strong>RB + Right</strong>: Chain <code>09</code>, cursor on row <code>3</code>.</p>
+<p><img src="images/walkthrough/494.png" width="240" alt="RB + Right - Chain 09, cursor on row 3."></p>
+<p><strong>495.</strong> <strong>Up (3 times)</strong>: Row <code>0</code>.</p>
+<p><img src="images/walkthrough/495.png" width="240" alt="Up (3 times) - Row 0."></p>
+<p><strong>496.</strong> <strong>A + Left</strong>: The last phrase (<code>0A</code>) counted down to <code>09</code>, the rest.</p>
+<p><img src="images/walkthrough/496.png" width="240" alt="A + Left - The last phrase (0A) counted down to 09, the rest."></p>
+<p><strong>497.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/497.png" width="240" alt="Down - Row 1."></p>
+<p><strong>498.</strong> <strong>A</strong>: Phrase <code>09</code>.</p>
+<p><img src="images/walkthrough/498.png" width="240" alt="A - Phrase 09."></p>
+<p><strong>499.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/499.png" width="240" alt="Down - Row 2."></p>
+<p><strong>500.</strong> <strong>A</strong>: Phrase <code>09</code>.</p>
+<p><img src="images/walkthrough/500.png" width="240" alt="A - Phrase 09."></p>
+<p><strong>501.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/501.png" width="240" alt="Down - Row 3."></p>
+<p><strong>502.</strong> <strong>A</strong>: Phrase <code>09</code>...</p>
+<p><img src="images/walkthrough/502.png" width="240" alt="A - Phrase 09..."></p>
+<p><strong>503.</strong> <strong>A</strong>: ...and a new phrase <code>0B</code>.</p>
+<p><img src="images/walkthrough/503.png" width="240" alt="A - ...and a new phrase 0B."></p>
+<p><strong>504.</strong> <strong>RB + Right</strong>: Phrase <code>0B</code>, cursor on step <code>0</code>, second command column.</p>
+<p><img src="images/walkthrough/504.png" width="240" alt="RB + Right - Phrase 0B, cursor on step 0, second command column."></p>
+<p><strong>505.</strong> <strong>Left (5 times)</strong>: The note column.</p>
+<p><img src="images/walkthrough/505.png" width="240" alt="Left (5 times) - The note column."></p>
+<p><strong>506.</strong> <strong>A</strong>: <code>C 3 I01</code>.</p>
+<p><img src="images/walkthrough/506.png" width="240" alt="A - C 3 I01."></p>
+<p><strong>507.</strong> <strong>A + Right (3 times)</strong>: <code>F 3</code>.</p>
+<p><img src="images/walkthrough/507.png" width="240" alt="A + Right (3 times) - F 3."></p>
+<p><strong>508.</strong> <strong>Right</strong>: The instrument.</p>
+<p><img src="images/walkthrough/508.png" width="240" alt="Right - The instrument."></p>
+<p><strong>509.</strong> <strong>A + Right (2 times)</strong>: <code>I03</code>, the OPENHAT.</p>
+<p><img src="images/walkthrough/509.png" width="240" alt="A + Right (2 times) - I03, the OPENHAT."></p>
+<p><strong>510.</strong> <strong>RB + Right</strong>: Instrument <code>I03</code>.</p>
+<p><img src="images/walkthrough/510.png" width="240" alt="RB + Right - Instrument I03."></p>
+<p><strong>511.</strong> <strong>Up (2 times)</strong>: The cursor is on <code>type</code>.</p>
+<p><img src="images/walkthrough/511.png" width="240" alt="Up (2 times) - The cursor is on type."></p>
+<p><strong>512.</strong> <strong>A + Left</strong>: <code>type sample</code>: an empty sampler.</p>
+<p><img src="images/walkthrough/512.png" width="240" alt="A + Left - type sample: an empty sampler."></p>
+<p><strong>513.</strong> <strong>Down</strong>: The cursor is on <code>sample none</code>.</p>
+<p><img src="images/walkthrough/513.png" width="240" alt="Down - The cursor is on sample none."></p>
+<p><strong>514.</strong> <strong>Select</strong>: <strong>Select</strong> opens the sample browser: <code>Applications/Samples</code>, one folder per pack.</p>
+<p><img src="images/walkthrough/514.png" width="240" alt="Select - Select opens the sample browser: Applications/Samples, one folder per pack."></p>
+<p><strong>515.</strong> <strong>Down (6 times)</strong>: <code>[drums-909]</code>.</p>
+<p><img src="images/walkthrough/515.png" width="240" alt="Down (6 times) - [drums-909]."></p>
+<p><strong>516.</strong> <strong>A</strong>: Inside the folder.</p>
+<p><img src="images/walkthrough/516.png" width="240" alt="A - Inside the folder."></p>
+<p><strong>517.</strong> <strong>Down (2 times)</strong>: <code>crash.wav</code>. <strong>Listen</strong> would play it.</p>
+<p><img src="images/walkthrough/517.png" width="240" alt="Down (2 times) - crash.wav. Listen would play it."></p>
+<p><strong>518.</strong> <strong>Right</strong>: <code>Import</code> is lit.</p>
+<p><img src="images/walkthrough/518.png" width="240" alt="Right - Import is lit."></p>
+<p><strong>519.</strong> <strong>A</strong>: Imported: the crash is copied into your song.</p>
+<p><img src="images/walkthrough/519.png" width="240" alt="A - Imported: the crash is copied into your song."></p>
+<p><strong>520.</strong> <strong>Right (2 times)</strong>: <code>Exit</code> is lit.</p>
+<p><img src="images/walkthrough/520.png" width="240" alt="Right (2 times) - Exit is lit."></p>
+<p><strong>521.</strong> <strong>A</strong>: Back on the instrument: the waveform of the crash, loudest at the start.</p>
+<p><img src="images/walkthrough/521.png" width="240" alt="A - Back on the instrument: the waveform of the crash, loudest at the start."></p>
+<p><strong>522.</strong> <strong>Down</strong>: The cursor is on <code>play forward</code>.</p>
+<p><img src="images/walkthrough/522.png" width="240" alt="Down - The cursor is on play forward."></p>
+<p><strong>523.</strong> <strong>A + Right</strong>: <code>play reverse</code>: end to start.</p>
+<p><img src="images/walkthrough/523.png" width="240" alt="A + Right - play reverse: end to start."></p>
+<p><strong>524.</strong> <strong>Start</strong>: The phrase: a cymbal swelling up, one bar long.</p>
+<p><img src="images/walkthrough/524.png" width="240" alt="Start - The phrase: a cymbal swelling up, one bar long."></p>
+<p><strong>525.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/525.png" width="240" alt="Start - Stop."></p>
+<p><strong>526.</strong> <strong>RB + Left</strong>: Back on phrase <code>0B</code>.</p>
+<p><img src="images/walkthrough/526.png" width="240" alt="RB + Left - Back on phrase 0B."></p>
+<p><strong>527.</strong> <strong>RB + Left</strong>: Back on chain <code>09</code>.</p>
+<p><img src="images/walkthrough/527.png" width="240" alt="RB + Left - Back on chain 09."></p>
+<p><strong>528.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/528.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="18-resample-reverse-pad">18. Resample: reverse pad</h2>
+<p><strong>Render to sample</strong> records a bar of your song into a new sample. You'll record one bar of the pad and play it backwards: a swell that pulls you out of the break.</p>
+<p><strong>529.</strong> <strong>Up</strong>: Row <code>00</code>.</p>
+<p><img src="images/walkthrough/529.png" width="240" alt="Up - Row 00."></p>
+<p><strong>530.</strong> <strong>Left (3 times)</strong>: Track 5, the pad.</p>
+<p><img src="images/walkthrough/530.png" width="240" alt="Left (3 times) - Track 5, the pad."></p>
+<p><strong>531.</strong> <strong>RB + Right</strong>: Chain <code>04</code>, cursor on row <code>3</code>.</p>
+<p><img src="images/walkthrough/531.png" width="240" alt="RB + Right - Chain 04, cursor on row 3."></p>
+<p><strong>532.</strong> <strong>Up (3 times)</strong>: Row <code>0</code>.</p>
+<p><img src="images/walkthrough/532.png" width="240" alt="Up (3 times) - Row 0."></p>
+<p><strong>533.</strong> <strong>RB + Right</strong>: Phrase <code>04</code>.</p>
+<p><img src="images/walkthrough/533.png" width="240" alt="RB + Right - Phrase 04."></p>
+<p><strong>534.</strong> <strong>LB + Start</strong>: <strong>LB + Start</strong>: the bar plays once and is recorded.</p>
+<p><img src="images/walkthrough/534.png" width="240" alt="LB + Start - LB + Start: the bar plays once and is recorded."></p>
+<p><strong>535.</strong> Done: <code>rs_01.wav</code> is saved in instrument <code>10</code>.</p>
+<p><img src="images/walkthrough/535.png" width="240" alt="Look - Done: rs01.wav is saved in instrument 10."></p>
+<p><strong>536.</strong> <strong>A</strong>: Instrument <code>10</code>: the recorded bar. The cursor is on <code>play forward</code>.</p>
+<p><img src="images/walkthrough/536.png" width="240" alt="A - Instrument 10: the recorded bar. The cursor is on play forward."></p>
+<p><strong>537.</strong> <strong>A + Right</strong>: <code>play reverse</code>.</p>
+<p><img src="images/walkthrough/537.png" width="240" alt="A + Right - play reverse."></p>
+<p><strong>538.</strong> <strong>RB + Left</strong>: Back on phrase <code>04</code>.</p>
+<p><img src="images/walkthrough/538.png" width="240" alt="RB + Left - Back on phrase 04."></p>
+<p><strong>539.</strong> <strong>RB + Left</strong>: Back on chain <code>04</code>.</p>
+<p><img src="images/walkthrough/539.png" width="240" alt="RB + Left - Back on chain 04."></p>
+<p><strong>540.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/540.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="19-the-break">19. The break</h2>
+<p>Row <code>04</code> is the break: just the pad and the lead, and the reversed pad at the end. It starts as a copy of the intro.</p>
+<p><strong>541.</strong> <strong>Left (4 times)</strong>: Track 1.</p>
+<p><img src="images/walkthrough/541.png" width="240" alt="Left (4 times) - Track 1."></p>
+<p><strong>542.</strong> <strong>B + LB</strong>: Selection...</p>
+<p><img src="images/walkthrough/542.png" width="240" alt="B + LB - Selection..."></p>
+<p><strong>543.</strong> <strong>Right (7 times)</strong>: ...the whole intro row.</p>
+<p><img src="images/walkthrough/543.png" width="240" alt="Right (7 times) - ...the whole intro row."></p>
+<p><strong>544.</strong> <strong>B</strong>: Copied.</p>
+<p><img src="images/walkthrough/544.png" width="240" alt="B - Copied."></p>
+<p><strong>545.</strong> <strong>Down (4 times)</strong>: Row <code>04</code>.</p>
+<p><img src="images/walkthrough/545.png" width="240" alt="Down (4 times) - Row 04."></p>
+<p><strong>546.</strong> <strong>A + LB</strong>: Pasted.</p>
+<p><img src="images/walkthrough/546.png" width="240" alt="A + LB - Pasted."></p>
+<p><strong>547.</strong> <strong>Up</strong>: Back on row <code>04</code>.</p>
+<p><img src="images/walkthrough/547.png" width="240" alt="Up - Back on row 04."></p>
+<p><strong>548.</strong> <strong>Right (2 times)</strong>: Track 3.</p>
+<p><img src="images/walkthrough/548.png" width="240" alt="Right (2 times) - Track 3."></p>
+<p><strong>549.</strong> <strong>A + Right (5 times)</strong>: <code>07</code>: no hats in the break.</p>
+<p><img src="images/walkthrough/549.png" width="240" alt="A + Right (5 times) - 07: no hats in the break."></p>
+<p><strong>550.</strong> <strong>Right (3 times)</strong>: Track 6.</p>
+<p><img src="images/walkthrough/550.png" width="240" alt="Right (3 times) - Track 6."></p>
+<p><strong>551.</strong> <strong>A + Right (2 times)</strong>: <code>07</code>: no keys.</p>
+<p><img src="images/walkthrough/551.png" width="240" alt="A + Right (2 times) - 07: no keys."></p>
+<p><strong>552.</strong> <strong>Right</strong>: Track 7.</p>
+<p><img src="images/walkthrough/552.png" width="240" alt="Right - Track 7."></p>
+<p><strong>553.</strong> <strong>A + Left</strong>: <code>06</code>: the hook comes in.</p>
+<p><img src="images/walkthrough/553.png" width="240" alt="A + Left - 06: the hook comes in."></p>
+<p><strong>554.</strong> <strong>Right</strong>: Track 8.</p>
+<p><img src="images/walkthrough/554.png" width="240" alt="Right - Track 8."></p>
+<p><strong>555.</strong> <strong>A + Right (3 times)</strong>: <code>0A</code>, a new chain.</p>
+<p><img src="images/walkthrough/555.png" width="240" alt="A + Right (3 times) - 0A, a new chain."></p>
+<p><strong>556.</strong> <strong>RB + Right</strong>: Chain <code>0A</code>, cursor on row <code>0</code>.</p>
+<p><img src="images/walkthrough/556.png" width="240" alt="RB + Right - Chain 0A, cursor on row 0."></p>
+<p><strong>557.</strong> <strong>A + Left (2 times)</strong>: The last phrase (<code>0B</code>) counted down to <code>09</code>, the rest.</p>
+<p><img src="images/walkthrough/557.png" width="240" alt="A + Left (2 times) - The last phrase (0B) counted down to 09, the rest."></p>
+<p><strong>558.</strong> <strong>Down</strong>: Row <code>1</code>.</p>
+<p><img src="images/walkthrough/558.png" width="240" alt="Down - Row 1."></p>
+<p><strong>559.</strong> <strong>A</strong>: Phrase <code>09</code>.</p>
+<p><img src="images/walkthrough/559.png" width="240" alt="A - Phrase 09."></p>
+<p><strong>560.</strong> <strong>Down</strong>: Row <code>2</code>.</p>
+<p><img src="images/walkthrough/560.png" width="240" alt="Down - Row 2."></p>
+<p><strong>561.</strong> <strong>A</strong>: Phrase <code>09</code>.</p>
+<p><img src="images/walkthrough/561.png" width="240" alt="A - Phrase 09."></p>
+<p><strong>562.</strong> <strong>Down</strong>: Row <code>3</code>.</p>
+<p><img src="images/walkthrough/562.png" width="240" alt="Down - Row 3."></p>
+<p><strong>563.</strong> <strong>A</strong>: Phrase <code>09</code>...</p>
+<p><img src="images/walkthrough/563.png" width="240" alt="A - Phrase 09..."></p>
+<p><strong>564.</strong> <strong>A</strong>: ...and a new phrase <code>0C</code>.</p>
+<p><img src="images/walkthrough/564.png" width="240" alt="A - ...and a new phrase 0C."></p>
+<p><strong>565.</strong> <strong>RB + Right</strong>: Phrase <code>0C</code>, cursor on step <code>0</code>, on the instrument column.</p>
+<p><img src="images/walkthrough/565.png" width="240" alt="RB + Right - Phrase 0C, cursor on step 0, on the instrument column."></p>
+<p><strong>566.</strong> <strong>Left</strong>: The note column.</p>
+<p><img src="images/walkthrough/566.png" width="240" alt="Left - The note column."></p>
+<p><strong>567.</strong> <strong>A</strong>: <code>F 3 I03</code>.</p>
+<p><img src="images/walkthrough/567.png" width="240" alt="A - F 3 I03."></p>
+<p><strong>568.</strong> <strong>A + Left (3 times)</strong>: <code>C 3</code>.</p>
+<p><img src="images/walkthrough/568.png" width="240" alt="A + Left (3 times) - C 3."></p>
+<p><strong>569.</strong> <strong>Right</strong>: The instrument.</p>
+<p><img src="images/walkthrough/569.png" width="240" alt="Right - The instrument."></p>
+<p><strong>570.</strong> <strong>A + Up</strong>: <strong>A + Up</strong>: 16 up, <code>I13</code>.</p>
+<p><img src="images/walkthrough/570.png" width="240" alt="A + Up - A + Up: 16 up, I13."></p>
+<p><strong>571.</strong> <strong>A + Left (3 times)</strong>: <code>I10</code>: the recorded pad.</p>
+<p><img src="images/walkthrough/571.png" width="240" alt="A + Left (3 times) - I10: the recorded pad."></p>
+<p><strong>572.</strong> <strong>Start</strong>: The pad, backwards.</p>
+<p><img src="images/walkthrough/572.png" width="240" alt="Start - The pad, backwards."></p>
+<p><strong>573.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/573.png" width="240" alt="Start - Stop."></p>
+<p><strong>574.</strong> <strong>RB + Left</strong>: Back on chain <code>0A</code>.</p>
+<p><img src="images/walkthrough/574.png" width="240" alt="RB + Left - Back on chain 0A."></p>
+<p><strong>575.</strong> <strong>RB + Left</strong>: Back on the Song screen.</p>
+<p><img src="images/walkthrough/575.png" width="240" alt="RB + Left - Back on the Song screen."></p>
+<h2 id="20-build-drop-outro">20. Build, drop, outro</h2>
+<p>Three more rows: <code>05</code> is another build (like <code>01</code>, with the lead), <code>06</code> the last drop (like <code>02</code>), <code>07</code> the outro (like the intro).</p>
+<p><strong>576.</strong> <strong>Up (3 times)</strong>: Row <code>01</code>.</p>
+<p><img src="images/walkthrough/576.png" width="240" alt="Up (3 times) - Row 01."></p>
+<p><strong>577.</strong> <strong>Left (7 times)</strong>: Track 1.</p>
+<p><img src="images/walkthrough/577.png" width="240" alt="Left (7 times) - Track 1."></p>
+<p><strong>578.</strong> <strong>B + LB</strong>: Selection...</p>
+<p><img src="images/walkthrough/578.png" width="240" alt="B + LB - Selection..."></p>
+<p><strong>579.</strong> <strong>Right (7 times)</strong>: ...row <code>01</code>.</p>
+<p><img src="images/walkthrough/579.png" width="240" alt="Right (7 times) - ...row 01."></p>
+<p><strong>580.</strong> <strong>B</strong>: Copied.</p>
+<p><img src="images/walkthrough/580.png" width="240" alt="B - Copied."></p>
+<p><strong>581.</strong> <strong>Down (4 times)</strong>: Row <code>05</code>.</p>
+<p><img src="images/walkthrough/581.png" width="240" alt="Down (4 times) - Row 05."></p>
+<p><strong>582.</strong> <strong>A + LB</strong>: Pasted.</p>
+<p><img src="images/walkthrough/582.png" width="240" alt="A + LB - Pasted."></p>
+<p><strong>583.</strong> <strong>Up</strong>: Back on row <code>05</code>.</p>
+<p><img src="images/walkthrough/583.png" width="240" alt="Up - Back on row 05."></p>
+<p><strong>584.</strong> <strong>Right (3 times)</strong>: Track 4.</p>
+<p><img src="images/walkthrough/584.png" width="240" alt="Right (3 times) - Track 4."></p>
+<p><strong>585.</strong> <strong>A + Right (4 times)</strong>: <code>07</code>: no bass while it builds.</p>
+<p><img src="images/walkthrough/585.png" width="240" alt="A + Right (4 times) - 07: no bass while it builds."></p>
+<p><strong>586.</strong> <strong>Right (3 times)</strong>: Track 7.</p>
+<p><img src="images/walkthrough/586.png" width="240" alt="Right (3 times) - Track 7."></p>
+<p><strong>587.</strong> <strong>A + Left</strong>: <code>06</code>: the lead plays this build.</p>
+<p><img src="images/walkthrough/587.png" width="240" alt="A + Left - 06: the lead plays this build."></p>
+<p><strong>588.</strong> <strong>Up (3 times)</strong>: Row <code>02</code>.</p>
+<p><img src="images/walkthrough/588.png" width="240" alt="Up (3 times) - Row 02."></p>
+<p><strong>589.</strong> <strong>Left (6 times)</strong>: Track 1.</p>
+<p><img src="images/walkthrough/589.png" width="240" alt="Left (6 times) - Track 1."></p>
+<p><strong>590.</strong> <strong>B + LB</strong>: Selection...</p>
+<p><img src="images/walkthrough/590.png" width="240" alt="B + LB - Selection..."></p>
+<p><strong>591.</strong> <strong>Right (7 times)</strong>: ...the drop.</p>
+<p><img src="images/walkthrough/591.png" width="240" alt="Right (7 times) - ...the drop."></p>
+<p><strong>592.</strong> <strong>B</strong>: Copied.</p>
+<p><img src="images/walkthrough/592.png" width="240" alt="B - Copied."></p>
+<p><strong>593.</strong> <strong>Down (4 times)</strong>: Row <code>06</code>.</p>
+<p><img src="images/walkthrough/593.png" width="240" alt="Down (4 times) - Row 06."></p>
+<p><strong>594.</strong> <strong>A + LB</strong>: Pasted: the last drop.</p>
+<p><img src="images/walkthrough/594.png" width="240" alt="A + LB - Pasted: the last drop."></p>
+<p><strong>595.</strong> <strong>Up (7 times)</strong>: Row <code>00</code>.</p>
+<p><img src="images/walkthrough/595.png" width="240" alt="Up (7 times) - Row 00."></p>
+<p><strong>596.</strong> <strong>B + LB</strong>: Selection...</p>
+<p><img src="images/walkthrough/596.png" width="240" alt="B + LB - Selection..."></p>
+<p><strong>597.</strong> <strong>Right (7 times)</strong>: ...the intro.</p>
+<p><img src="images/walkthrough/597.png" width="240" alt="Right (7 times) - ...the intro."></p>
+<p><strong>598.</strong> <strong>B</strong>: Copied.</p>
+<p><img src="images/walkthrough/598.png" width="240" alt="B - Copied."></p>
+<p><strong>599.</strong> <strong>Down (7 times)</strong>: Row <code>07</code>.</p>
+<p><img src="images/walkthrough/599.png" width="240" alt="Down (7 times) - Row 07."></p>
+<p><strong>600.</strong> <strong>A + LB</strong>: Pasted: the outro. After it the song ends.</p>
+<p><img src="images/walkthrough/600.png" width="240" alt="A + LB - Pasted: the outro. After it the song ends."></p>
+<h2 id="21-bookmarks">21. Bookmarks</h2>
+<p>Bookmarks mark where the sections start, so you can jump around a long song.</p>
+<p><strong>601.</strong> <strong>Up (8 times)</strong>: Row <code>00</code>, the intro.</p>
+<p><img src="images/walkthrough/601.png" width="240" alt="Up (8 times) - Row 00, the intro."></p>
+<p><strong>602.</strong> <strong>A + Select</strong>: <strong>A + Select</strong> bookmarks the row.</p>
+<p><img src="images/walkthrough/602.png" width="240" alt="A + Select - A + Select bookmarks the row."></p>
+<p><strong>603.</strong> <strong>Down</strong>: Row <code>01</code>, the build.</p>
+<p><img src="images/walkthrough/603.png" width="240" alt="Down - Row 01, the build."></p>
+<p><strong>604.</strong> <strong>A + Select</strong>: Bookmarked.</p>
+<p><img src="images/walkthrough/604.png" width="240" alt="A + Select - Bookmarked."></p>
+<p><strong>605.</strong> <strong>Down</strong>: Row <code>02</code>, the drop.</p>
+<p><img src="images/walkthrough/605.png" width="240" alt="Down - Row 02, the drop."></p>
+<p><strong>606.</strong> <strong>A + Select</strong>: Bookmarked.</p>
+<p><img src="images/walkthrough/606.png" width="240" alt="A + Select - Bookmarked."></p>
+<p><strong>607.</strong> <strong>Down (2 times)</strong>: Row <code>04</code>, the break.</p>
+<p><img src="images/walkthrough/607.png" width="240" alt="Down (2 times) - Row 04, the break."></p>
+<p><strong>608.</strong> <strong>A + Select</strong>: Bookmarked.</p>
+<p><img src="images/walkthrough/608.png" width="240" alt="A + Select - Bookmarked."></p>
+<p><strong>609.</strong> <strong>Down (2 times)</strong>: Row <code>06</code>, the last drop.</p>
+<p><img src="images/walkthrough/609.png" width="240" alt="Down (2 times) - Row 06, the last drop."></p>
+<p><strong>610.</strong> <strong>A + Select</strong>: Bookmarked.</p>
+<p><img src="images/walkthrough/610.png" width="240" alt="A + Select - Bookmarked."></p>
+<p><strong>611.</strong> <strong>LB + Up</strong>: <strong>LB + Up</strong> jumps to the previous bookmark: row <code>04</code>.</p>
+<p><img src="images/walkthrough/611.png" width="240" alt="LB + Up - LB + Up jumps to the previous bookmark: row 04."></p>
+<p><strong>612.</strong> <strong>LB + Up (2 times)</strong>: Row <code>01</code>.</p>
+<p><img src="images/walkthrough/612.png" width="240" alt="LB + Up (2 times) - Row 01."></p>
+<p><strong>613.</strong> <strong>Up</strong>: Row <code>00</code>.</p>
+<p><img src="images/walkthrough/613.png" width="240" alt="Up - Row 00."></p>
+<p><strong>614.</strong> <strong>Start</strong>: The whole song from the top.</p>
+<p><img src="images/walkthrough/614.png" width="240" alt="Start - The whole song from the top."></p>
+<p><strong>615.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/615.png" width="240" alt="Start - Stop."></p>
+<h2 id="22-mix">22. Mix</h2>
+<p>The <strong>Mixer</strong> sets each track's level. The kick should hit hardest; the bass sits a little under it.</p>
+<p><strong>616.</strong> <strong>RB + Down</strong>: The <strong>Mixer</strong>: a fader per track, then the effect returns and the master.</p>
+<p><img src="images/walkthrough/616.png" width="240" alt="RB + Down - The Mixer: a fader per track, then the effect returns and the master."></p>
+<p><strong>617.</strong> <strong>A + Up (4 times)</strong>: Track 1, the kick, at <code>FF</code>: its loudest.</p>
+<p><img src="images/walkthrough/617.png" width="240" alt="A + Up (4 times) - Track 1, the kick, at FF: its loudest."></p>
+<p><strong>618.</strong> <strong>Right (3 times)</strong>: Track 4, the bass.</p>
+<p><img src="images/walkthrough/618.png" width="240" alt="Right (3 times) - Track 4, the bass."></p>
+<p><strong>619.</strong> <strong>A + Down (3 times)</strong>: <code>90</code>: a bit down.</p>
+<p><img src="images/walkthrough/619.png" width="240" alt="A + Down (3 times) - 90: a bit down."></p>
+<h2 id="23-effects-eq-limiter">23. Effects, EQ, limiter</h2>
+<p>The <strong>FX</strong> screen sets up the shared chorus, echo and reverb the instruments send to. <strong>EQ</strong> shapes the whole mix, <strong>Limit</strong> keeps it from clipping.</p>
+<p><strong>620.</strong> <strong>RB + Down</strong>: The <strong>FX</strong> screen.</p>
+<p><img src="images/walkthrough/620.png" width="240" alt="RB + Down - The FX screen."></p>
+<p><strong>621.</strong> <strong>Down (4 times)</strong>: The cursor is on the reverb's <code>size 90</code>.</p>
+<p><img src="images/walkthrough/621.png" width="240" alt="Down (4 times) - The cursor is on the reverb's size 90."></p>
+<p><strong>622.</strong> <strong>A + Up (2 times)</strong>: <code>size B0</code>: a bigger room, a longer tail.</p>
+<p><img src="images/walkthrough/622.png" width="240" alt="A + Up (2 times) - size B0: a bigger room, a longer tail."></p>
+<p><strong>623.</strong> <strong>RB + Right</strong>: The <strong>EQ</strong> screen: low, mid and high for the whole mix.</p>
+<p><img src="images/walkthrough/623.png" width="240" alt="RB + Right - The EQ screen: low, mid and high for the whole mix."></p>
+<p><strong>624.</strong> <strong>Down (4 times)</strong>: The cursor is on the high <code>gain 80</code>.</p>
+<p><img src="images/walkthrough/624.png" width="240" alt="Down (4 times) - The cursor is on the high gain 80."></p>
+<p><strong>625.</strong> <strong>A + Up</strong>: <code>gain 90</code>: a little air on top.</p>
+<p><img src="images/walkthrough/625.png" width="240" alt="A + Up - gain 90: a little air on top."></p>
+<p><strong>626.</strong> <strong>RB + Right</strong>: The <strong>Limit</strong> screen, cursor on <code>drive 00</code> (off).</p>
+<p><img src="images/walkthrough/626.png" width="240" alt="RB + Right - The Limit screen, cursor on drive 00 (off)."></p>
+<p><strong>627.</strong> <strong>A + Up</strong>: <code>drive 10</code>: the mix goes into the limiter a little hotter, and every peak is caught before it can crackle.</p>
+<p><img src="images/walkthrough/627.png" width="240" alt="A + Up - drive 10: the mix goes into the limiter a little hotter, and every peak is caught before it can crackle."></p>
+<p><strong>628.</strong> <strong>Start</strong>: Listen: <code>GR</code> shows how much it's catching.</p>
+<p><img src="images/walkthrough/628.png" width="240" alt="Start - Listen: GR shows how much it's catching."></p>
+<p><strong>629.</strong> <strong>Start</strong>: Stop.</p>
+<p><img src="images/walkthrough/629.png" width="240" alt="Start - Stop."></p>
+<p><strong>630.</strong> <strong>RB + Left</strong>: EQ.</p>
+<p><img src="images/walkthrough/630.png" width="240" alt="RB + Left - EQ."></p>
+<p><strong>631.</strong> <strong>RB + Left</strong>: FX.</p>
+<p><img src="images/walkthrough/631.png" width="240" alt="RB + Left - FX."></p>
+<p><strong>632.</strong> <strong>RB + Up</strong>: Mixer.</p>
+<p><img src="images/walkthrough/632.png" width="240" alt="RB + Up - Mixer."></p>
+<p><strong>633.</strong> <strong>RB + Up</strong>: Song.</p>
+<p><img src="images/walkthrough/633.png" width="240" alt="RB + Up - Song."></p>
+<h2 id="24-headroom-and-save">24. Headroom and save</h2>
+<p>Eight tracks add up. The Project screen's <code>Drive</code> sets how hard the whole song goes into the mix: a little lower leaves room, and the limiter brings the level back without distortion.</p>
+<p><strong>634.</strong> <strong>RB + Up</strong>: Project, cursor on <code>Scale</code>.</p>
+<p><img src="images/walkthrough/634.png" width="240" alt="RB + Up - Project, cursor on Scale."></p>
+<p><strong>635.</strong> <strong>Down (4 times)</strong>: The cursor is on <code>Drive: 100</code>.</p>
+<p><img src="images/walkthrough/635.png" width="240" alt="Down (4 times) - The cursor is on Drive: 100."></p>
+<p><strong>636.</strong> <strong>A + Down (3 times)</strong>: <code>Drive: 70</code>.</p>
+<p><img src="images/walkthrough/636.png" width="240" alt="A + Down (3 times) - Drive: 70."></p>
+<p><strong>637.</strong> <strong>Up (10 times)</strong>: The cursor is on <code>Save Song</code>.</p>
+<p><img src="images/walkthrough/637.png" width="240" alt="Up (10 times) - The cursor is on Save Song."></p>
+<p><strong>638.</strong> <strong>A</strong>: Saved: the song is written to the SD card.</p>
+<p><img src="images/walkthrough/638.png" width="240" alt="A - Saved: the song is written to the SD card."></p>
+<p><strong>639.</strong> <strong>RB + Down</strong>: Song.</p>
+<p><img src="images/walkthrough/639.png" width="240" alt="RB + Down - Song."></p>
+<h2 id="25-play-it-live">25. Play it live</h2>
+<p><strong>Live mode</strong> turns the Song screen into a launcher: cue rows and cells while the song plays, M8 style. Nothing you do here changes the song.</p>
+<p><strong>640.</strong> <strong>Select</strong>: <strong>Select</strong>: Live mode. The title says <code>Live</code>.</p>
+<p><img src="images/walkthrough/640.png" width="240" alt="Select - Select: Live mode. The title says Live."></p>
+<p><strong>641.</strong> <strong>LB + Start</strong>: <strong>LB + Start</strong> launches row <code>00</code>: the intro loops.</p>
+<p><img src="images/walkthrough/641.png" width="240" alt="LB + Start - LB + Start launches row 00: the intro loops."></p>
+<p><strong>642.</strong> <strong>LB + Down</strong>: <strong>LB + Down</strong>: the next bookmark, the build.</p>
+<p><img src="images/walkthrough/642.png" width="240" alt="LB + Down - LB + Down: the next bookmark, the build."></p>
+<p><strong>643.</strong> <strong>LB + Start</strong>: Cued: it starts when the intro's chains end, and loops.</p>
+<p><img src="images/walkthrough/643.png" width="240" alt="LB + Start - Cued: it starts when the intro's chains end, and loops."></p>
+<p><strong>644.</strong> <strong>LB + Down</strong>: The drop.</p>
+<p><img src="images/walkthrough/644.png" width="240" alt="LB + Down - The drop."></p>
+<p><strong>645.</strong> <strong>LB + Start</strong>: Cued. Drop it!</p>
+<p><img src="images/walkthrough/645.png" width="240" alt="LB + Start - Cued. Drop it!"></p>
+<p><strong>646.</strong> <strong>B + Start</strong>: <strong>B + Start</strong> stops everything.</p>
+<p><img src="images/walkthrough/646.png" width="240" alt="B + Start - B + Start stops everything."></p>
+<p><strong>647.</strong> <strong>Select</strong>: Back to Song mode.</p>
+<p><img src="images/walkthrough/647.png" width="240" alt="Select - Back to Song mode."></p>
+<p><strong>648.</strong> <strong>LB + Up (2 times)</strong>: Row <code>00</code>.</p>
+<p><img src="images/walkthrough/648.png" width="240" alt="LB + Up (2 times) - Row 00."></p>
+<h2 id="26-export-a-wav">26. Export a WAV</h2>
+<p>Finally, record the song into a WAV file you can share. It plays in real time while it records.</p>
+<p><strong>649.</strong> <strong>RB + Up</strong>: Project.</p>
+<p><img src="images/walkthrough/649.png" width="240" alt="RB + Up - Project."></p>
+<p><strong>650.</strong> <strong>Down (4 times)</strong>: The cursor is on <code>Render: Off</code>.</p>
+<p><img src="images/walkthrough/650.png" width="240" alt="Down (4 times) - The cursor is on Render: Off."></p>
+<p><strong>651.</strong> <strong>A + Right</strong>: <code>Render: Stereo</code>: the next play records <code>mixdown.wav</code> in the song's folder.</p>
+<p><img src="images/walkthrough/651.png" width="240" alt="A + Right - Render: Stereo: the next play records mixdown.wav in the song's folder."></p>
+<p><strong>652.</strong> <strong>RB + Down</strong>: Song.</p>
+<p><img src="images/walkthrough/652.png" width="240" alt="RB + Down - Song."></p>
+<p><strong>653.</strong> <strong>Start</strong>: Recording... let it play to the end (about a minute).</p>
+<p><img src="images/walkthrough/653.png" width="240" alt="Start - Recording... let it play to the end (about a minute)."></p>
+<p><strong>654.</strong> <strong>Start</strong>: Stopped: the file is closed. (Here it's cut short; yours has the whole song.)</p>
+<p><img src="images/walkthrough/654.png" width="240" alt="Start - Stopped: the file is closed. (Here it's cut short; yours has the whole song.)"></p>
+<p><strong>655.</strong> <strong>RB + Up</strong>: Project.</p>
+<p><img src="images/walkthrough/655.png" width="240" alt="RB + Up - Project."></p>
+<p><strong>656.</strong> <strong>A + Left</strong>: <code>Render: Off</code> again, for normal playing.</p>
+<p><img src="images/walkthrough/656.png" width="240" alt="A + Left - Render: Off again, for normal playing."></p>
+<p><strong>657.</strong> <strong>RB + Down</strong>: Song. <strong>Afterglow</strong> is done: GLOW is your song now.</p>
+<p><img src="images/walkthrough/657.png" width="240" alt="RB + Down - Song. Afterglow is done: GLOW is your song now."></p>
+<h2 id="where-next">Where next</h2>
+<ul>
+<li><strong>Make it yours:</strong> change a note of the hook (<strong>A + Left/Right</strong> on it), try other transposes in the chains for a new chord progression, or another <code>preset</code> on any instrument.</li>
+<li><strong>More randomness:</strong> put <code>RAND 0003</code> next to a few hook notes: they wander a little every time.</li>
+<li>Pull the other <a href="Demo-Songs.html">Demo Songs</a> apart, and keep the <a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a> nearby. Every key is on the <a href="Controls.html">Controls</a> page.</li>
+</ul>
+<div class="pager"><a class="prev" href="How-Trackers-Work.html"><small>Previous</small>How Trackers Work</a><a class="next" href="Demo-Songs.html"><small>Next</small>Demo Songs</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

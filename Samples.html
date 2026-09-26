@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Samples · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Samples.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html" class="active">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="samples">Samples</h1>
+<p>Any instrument slot can play a WAV file instead of a synth. The RG Nano has no microphone, so the practical route is to make or record sounds elsewhere (a phone, a PO-33, a computer) and copy them over.</p>
+<h2 id="get-wavs-onto-the-nano">Get WAVs onto the Nano</h2>
+<p>Copy <code>.wav</code> files (16-bit, mono or stereo, any sample rate) into <code>Applications/Samples</code> on the SD card. Folders are fine.</p>
+<h2 id="sample-packs">Sample packs</h2>
+<p>The install puts a set of packs in <code>Applications/Samples</code>, one folder each. Melodic samples are recorded or rendered at a known pitch and the chords are rooted on <code>A 2</code>, so they play in tune straight away.</p>
+<table>
+<thead>
+<tr>
+<th>Pack</th>
+<th>What's in it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keys</code></td>
+<td>grand piano (low, mid, high, soft), harp, glockenspiel, marimba</td>
+</tr>
+<tr>
+<td><code>strings</code></td>
+<td>violins (low, high) and cellos (low, mid), sustained; violin and cello pizzicato</td>
+</tr>
+<tr>
+<td><code>brass</code></td>
+<td>horn, trumpet, trombone</td>
+</tr>
+<tr>
+<td><code>bass</code></td>
+<td>upright (low, high), finger bass, Reese</td>
+</tr>
+<tr>
+<td><code>epiano</code></td>
+<td>a tine electric piano note plus maj, min, 7th and 9th chords</td>
+</tr>
+<tr>
+<td><code>chords</code></td>
+<td>one-shot piano, soft piano and string chords: maj, min, maj7, min7, dom7, maj9, min9</td>
+</tr>
+<tr>
+<td><code>guitar</code></td>
+<td>clean, muted and power-chord guitar</td>
+</tr>
+<tr>
+<td><code>percussion</code></td>
+<td>timpani, orchestral snares, crash, cymbal, shaker, bongos, congas, triangle, claves</td>
+</tr>
+<tr>
+<td><code>drums-808</code> / <code>drums-909</code></td>
+<td>the classic drum machines: kick, snare, clap, hats, and more</td>
+</tr>
+<tr>
+<td><code>drums-dusty</code></td>
+<td>a lo-fi kit: soft kick, old snare, hat, rim</td>
+</tr>
+<tr>
+<td><code>drums-jazz</code></td>
+<td>brush tap and swish, ride and ride bell, soft kick</td>
+</tr>
+<tr>
+<td><code>textures</code></td>
+<td>vinyl crackle, tape hiss, a riser</td>
+</tr>
+<tr>
+<td><code>chinese</code></td>
+<td>guzheng, erhu, dizi, pipa, dagu and opera percussion</td>
+</tr>
+</tbody>
+</table>
+<p>The orchestral recordings come from the Versilian Studios Community Edition (CC0). The Chinese instruments are CC0 and CC BY 4.0 recordings from Freesound. The drums, guitar, bass, e-piano, chords and textures are synthesized for this project. Each folder's <code>CREDITS.md</code> has the details. <a href="Demo-Songs.html#sunset-club--house">Sunset Club</a> and <a href="Demo-Songs.html#jade-sword--wuxia--donghua">Jade Sword</a> show them in songs.</p>
+<h2 id="turn-a-slot-into-a-sampler">Turn a slot into a sampler</h2>
+<ol>
+<li>Open an instrument (<strong>RB + Right</strong> from a phrase).</li>
+<li>On the first page, set <code>type</code> to <strong>sample</strong> (cursor on <code>type</code>, <strong>A + Left</strong>).</li>
+<li>Move to <code>sample</code> and press <strong>Select</strong>: the sample browser opens.</li>
+<li>Highlight a file. <code>Listen</code> previews it, <code>Import</code> copies it into the song and assigns it. <strong>Start + Up/Down</strong> browses while previewing, <strong>Start + Right</strong> imports.</li>
+</ol>
+<p>Imported samples live inside the song folder (<code>lgpt_&lt;name&gt;/samples/</code>), so the song keeps working even if you tidy up <code>Applications/Samples</code>.</p>
+<h2 id="sample-pages">Sample pages</h2>
+<p><strong>LB + Left/Right</strong> switches between the seven sample pages:</p>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>What it edits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source</td>
+<td>sample, play mode, root note, detune, slices</td>
+</tr>
+<tr>
+<td>Shape</td>
+<td>volume, pan, reverb, delay and chorus sends (the shared effects on the <a href="Screens.html#fx">FX screen</a>), crush, drive, downsample</td>
+</tr>
+<tr>
+<td>Filter</td>
+<td>cutoff, resonance, filter type and mode</td>
+</tr>
+<tr>
+<td>Loop</td>
+<td>play mode, slices, start, loop start, end</td>
+</tr>
+<tr>
+<td>Mod</td>
+<td>four slots (ADSR/AHD/drum envelopes, LFOs, key tracking) on volume, cutoff, reso, pitch, fine, pan, drive, crush, feedback, sample start, loop start or the sends — see <a href="Synth.html#mod--4-modulation-slots">Synth → MOD</a></td>
+</tr>
+<tr>
+<td>Motion</td>
+<td>instrument table, feedback</td>
+</tr>
+<tr>
+<td>EQ</td>
+<td>the instrument's own low / mid / high EQ, drawn as a curve — see <a href="#instrument-eq">Instrument EQ</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="instrument-eq">Instrument EQ</h2>
+<p>The last page. Each sample instrument has its own three-band EQ, the same as a synth's (<a href="Synth.html#eq--its-own-tone">Synth → EQ</a>): <code>l.gain</code>/<code>l.freq</code> a bass shelf (30–400 Hz), <code>m.gain</code>/<code>m.freq</code> a bell (150 Hz–6 kHz), <code>h.gain</code>/<code>h.freq</code> a treble shelf (1.5–16 kHz). Gains <code>80</code> = flat, −12 … +12 dB. It shapes only this sound, before its effect sends; flat bands cost nothing. The curve above the knobs shows the result, and the focused knob's value is shown in dB or Hz.</p>
+<p><strong>Try:</strong> thin a loop with <code>l.gain</code> <code>−8 dB</code> so the kick has the bottom to itself, or brighten a dull vocal chop with <code>h.gain</code> <code>+4 dB</code>.</p>
+<h2 id="play-modes">Play modes</h2>
+<p><code>play</code> (on Source and Loop) picks the direction and whether the sample loops, the same choices as the M8's sampler. <strong>S</strong>, <strong>L</strong> and <strong>E</strong> are the start, loop start and end markers (see <a href="#trimming">Trimming</a>).</p>
+<p><img src="images/sample-play.png" width="300" align="right" alt="Play mode and its path under the waveform"></p>
+<table>
+<thead>
+<tr>
+<th><code>play</code></th>
+<th>A note plays</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>forward</code></td>
+<td>S to E, once (the default)</td>
+</tr>
+<tr>
+<td><code>reverse</code></td>
+<td>E back to S, once</td>
+</tr>
+<tr>
+<td><code>loop</code></td>
+<td>S to E, then L to E again and again</td>
+</tr>
+<tr>
+<td><code>rev-loop</code></td>
+<td>E back to L, again and again</td>
+</tr>
+<tr>
+<td><code>pingpong</code></td>
+<td>S to E, then back and forth between E and L</td>
+</tr>
+<tr>
+<td><code>rev-pingpong</code></td>
+<td>E back to L, then back and forth</td>
+</tr>
+<tr>
+<td><code>osc</code></td>
+<td>L..E is one wave cycle, pitched like a synth (single-cycle waveforms)</td>
+</tr>
+<tr>
+<td><code>osc-rev</code> / <code>osc-pingpong</code></td>
+<td>the cycle backwards / there and back</td>
+</tr>
+<tr>
+<td><code>loop-sync</code></td>
+<td>L..E stretched to one bar at the song tempo (drum loops that follow the tempo)</td>
+</tr>
+</tbody>
+</table>
+<p>Under the waveform a green line with arrows shows the first pass and which way it goes; a second line shows the part that loops (arrows both ways for ping-pong). With <code>slices</code>, every slice plays its own part in the chosen mode, so <code>reverse</code> plays each slice backwards.</p>
+<p>A single note can use another mode with the <code>PLAY</code> command: <code>PLAY 0001</code> on a step with a note plays that note in reverse while the instrument stays <code>forward</code> (the number is the mode's place in the list above: <code>00</code> forward, <code>01</code> reverse, <code>02</code> loop, <code>03</code> rev-loop, <code>04</code> pingpong, <code>05</code> rev-pingpong, <code>06</code> osc, <code>07</code> osc-rev, <code>08</code> osc-pingpong, <code>09</code> loop-sync). On a step without a note it turns the sound that is already playing around from where it is.</p>
+<p>Songs made before these modes open unchanged: <code>none</code> is now <code>forward</code>, <code>ping pong</code> is <code>pingpong</code>, <code>oscillator</code> is <code>osc</code>, <code>looper sync</code> is <code>loop-sync</code>.</p>
+<p><br clear="right"></p>
+<h2 id="trimming">Trimming</h2>
+<p>Source and Loop show the waveform with three markers: <strong>S</strong> start, <strong>L</strong> loop start, <strong>E</strong> end.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LB + Up/Down</strong></td>
+<td>pick the marker</td>
+</tr>
+<tr>
+<td><strong>LB + A + Left/Right</strong></td>
+<td>nudge it</td>
+</tr>
+<tr>
+<td><strong>A + Start</strong></td>
+<td>hear the sample from S to E (<strong>RB + A + Left/Right</strong>: an octave down/up)</td>
+</tr>
+<tr>
+<td><strong>RB + Start</strong></td>
+<td>switch that preview between once and loop (<code>PREV:</code> on screen), in the play mode's direction</td>
+</tr>
+<tr>
+<td><strong>Select</strong></td>
+<td>open the <a href="#sample-editing">sample editor</a> (on <code>sample</code>: import; on <code>root</code>: find the root)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sample-editing">Sample editing</h2>
+<p><img src="images/sample-edit.png" width="300" align="right" alt="The sample editor: before and after"></p>
+<p>Like the M8's sample editor, with the same processes. On the Source or Loop page press <strong>Select</strong> (anywhere but on <code>sample</code> and <code>root</code>). The editor works on the part between <strong>S</strong> and <strong>E</strong>, shaded in the pictures: <strong>BEFORE</strong> is the sample now, <strong>AFTER</strong> what the edit will make.</p>
+<table>
+<thead>
+<tr>
+<th>Edit</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>normalize</code></td>
+<td>makes S..E as loud as it can be without clipping</td>
+</tr>
+<tr>
+<td><code>crop to S..E</code></td>
+<td>keeps only S..E (L moves with the sound)</td>
+</tr>
+<tr>
+<td><code>fade in S..E</code></td>
+<td>S..E rises from silence</td>
+</tr>
+<tr>
+<td><code>fade out S..E</code></td>
+<td>S..E falls to silence</td>
+</tr>
+<tr>
+<td><code>reverse S..E</code></td>
+<td>S..E plays backwards</td>
+</tr>
+<tr>
+<td><code>trim silence</code></td>
+<td>cuts the quiet start and end of the whole sample</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Up / Down</strong></td>
+<td>pick an edit</td>
+</tr>
+<tr>
+<td><strong>A</strong></td>
+<td>make it</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>hear the sample (again: stop)</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>back to the instrument</td>
+</tr>
+</tbody>
+</table>
+<p>Nothing is overwritten: <strong>A</strong> writes a new file next to the original (<code>kick.wav</code> becomes <code>kick_nrm.wav</code>, <code>kick_crop.wav</code>, <code>kick_rev.wav</code> ...), puts it on the instrument and keeps your markers where they were in the sound. Edits chain: crop, then normalize the result. Changed your mind? Close the editor and press <strong>B + Select</strong>: the instrument goes back to the previous file (the new file stays in the song's <code>samples</code> folder, unused). To fade only the last bit of a sound, move <strong>S</strong> there first (<strong>LB + Up/Down</strong>, <strong>LB + A + Left/Right</strong>), fade out, then move S back.</p>
+<p>If an edit would change nothing the editor says why instead (<code>already as loud as it gets</code>, <code>move S or E in first</code>, <code>no silence at the ends</code>).</p>
+<p><br clear="right"></p>
+<h2 id="root-note">Root note</h2>
+<p>If a melodic sample plays out of tune, go to <code>root</code> and press <strong>Select</strong>: the app listens to the trimmed part and suggests a root note. <strong>Select</strong> again accepts it.</p>
+<h2 id="render-to-sample">Render to sample</h2>
+<p>Resampling, M8 style: on a Phrase press <strong>LB + Start</strong> to record that bar, or on a Chain to record the whole chain. It plays once, with every track, effect and fader as you hear it, and lands as <code>rs_01.wav</code> on the next free instrument. <strong>A</strong> opens the new instrument; <strong>B</strong> cancels and leaves nothing behind. Chop it with <code>slices</code>, play it backwards with <code>play reverse</code>, trim and normalize it in the <a href="#sample-editing">sample editor</a>, or stack it again.</p>
+<h2 id="slices">Slices</h2>
+<p>Set <code>slices</code> above <code>01</code> to chop the sample into equal parts; note <code>C-2</code> plays slice 0, the next semitone slice 1, and so on — handy for drum loops.</p>
+<div class="pager"><a class="prev" href="Music-Theory-Cheat-Sheet.html"><small>Previous</small>Music Theory Cheat Sheet</a><a class="next" href="Export.html"><small>Next</small>Export</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

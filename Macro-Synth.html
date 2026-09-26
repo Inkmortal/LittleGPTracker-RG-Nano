@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Macro Synth · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Macro Synth.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html" class="active">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="macro-synth">Macro Synth</h1>
+<p>The <strong>macro synth</strong> is a third kind of instrument, next to the synth and the sampler — the same idea as the M8's MacroSynth. Instead of building a sound from waves, you pick a <strong>shape</strong>: a complete synthesis model (analog waves, FM, vowels, plucked strings, bells, 808-style drums, wavetables, noise…) and play it with just two knobs, <strong>timbre</strong> and <strong>color</strong>. Every shape uses them differently, so 47 shapes × 2 knobs is a huge palette with very little to learn.</p>
+<p><img src="images/macro-1-sound.png" width="280" align="right" alt="Macro synth SOUND page"></p>
+<p><strong>Make one:</strong> open an instrument (<strong>RB + Right</strong> from a phrase), put the cursor on <code>type</code> and press <strong>A + Right</strong> until it says <code>macro</code>. The cursor sits on <code>preset</code>: <strong>A + Left/Right</strong> flips through ready sounds, <strong>A + Start</strong> plays one (<strong>Start</strong> plays the phrase, as everywhere).</p>
+<p>The engine is a port of Emilie Gillet's open-source macro oscillator from the Braids module (MIT licence). It runs at its native 96 kHz and is resampled for the mixer, so tuning, vowels and drum decays sound exactly as designed.</p>
+<p><br clear="right"></p>
+<h2 id="presets">Presets</h2>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Shape</th>
+<th>Sound</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>init</code></td>
+<td>CSAW</td>
+<td>a plain start for your own sound</td>
+</tr>
+<tr>
+<td><code>pluck</code></td>
+<td>PLUCK</td>
+<td>plucked string (guitar, koto, harp)</td>
+</tr>
+<tr>
+<td><code>bell</code></td>
+<td>BELL</td>
+<td>struck bell, long ring</td>
+</tr>
+<tr>
+<td><code>vowels</code></td>
+<td>VOWEL</td>
+<td>a voice singing a-e-i-o-u, the LFO moves the vowel</td>
+</tr>
+<tr>
+<td><code>choir</code></td>
+<td>VFOF</td>
+<td>soft "aah" pad with vibrato</td>
+</tr>
+<tr>
+<td><code>flute</code></td>
+<td>FLUTE</td>
+<td>breathy flute</td>
+</tr>
+<tr>
+<td><code>strings</code></td>
+<td>BOWED</td>
+<td>bowed string (erhu, violin)</td>
+</tr>
+<tr>
+<td><code>organ</code></td>
+<td>HARM</td>
+<td>drawbar-style organ</td>
+</tr>
+<tr>
+<td><code>chords</code></td>
+<td>WTx4</td>
+<td>a four-note chord from every note</td>
+</tr>
+<tr>
+<td><code>synclead</code></td>
+<td>SAW SYNC</td>
+<td>classic sync lead with a bite on every note</td>
+</tr>
+<tr>
+<td><code>foldlead</code></td>
+<td>FOLD</td>
+<td>wavefolded lead</td>
+</tr>
+<tr>
+<td><code>bass</code></td>
+<td>SAW SUB</td>
+<td>saw with a sub, filter bite</td>
+</tr>
+<tr>
+<td><code>fmbass</code></td>
+<td>FM</td>
+<td>punchy FM bass</td>
+</tr>
+<tr>
+<td><code>reese</code></td>
+<td>SWARM</td>
+<td>seven detuned saws, dark</td>
+</tr>
+<tr>
+<td><code>acid</code></td>
+<td>ZLPF</td>
+<td>squelchy line with glide</td>
+</tr>
+<tr>
+<td><code>kick</code></td>
+<td>KICK</td>
+<td>808-style kick</td>
+</tr>
+<tr>
+<td><code>snare</code></td>
+<td>SNARE</td>
+<td>808-style snare</td>
+</tr>
+<tr>
+<td><code>hat</code></td>
+<td>CYMBAL</td>
+<td>metallic hat</td>
+</tr>
+<tr>
+<td><code>metaltom</code></td>
+<td>DRUM</td>
+<td>metallic tom</td>
+</tr>
+<tr>
+<td><code>toy</code></td>
+<td>TOY</td>
+<td>circuit-bent toy keyboard</td>
+</tr>
+<tr>
+<td><code>wavescan</code></td>
+<td>WMAP</td>
+<td>a wavetable that keeps moving</td>
+</tr>
+<tr>
+<td><code>cloud</code></td>
+<td>CLOUD</td>
+<td>grainy texture pad</td>
+</tr>
+<tr>
+<td><code>wind</code></td>
+<td>TWINQ</td>
+<td>resonant wind</td>
+</tr>
+</tbody>
+</table>
+<p>Drums are tuned so <code>C 3</code> sounds right; basses sound two octaves down.</p>
+<h2 id="pages">Pages</h2>
+<p>Seven pages, switched with <strong>LB + Left/Right</strong>. SOUND and MOTION are the macro synth's own; ENV, FILTER, MOD, MIX and EQ are exactly the <a href="Synth.html">Synth</a> pages. <strong>RB + Select</strong> explains the knob under the cursor — on <code>shape</code> it tells you what timbre and color do on that shape.</p>
+<h3 id="sound-shape-and-knobs">SOUND - shape and knobs</h3>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>sample / synth / macro</td>
+</tr>
+<tr>
+<td><code>preset</code></td>
+<td>load a ready sound (overwrites the knobs)</td>
+</tr>
+<tr>
+<td><code>shape</code></td>
+<td>the synthesis model, 47 of them (list below). <strong>A + Up/Down</strong> jumps 8 at a time</td>
+</tr>
+<tr>
+<td><code>timbre</code></td>
+<td>the shape's first knob</td>
+</tr>
+<tr>
+<td><code>color</code></td>
+<td>the shape's second knob</td>
+</tr>
+<tr>
+<td><code>degrade</code></td>
+<td>sample-rate reduction: <code>00</code> off … <code>FF</code> = 4 kHz. Aliasing, lo-fi</td>
+</tr>
+<tr>
+<td><code>redux</code></td>
+<td>bit reduction: <code>00</code> off (16 bit) … <code>FF</code> = 2 bits. Grit, crunch</td>
+</tr>
+<tr>
+<td><code>tune</code></td>
+<td>semitones, <code>-12</code> = an octave down</td>
+</tr>
+</tbody>
+</table>
+<p>The picture is the shape's real output with the current knobs, at <code>C 3</code>: two cycles of a steady tone, the first 120 ms of a struck shape (<code>note start</code>), or 20 ms of a noise (<code>20 ms</code>). Degrade and redux show up as steps.</p>
+<h3 id="motion-movement">MOTION - movement</h3>
+<p><img src="images/macro-4-motion.png" width="280" align="right" alt="Macro synth MOTION page"></p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lfo</code></td>
+<td>what the LFO moves: <code>pitch</code>, <code>cutoff</code>, <code>volume</code>, <code>timbre</code>, <code>color</code></td>
+</tr>
+<tr>
+<td><code>rate</code></td>
+<td><code>00</code> = 0.05 Hz … <code>80</code> = 1.6 Hz … <code>FF</code> = 50 Hz</td>
+</tr>
+<tr>
+<td><code>depth</code></td>
+<td>how much; <code>00</code> = off</td>
+</tr>
+<tr>
+<td><code>t.env</code></td>
+<td>jump of timbre at every note, <code>-127</code> … <code>+127</code>; it falls back to the knob</td>
+</tr>
+<tr>
+<td><code>c.env</code></td>
+<td>the same for color</td>
+</tr>
+<tr>
+<td><code>tc.dec</code></td>
+<td>how fast <code>t.env</code> and <code>c.env</code> fall back (<code>80</code> = 100 ms)</td>
+</tr>
+<tr>
+<td><code>fine</code></td>
+<td>fine tune in cents</td>
+</tr>
+<tr>
+<td><code>auto</code> / <code>table</code></td>
+<td>an instrument table that runs on every note</td>
+</tr>
+</tbody>
+</table>
+<p><code>t.env</code> is how a macro sound gets a "pluck": <code>FM</code> with <code>t.env +40</code> starts bright and mellows, <code>ZLPF</code> with <code>t.env +60</code> is an acid squelch.</p>
+<p><br clear="right"></p>
+<h3 id="the-other-pages">The other pages</h3>
+<ul>
+<li><strong>ENV</strong> — attack, decay, sustain, release, pitch drop, glide, as on the synth. Struck shapes (PLUCK, BELL, DRUM, KICK, SNARE) fade on their own: keep <code>sustn</code> at <code>FF</code> and let the shape decide.</li>
+<li><strong>FILTER</strong> — lowpass / highpass / bandpass / off after the shape (off in <code>init</code>), with its own envelope and drive.</li>
+<li><strong>MOD</strong> — the four modulation slots (envelopes, LFOs, key tracking). On a macro synth they can also move <code>timbre</code> and <code>color</code> — an LFO on timbre is the classic way to make a shape evolve.</li>
+<li><strong>EQ</strong> — the instrument's own low / mid / high EQ.</li>
+<li><strong>MIX</strong> — volume, pan and the reverb / delay / chorus sends.</li>
+</ul>
+<h2 id="shapes">Shapes</h2>
+<p>What <code>timbre</code> and <code>color</code> do on each shape:</p>
+<table>
+<thead>
+<tr>
+<th>Shape</th>
+<th>Timbre</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CSAW</code></td>
+<td>notch width</td>
+<td>notch depth, phasing</td>
+</tr>
+<tr>
+<td><code>MORPH</code></td>
+<td>triangle → saw → square → pulse</td>
+<td>darker → fuzzier</td>
+</tr>
+<tr>
+<td><code>SAW/SQR</code></td>
+<td>phase / pulse width</td>
+<td>saw to square</td>
+</tr>
+<tr>
+<td><code>FOLD</code></td>
+<td>wavefolder</td>
+<td>sine to triangle</td>
+</tr>
+<tr>
+<td><code>BUZZ</code></td>
+<td>sine to buzzy comb</td>
+<td>detune of two buzzes</td>
+</tr>
+<tr>
+<td><code>SQR SUB</code> / <code>SAW SUB</code></td>
+<td>width</td>
+<td>sub one or two octaves down</td>
+</tr>
+<tr>
+<td><code>SQR SYNC</code> / <code>SAW SYNC</code></td>
+<td>pitch of the synced oscillator</td>
+<td>mix</td>
+</tr>
+<tr>
+<td><code>SAW x3</code> <code>SQR x3</code> <code>TRI x3</code> <code>SIN x3</code></td>
+<td>interval of the 2nd oscillator</td>
+<td>interval of the 3rd (snaps to octaves, fifths)</td>
+</tr>
+<tr>
+<td><code>RING</code></td>
+<td>2nd sine ratio (ring modulated)</td>
+<td>3rd sine ratio</td>
+</tr>
+<tr>
+<td><code>SWARM</code></td>
+<td>detune of 7 saws</td>
+<td>highpass</td>
+</tr>
+<tr>
+<td><code>COMB</code></td>
+<td>comb pitch</td>
+<td>feedback (<code>80</code> = none)</td>
+</tr>
+<tr>
+<td><code>TOY</code></td>
+<td>clock rate</td>
+<td>glitches</td>
+</tr>
+<tr>
+<td><code>ZLPF</code> <code>ZPKF</code> <code>ZBPF</code> <code>ZHPF</code></td>
+<td>filter cutoff</td>
+<td>saw → square → triangle</td>
+</tr>
+<tr>
+<td><code>VOSIM</code></td>
+<td>formant 1</td>
+<td>formant 2</td>
+</tr>
+<tr>
+<td><code>VOWEL</code> / <code>VFOF</code></td>
+<td>the vowel: a, e, i, o, u</td>
+<td>formant shift (bigger / smaller voice)</td>
+</tr>
+<tr>
+<td><code>HARM</code></td>
+<td>centre harmonic</td>
+<td>spread</td>
+</tr>
+<tr>
+<td><code>FM</code> / <code>FBFM</code> / <code>CHAOFM</code></td>
+<td>FM amount</td>
+<td>ratio (feedback / chaotic flavours)</td>
+</tr>
+<tr>
+<td><code>PLUCK</code></td>
+<td>damping</td>
+<td>pluck position</td>
+</tr>
+<tr>
+<td><code>BOWED</code></td>
+<td>bow friction</td>
+<td>bow position</td>
+</tr>
+<tr>
+<td><code>BLOWN</code> / <code>FLUTE</code></td>
+<td>air pressure</td>
+<td>instrument geometry</td>
+</tr>
+<tr>
+<td><code>BELL</code></td>
+<td>damping</td>
+<td>inharmonicity</td>
+</tr>
+<tr>
+<td><code>DRUM</code></td>
+<td>damping</td>
+<td>brightness</td>
+</tr>
+<tr>
+<td><code>KICK</code></td>
+<td>decay</td>
+<td>tone</td>
+</tr>
+<tr>
+<td><code>CYMBAL</code></td>
+<td>band cutoff</td>
+<td>squares vs noise</td>
+</tr>
+<tr>
+<td><code>SNARE</code></td>
+<td>tone balance</td>
+<td>snappy noise</td>
+</tr>
+<tr>
+<td><code>WTBL</code></td>
+<td>sweep the table</td>
+<td>which of 20 tables</td>
+</tr>
+<tr>
+<td><code>WMAP</code></td>
+<td>across the 16×16 map</td>
+<td>down the map</td>
+</tr>
+<tr>
+<td><code>WLINE</code></td>
+<td>scan every wave</td>
+<td>smoothing</td>
+</tr>
+<tr>
+<td><code>WTx4</code></td>
+<td>morph the waves</td>
+<td>chord of the 4 voices</td>
+</tr>
+<tr>
+<td><code>NOISE</code></td>
+<td>resonance</td>
+<td>lowpass → highpass</td>
+</tr>
+<tr>
+<td><code>TWINQ</code></td>
+<td>resonance of two peaks</td>
+<td>their spacing</td>
+</tr>
+<tr>
+<td><code>CLKN</code></td>
+<td>loop length</td>
+<td>number of steps</td>
+</tr>
+<tr>
+<td><code>CLOUD</code> / <code>PARTCL</code></td>
+<td>grain density</td>
+<td>pitch scatter</td>
+</tr>
+<tr>
+<td><code>QPSK</code></td>
+<td>bit rate</td>
+<td>data byte</td>
+</tr>
+</tbody>
+</table>
+<h2 id="commands">Commands</h2>
+<p>Everything the <a href="Synth.html">Synth</a> understands — <code>VOLM</code> <code>PAN_</code> <code>FCUT</code> <code>FRES</code> <code>FLTR</code> <code>PTCH</code> <code>LEGA</code> <code>PFIN</code> <code>ARPG</code> <code>RTRG</code> <code>CRSH</code> (drive) <code>KILL</code> <code>TABL</code> <code>DLAY</code> — plus two of its own:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Value</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TIMB</code></td>
+<td><code>aabb</code></td>
+<td>timbre to <code>bb</code> at speed <code>aa</code> (<code>00</code> = now)</td>
+</tr>
+<tr>
+<td><code>COLR</code></td>
+<td><code>aabb</code></td>
+<td>color to <code>bb</code> at speed <code>aa</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>RTRG</code> restrikes the shape too (drum rolls). <code>CHRD</code> is ignored: every chord note would need a whole shape — use <code>WTx4</code> for chords, or several tracks.</p>
+<p><strong>Try:</strong> <code>vowels</code> on a held note with <code>TIMB 2000</code> then <code>TIMB 20FF</code> — the voice slides from "a" to "u". A table with <code>COLR 0000</code>, <code>COLR 0080</code>, <code>COLR 00FF</code> steps through the <code>WTBL</code> tables.</p>
+<h2 id="cpu">CPU</h2>
+<p>The shape runs at 96 kHz and is resampled, yet a macro voice costs no more than a synth voice: in the ARM check (<code>tools/dsp-harness/macro_check.cpp</code>, device build under qemu) eight macro voices take 0.7× to 1.0× the time of eight synth <code>pad</code> voices, the heaviest shape being <code>HARM</code>. Eight voices of any shape fit on the RG Nano.</p>
+<div class="pager"><a class="prev" href="Synth.html"><small>Previous</small>Synth</a><a class="next" href="Commands.html"><small>Next</small>Commands</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

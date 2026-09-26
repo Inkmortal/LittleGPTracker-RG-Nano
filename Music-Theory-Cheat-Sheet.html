@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music Theory Cheat Sheet · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Music Theory Cheat Sheet.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html" class="active">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="music-theory-cheat-sheet">Music Theory Cheat Sheet</h1>
+<p>Just enough theory to make things sound right. Everything here is in <strong>A minor / C major</strong> (same notes, no sharps or flats) so it's easy to type.</p>
+<h2 id="set-the-key-and-stop-worrying">Set the key and stop worrying</h2>
+<p>Project screen → <code>Key: A</code>, <code>Scale: Aeolian mode (minor)</code>. Now <strong>A + Left/Right</strong> on a note only steps through notes that fit. <strong>LB + D-pad</strong> steps outside the scale when you want a "wrong" note on purpose.</p>
+<p>To see the scale on a keyboard, or make your own, press <strong>RB + Right</strong> on Project (<a href="Screens.html#scale">Scale screen</a>): <strong>A</strong> on a key puts that note in or out. Five notes you like, say A C D E G, and every edit and every <code>RAND</code> stays on them.</p>
+<h2 id="scales">Scales</h2>
+<table>
+<thead>
+<tr>
+<th>Scale</th>
+<th>Notes from A</th>
+<th>Feels</th>
+<th>Genres</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minor (Aeolian)</td>
+<td>A B C D E F G</td>
+<td>emotional, serious</td>
+<td>synthwave, techno, trap, most electronic</td>
+</tr>
+<tr>
+<td>Minor pentatonic</td>
+<td>A C D E G</td>
+<td>impossible to play a wrong note</td>
+<td>wuxia / Chinese, blues, rock solos</td>
+</tr>
+<tr>
+<td>Major (C Ionian)</td>
+<td>C D E F G A B</td>
+<td>happy, bright</td>
+<td>pop, chiptune</td>
+</tr>
+<tr>
+<td>Dorian (from D)</td>
+<td>D E F G A B C</td>
+<td>cool, jazzy minor</td>
+<td>lo-fi, funk, house</td>
+</tr>
+<tr>
+<td>Phrygian (from E)</td>
+<td>E F G A B C D</td>
+<td>dark, exotic</td>
+<td>metal, flamenco, dark techno</td>
+</tr>
+</tbody>
+</table>
+<h2 id="chords-that-fit-a-minor">Chords that fit A minor</h2>
+<p>Type the <strong>root note</strong> in the note column, then add the <strong>CHRD</strong> value for the kind of chord (see <a href="Synth.html#chords-with-chrd">Synth</a> for why).</p>
+<table>
+<thead>
+<tr>
+<th>Chord</th>
+<th>Root note</th>
+<th>CHRD</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Am</td>
+<td>A</td>
+<td><code>0037</code></td>
+<td>home</td>
+</tr>
+<tr>
+<td>C</td>
+<td>C</td>
+<td><code>0047</code></td>
+<td>bright relative</td>
+</tr>
+<tr>
+<td>Dm</td>
+<td>D</td>
+<td><code>0037</code></td>
+<td>soft, moving away</td>
+</tr>
+<tr>
+<td>Em</td>
+<td>E</td>
+<td><code>0037</code></td>
+<td>tension (E major <code>0047</code> = even more)</td>
+</tr>
+<tr>
+<td>F</td>
+<td>F</td>
+<td><code>0047</code></td>
+<td>lift, hopeful</td>
+</tr>
+<tr>
+<td>G</td>
+<td>G</td>
+<td><code>0047</code></td>
+<td>pushes back home</td>
+</tr>
+<tr>
+<td>Am7 / Dm7 / Em7</td>
+<td></td>
+<td><code>037A</code></td>
+<td>smoother, jazzier</td>
+</tr>
+<tr>
+<td>Cmaj7 / Fmaj7</td>
+<td></td>
+<td><code>047B</code></td>
+<td>dreamy, lo-fi</td>
+</tr>
+</tbody>
+</table>
+<h2 id="progressions-that-always-work">Progressions that always work</h2>
+<p>One chord per bar, four bars, loop.</p>
+<table>
+<thead>
+<tr>
+<th>Progression</th>
+<th>Sound</th>
+<th>Used in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Am F C G</code></td>
+<td>epic, singalong</td>
+<td>synthwave, pop, trance</td>
+</tr>
+<tr>
+<td><code>F G Em Am</code></td>
+<td>lift into a chorus</td>
+<td>anime, pop, J-rock</td>
+</tr>
+<tr>
+<td><code>Am G F G</code></td>
+<td>driving, heroic</td>
+<td>rock, soundtrack</td>
+</tr>
+<tr>
+<td><code>Am Em F C</code></td>
+<td>melancholic</td>
+<td>ballads</td>
+</tr>
+<tr>
+<td><code>Dm7 G7 Cmaj7 Am7</code></td>
+<td>smooth, jazzy</td>
+<td>lo-fi, neo-soul</td>
+</tr>
+<tr>
+<td><code>Am Dm Am E</code></td>
+<td>classical, dramatic</td>
+<td>wuxia, tango, soundtracks</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bass:</strong> play the root of each chord. On the last beat of a bar, a passing note that walks toward the next root makes it move.</p>
+<h2 id="melody-in-five-rules">Melody in five rules</h2>
+<ol>
+<li><strong>Land on chord notes</strong> on beats 1 and 3 (for Am: A, C or E).</li>
+<li><strong>Move in steps</strong> most of the time; after a big jump, step back the other way.</li>
+<li><strong>Leave space.</strong> Rests are what make a melody memorable.</li>
+<li><strong>Repeat, then change.</strong> Play a 2-bar idea twice, changing only the ending the second time.</li>
+<li><strong>Call and answer.</strong> Bar 1 asks (ends up high or unresolved), bar 2 answers (ends on the root).</li>
+</ol>
+<h2 id="drum-patterns">Drum patterns</h2>
+<p><code>x</code> = hit, <code>.</code> = rest, 16 steps = one bar. Rows <code>00 04 08 0C</code> are the beats.</p>
+<pre><code class="language-text">FOUR ON THE FLOOR (house, disco, synthwave)
+kick   x...x...x...x...
+clap   ....x.......x...
+hat    ..x...x...x...x.     (open hats on the off-beat)
+
+BOOM BAP (hip-hop, lo-fi) — use groove 7 5 for swing
+kick   x.....x...x.....
+snare  ....x.......x...
+hat    x.x.x.x.x.x.x.x.
+
+HALF TIME (epic, trap, dubstep)
+kick   x.......x.x.....
+snare  ........x.......
+hat    x.x.x.x.x.x.xxxx     (RTRG 0002 on the last hats for a roll)
+
+BREAKBEAT (drum and bass at 170+ BPM)
+kick   x.........x.....
+snare  ....x.......x..x
+hat    x.x.x.x.x.x.x.x.
+
+TAIKO / WUXIA
+drum   x.......x...x...
+       x.....x.x...x.o.     (o = VOLM 0070 ghost)
+</code></pre>
+<p><strong>Make it human:</strong> vary hat volumes with <code>VOLM</code> (loud on the beat, quieter between), and push a note late with <code>DLAY 0001</code>.</p>
+<h2 id="genre-starting-points">Genre starting points</h2>
+<table>
+<thead>
+<tr>
+<th>Genre</th>
+<th>BPM</th>
+<th>Groove</th>
+<th>Key sounds (starter kit)</th>
+<th>Trick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Synthwave</td>
+<td>85–110</td>
+<td><code>6 6</code></td>
+<td>kick, snare+reverb, bass octaves, pad, pluck arp, lead</td>
+<td>octave-jumping 8th bass, FCUT sweep on the arp</td>
+</tr>
+<tr>
+<td>Lo-fi hip-hop</td>
+<td>70–90</td>
+<td><code>7 5</code></td>
+<td>soft kick, snare, keys with <code>037A</code>, sub, bell</td>
+<td>chords re-hit off the beat at lower <code>VOLM</code></td>
+</tr>
+<tr>
+<td>House</td>
+<td>120–128</td>
+<td><code>6 6</code></td>
+<td>kick 4/4, clap, openhat off-beat, keys stabs, bass</td>
+<td>open hat on every <code>2 6 A E</code> step</td>
+</tr>
+<tr>
+<td>Techno</td>
+<td>125–135</td>
+<td><code>6 6</code></td>
+<td>kick with drive, hat, acid</td>
+<td>automate <code>FCUT</code>/<code>FRES</code> on the acid line</td>
+</tr>
+<tr>
+<td>Chiptune</td>
+<td>120–160</td>
+<td><code>6 6</code></td>
+<td>chip lead, <code>ARPG</code> chords, chip bass, noise drums</td>
+<td>fast <code>ARPG 0047</code> on held notes</td>
+</tr>
+<tr>
+<td>Wuxia</td>
+<td>80–100</td>
+<td><code>6 6</code></td>
+<td>tom as taiko, keys as guzheng, sine+noise flute, bell/metal gong</td>
+<td>pentatonic only, <code>RTRG 0002</code> tremolo, glide on the lead</td>
+</tr>
+</tbody>
+</table>
+<p>See them all put together in the <strong><a href="Demo-Songs.html">Demo Songs</a></strong>.</p>
+<div class="pager"><a class="prev" href="Commands.html"><small>Previous</small>Commands</a><a class="next" href="Samples.html"><small>Next</small>Samples</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

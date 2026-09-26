@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. FAQ.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html" class="active">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="faq">FAQ</h1>
+<p><strong>I pressed A on a new track and it plays my kick.</strong>
+One <strong>A</strong> on an empty cell reuses the last chain or phrase (the screen says <code>Reused 00</code>). Press <strong>A</strong> again for a new, empty one (<code>New chain 01</code>). Reusing is on purpose: it's how you repeat parts without copying.</p>
+<p><strong>RB + Right does nothing.</strong>
+The cell is empty — the screen tells you to press <strong>A</strong> first. On Phrase, RB + Right needs a note with an instrument.</p>
+<p><strong>My note keeps ringing.</strong>
+Notes sound until the next note on the same track. Put <code>KILL 0000</code> where it should stop, or lower the instrument's <code>sustn</code> (ENV page) so it fades by itself.</p>
+<p><strong>Two parts on one track cut each other off.</strong>
+Each track plays one note at a time. Put the second part on another track, or use <code>chord</code>/<code>CHRD</code> for chords.</p>
+<p><strong>The tracks drift out of sync after a while.</strong>
+Chains on the same Song row must be the same length (same number of phrases). A shorter chain moves on to the next row earlier.</p>
+<p><strong>A track keeps looping one section.</strong>
+An empty <code>--</code> Song cell makes that track jump back to the top of its block. Give silent sections a chain of empty phrases instead.</p>
+<p><strong>Notes jump by more than one semitone when I edit them.</strong>
+A Project <code>Key</code>/<code>Scale</code> is set, so editing follows the scale. Use <strong>LB + D-pad</strong> for chromatic steps, or set <code>Key: --</code>.</p>
+<p><strong>I deleted or changed something by accident.</strong>
+Hold <strong>B</strong> and press <strong>Select</strong> to undo; do it again to go further back (up to 32 steps). <strong>LB + Select</strong> redoes. Holding A while you edit counts as one step, so one undo takes back the whole tweak. Loading another song starts a fresh history.</p>
+<p><strong>Where is the reverb setting?</strong>
+Two parts: each instrument's <strong>MIX</strong> page (samples: <strong>SHAPE</strong>) sets how much it sends (<code>reverb</code>, <code>delay</code>, <code>chorus</code>); the <strong>FX</strong> screen (Mixer, then <strong>RB + Down</strong>) sets the room, the echo and the chorus.</p>
+<p><strong>It's too loud / distorted.</strong>
+Lower instrument volumes (kick and bass eat the most headroom), or <code>Drive</code> on the Project screen. Watch the Mixer meters.</p>
+<p><strong>How do I get back to the project list?</strong>
+Project screen → <code>Song List</code>, or press the Menu/Power button for the app menu.</p>
+<p><strong>I changed a demo song by accident.</strong>
+Songs only change on disk when you save. Reload it, or copy the demo folder from the build zip again.</p>
+<p><strong>Something went wrong — can I send a log?</strong>
+The app writes <code>Applications/lgpt-rgnano.log</code> on the SD card, including the button presses, so a session can be replayed in the simulator.</p>
+<div class="pager"><a class="prev" href="Export.html"><small>Previous</small>Export</a><a class="next" href="Developer-Guide.html"><small>Next</small>Developer Guide</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

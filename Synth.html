@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Synth · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Synth.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html" class="active">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="synth">Synth</h1>
+<p>Every instrument slot <code>00</code>–<code>7F</code> can be a <strong>synth</strong> or a <strong>sample</strong>. New projects fill <code>00</code>–<code>0F</code> with a ready synth kit. Open an instrument with <strong>RB + Right</strong> from a phrase; the cursor lands on <code>preset</code>, so <strong>A + Left/Right</strong> immediately flips through sounds and <strong>A + Start</strong> plays one (<strong>Start</strong> plays the phrase, as everywhere).</p>
+<p>Each track plays one synth voice at a time. A note stopped by <code>KILL</code> or replaced by a different instrument fades out with its release instead of cutting off.</p>
+<p>Want vowels, plucked strings, bells, 808 drums or wavetables? Set <code>type</code> to <strong>macro</strong>: the <a href="Macro-Synth.html">Macro Synth</a> plays 47 ready synthesis models with two knobs, and keeps this page's ENV, FILTER, MOD, MIX and EQ pages.</p>
+<h2 id="the-starter-kit">The starter kit</h2>
+<table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Preset</th>
+<th>Slot</th>
+<th>Preset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>00</code></td>
+<td><strong>kick</strong> — sine with a fast pitch drop and drive</td>
+<td><code>08</code></td>
+<td><strong>pluck</strong> — bright saw that closes fast</td>
+</tr>
+<tr>
+<td><code>01</code></td>
+<td><strong>snare</strong> — triangle body + noise</td>
+<td><code>09</code></td>
+<td><strong>keys</strong> — FM electric piano with tremolo</td>
+</tr>
+<tr>
+<td><code>02</code></td>
+<td><strong>hat</strong> — six metallic squares + noise, highpassed</td>
+<td><code>0A</code></td>
+<td><strong>bell</strong> — FM bell, long ring</td>
+</tr>
+<tr>
+<td><code>03</code></td>
+<td><strong>openhat</strong> — longer hat</td>
+<td><code>0B</code></td>
+<td><strong>acid</strong> — resonant saw with glide</td>
+</tr>
+<tr>
+<td><code>04</code></td>
+<td><strong>clap</strong> — bandpassed noise</td>
+<td><code>0C</code></td>
+<td><strong>subbass</strong> — clean sine sub</td>
+</tr>
+<tr>
+<td><code>05</code></td>
+<td><strong>bass</strong> — saw + sub, filter bite</td>
+<td><code>0D</code></td>
+<td><strong>chip</strong> — 8-bit pulse</td>
+</tr>
+<tr>
+<td><code>06</code></td>
+<td><strong>lead</strong> — pulse with vibrato and glide</td>
+<td><code>0E</code></td>
+<td><strong>tom</strong> — pitched drum</td>
+</tr>
+<tr>
+<td><code>07</code></td>
+<td><strong>pad</strong> — supersaw, slow attack, drifting filter</td>
+<td><code>0F</code></td>
+<td><strong>perc</strong> — woodblock/rim</td>
+</tr>
+</tbody>
+</table>
+<p><code>init</code> is a plain starting point for designing from scratch. Basses are tuned two octaves down, drums are tuned so <code>C 3</code> sounds right.</p>
+<h2 id="engines">Engines</h2>
+<p>The <code>engine</code> knob (SOUND page, under <code>type</code>) picks how the tone is made. The other five pages (ENV, FILTER, LFO, MOD, MIX) work the same for every engine, and so do the commands.</p>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Makes</th>
+<th>Like the M8's</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synth</code></td>
+<td>the original synth: waves, sub, noise, 2-operator FM, chords</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>fm4</code></td>
+<td>four-operator FM: e-pianos, bells, brass, organs, slap bass</td>
+<td>FM Synth</td>
+</tr>
+<tr>
+<td><code>hyper</code></td>
+<td>a six-note chord of detuned saw pairs, wide in stereo: pads, trance leads, hoovers</td>
+<td>Hypersynth</td>
+</tr>
+<tr>
+<td><code>wav</code></td>
+<td>raw 8-bit shapes you bend: chip leads, PWM, sync and fold sounds</td>
+<td>Wavsynth</td>
+</tr>
+</tbody>
+</table>
+<p>Changing the engine loads that engine's starting sound (<code>fm init</code>, <code>hyper init</code>, <code>wav init</code>); <strong>A + Left/Right</strong> on <code>preset</code> then browses only that engine's presets. <strong>B + Select</strong> undoes an engine change like any other edit.</p>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Presets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fm4</code></td>
+<td><code>epiano</code>, <code>fm bell</code>, <code>tubular</code>, <code>fm bass</code>, <code>slap bass</code>, <code>brass</code>, <code>organ</code>, <code>marimba</code>, <code>fm pluck</code>, <code>glass</code>, <code>fm lead</code>, <code>clav</code></td>
+</tr>
+<tr>
+<td><code>hyper</code></td>
+<td><code>hyper pad</code>, <code>trance lead</code>, <code>hoover</code>, <code>strings</code>, <code>stab</code>, <code>dream</code>, <code>hyper bass</code></td>
+</tr>
+<tr>
+<td><code>wav</code></td>
+<td><code>chip lead</code>, <code>chip bass</code>, <code>pwm pad</code>, <code>sync lead</code>, <code>fold bass</code>, <code>zap</code>, <code>lofi bell</code>, <code>noise hat</code></td>
+</tr>
+</tbody>
+</table>
+<p>The LFO's <code>shape</code> target, and a MOD slot aimed at <code>shape</code>, mean something per engine: <code>fm4</code> — FM brightness (every modulator's depth), <code>hyper</code> — the swarm breathes, <code>wav</code> — the mirror moves (pulse-width modulation on <code>pulse50</code>). A MOD slot aimed at <code>fm</code> deepens every FM4 modulator (<code>+127</code> = twice as deep); one aimed at <code>noise</code> mixes noise into any engine.</p>
+<h3 id="fm4-engine">FM4 engine</h3>
+<p><img src="images/synth-7-fm4.png" width="280" align="right"></p>
+<p>Four sine operators <strong>A B C D</strong>. An operator either is <strong>heard</strong> (a carrier, it goes to the output) or <strong>bends another one</strong> (a modulator: the more level, the brighter and more metallic). <code>algo</code> picks who does what; the picture draws the routing: boxes on top modulate the boxes below them, the bottom ones feed the output bar. A filled box is sounding, the bright one is under the cursor, a hook on its side means feedback. Next to it: two cycles of the sound it makes.</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>algo</code></td>
+<td>the routing, <code>00</code>–<code>0B</code> (below)</td>
+</tr>
+<tr>
+<td><code>tune</code></td>
+<td>semitones, like the synth's</td>
+</tr>
+<tr>
+<td><code>shape</code></td>
+<td>the operator's wave: <code>sin</code> (pure FM), <code>sw2</code> half sine, <code>sw3</code> two humps, <code>sw4</code> quarter sine, <code>sw5</code>/<code>sw6</code> double-speed halves, <code>tri</code>, <code>saw</code>, <code>squ</code>, <code>pul</code> (25%), <code>imp</code> (a click), <code>nse</code> (noise)</td>
+</tr>
+<tr>
+<td><code>ratio</code></td>
+<td>pitch against the note: <code>1.00</code> = the note, <code>2.00</code> = an octave up, <code>0.50</code> down. Whole ratios sound warm; <code>3.50</code>, <code>7.00</code>, <code>1.41</code> ring like bells. <strong>A + Left/Right</strong> ±0.01, <strong>A + Up/Down</strong> the next whole ratio</td>
+</tr>
+<tr>
+<td><code>level</code></td>
+<td>a carrier: how loud; a modulator: how much it bends (FM depth)</td>
+</tr>
+<tr>
+<td><code>fbk</code></td>
+<td>feedback: the operator modulates itself — sine, then saw, then noise</td>
+</tr>
+<tr>
+<td><code>atk</code> <code>dec</code> <code>sus</code></td>
+<td>the operator's own envelope: time to reach its level, time to fall, level it holds (<code>FF</code> = full). A modulator that decays fast = the "ping" of an e-piano; one that attacks slowly = a brass swell</td>
+</tr>
+</tbody>
+</table>
+<p>The grid has one column per operator: <strong>Up/Down</strong> stay in the column, <strong>Left/Right</strong> move between operators. The amp envelope on the ENV page still shapes the whole note.</p>
+<table>
+<thead>
+<tr>
+<th><code>algo</code></th>
+<th>Routing</th>
+<th></th>
+<th><code>algo</code></th>
+<th>Routing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>00</code></td>
+<td>A&gt;B&gt;C&gt;D</td>
+<td></td>
+<td><code>06</code></td>
+<td>[A&gt;B&gt;C]+[A&gt;B&gt;D]</td>
+</tr>
+<tr>
+<td><code>01</code></td>
+<td>[A+B]&gt;C&gt;D</td>
+<td></td>
+<td><code>07</code></td>
+<td>[A&gt;B]+[C&gt;D] — two pairs (e-piano)</td>
+</tr>
+<tr>
+<td><code>02</code></td>
+<td>[A&gt;B+C]&gt;D</td>
+<td></td>
+<td><code>08</code></td>
+<td>[A&gt;B]+[A&gt;C]+[A&gt;D]</td>
+</tr>
+<tr>
+<td><code>03</code></td>
+<td>[A&gt;B+A&gt;C]&gt;D</td>
+<td></td>
+<td><code>09</code></td>
+<td>[A&gt;B]+[A&gt;C]+D</td>
+</tr>
+<tr>
+<td><code>04</code></td>
+<td>[A+B+C]&gt;D</td>
+<td></td>
+<td><code>0A</code></td>
+<td>[A&gt;B]+C+D</td>
+</tr>
+<tr>
+<td><code>05</code></td>
+<td>[A&gt;B&gt;C]+D</td>
+<td></td>
+<td><code>0B</code></td>
+<td>A+B+C+D — additive: four tones, no FM (organ)</td>
+</tr>
+</tbody>
+</table>
+<p><code>&gt;</code> = modulates, <code>+</code> = both heard (or both modulate the same one).</p>
+<p><strong>Try:</strong> <code>fm init</code>, set C's <code>ratio</code> to <code>3.50</code> and raise C's <code>level</code> — a bell; shorten C's <code>dec</code> to <code>70</code> and it becomes a pluck.</p>
+<p><br clear="right"></p>
+<h3 id="hyper-engine">HYPER engine</h3>
+<p><img src="images/synth-8-hyper.png" width="280" align="right"></p>
+<p>Six notes at once, each played by <strong>two saws</strong> tuned slightly apart, spread left and right, plus a square sub. The picture has a lane per note: on the left the stereo field (its two saws as dots, pushed apart by <code>width</code>), on the right one second of how the pair beats (flat = in tune, more bumps = faster shimmer). Dim lanes are faded out by <code>shift</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chord</code></td>
+<td>fills the six notes: <code>unison</code>, <code>octaves</code>, <code>5th</code>, <code>major</code>, <code>minor</code>, <code>sus2</code>, <code>sus4</code>, <code>maj7</code>, <code>min7</code>, <code>dom7</code>, <code>maj9</code>, <code>min9</code>, <code>add9</code>, <code>min11</code>, <code>quartal</code>. Editing a note shows <code>custom</code></td>
+</tr>
+<tr>
+<td><code>1-3</code> / <code>4-6</code></td>
+<td>the six notes, semitones above the one you play (<code>-24</code>…<code>+36</code>)</td>
+</tr>
+<tr>
+<td><code>shift</code></td>
+<td>fades from notes 1-3 (<code>00</code>) to notes 4-6 (<code>FF</code>); in between you hear both</td>
+</tr>
+<tr>
+<td><code>swarm</code></td>
+<td>how far apart each note's two saws are tuned, up to 60 cents: thicker, then seasick</td>
+</tr>
+<tr>
+<td><code>width</code></td>
+<td><code>00</code> = mono, <code>FF</code> = one saw of each pair hard left, the other hard right</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>square sub: <code>01</code>–<code>7F</code> two octaves down (louder as it rises), <code>80</code>–<code>FF</code> one octave down</td>
+</tr>
+<tr>
+<td><code>scale</code></td>
+<td><code>on</code>: every note moves down onto the song's Key/Scale (Project screen), so any note you type gives an in-key chord</td>
+</tr>
+<tr>
+<td><code>tune</code></td>
+<td>semitones</td>
+</tr>
+</tbody>
+</table>
+<p><code>CHRD</code> in a phrase replaces the six notes: its notes, then the same an octave up (<code>CHRD 0047</code> = <code>0 4 7 12 16 19</code>).</p>
+<p><br clear="right"></p>
+<h3 id="wav-engine">WAV engine</h3>
+<p><img src="images/synth-9-wav.png" width="280" align="right"></p>
+<p>A deliberately raw, 8-bit oscillator (no smoothing: it aliases like a game console). Pick a shape, then bend it; the picture shows the result through the drive stage.</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wave</code></td>
+<td><code>pulse12</code>, <code>pulse25</code>, <code>pulse50</code>, <code>pulse75</code>, <code>saw</code>, <code>triangle</code>, <code>sine</code>, <code>tonenoise</code> (a looping noise pattern with a pitch), <code>noise</code> (8-bit noise, colour follows the note)</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td>steps per cycle: <code>00</code> = 4 (crunchy) … <code>FF</code> = 256 (smooth)</td>
+</tr>
+<tr>
+<td><code>mult</code></td>
+<td>repeats the shape in one cycle, <code>x1</code>…<code>x16</code> — a hard-sync sound</td>
+</tr>
+<tr>
+<td><code>warp</code></td>
+<td>squeezes the shape into the start of the cycle, silence after — a hollow, vocal tone</td>
+</tr>
+<tr>
+<td><code>mirror</code></td>
+<td>moves the middle of the wave: on <code>pulse50</code> it is the pulse width (<code>80</code> = square), on the others it bends the shape</td>
+</tr>
+<tr>
+<td><code>drive</code></td>
+<td>the same drive as on the FILTER page</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>what drive does when the wave gets too loud: <code>soft</code> saturation, <code>clip</code>, <code>sin</code> (smooth fold), <code>fold</code>, <code>wrap</code>. Applies to every engine</td>
+</tr>
+<tr>
+<td><code>tune</code></td>
+<td>semitones</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Try:</strong> <code>pwm pad</code> — the LFO moves <code>mirror</code>; <code>fold bass</code> — a sine with <code>drive 60</code> and <code>limit fold</code>.</p>
+<p><br clear="right"></p>
+<h2 id="pages-and-knobs">Pages and knobs</h2>
+<p>Switch pages with <strong>LB + Left/Right</strong>. Values are hex <code>00</code>–<code>FF</code> unless noted. The top of the page draws the result; press <strong>RB + Select</strong> for a plain-English explanation of the focused knob.</p>
+<h3 id="sound-the-raw-tone">SOUND — the raw tone</h3>
+<p><img src="images/synth-1-sound.png" width="280" align="right"></p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>synth / sample</td>
+</tr>
+<tr>
+<td><code>engine</code></td>
+<td>how the tone is made: <code>synth</code>, <code>fm4</code>, <code>hyper</code>, <code>wav</code> (see <a href="#engines">Engines</a>); the rows below are the <code>synth</code> engine's</td>
+</tr>
+<tr>
+<td><code>preset</code></td>
+<td>load a ready sound (overwrites the knobs)</td>
+</tr>
+<tr>
+<td><code>wave</code></td>
+<td>sine, triangle, saw, pulse, supersaw, noise, metal</td>
+</tr>
+<tr>
+<td><code>shape</code></td>
+<td>depends on the wave: sine → feedback (buzzier), triangle → wavefold, saw → octave brightness, pulse → width, supersaw → detune, noise → crunch, metal → spread</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>square one octave below — fatter bass</td>
+</tr>
+<tr>
+<td><code>noise</code></td>
+<td>mixes white noise in — snares, breath</td>
+</tr>
+<tr>
+<td><code>fm</code></td>
+<td>FM depth: bells, keys, metallic tones</td>
+</tr>
+<tr>
+<td><code>ratio</code></td>
+<td>FM partner pitch: <code>1</code>, <code>2</code> warm; <code>3.5</code>, <code>7</code>, <code>11</code> bell-like</td>
+</tr>
+<tr>
+<td><code>chord</code></td>
+<td>play a chord from every note: 5th, octave, major, minor, sus2, sus4, maj7, min7, dom7</td>
+</tr>
+<tr>
+<td><code>tune</code></td>
+<td>semitones, <code>-12</code> = an octave down</td>
+</tr>
+</tbody>
+</table>
+<p><br clear="right"></p>
+<h3 id="env-volume-and-pitch-over-time">ENV — volume and pitch over time</h3>
+<p><img src="images/synth-2-env.png" width="280" align="right"></p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>attack</code></td>
+<td>fade-in time</td>
+</tr>
+<tr>
+<td><code>decay</code></td>
+<td>time to fall to the sustain level</td>
+</tr>
+<tr>
+<td><code>sustn</code></td>
+<td>level while the note holds; <code>00</code> = pluck or drum</td>
+</tr>
+<tr>
+<td><code>releas</code></td>
+<td>fade after the note stops</td>
+</tr>
+<tr>
+<td><code>p.env</code></td>
+<td>pitch drop at note start, up to +48 semitones — kicks, toms, zaps</td>
+</tr>
+<tr>
+<td><code>p.dec</code></td>
+<td>how fast that pitch drop happens</td>
+</tr>
+<tr>
+<td><code>glide</code></td>
+<td>slide between notes (mono-synth legato); <code>00</code> = off</td>
+</tr>
+</tbody>
+</table>
+<p>Times are exponential: <code>00</code> = 1 ms, <code>40</code> = 10 ms, <code>80</code> = 100 ms, <code>C0</code> = 1 s, <code>FF</code> = 10 s.</p>
+<p><br clear="right"></p>
+<h3 id="filter-bright-or-dark">FILTER — bright or dark</h3>
+<p><img src="images/synth-3-filter.png" width="280" align="right"></p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filter</code></td>
+<td>lowpass, highpass, bandpass, off</td>
+</tr>
+<tr>
+<td><code>cutoff</code></td>
+<td>20 Hz – 20 kHz; lower = darker (lowpass)</td>
+</tr>
+<tr>
+<td><code>reso</code></td>
+<td>peak at the cutoff; high = squelch</td>
+</tr>
+<tr>
+<td><code>env</code></td>
+<td>brightness burst at each note (also drives FM brightness)</td>
+</tr>
+<tr>
+<td><code>envdec</code></td>
+<td>how fast the burst closes</td>
+</tr>
+<tr>
+<td><code>drive</code></td>
+<td>saturation before the filter — warmth, grit</td>
+</tr>
+</tbody>
+</table>
+<p><br clear="right"></p>
+<h3 id="lfo-wobble">LFO — wobble</h3>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lfo</code></td>
+<td>what wobbles: pitch (vibrato), cutoff (wah), volume (tremolo), shape (PWM)</td>
+</tr>
+<tr>
+<td><code>rate</code></td>
+<td><code>00</code> = 0.05 Hz … <code>80</code> = 1.6 Hz … <code>C0</code> = 9 Hz … <code>FF</code> = 50 Hz</td>
+</tr>
+<tr>
+<td><code>depth</code></td>
+<td>how much; <code>00</code> = off</td>
+</tr>
+<tr>
+<td><code>fine</code></td>
+<td>fine tune in cents</td>
+</tr>
+<tr>
+<td><code>auto</code> / <code>table</code></td>
+<td>an instrument table that runs on every note</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mod-4-modulation-slots">MOD — 4 modulation slots</h3>
+<p><img src="images/synth-5-mod.png" width="280" align="right"></p>
+<p>Four slots move the sound by themselves on every note, like the M8's modulation page: envelopes, LFOs and key tracking, each aimed at one part of the sound. Sample instruments have the same page, with their own destinations.</p>
+<ul>
+<li>The <strong>top four lines</strong> are the four slots at a glance: type, what it moves, how far, and a tiny curve. <code>&gt;</code> marks the slot you are editing.</li>
+<li>The <strong>box</strong> draws that slot over real time from the note start (for <code>adsr</code> the dotted line is the note-off, for <code>track</code> the notes from low to high).</li>
+<li>The <strong>settings below</strong> belong to that slot only. Each shows its hex value and what it means: <code>A0 324 ms</code>, <code>80 1.60 Hz</code>, <code>80 50%</code>.</li>
+</ul>
+<p><strong>LB + Up/Down</strong> picks the slot (so does the <code>slot</code> setting). Changing <code>type</code> loads that type's starting values, ready to hear. <strong>B + A</strong> puts a setting back to its type's starting value (on <code>type</code>: off). Changes to a running slot are heard right away (a slot switched on starts with the next note); undo (<strong>B + Select</strong>) takes back a type change together with its values.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>slot</code></td>
+<td>which slot the settings below edit, 1–4</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code>ahd</code>, <code>adsr</code>, <code>drum</code>, <code>lfo</code>, <code>trig</code>, <code>track</code> (and <code>decay</code>, <code>swell</code> from the first release); <code>off</code></td>
+</tr>
+<tr>
+<td><code>dest</code></td>
+<td>what it moves (below)</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>how far, <code>-127</code> … <code>+127</code>; minus goes the other way. Pitch: <code>+127</code> = 2 octaves; fine: <code>+127</code> = 1 semitone; others show a percentage</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Settings</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ahd</code></td>
+<td><code>attack</code> <code>hold</code> <code>decay</code></td>
+<td>rises to full, stays, falls back to nothing — on every note</td>
+</tr>
+<tr>
+<td><code>adsr</code></td>
+<td><code>attack</code> <code>decay</code> <code>sustn</code> <code>releas</code></td>
+<td>stays at <code>sustn</code> while the note holds; <code>KILL</code> (or the next instrument on the track) starts the release</td>
+</tr>
+<tr>
+<td><code>drum</code></td>
+<td><code>peak</code> <code>body</code> <code>decay</code></td>
+<td>a sharp peak, a short dip (<code>peak</code>: dip depth and time), then the body swells back, holds and decays — punchy drums</td>
+</tr>
+<tr>
+<td><code>lfo</code></td>
+<td><code>rate</code> <code>shape</code> <code>trig</code></td>
+<td>repeating wobble; <code>rate</code> <code>00</code> = 0.05 Hz … <code>80</code> = 1.6 Hz … <code>FF</code> = 50 Hz</td>
+</tr>
+<tr>
+<td><code>trig</code></td>
+<td><code>attack</code> <code>hold</code> <code>decay</code> <code>source</code></td>
+<td>an <code>ahd</code> fired by notes on another track (<code>source</code> = track 1–8) — sidechain ducking, call and response</td>
+</tr>
+<tr>
+<td><code>track</code></td>
+<td><code>from</code> <code>to</code> <code>low</code> <code>high</code></td>
+<td>the note picks the value: <code>low</code> at the <code>from</code> note, <code>high</code> at the <code>to</code> note, in between for notes between</td>
+</tr>
+<tr>
+<td><code>decay</code> / <code>swell</code></td>
+<td><code>rate</code></td>
+<td>the first release's envelopes, kept so older songs sound the same (<code>rate</code>: higher = faster)</td>
+</tr>
+</tbody>
+</table>
+<p>Envelope times: <code>00</code> = instant, <code>01</code> = 1 ms, <code>40</code> = 10 ms, <code>80</code> = 100 ms, <code>C0</code> = 1 s, <code>FF</code> = 10 s. The attack rises in a straight line, decays and releases fall fast then slow, landing on zero exactly at their time.</p>
+<p><strong>LFO shapes:</strong> <code>tri</code>, <code>sine</code>, <code>ramp dn</code>, <code>ramp up</code>, <code>exp dn</code>, <code>exp up</code>, <code>sqr dn</code>, <code>sqr up</code>, <code>random</code> (a new level every cycle — sample and hold), <code>drunk</code> (a random walk). <strong><code>trig</code>:</strong> <code>free</code> keeps running across notes (every note joins it wherever it is), <code>retrig</code> restarts it with every note, <code>hold</code> plays one cycle and holds its last level, <code>once</code> plays one cycle and returns to its start.</p>
+<p><strong>Destinations.</strong> Synth: <code>volume</code>, <code>cutoff</code>, <code>reso</code>, <code>pitch</code>, <code>pan</code>, <code>fine</code>, <code>drive</code>, <code>shape</code>, <code>fm amt</code>, <code>noise</code>, <code>reverb</code>, <code>delay</code>, <code>chorus</code>. <a href="Macro-Synth.html">Macro synth</a>: <code>volume</code>, <code>cutoff</code>, <code>reso</code>, <code>pitch</code>, <code>pan</code>, <code>fine</code>, <code>drive</code>, <code>timbre</code>, <code>color</code>, <code>reverb</code>, <code>delay</code>, <code>chorus</code>. Sample: <code>volume</code>, <code>cutoff</code>, <code>reso</code>, <code>pitch</code>, <code>pan</code>, <code>fine</code>, <code>drive</code>, <code>crush</code>, <code>fb mix</code>, <code>fb tune</code>, <code>start</code>, <code>loop st</code>, <code>reverb</code>, <code>delay</code>, <code>chorus</code>.</p>
+<ul>
+<li>An <strong>envelope on <code>volume</code></strong> shapes the note: <code>+127</code> follows the envelope from silence (an <code>adsr</code> becomes the note's own volume envelope), <code>-127</code> ducks the sound while the envelope is up. LFOs and tracking move the volume up and down around its level.</li>
+<li>On a sample, <code>start</code> moves where the note starts and <code>loop st</code> moves the loop start while it plays, <code>+127</code> = the whole trimmed sample. <code>crush</code> removes bits (<code>+127</code> = 15 bits fewer).</li>
+<li>A sample normally stops at <code>KILL</code>; with an <code>adsr</code> on <code>volume</code> (positive amount) it keeps playing and fades with the release.</li>
+<li>Every slot restarts with every note, with or without an instrument number on the step; <code>RTRG</code> restarts the envelopes too. Picking a preset switches all four slots off.</li>
+</ul>
+<p><strong>Try:</strong></p>
+<ul>
+<li><code>adsr</code> → <code>cutoff</code>, <code>amount +80</code>, <code>sustn 40</code>, <code>releas A0</code> — a filter that opens per note and closes after <code>KILL</code>.</li>
+<li><code>lfo</code> → <code>pitch</code>, <code>amount +6</code>, <code>shape sine</code>, <code>trig retrig</code> — vibrato that starts fresh on every note.</li>
+<li><code>drum</code> → <code>volume</code>, <code>amount +127</code> on a sample loop — a punchy, gated hit.</li>
+<li><code>trig</code> → <code>volume</code>, <code>amount -100</code>, <code>source 1</code> on a pad — it ducks every time the kick on track 1 plays.</li>
+<li><code>track</code> → <code>cutoff</code>, <code>low -40</code>, <code>high +40</code> — higher notes get brighter.</li>
+</ul>
+<p><br clear="right"></p>
+<h3 id="mix-level-and-space">MIX — level and space</h3>
+<p><img src="images/synth-6-mix.png" width="280" align="right"></p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>volume</code></td>
+<td>loudness (<code>VOLM</code> changes it per note)</td>
+</tr>
+<tr>
+<td><code>pan</code></td>
+<td><code>00</code> left, <code>7F</code> centre, <code>FE</code> right</td>
+</tr>
+<tr>
+<td><code>reverb</code></td>
+<td>send to the shared reverb</td>
+</tr>
+<tr>
+<td><code>delay</code></td>
+<td>send to the shared echo</td>
+</tr>
+<tr>
+<td><code>chorus</code></td>
+<td>send to the shared chorus (width and shimmer)</td>
+</tr>
+</tbody>
+</table>
+<p>The reverb room, echo time and chorus speed are shared by every instrument and set on the <a href="Screens.html#fx">FX screen</a> (Mixer, then <strong>RB + Down</strong>).</p>
+<p><br clear="right"></p>
+<h3 id="eq-its-own-tone">EQ — its own tone</h3>
+<p><img src="images/synth-7-eq.png" width="280" align="right"></p>
+<p>Every instrument has its own three-band EQ, like the M8's instrument EQ: the same low shelf, mid bell and high shelf as the <a href="Screens.html#eq">master EQ</a>, but only on this sound (before its pan and its effect sends). Sample instruments have the same page.</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>l.gain</code> / <code>l.freq</code></td>
+<td>bass shelf: everything below <code>l.freq</code> (30–400 Hz) up or down</td>
+</tr>
+<tr>
+<td><code>m.gain</code> / <code>m.freq</code></td>
+<td>a wide bell around <code>m.freq</code> (150 Hz–6 kHz)</td>
+</tr>
+<tr>
+<td><code>h.gain</code> / <code>h.freq</code></td>
+<td>treble shelf: everything above <code>h.freq</code> (1.5–16 kHz)</td>
+</tr>
+</tbody>
+</table>
+<p>Gains: <code>80</code> = flat, −12 … +12 dB (about 0.1 dB a step). The curve shows the result from 20 Hz to 20 kHz, with a mark at the focused band; the focused knob shows its real value (<code>+4.5 dB</code>, <code>94 Hz</code>). <strong>B + A</strong> puts a knob back. A flat band costs nothing, so leave what you don't need at <code>80</code>. Picking a preset sets the EQ flat again.</p>
+<p><strong>Try:</strong> on a bass, <code>l.gain</code> <code>+4 dB</code> for weight and <code>h.gain</code> <code>−6 dB</code> to keep it out of the hats' way; on a pad, <code>m.gain</code> <code>−4 dB</code> around 400 Hz to leave room for the lead.</p>
+<p><br clear="right"></p>
+<h2 id="chords-with-chrd">Chords with CHRD</h2>
+<p><strong>How it works — two parts:</strong></p>
+<ul>
+<li><strong>The note you type picks WHICH chord.</strong> Type <code>A 2</code> and you get an A chord.</li>
+<li><strong>The CHRD value picks WHAT KIND.</strong> <code>0047</code> = major (happy), <code>0037</code> = minor (sad).</li>
+</ul>
+<p>So <code>A 2</code> + <code>CHRD 0037</code> = <strong>A minor</strong>, and <code>F 2</code> + <code>CHRD 0047</code> = <strong>F major</strong>. The CHRD value on its own is never "A" or "F" — it's only major or minor.</p>
+<p><strong>What the digits actually do:</strong> each digit says "also play the note this many steps up from mine". <code>0037</code> on <code>A 2</code>:</p>
+<pre><code class="language-text">A                               &lt;- your note
+A  A# B  C                      &lt;- 3 steps up:  C
+A  A# B  C  C# D  D# E          &lt;- 7 steps up:  E
+                                   plays A + C + E = A minor
+</code></pre>
+<p>Count every key, black ones included (A → A# → B → C is 3 steps). Past 9 the digits are hex letters: <code>A</code> = 10, <code>B</code> = 11.</p>
+<table>
+<thead>
+<tr>
+<th>Type this note</th>
+<th>+ CHRD <code>0037</code> plays</th>
+<th>+ CHRD <code>0047</code> plays</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A 2</code></td>
+<td>A C E = <strong>A minor</strong></td>
+<td>A C# E = A major</td>
+</tr>
+<tr>
+<td><code>C 3</code></td>
+<td>C D# G = C minor</td>
+<td>C E G = <strong>C major</strong></td>
+</tr>
+<tr>
+<td><code>D 2</code></td>
+<td>D F A = <strong>D minor</strong></td>
+<td>D F# A = D major</td>
+</tr>
+<tr>
+<td><code>E 2</code></td>
+<td>E G B = <strong>E minor</strong></td>
+<td>E G# B = E major</td>
+</tr>
+<tr>
+<td><code>F 2</code></td>
+<td>F G# C = F minor</td>
+<td>F A C = <strong>F major</strong></td>
+</tr>
+<tr>
+<td><code>G 2</code></td>
+<td>G A# D = G minor</td>
+<td>G B D = <strong>G major</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>bold</strong> ones are the chords that belong to A minor / C major — use those and it always sounds right.</p>
+<p>More kinds, same idea (the note still picks which chord):</p>
+<table>
+<thead>
+<tr>
+<th>CHRD</th>
+<th>Kind</th>
+<th>Sounds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0047</code></td>
+<td>major</td>
+<td>happy, bright</td>
+</tr>
+<tr>
+<td><code>0037</code></td>
+<td>minor</td>
+<td>sad, serious</td>
+</tr>
+<tr>
+<td><code>047B</code></td>
+<td>major 7</td>
+<td>dreamy, lo-fi</td>
+</tr>
+<tr>
+<td><code>037A</code></td>
+<td>minor 7</td>
+<td>smooth, jazzy</td>
+</tr>
+<tr>
+<td><code>047A</code></td>
+<td>dominant 7</td>
+<td>bluesy, wants to move on</td>
+</tr>
+<tr>
+<td><code>0057</code></td>
+<td>sus4</td>
+<td>open, unresolved</td>
+</tr>
+<tr>
+<td><code>0027</code></td>
+<td>sus2</td>
+<td>airy</td>
+</tr>
+<tr>
+<td><code>0007</code></td>
+<td>power chord</td>
+<td>rock, neutral</td>
+</tr>
+</tbody>
+</table>
+<p><code>CHRD</code> overrides the <code>chord</code> knob for that note. The <code>chord</code> knob does the same thing for every note of the instrument (pick <code>minor</code> and every note you type becomes a minor chord).</p>
+<p><strong>Smoother changes (inversions):</strong> a chord doesn't have to start on its own name. <code>C 3</code> + <code>0059</code> plays C F A — still an F major chord, just stacked differently — so moving from C major to F major barely moves your hand. Advanced; skip it until the basics feel easy.</p>
+<h2 id="recipes">Recipes</h2>
+<p>Start from <code>init</code> (or the preset named) and set:</p>
+<table>
+<thead>
+<tr>
+<th>Sound</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Deep 808 kick</strong></td>
+<td>kick; <code>decay C0</code>, <code>p.env 80</code>, <code>drive 30</code></td>
+</tr>
+<tr>
+<td><strong>Punchy techno kick</strong></td>
+<td>kick; <code>decay 98</code>, <code>p.dec 60</code>, <code>drive 90</code></td>
+</tr>
+<tr>
+<td><strong>Trap hat roll</strong></td>
+<td>hat; in the phrase <code>RTRG 0002</code> on a note</td>
+</tr>
+<tr>
+<td><strong>Reese bass</strong></td>
+<td>wave supersaw, <code>shape 40</code>, <code>tune -24</code>, <code>sub 60</code>, lowpass <code>cutoff 60</code>, <code>drive 40</code></td>
+</tr>
+<tr>
+<td><strong>Acid line</strong></td>
+<td>acid; write 16ths, raise <code>reso</code>, automate with <code>FCUT</code></td>
+</tr>
+<tr>
+<td><strong>Plucky arp</strong></td>
+<td>pluck; <code>delay 60</code> on MIX, FX <code>time 3/16</code></td>
+</tr>
+<tr>
+<td><strong>Warm pad</strong></td>
+<td>pad; <code>chord minor</code>, <code>attack C0</code>, <code>releas C8</code>, <code>reverb A0</code></td>
+</tr>
+<tr>
+<td><strong>Glassy bell</strong></td>
+<td>bell; <code>ratio 7</code>, <code>env A0</code>, <code>reverb 90</code></td>
+</tr>
+<tr>
+<td><strong>Flute</strong></td>
+<td>wave sine, <code>noise 28</code>, <code>attack 38</code>, <code>lfo pitch</code>, <code>rate B0</code>, <code>depth 18</code></td>
+</tr>
+<tr>
+<td><strong>Bowed string (erhu)</strong></td>
+<td>wave saw, lowpass <code>cutoff 90</code>, <code>attack 58</code>, <code>glide 50</code>, vibrato <code>depth 20</code></td>
+</tr>
+<tr>
+<td><strong>Chip arpeggio</strong></td>
+<td>chip; in the phrase <code>ARPG 0047</code> on a held note</td>
+</tr>
+<tr>
+<td><strong>Gong</strong></td>
+<td>wave metal, <code>tune -24</code>, lowpass <code>cutoff 90</code>, <code>reso 40</code>, <code>decay E0</code>, <code>reverb 90</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="commands-synths-understand">Commands synths understand</h2>
+<p><code>VOLM</code> <code>PAN_</code> <code>FCUT</code> <code>FRES</code> <code>FLTR</code> <code>PTCH</code> <code>LEGA</code> <code>PFIN</code> <code>ARPG</code> <code>RTRG</code> <code>CRSH</code> (drive) <code>KILL</code> <code>TABL</code> <code>DLAY</code> <code>CHRD</code> — see <a href="Commands.html">Commands</a>. <code>RTRG</code> restrikes the envelopes, great for rolls and tremolo.</p>
+<div class="pager"><a class="prev" href="Screens.html"><small>Previous</small>Screens</a><a class="next" href="Macro-Synth.html"><small>Next</small>Macro Synth</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

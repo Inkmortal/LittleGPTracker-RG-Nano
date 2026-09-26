@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Export · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Export.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html" class="active">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="export">Export</h1>
+<p>Bounce your song to WAV on the device.</p>
+<p><img src="images/project.png" width="300" align="right" alt="Project screen"></p>
+<ol>
+<li>Song screen → <strong>RB + Up</strong> to open <strong>Project</strong>.</li>
+<li>Move to <code>Render:</code> and set it with <strong>A + Left/Right</strong>:
+   - <code>Stereo</code> → one file, <code>mixdown.wav</code>
+   - <code>Stems</code> → one file per track, <code>channel0.wav</code> … <code>channel7.wav</code></li>
+<li>Press <strong>Start</strong>. The song plays and records in real time.</li>
+<li>Press <strong>Start</strong> again to stop and close the file.</li>
+<li>Set <code>Render:</code> back to <code>Off</code> for normal playing.</li>
+</ol>
+<p>The files land in the song's folder: <code>Applications/Tracks/lgpt_&lt;name&gt;/</code>.</p>
+<p><br clear="right"></p>
+<h2 id="tips">Tips</h2>
+<ul>
+<li>Stems are recorded <strong>before</strong> the shared reverb and echo; the stereo mix includes them.</li>
+<li>To get a clean loop, stop exactly at the end of the song, or trim the WAV on a computer.</li>
+<li>If the export sounds squashed or distorted, lower <code>Drive</code> on the Project screen or the instrument volumes, and watch the <a href="Screens.html#mixer">Mixer</a>. <code>Clip: Subtle</code> softly catches the occasional peak.</li>
+</ul>
+<div class="pager"><a class="prev" href="Samples.html"><small>Previous</small>Samples</a><a class="next" href="FAQ.html"><small>Next</small>FAQ</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Install.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html" class="active">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="install">Install</h1>
+<h2 id="what-you-need">What you need</h2>
+<ul>
+<li>An Anbernic RG Nano (FunKey-OS)</li>
+<li>A way to copy files to its SD card: USB cable (the Nano shows up as a drive) or an SD card reader</li>
+<li>The build zip <code>lgpt-rgnano-test-build.zip</code> (from the repository's GitHub Actions artifacts, or built yourself — see <a href="Developer-Guide.html">Developer Guide</a>)</li>
+</ul>
+<h2 id="copy-the-files">Copy the files</h2>
+<p>The zip contains:</p>
+<pre><code class="language-text">lgpt-rgnano/
+├── lgpt-rgnano.opk          the app
+├── Tracks/                  demo songs (lgpt_Afterglow, lgpt_NeonDrive, ... one per genre)
+├── Samples/                 sample packs (keys, strings, drums-808, ...)
+└── LGPT-Guide/              this guide, as Markdown files
+</code></pre>
+<p>Put them on the SD card like this:</p>
+<table>
+<thead>
+<tr>
+<th>From the zip</th>
+<th>To the SD card</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lgpt-rgnano.opk</code></td>
+<td><code>Native games/lgpt-rgnano.opk</code></td>
+</tr>
+<tr>
+<td><code>Tracks/lgpt_*</code> folders</td>
+<td><code>Applications/Tracks/</code></td>
+</tr>
+<tr>
+<td><code>Samples/</code> pack folders</td>
+<td><code>Applications/Samples/</code> (add your own <code>.wav</code> files there too)</td>
+</tr>
+<tr>
+<td><code>LGPT-Guide/</code></td>
+<td><code>Applications/LGPT-Guide/</code> (optional: the same guide is built into the app under <strong>Help</strong>)</td>
+</tr>
+</tbody>
+</table>
+<p>Create <code>Applications/Tracks</code> and <code>Applications/Samples</code> if they don't exist.</p>
+<p>On the device these are <code>/mnt/Applications/Tracks</code> and <code>/mnt/Applications/Samples</code>.</p>
+<h2 id="launch">Launch</h2>
+<p>Open <strong>Native games → LGPT RG Nano</strong>. The <strong>Your Songs</strong> list appears. <strong>Up/Down</strong> picks a song, <strong>Left/Right</strong> picks a button, <strong>A</strong> runs it:</p>
+<p><img src="images/boot.png" width="360" alt="Your Songs list"></p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Open</strong></td>
+<td>open the highlighted song (try <code>NeonDrive</code>)</td>
+</tr>
+<tr>
+<td><strong>New</strong></td>
+<td>start an empty song with the synth kit ready to play</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>delete the highlighted song (asks first, starts on <code>No</code>)</td>
+</tr>
+<tr>
+<td><strong>Help</strong></td>
+<td>this whole guide, built in: pick a topic and read it on the device</td>
+</tr>
+</tbody>
+</table>
+<p>The Menu/Power button opens the app menu, where <strong>Save and quit</strong> is the safe way out.</p>
+<p><img src="images/new-project.png" width="360" alt="New song name dialog"></p>
+<p><strong>New</strong> opens with a free random name already filled in and <strong>DONE</strong> highlighted, so <strong>A</strong> creates the song straight away. To pick your own name see <a href="Controls.html#naming-a-new-song">Controls</a>.</p>
+<h2 id="updating">Updating</h2>
+<p>Replace <code>Native games/lgpt-rgnano.opk</code> with the new one. Your songs in <code>Applications/Tracks</code> are not touched.</p>
+<p>From a PC with this repository, <code>tools/install-rgnano.ps1</code> builds, packages and installs everything onto a connected RG Nano in one step.</p>
+<h2 id="where-things-are-saved">Where things are saved</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Songs</td>
+<td><code>Applications/Tracks/lgpt_&lt;name&gt;/lgptsav.dat</code> (Project screen → <code>Save Song</code>)</td>
+</tr>
+<tr>
+<td>Samples used by a song</td>
+<td><code>Applications/Tracks/lgpt_&lt;name&gt;/samples/</code></td>
+</tr>
+<tr>
+<td>Exported audio</td>
+<td>inside the song folder: <code>mixdown.wav</code> or <code>channel0.wav</code>…<code>channel7.wav</code></td>
+</tr>
+<tr>
+<td>Diagnostic log</td>
+<td><code>Applications/lgpt-rgnano.log</code></td>
+</tr>
+</tbody>
+</table>
+<div class="pager"><a class="prev" href="index.html"><small>Previous</small>Home</a><a class="next" href="Controls.html"><small>Next</small>Controls</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

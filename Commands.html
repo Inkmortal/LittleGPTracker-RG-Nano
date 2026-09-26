@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commands · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Commands.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html" class="active">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="commands">Commands</h1>
+<p>Commands live in the two command columns of a phrase and the three columns of a table. Each is four letters plus a 4-digit hex value, usually written <code>aabb</code>. Put the cursor on a <code>----</code> column and press <strong>Select</strong> to pick from the list.</p>
+<p><img src="images/demo-phrase-chords.png" width="300" align="right" alt="A chord command in a phrase"></p>
+<p><strong>Where it goes matters:</strong></p>
+<ul>
+<li>On the same step as a note, a command shapes that note.</li>
+<li>On a step without a note, it changes whatever is already playing on that track.</li>
+<li>A note <strong>with</strong> an instrument number resets that instrument's ramps. A note <strong>without</strong> one (<code>I--</code>) keeps sweeps and fades running.</li>
+</ul>
+<p>Timing: 1 step = 6 ticks at the default groove. Ramp speeds (<code>aa</code>) count in groups of ticks — bigger <code>aa</code> = slower.</p>
+<p><br clear="right"></p>
+<h2 id="the-ones-youll-use-every-day">The ones you'll use every day</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Value</th>
+<th>Does</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VOLM</code></td>
+<td><code>aabb</code></td>
+<td>volume to <code>bb</code>, ramping over <code>aa</code> (<code>00</code> = instant)</td>
+<td><code>VOLM 0050</code> ghost note · <code>VOLM 4000</code> slow fade out</td>
+</tr>
+<tr>
+<td><code>KILL</code></td>
+<td><code>--bb</code></td>
+<td>stop the note after <code>bb</code> ticks</td>
+<td><code>KILL 0000</code> cut now · <code>KILL 0003</code> half a step</td>
+</tr>
+<tr>
+<td><code>CHRD</code></td>
+<td><code>abcd</code></td>
+<td>turn the note into a chord: the note picks <strong>which</strong> chord, the value picks <strong>what kind</strong> (each digit = also play the note that many steps up). On a <code>hyper</code> synth it replaces the six chord notes (the chord, then again an octave up)</td>
+<td><code>A 2</code> + <code>0037</code> = A minor · <code>C 3</code> + <code>0047</code> = C major</td>
+</tr>
+<tr>
+<td><code>ARPG</code></td>
+<td><code>abcd</code></td>
+<td>cycle root, +a, +b, +c, +d every tick</td>
+<td><code>ARPG 0047</code> chiptune major</td>
+</tr>
+<tr>
+<td><code>RTRG</code></td>
+<td><code>aabb</code></td>
+<td>retrigger every <code>bb</code> ticks</td>
+<td><code>RTRG 0003</code> 32nd roll · <code>RTRG 0002</code> tremolo</td>
+</tr>
+<tr>
+<td><code>PTCH</code></td>
+<td><code>aabb</code></td>
+<td>bend to <code>bb</code> semitones (signed) at speed <code>aa</code></td>
+<td><code>PTCH 1002</code> up 2 · <code>PTCH 10FE</code> down 2</td>
+</tr>
+<tr>
+<td><code>LEGA</code></td>
+<td><code>aabb</code></td>
+<td>slide into the note from <code>bb</code> semitones away</td>
+<td><code>LEGA 10F4</code> slide up from an octave below</td>
+</tr>
+<tr>
+<td><code>FCUT</code></td>
+<td><code>aabb</code></td>
+<td>filter cutoff to <code>bb</code> at speed <code>aa</code></td>
+<td><code>FCUT 60C0</code> open over ~4 bars</td>
+</tr>
+<tr>
+<td><code>FRES</code></td>
+<td><code>aabb</code></td>
+<td>filter resonance to <code>bb</code> at speed <code>aa</code></td>
+<td><code>FRES 00C0</code> squelch now</td>
+</tr>
+<tr>
+<td><code>PAN</code></td>
+<td><code>aabb</code></td>
+<td>pan to <code>bb</code> (<code>00</code> left, <code>7F</code> centre, <code>FE</code> right)</td>
+<td><code>PAN 2000</code> sweep left</td>
+</tr>
+<tr>
+<td><code>DLAY</code></td>
+<td><code>--bb</code></td>
+<td>start the note <code>bb</code> ticks late (up to the step's length)</td>
+<td><code>DLAY 0003</code> push a note behind the beat</td>
+</tr>
+</tbody>
+</table>
+<h2 id="randomness">Randomness</h2>
+<p>Two commands that make every pass a little different, as on the M8:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Value</th>
+<th>Does</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RAND</code></td>
+<td><code>00bb</code></td>
+<td>adds a random amount, up to <code>bb</code>, to the <strong>other command</strong> on the same step. On its own it moves the <strong>note</strong> up to <code>bb</code> semitones, staying in the song's Key/Scale</td>
+<td><code>VOLM 0060</code> + <code>RAND 0060</code>: velocity between 60 and C0 · <code>FCUT 0040</code> + <code>RAND 0080</code>: a wandering filter · <code>RAND 000C</code> alone: a new melody every loop</td>
+</tr>
+<tr>
+<td><code>CHNC</code></td>
+<td><code>00bb</code></td>
+<td>the note plays with a chance of <code>bb</code>/<code>FF</code> (<code>FF</code> always, <code>80</code> half the time, <code>00</code> never)</td>
+<td>ghost hats with <code>CHNC 0060</code> · a fill that only sometimes happens</td>
+</tr>
+</tbody>
+</table>
+<p>Put them on a step with a note. Both can go on one step (<code>CHNC</code> in one column, <code>RAND</code> in the other).</p>
+<p>Random numbers are drawn per track. <code>SEED</code> (below) makes them repeat.</p>
+<h2 id="from-the-m8">From the M8</h2>
+<p>Sequencer commands after the Dirtywave M8's (<code>RET</code>, <code>NTH</code>, <code>SED</code>, <code>PVB</code>, <code>TIC</code>, <code>THO</code>, <code>TSP</code>, <code>SCG</code>). They work the same with synth, sample and MIDI instruments, because the sequencer runs them. <code>ROLL</code>, <code>VIBR</code>, <code>SEED</code>, <code>NTH</code>, <code>TRSP</code> and <code>SCAL</code> go in a phrase; <code>TICK</code> and <code>THOP</code> also work inside a table.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Value</th>
+<th>Does</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROLL</code></td>
+<td><code>--xy</code></td>
+<td>strike the note again every <code>y</code> ticks until the next note. Each hit changes the volume by <code>x</code>: <code>1</code>-<code>7</code> quieter (<code>x</code>×8 per hit, the roll stops when it reaches silence), <code>9</code>-<code>F</code> louder (<code>(x-8)</code>×8), <code>0</code>/<code>8</code> steady. The first hit starts from the step's <code>VOLM</code>, or the instrument's volume. <code>y</code>=0: one extra hit, <code>x</code> ticks later. <code>0000</code> stops</td>
+<td><code>ROLL 0003</code> snare roll · <code>VOLM 0020</code> + <code>ROLL 00F2</code> a roll that swells in · <code>ROLL 0043</code> echoing stutter · <code>ROLL 0030</code> flam</td>
+</tr>
+<tr>
+<td><code>VIBR</code></td>
+<td><code>--xy</code></td>
+<td>vibrato: speed <code>x</code> (a cycle every 64/<code>x</code> ticks, so it follows the tempo), depth <code>y</code> sixteenths of a semitone. Ends with <code>VIBR 0000</code> or the next note with an instrument number</td>
+<td><code>VIBR 0048</code> singer's vibrato · <code>VIBR 00C3</code> fast shimmer on a pad</td>
+</tr>
+<tr>
+<td><code>SEED</code></td>
+<td><code>--bb</code></td>
+<td>restart this track's random numbers from seed <code>bb</code>: every <code>RAND</code> and <code>CHNC</code> after it comes out the same each time. Put it on step 0 to freeze a random melody you like</td>
+<td><code>SEED 0007</code> on step 0 + <code>RAND 000C</code> on every step: one "random" tune that loops. Change <code>bb</code> for another</td>
+</tr>
+<tr>
+<td><code>NTH</code></td>
+<td><code>--xy</code></td>
+<td>the note plays only on pass <code>x</code> of every <code>y</code> times its phrase plays on this track (passes count from when you press Start). <code>x</code>=0: on every pass except each <code>y</code>-th</td>
+<td><code>NTH 0014</code> a crash only on the first of 4 bars · <code>NTH 0044</code> a fill on the 4th · <code>NTH 0002</code> a hat that skips every other bar</td>
+</tr>
+<tr>
+<td><code>TICK</code></td>
+<td><code>--bb</code></td>
+<td>this track's table moves one row every <code>bb</code> ticks instead of every tick (in a table: that table's own speed). <code>0000</code> goes back to the groove</td>
+<td><code>TABL 0003</code> + <code>TICK 0006</code> a table that steps once per step, like a slow arpeggio</td>
+</tr>
+<tr>
+<td><code>THOP</code></td>
+<td><code>--0b</code></td>
+<td>this track's table jumps to row <code>b</code>, all three columns (in a table: jump there on this row)</td>
+<td>restart a filter sweep half way through a phrase</td>
+</tr>
+<tr>
+<td><code>TRSP</code></td>
+<td><code>--bb</code></td>
+<td>transpose the whole song by <code>bb</code> semitones (<code>01</code>-<code>30</code> up, <code>FF</code>-<code>D0</code> down), like Project → <code>Transpose</code></td>
+<td><code>TRSP 0002</code> up a tone for the last chorus · <code>TRSP 00F4</code> an octave down</td>
+</tr>
+<tr>
+<td><code>SCAL</code></td>
+<td><code>aabb</code></td>
+<td>set the song's Key to <code>aa</code> (<code>00</code> C … <code>0B</code> B, <code>0C</code> no key) and its Scale to number <code>bb</code> (the order on the Scale screen: <code>15</code> major, <code>03</code> minor, <code>20</code> minor pentatonic, <code>2E</code> your Custom scale). Note editing and <code>RAND</code> follow it from then on</td>
+<td><code>SCAL 0915</code> A major for a bridge, back with <code>SCAL 0003</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>TRSP</code> and <code>SCAL</code> change the song's settings, the same way <code>TMPO</code> sets the tempo: the song keeps them when it stops.</p>
+<p>A <code>ROLL</code> on a step with a note re-strikes that note; on a step without one it re-strikes whatever is still ringing. The random numbers <code>SEED</code> restarts belong to its track only, so a seeded bassline doesn't freeze the drums' <code>CHNC</code>.</p>
+<h2 id="song-level">Song-level</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Value</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TMPO</code></td>
+<td><code>--bb</code></td>
+<td>set tempo to <code>bb</code> (hex BPM)</td>
+</tr>
+<tr>
+<td><code>GROV</code></td>
+<td><code>--bb</code></td>
+<td>switch this track to groove <code>bb</code></td>
+</tr>
+<tr>
+<td><code>TABL</code></td>
+<td><code>--bb</code></td>
+<td>start table <code>bb</code> on this track</td>
+</tr>
+<tr>
+<td><code>HOP</code></td>
+<td><code>--bb</code></td>
+<td>when the phrase reaches this step, go on to the next phrase at its step <code>bb</code> (a 12-step bar: <code>HOP 0000</code> on step <code>C</code>). <code>HOP 00FF</code> stops the track there. In a table: jump to row <code>bb</code>, <code>aa</code> times</td>
+</tr>
+<tr>
+<td><code>STOP</code></td>
+<td><code>----</code></td>
+<td>stop the song</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sound-shaping">Sound shaping</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Value</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FLTR</code></td>
+<td><code>aabb</code></td>
+<td>set cutoff <code>aa</code> and resonance <code>bb</code> instantly</td>
+</tr>
+<tr>
+<td><code>PFIN</code></td>
+<td><code>aabb</code></td>
+<td>fine pitch toward <code>bb</code></td>
+</tr>
+<tr>
+<td><code>CRSH</code></td>
+<td><code>aa-b</code></td>
+<td>drive <code>aa</code>, bit crush <code>b</code> (samples); synths use <code>aa</code> as drive</td>
+</tr>
+<tr>
+<td><code>TIMB</code></td>
+<td><code>aabb</code></td>
+<td><a href="Macro-Synth.html">macro synth</a>: timbre to <code>bb</code> at speed <code>aa</code></td>
+</tr>
+<tr>
+<td><code>COLR</code></td>
+<td><code>aabb</code></td>
+<td><a href="Macro-Synth.html">macro synth</a>: color to <code>bb</code> at speed <code>aa</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="samples-only">Samples only</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Value</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PLAY</code></td>
+<td><code>00bb</code></td>
+<td>play mode for this note: <code>00</code> forward, <code>01</code> reverse, <code>02</code> loop, <code>03</code> rev-loop, <code>04</code> pingpong, <code>05</code> rev-pingpong, <code>06</code>-<code>08</code> osc, <code>09</code> loop-sync (<a href="Samples.html#play-modes">play modes</a>). With a note: the note starts over in that mode (reverse from E); without: the sound turns around from where it is</td>
+</tr>
+<tr>
+<td><code>PLOF</code></td>
+<td><code>aabb</code></td>
+<td>jump to position <code>aa</code>/256 of the sample, or move by <code>bb</code> chunks</td>
+</tr>
+<tr>
+<td><code>LPOF</code></td>
+<td><code>aaaa</code></td>
+<td>shift the loop window (wavetable scanning, stretch)</td>
+</tr>
+<tr>
+<td><code>SLCE</code></td>
+<td></td>
+<td>pick a slice</td>
+</tr>
+<tr>
+<td><code>FBMX</code> / <code>FBTN</code></td>
+<td><code>aabb</code></td>
+<td>feedback mix / tune</td>
+</tr>
+<tr>
+<td><code>IRTG</code></td>
+<td><code>aabb</code></td>
+<td>retrigger and transpose</td>
+</tr>
+</tbody>
+</table>
+<h2 id="midi">MIDI</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MDCC</code></td>
+<td>send MIDI CC <code>aa</code> with value <code>bb</code></td>
+</tr>
+<tr>
+<td><code>MDPG</code></td>
+<td>send program change</td>
+</tr>
+<tr>
+<td><code>MVEL</code></td>
+<td>set note velocity</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tables-commands-that-play-themselves">Tables: commands that play themselves</h2>
+<p><img src="images/table.png" width="300" align="right" alt="Table"></p>
+<p>A table is a little 16-row loop of commands that advances one row per tick. Point an instrument at it (Instrument → synth LFO page or sample Motion page → <code>table</code>, <code>auto</code>) or start it from a phrase with <code>TABL</code>.</p>
+<p>Example — a trance gate on a pad:</p>
+<pre><code class="language-text">00  VOLM 00FF
+01  VOLM 0000
+02  HOP  0000   (jump back to row 00)
+</code></pre>
+<p>Example — a slow arpeggio, one row per step (<code>TICK</code> in the table itself):</p>
+<pre><code class="language-text">00  PTCH 0000   TICK 0006
+01  PTCH 000C
+02  PTCH 0007
+03  HOP  0000
+</code></pre>
+<p>Example — a fast octave, root, fifth arpeggio:</p>
+<pre><code class="language-text">00  PTCH 000C
+01  PTCH 0000
+02  PTCH 0007
+03  HOP  0000
+</code></pre>
+<div class="pager"><a class="prev" href="Macro-Synth.html"><small>Previous</small>Macro Synth</a><a class="next" href="Music-Theory-Cheat-Sheet.html"><small>Next</small>Music Theory Cheat Sheet</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

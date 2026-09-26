@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Developer Guide · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Developer Guide.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html" class="active">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="developer-guide">Developer Guide</h1>
+<p>Everything runs on Windows with MSYS2 (MinGW32) for the simulator and WSL (Ubuntu) for the RG Nano cross-build. All tools are in <code>tools/</code>.</p>
+<h2 id="build">Build</h2>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Command</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Desktop simulator</td>
+<td><code>.\run.ps1 -Task dev</code> (or <code>tools\build-rgnano-sim.ps1</code>)</td>
+<td><code>projects/lgpt-rgnano-sim.exe</code></td>
+</tr>
+<tr>
+<td>RG Nano</td>
+<td><code>cd projects; make PLATFORM=RGNANO</code> inside WSL with the FunKey SDK in <code>sdk/FunKey-sdk-DrUm78</code></td>
+<td><code>projects/lgpt-rgnano.elf</code></td>
+</tr>
+<tr>
+<td>RG Nano + install</td>
+<td><code>tools\install-rgnano.ps1</code></td>
+<td>builds, packages the OPK and copies app, docs and demos to a connected RG Nano</td>
+</tr>
+</tbody>
+</table>
+<p>CI (<code>.github/workflows/build-rgnano.yml</code>) builds the ELF, the OPK and a zip with the demo songs and docs.</p>
+<h2 id="simulator">Simulator</h2>
+<p><code>lgpt-rgnano-sim.exe</code> is the real app with a 240×240 SDL surface, the RG Nano key layout and a script runner.</p>
+<pre><code class="language-powershell">.\tools\run-rgnano-sim.ps1                    # interactive, with the device skin
+.\tools\run-rgnano-sim.ps1 -Script x.rgsim    # headless: hidden window, no focus stealing
+.\tools\run-rgnano-sim.ps1 -Script x.rgsim -Mute -Visible
+.\tools\run-rgnano-sim-suite.ps1              # every regression case, muted and headless
+</code></pre>
+<p>Scripted runs render into a window that is never shown, so nothing appears on screen. Screenshots, screen-text checks and audio capture still work. <code>-Mute</code> sends silence to the sound card while still measuring and capturing the real output.</p>
+<h3 id="script-language">Script language</h3>
+<p>Low level: <code>press a 80</code>, <code>down n</code> / <code>up n</code> (hold), <code>wait 500</code>, <code>screenshot_app x.bmp</code>.</p>
+<p>Goal commands — say what you want; the simulator reads the live state and presses the keys:</p>
+<pre><code class="language-text">goto instrument        # shortest RB+D-pad route
+row 0C                 # cursor row on Song/Chain/Phrase
+page FILTER            # instrument page
+focus cutoff           # field cursor to a label
+set cutoff 0x80        # focus + edit until the value matches
+set preset bell        # list values by name
+instrument 0A          # B+D-pad to an instrument slot
+</code></pre>
+<p>Each goal logs <code>=&gt; reached in N steps</code> and fails with a clear message if an input changes nothing.</p>
+<p>Assertions: <code>expect_view</code>, <code>expect_screen_text</code>, <code>expect_selected_text</code>, <code>expect_player_running</code>, <code>expect_play_mode</code>, <code>expect_audio_activity</code>, <code>expect_song_chain</code>, <code>expect_phrase_row_count</code>, <code>expect_instrument_type/name/param</code>, <code>expect_audio_peak_max</code>, <code>expect_limiter_gr</code>, <code>expect_size 240 240</code>, <code>expect_no_error</code>, and more — see <code>docs/RGNANO_SIM.md</code>.</p>
+<p>State setup for long scenarios: <code>sim_set_synth</code>, <code>sim_set_instrument_param</code>, <code>sim_set_song_chain</code>, <code>sim_set_chain_phrase</code>, <code>sim_set_phrase_note</code>, <code>sim_set_phrase_command</code>, <code>sim_set_tempo</code>.</p>
+<p>Whole songs: <code>sim_dump_song file.txt</code> writes everything a song is made of (project settings, song grid, chains, phrases, every instrument knob, tables, grooves, mixer levels) as text; <code>expect_song_dump file.txt</code> fails, listing the differing lines, unless the current song matches it.</p>
+<p><code>run-rgnano-sim.ps1</code> options for long scripts: <code>-SeedSamplePacks</code> copies the shipped packs (<code>projects/resources/samples</code>) into the sim's <code>Applications/Samples</code>, <code>-NameSeed 7</code> makes the suggested song names the same every run, <code>-NoKeyRepeat</code> turns key auto-repeat off so a busy machine can't turn one press into two.</p>
+<h3 id="your-first-song-is-a-test">Your First Song is a test</h3>
+<p><code>tools/walkthrough/steps.py</code> lists every button press of <a href="Your-First-Song.html">Your First Song</a> with its caption. <code>python tools\make_walkthrough.py</code> turns it into the suite case <code>first-song-walkthrough.rgsim</code>, runs it in the simulator from a fresh start with a screenshot after every step, draws each one above a picture of the RG Nano's buttons (<code>docs/rgnano-wiki/images/walkthrough/</code>) and writes the wiki page; then run <code>python tools\build_ingame_guide.py</code>. The test ends with <code>expect_song_dump</code> against the Afterglow demo (<code>tools/demos/afterglow.py</code>, dumped by the <code>first-song-reference</code> case just before it), so a change in the app that breaks the walkthrough fails the suite. <code>--draft</code> captures without that final check while you edit steps; <code>--update-asset</code> refreshes the bar the walkthrough resamples (<code>tools/demos/assets/afterglow-rs_01.wav</code>). Change the song in <code>afterglow.py</code> and <code>steps.py</code> together.</p>
+<h3 id="when-the-simulator-crashes">When the simulator crashes</h3>
+<p>It writes <code>rgnano-sim-crash.txt</code>. <code>python tools\symbolize_crash.py</code> turns it into function names and source lines.</p>
+<h2 id="song-composer">Song composer</h2>
+<p><code>tools/lgpt_composer.py</code> writes real <code>lgptsav.dat</code> projects from Python, with helpers for note names, chord voicing (smooth inversions that fit one <code>CHRD</code>), drum pattern strings and phrase text:</p>
+<pre><code class="language-python">from pathlib import Path
+from lgpt_composer import Phrase, Project
+from _patterns import chord_bar, voice_progression
+
+p = Project(&quot;MySong&quot;, tempo=100)
+p.synth(0, &quot;kick&quot;)
+p.synth(5, &quot;pad&quot;, reverb=0x90)
+kick = p.chain([Phrase.drums(&quot;x...x...x...x...&quot;, 0)] * 4)
+pads = p.chain([chord_bar(v, 5) for v in voice_progression([&quot;Am&quot;, &quot;F&quot;, &quot;C&quot;, &quot;G&quot;], &quot;E3&quot;)])
+p.row(0, [kick, None, None, None, None, pads, None, None])
+p.save(Path(&quot;rgnano-sim-data/tracks&quot;))
+</code></pre>
+<p>Demo songs live in <code>tools/demos/*.py</code>.</p>
+<h2 id="listening-without-ears">Listening without ears</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python tools\render_demos.py [--only name] [--stems]</code></td>
+<td>builds each demo, bounces it with the app's own Stereo render, writes WAV + JSON + spectrogram PNG to <code>sim-artifacts-demos</code>; <code>--stems</code> prints per-track levels for mixing</td>
+</tr>
+<tr>
+<td><code>python tools\audio_report.py file.wav --png out.png</code></td>
+<td>peak, RMS, crest, clipping, silent seconds, band energy, pitch classes</td>
+</tr>
+<tr>
+<td><code>python tools\capture_wiki_screens.py</code></td>
+<td>regenerates every screenshot on this wiki</td>
+</tr>
+</tbody>
+</table>
+<h2 id="control-design-rules">Control design rules</h2>
+<p>Every screen follows the key grammar in <a href="Controls.html">Controls</a>. When adding a combo, check it against these (from game-controller UX practice: Nielsen's heuristics, the Game Accessibility Guidelines, Xbox accessibility guideline 107, Swink's <em>Game Feel</em>):</p>
+<ul>
+<li><strong>Act on press.</strong> Nothing waits for a release; B backs out the instant it is pressed.</li>
+<li><strong>Feedback on every press</strong>, drawn by the next frame; an action that can't happen says why (<code>Empty: press A for a chain</code>) instead of doing nothing.</li>
+<li><strong>Cost matches frequency.</strong> Move, add a note, play: one button. Copy, jump, big steps: one modifier + one button. Never three buttons for something routine.</li>
+<li><strong>One meaning per combo per screen</strong>, and the same meaning on every screen. A combo never fires two actions.</li>
+<li><strong>No timing tricks.</strong> No double-tap windows; live cues wait for the bar, not for a precise press.</li>
+<li><strong>B is always the way out</strong> of a dialog, without side effects.</li>
+<li><strong>Everything is undoable.</strong> <code>UndoHistory</code> snapshots the song, chains, phrases, tables, grooves, mixer, project settings and the current instrument before every press and keeps it if the press changed something (one A-hold = one step, 32 steps). New editing code needs nothing extra; new data outside those needs adding to <code>UndoHistory::Capture</code>.</li>
+<li><strong>Show the mode</strong> (Song/Live, selection, playing) on screen; the helper (RB + Select) lists every combo of the current screen.</li>
+<li><strong>Key repeat</strong>: 250 ms before repeating, then 66 ms (<code>KEYDELAY</code>, <code>KEYREPEAT</code> in <code>config.xml</code>); holding A + a direction speeds up to 40 ms after 6 repeats (<code>KEYREPEATFAST</code>) for long value sweeps. The cursor itself never accelerates, so it doesn't overshoot.</li>
+<li><strong>Every change is guarded by a sim test</strong> (<code>key-grammar</code>, <code>live-mode</code>, <code>mixer-levels</code>).</li>
+</ul>
+<h2 id="crashes-and-logs">Crashes and logs</h2>
+<p>On the device the app writes <code>Applications/lgpt-rgnano.log</code> (the previous run is kept as <code>.log.prev</code>, capped at 1 MB with rotation to <code>.log.old</code>). Every 30 s a <code>[HEARTBEAT]</code> line records uptime and memory, so slow growth shows up. <code>[TRAIL]</code> lines are the recent keys, screens, dialogs and play/stop.</p>
+<p>A crash (SIGSEGV, SIGBUS, SIGILL, SIGFPE, SIGABRT) appends a report to <code>Applications/lgpt-rgnano-crash.txt</code>: the commit, signal, fault address, <code>pc</code>/<code>lr</code>, return addresses found on the stack and the last 48 actions. The installer archives each build's ELF as <code>build/elf/&lt;commit&gt;.elf</code>, and</p>
+<pre><code>python tools/nano_crash_report.py        # card mounted as D:
+</code></pre>
+<p>names the functions and lines and prints the last heartbeats and log lines.</p>
+<p>Soak test for crashes and leaks: <code>python tools/make_soak_script.py --minutes 15 --seed 1</code> writes a random-play script; run it with <code>tools/run-rgnano-sim.ps1 -Script projects/resources/RGNANO_SIM/soak.rgsim -Mute -OpenDemo Afterglow</code> and read the <code>[HEARTBEAT]</code> lines. The simulator's own crash handler writes <code>rgnano-sim-crash.txt</code> with the same action trail.</p>
+<p><code>DUMPEVENT</code> in <code>config.xml</code> logs every player tick and key: keep it <code>NO</code> on the device.</p>
+<h2 id="audio-performance">Audio performance</h2>
+<p><strong>On the device.</strong> The audio engine renders on its own thread, one buffer per sequencer tick. Its load is the time a buffer took to render (sequencer, every instrument, the buses, send effects, master EQ, limiter, master mix) over the time the buffer plays, smoothed; it is the number on the Mixer screen and in the heartbeat. The RG Nano has one core, so this wall time also counts any moment the screen's thread had the CPU while a buffer was being rendered. The heartbeat therefore logs both:</p>
+<pre><code>[HEARTBEAT] up 60s mem 10192KB view song player on load peak 52% (smoothed 50% cpu 44%) worst buffer 61%: seq 1 ch1 6 ch2 6 ... fx 5 meq 2 lim 3 mst 2
+</code></pre>
+<ul>
+<li><code>load peak</code>: the highest load the Mixer screen showed (read once a beat); <code>smoothed</code> the highest smoothed load, from wall time; <code>cpu</code> the same from the render thread's own CPU time. <code>smoothed</code> well above <code>cpu</code> means other threads took the CPU while audio was rendering.</li>
+<li><code>worst buffer</code>: the slowest buffer since the last line, with where its time went, in percent of that buffer's play time: <code>seq</code> sequencer, <code>ch1</code>..<code>ch8</code> each track's instruments (sends and instrument EQ included), <code>bus</code> the channel buses (sum, clip, meters), <code>fx</code> reverb/echo/chorus, <code>meq</code> master EQ, <code>lim</code> limiter, <code>mst</code> master mix. (<code>Services/Audio/AudioProfiler.*</code>, a few clock reads per buffer.)</li>
+<li>The player's play-position updates (cursor marks, mini waveform, Mixer meters) are drawn by the UI thread: the audio thread only queues them (<code>AppWindow::queuePlayerUpdate</code>), so it never waits for the screen.</li>
+</ul>
+<p><strong>In the ARM harness.</strong> <code>tools/dsp-harness/engine_room_check.cpp</code> plays the <em>Engine Room</em> demo through the real player and mixer of the device build and measures it with <code>a7cost</code>, a qemu plugin (<code>tools/dsp-harness/qemu-plugin/</code>) that counts executed instructions weighted by their Cortex-A7 cost and charges them to the parts above. Unlike qemu's wall time (every float operation is emulated in software there) this is exact and repeatable, so it guards against regressions: <code>run-all.sh</code> fails when the song costs 25% more than the recorded figure. The first run builds the plugin-enabled qemu in <code>~/qemu-plugin</code> (a few minutes, no root).</p>
+<pre><code>wsl bash tools/dsp-harness/run.sh tools/dsp-harness/engine_room_check.cpp
+wsl python3 tools/dsp-harness/a7profile.py --top 30            # cost per function
+wsl python3 tools/dsp-harness/a7profile.py --lines fm4Render   # ... per source line
+python tools/dsp-harness/compare_wav.py before.wav projects/buildRGNANO/harness/engine_room.wav
+</code></pre>
+<p>The check writes the mix to <code>projects/buildRGNANO/harness/engine_room.wav</code>; <code>compare_wav.py</code> gives the difference level (dBFS) and both spectra per octave, to prove an optimisation left the sound alone. <code>ENGINE_ROOM_WORST=10</code> lists the ten most expensive buffers part by part.</p>
+<p>Rules that paid off in the DSP code: work a control block (16 samples) at a time and stage by stage, not every stage per sample; keep per-sample libm calls (<code>sin</code>, <code>pow</code>, <code>exp</code>), divisions and double-precision maths out of inner loops (tables, cached values, multiplies by a reciprocal); copy members used in a loop to locals (a store through a <code>float *</code> can alias them); NEON four samples at a time where the samples do not depend on each other (resampler, FM operators without feedback, saw ramps, buses, voice output). Where a change keeps the arithmetic, the render must stay bit-identical; where it changes it (HyperSynth's integer saw phase), <code>hyper_saw_check.cpp</code> shows the sound is the same.</p>
+<h2 id="code-map">Code map</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Synth engine and presets</td>
+<td><code>sources/Application/Instruments/SynthInstrument.*</code></td>
+</tr>
+<tr>
+<td>Macro synth (voice, resampler, presets)</td>
+<td><code>sources/Application/Instruments/MacroInstrument.*</code>; its oscillator (Braids port, MIT) in <code>sources/Externals/Braids</code>; pages in <code>sources/Application/Views/InstrumentViewMacro.cpp</code>; ARM check <code>tools/dsp-harness/macro_check.cpp</code></td>
+</tr>
+<tr>
+<td>FM4 / HYPER / WAV engines (DSP)</td>
+<td><code>sources/Application/Instruments/SynthEngines.*</code> (ARM check: <code>tools/dsp-harness/synth_engines_check.cpp</code>)</td>
+</tr>
+<tr>
+<td>Engine SOUND pages (grid, pictures, help)</td>
+<td><code>sources/Application/Views/InstrumentViewEngines.cpp</code></td>
+</tr>
+<tr>
+<td>Shared reverb / echo</td>
+<td><code>sources/Application/Mixer/SendFX.*</code></td>
+</tr>
+<tr>
+<td>Master EQ, instrument EQ design (shared biquads)</td>
+<td><code>sources/Application/Mixer/ThreeBandEQ.*</code>, <code>MasterEQ.*</code></td>
+</tr>
+<tr>
+<td>Master limiter (look-ahead)</td>
+<td><code>sources/Application/Mixer/MasterLimiter.*</code>, screen <code>Views/LimiterView.cpp</code></td>
+</tr>
+<tr>
+<td>Instrument EQ (per voice)</td>
+<td><code>sources/Application/Instruments/InstrumentEQ.*</code>, page <code>Views/InstrumentViewEQ.cpp</code></td>
+</tr>
+<tr>
+<td>Sampler play modes (forward, reverse, loops, ping-pong, osc)</td>
+<td><code>sources/Application/Instruments/SampleInstrument.*</code> (<code>setupVoicePlayback</code>, <code>Render</code>)</td>
+</tr>
+<tr>
+<td>Sample editor (normalize, crop, fades, reverse, trim)</td>
+<td><code>sources/Application/Instruments/SampleProcessor.*</code>, <code>Views/ModalDialogs/SampleEditDialog.*</code></td>
+</tr>
+<tr>
+<td>Instrument bank, type switching, starter kit</td>
+<td><code>sources/Application/Instruments/InstrumentBank.cpp</code></td>
+</tr>
+<tr>
+<td>Synth screen</td>
+<td><code>sources/Application/Views/InstrumentViewSynth.cpp</code></td>
+</tr>
+<tr>
+<td>Helper overlay</td>
+<td><code>sources/Application/Views/BaseClasses/View.cpp</code></td>
+</tr>
+<tr>
+<td>Simulator script runner</td>
+<td><code>sources/Adapters/SDL/GUI/SDLEventManager.cpp</code></td>
+</tr>
+<tr>
+<td>Simulator boot / headless</td>
+<td><code>sources/Adapters/RGNANO_SIM/</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="publishing-this-guide">Publishing this guide</h2>
+<p>The guide source is <code>docs/rgnano-wiki/*.md</code> (plain Markdown, also valid as a GitHub wiki).</p>
+<ul>
+<li><code>python tools/build_guide_site.py</code> renders it into a static site in <code>build/guide-site</code>.</li>
+<li><code>python tools\publish_guide_site.py --gh-user &lt;account&gt;</code> builds it and publishes to GitHub Pages (<code>gh-pages</code> branch): https://inkmortal.github.io/LittleGPTracker-RG-Nano/</li>
+<li><code>tools\publish-wiki.ps1</code> mirrors the same pages into a GitHub wiki, if the repository uses one.</li>
+</ul>
+<div class="pager"><a class="prev" href="FAQ.html"><small>Previous</small>FAQ</a><span></span></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>
