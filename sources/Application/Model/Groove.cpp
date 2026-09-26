@@ -12,7 +12,9 @@ Groove::~Groove() {
 
 void Groove::Clear() {
 	// Init all grooves with basic datas
-	memset(data_,NO_GROOVE_DATA,MAX_GROOVES*0xF) ;
+	// Every step of every groove (it used to stop 32 bytes short, leaving
+	// grooves 1E-1F with zero-tick steps after their 06 06)
+	memset(data_,NO_GROOVE_DATA,sizeof(data_)) ;
 	for (int i=0;i<MAX_GROOVES;i++) {
 		data_[i][0]=6 ;
 		data_[i][1]=6 ;

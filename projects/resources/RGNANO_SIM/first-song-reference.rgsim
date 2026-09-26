@@ -1,0 +1,9 @@
+# The walkthrough's target: the Afterglow demo (tools/demos/afterglow.py),
+# opened in the app. Its dump is what first-song-walkthrough.rgsim must end
+# with, so this case runs first in the suite.
+wait 1500
+expect_view song
+expect_screen_text Afterglow
+sim_dump_song sim-artifacts-suite/first-song-reference.txt
+expect_no_error
+quit

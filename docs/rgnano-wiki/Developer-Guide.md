@@ -47,6 +47,14 @@ Assertions: `expect_view`, `expect_screen_text`, `expect_selected_text`, `expect
 
 State setup for long scenarios: `sim_set_synth`, `sim_set_instrument_param`, `sim_set_song_chain`, `sim_set_chain_phrase`, `sim_set_phrase_note`, `sim_set_phrase_command`, `sim_set_tempo`.
 
+Whole songs: `sim_dump_song file.txt` writes everything a song is made of (project settings, song grid, chains, phrases, every instrument knob, tables, grooves, mixer levels) as text; `expect_song_dump file.txt` fails, listing the differing lines, unless the current song matches it.
+
+`run-rgnano-sim.ps1` options for long scripts: `-SeedSamplePacks` copies the shipped packs (`projects/resources/samples`) into the sim's `Applications/Samples`, `-NameSeed 7` makes the suggested song names the same every run, `-NoKeyRepeat` turns key auto-repeat off so a busy machine can't turn one press into two.
+
+### Your First Song is a test
+
+`tools/walkthrough/steps.py` lists every button press of [Your First Song](Your-First-Song) with its caption. `python tools\make_walkthrough.py` turns it into the suite case `first-song-walkthrough.rgsim`, runs it in the simulator from a fresh start with a screenshot after every step, draws each one above a picture of the RG Nano's buttons (`docs/rgnano-wiki/images/walkthrough/`) and writes the wiki page; then run `python tools\build_ingame_guide.py`. The test ends with `expect_song_dump` against the Afterglow demo (`tools/demos/afterglow.py`, dumped by the `first-song-reference` case just before it), so a change in the app that breaks the walkthrough fails the suite. `--draft` captures without that final check while you edit steps; `--update-asset` refreshes the bar the walkthrough resamples (`tools/demos/assets/afterglow-rs_01.wav`). Change the song in `afterglow.py` and `steps.py` together.
+
 ### When the simulator crashes
 
 It writes `rgnano-sim-crash.txt`. `python tools\symbolize_crash.py` turns it into function names and source lines.
@@ -106,7 +114,7 @@ python tools/nano_crash_report.py        # card mounted as D:
 
 names the functions and lines and prints the last heartbeats and log lines.
 
-Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 --seed 1` writes a random-play script; run it with `tools/run-rgnano-sim.ps1 -Script projects/resources/RGNANO_SIM/soak.rgsim -Mute -OpenDemo Dusk` and read the `[HEARTBEAT]` lines. The simulator's own crash handler writes `rgnano-sim-crash.txt` with the same action trail.
+Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 --seed 1` writes a random-play script; run it with `tools/run-rgnano-sim.ps1 -Script projects/resources/RGNANO_SIM/soak.rgsim -Mute -OpenDemo Afterglow` and read the `[HEARTBEAT]` lines. The simulator's own crash handler writes `rgnano-sim-crash.txt` with the same action trail.
 
 `DUMPEVENT` in `config.xml` logs every player tick and key: keep it `NO` on the device.
 

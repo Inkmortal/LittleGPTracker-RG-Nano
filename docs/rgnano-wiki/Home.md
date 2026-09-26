@@ -13,7 +13,7 @@ Eight tracks, built-in synths, sample packs, chorus, echo and reverb, live mode,
 
 This is a fork of [LittleGPTracker / Little Piggy Tracker](https://github.com/djdiskmachine/LittleGPTracker) rebuilt for the RG Nano's 240×240 screen and tiny buttons, with the spirit of the Dirtywave M8: everything you need to write a full song lives in your pocket, and the screen stays quiet so the music does the talking.
 
-**Never used a tracker?** Go straight to **[Your First Song](Your-First-Song)**. In about half an hour you build **Dusk**, a full song with jazzy chords, a bouncing bass and an echoing hook, from the synths every new song starts with.
+**Never used a tracker?** Go straight to **[Your First Song](Your-First-Song)**. Press by press, with a picture of the screen after every step, you build **Afterglow**: melodic house with huge HyperSynth chords, FM keys, Macro Synth drums, a trance hook, risers and a real drop, and on the way you use nearly every feature of the app.
 
 ## Start here
 

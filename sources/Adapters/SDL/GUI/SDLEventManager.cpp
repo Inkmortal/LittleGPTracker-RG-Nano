@@ -747,7 +747,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (command.value<=0) {
 			command.value=80;
 		}
-	} else if (command.op=="down" || command.op=="up" || command.op=="screenshot" || command.op=="screenshot_app" || command.op=="log" || command.op=="expect_file" || command.op=="sim_make_project" || command.op=="sim_remove_project" || command.op=="expect_project_exists" || command.op=="expect_no_project" || command.op=="expect_project_sample" || command.op=="expect_view" || command.op=="expect_player_running" || command.op=="expect_play_mode" || command.op=="sim_set_note_names" || command.op=="expect_sample_trim_order") {
+	} else if (command.op=="down" || command.op=="up" || command.op=="screenshot" || command.op=="screenshot_app" || command.op=="log" || command.op=="expect_file" || command.op=="sim_make_project" || command.op=="sim_remove_project" || command.op=="expect_project_exists" || command.op=="expect_no_project" || command.op=="expect_project_sample" || command.op=="expect_view" || command.op=="expect_player_running" || command.op=="expect_play_mode" || command.op=="sim_set_note_names" || command.op=="expect_sample_trim_order" || command.op=="sim_dump_song" || command.op=="expect_song_dump") {
 		iss >> command.arg;
 	} else if (command.op=="expect_screen_text" || command.op=="expect_selected_text" || command.op=="expect_streaming_sample" || command.op=="dump_state") {
 		std::getline(iss,command.arg);
@@ -1343,6 +1343,16 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="sim_save_project") {
 		if (!SimSaveProject()) {
 			FailSimScript("project save failed");
+			return;
+		}
+	} else if (command.op=="sim_dump_song") {
+		if (!SimDumpSong(command.arg)) {
+			FailSimScript("song dump failed");
+			return;
+		}
+	} else if (command.op=="expect_song_dump") {
+		if (!ExpectSimSongDump(command.arg)) {
+			FailSimScript("song differs from the dump");
 			return;
 		}
 	} else if (command.op=="expect_colors") {
@@ -2965,6 +2975,205 @@ bool SDLEventManager::SimSaveProject()
 	PersistencyService::GetInstance()->Save();
 	Trace::Log("RGNANO_SIM","sim_save_project");
 	return true;
+}
+
+static std::string simCommandName(FourCC command)
+{
+	char name[5];
+	fourCC2char(command,name);
+	name[4]=0;
+	return name;
+}
+
+// Everything a song is made of, as text: project settings, the song grid,
+// chains, phrases, instruments (every knob), tables, grooves and mixer
+// levels. Two songs with the same dump play the same. The walkthrough test
+// compares the song built by button presses with the demo it teaches.
+std::string SDLEventManager::BuildSimSongDump()
+{
+	ViewData *viewData=GetSimViewData();
+	std::ostringstream out;
+	if (!viewData || !viewData->project_ || !viewData->song_) {
+		return "";
+	}
+	static const char *typeNames[IT_LAST]={"Sample","Midi","Synth","Macro"};
+	char line[256];
+	Project *project=viewData->project_;
+	IteratorPtr<Variable> pit(project->GetIterator());
+	for (pit->Begin();!pit->IsDone();pit->Next()) {
+		Variable &v=pit->CurrentItem();
+		out << "project " << v.GetName() << "=" << v.GetString() << "\n";
+	}
+	Song *song=viewData->song_;
+	for (int row=0;row<SONG_ROW_COUNT;row++) {
+		unsigned char *cells=song->data_+row*SONG_CHANNEL_COUNT;
+		bool used=false;
+		for (int c=0;c<SONG_CHANNEL_COUNT;c++) used=used || cells[c]!=0xFF;
+		if (!used) continue;
+		sprintf(line,"song %02X",row);
+		out << line;
+		for (int c=0;c<SONG_CHANNEL_COUNT;c++) {
+			if (cells[c]==0xFF) {
+				out << " --";
+			} else {
+				sprintf(line," %02X",cells[c]);
+				out << line;
+			}
+		}
+		out << "\n";
+	}
+	for (int chain=0;chain<CHAIN_COUNT;chain++) {
+		for (int row=0;row<16;row++) {
+			unsigned char phrase=song->chain_->data_[chain*16+row];
+			if (phrase==0xFF) continue;
+			sprintf(line,"chain %02X %X phrase %02X transpose %02X\n",chain,row,phrase,
+			        song->chain_->transpose_[chain*16+row]);
+			out << line;
+		}
+	}
+	Phrase *phrase=song->phrase_;
+	for (int p=0;p<PHRASE_COUNT;p++) {
+		for (int row=0;row<16;row++) {
+			int k=p*16+row;
+			FourCC c1=phrase->cmd1_[k];
+			FourCC c2=phrase->cmd2_[k];
+			if (phrase->note_[k]==0xFF && phrase->instr_[k]==0xFF && c1==I_CMD_NONE && c2==I_CMD_NONE) continue;
+			// A value without its command does nothing: only a command's
+			// own value counts
+			sprintf(line,"phrase %02X %X note %02X instr %02X %s %04X %s %04X\n",p,row,
+			        phrase->note_[k],phrase->instr_[k],
+			        simCommandName(c1).c_str(),c1==I_CMD_NONE?0:phrase->param1_[k],
+			        simCommandName(c2).c_str(),c2==I_CMD_NONE?0:phrase->param2_[k]);
+			out << line;
+		}
+	}
+	InstrumentBank *bank=project->GetInstrumentBank();
+	for (int i=0;i<MAX_SAMPLEINSTRUMENT_COUNT;i++) {
+		I_Instrument *instr=bank->GetInstrument(i);
+		if (!instr || instr->IsEmpty()) continue;
+		InstrumentType type=instr->GetType();
+		sprintf(line,"instrument %02X type %s\n",i,(type>=0 && type<IT_LAST)?typeNames[type]:"?");
+		out << line;
+		IteratorPtr<Variable> it(instr->GetIterator());
+		for (it->Begin();!it->IsDone();it->Next()) {
+			Variable &v=it->CurrentItem();
+			sprintf(line,"instrument %02X ",i);
+			out << line << v.GetName() << "=" << v.GetString() << "\n";
+		}
+	}
+	TableHolder *tables=TableHolder::GetInstance();
+	for (int t=0;t<TABLE_COUNT;t++) {
+		Table &table=tables->GetTable(t);
+		for (int row=0;row<TABLE_STEPS;row++) {
+			FourCC cmds[3]={table.cmd1_[row],table.cmd2_[row],table.cmd3_[row]};
+			ushort params[3]={table.param1_[row],table.param2_[row],table.param3_[row]};
+			if (cmds[0]==I_CMD_NONE && cmds[1]==I_CMD_NONE && cmds[2]==I_CMD_NONE) continue;
+			sprintf(line,"table %02X %X",t,row);
+			out << line;
+			for (int c=0;c<3;c++) {
+				sprintf(line," %s %04X",simCommandName(cmds[c]).c_str(),cmds[c]==I_CMD_NONE?0:params[c]);
+				out << line;
+			}
+			out << "\n";
+		}
+	}
+	Groove *groove=Groove::GetInstance();
+	for (int g=0;g<MAX_GROOVES;g++) {
+		unsigned char *data=groove->GetGrooveData(g);
+		sprintf(line,"groove %02X",g);
+		out << line;
+		for (int s=0;s<16 && data[s]!=NO_GROOVE_DATA;s++) {
+			sprintf(line," %02X",data[s]);
+			out << line;
+		}
+		out << "\n";
+	}
+	Mixer *mixer=Mixer::GetInstance();
+	for (int l=0;l<MIXER_LEVELS;l++) {
+		sprintf(line,"mixer %X %02X\n",l,mixer->GetLevel(l));
+		out << line;
+	}
+	return out.str();
+}
+
+bool SDLEventManager::SimDumpSong(const std::string &path)
+{
+	std::string dump=BuildSimSongDump();
+	if (dump.empty()) {
+		Trace::Error("RGNANO_SIM sim_dump_song has no song");
+		return false;
+	}
+	std::ofstream file(path.c_str(),std::ios::binary);
+	file << dump;
+	file.close();
+	bool ok=!file.fail();
+	Trace::Log("RGNANO_SIM","sim_dump_song %s (%d bytes) => %s",path.c_str(),(int)dump.size(),ok?"ok":"write failed");
+	return ok;
+}
+
+bool SDLEventManager::ExpectSimSongDump(const std::string &path)
+{
+	std::ifstream file(path.c_str(),std::ios::binary);
+	if (!file.good()) {
+		Trace::Error("RGNANO_SIM expect_song_dump %s => missing (sim_dump_song makes it)",path.c_str());
+		return false;
+	}
+	std::vector<std::string> expected;
+	std::string line;
+	while (std::getline(file,line)) expected.push_back(line);
+	std::vector<std::string> actual;
+	std::istringstream dump(BuildSimSongDump());
+	while (std::getline(dump,line)) actual.push_back(line);
+
+	// Both dumps list things in the same order: walk them together and
+	// report the lines only one side has
+	int differences=0;
+	size_t a=0,e=0;
+	while (a<actual.size() || e<expected.size()) {
+		if (a<actual.size() && e<expected.size() && actual[a]==expected[e]) {
+			a++;
+			e++;
+			continue;
+		}
+		size_t later=expected.size();
+		for (size_t k=e;a<actual.size() && k<expected.size();k++) {
+			if (expected[k]==actual[a]) {
+				later=k;
+				break;
+			}
+		}
+		if (later<expected.size()) {
+			for (;e<later;e++) {
+				if (++differences<=40) Trace::Log("RGNANO_SIM","expect_song_dump missing: %s",expected[e].c_str());
+			}
+			continue;
+		}
+		later=actual.size();
+		for (size_t k=a;e<expected.size() && k<actual.size();k++) {
+			if (actual[k]==expected[e]) {
+				later=k;
+				break;
+			}
+		}
+		if (later<actual.size()) {
+			for (;a<later;a++) {
+				if (++differences<=40) Trace::Log("RGNANO_SIM","expect_song_dump extra: %s",actual[a].c_str());
+			}
+			continue;
+		}
+		if (e<expected.size()) {
+			if (++differences<=40) Trace::Log("RGNANO_SIM","expect_song_dump wanted: %s",expected[e].c_str());
+			e++;
+		}
+		if (a<actual.size()) {
+			if (++differences<=40) Trace::Log("RGNANO_SIM","expect_song_dump got: %s",actual[a].c_str());
+			a++;
+		}
+	}
+	bool ok=(differences==0);
+	Trace::Log("RGNANO_SIM","expect_song_dump %s lines=%d/%d differences=%d => %s",path.c_str(),
+	           (int)actual.size(),(int)expected.size(),differences,ok?"match":"mismatch");
+	return ok;
 }
 
 bool SDLEventManager::ExpectSimScreenSize(SDLGUIWindowImp *window, int width, int height)

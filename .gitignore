@@ -80,3 +80,4 @@ projects/lgpt-rgnano.elf.debug
 
 # Agent worktrees
 .claude/worktrees/
+rgnano-sim-data/samples/

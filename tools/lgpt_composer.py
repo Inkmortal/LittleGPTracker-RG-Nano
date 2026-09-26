@@ -61,6 +61,9 @@ CHORD_SHAPES = {
     "5": (0, 7),
 }
 
+MIXER_LEVELS = 12
+MIXER_UNITY = 0xC0
+
 NO_NOTE = 0xFF
 NO_INSTR = 0xFF
 CMD_NONE = "----"
@@ -290,6 +293,9 @@ class Project:
         self.song = [[0xFF] * 8 for _ in range(256)]
         self.tables: dict[int, list[tuple[str, int, str, int, str, int]]] = {}
         self.grooves: dict[int, list[int]] = {0: [6, 6]}
+        # Mixer screen: tracks 1-8, then the reverb, delay and chorus returns
+        # (and two spare levels); C0 = unity
+        self.mixer_levels: list[int] = [MIXER_UNITY] * MIXER_LEVELS
         self.sample_files: dict[str, Path] = {}
         self.extra_files: dict[str, Path] = {}  # copied next to lgptsav.dat (credits, notes)
 
@@ -305,6 +311,13 @@ class Project:
 
     def groove(self, index: int, ticks: Sequence[int]) -> None:
         self.grooves[index] = list(ticks)
+
+    def mixer(self, track: int, level: int) -> None:
+        """Mixer screen level of track 0-7 (8-10: reverb, delay, chorus
+        returns), 00-FF with C0 = unity."""
+        if not 0 <= track < MIXER_LEVELS or not 0 <= level <= 0xFF:
+            raise ValueError(f"bad mixer level {track}={level}")
+        self.mixer_levels[track] = level
 
     # --- instruments ------------------------------------------------------
     def synth(self, slot: int, preset: str, **params: object) -> int:
@@ -471,7 +484,12 @@ class Project:
         lines.append("    <GROOVES>")
         lines.append(self._hex_rows(bytes(groove), "DATA", ind))
         lines.append("    </GROOVES>")
-        lines.append("    <MIXER />")
+        if any(level != MIXER_UNITY for level in self.mixer_levels):
+            lines.append("    <MIXER>")
+            lines.append(self._hex_rows(bytes(self.mixer_levels), "LEVELS", ind))
+            lines.append("    </MIXER>")
+        else:
+            lines.append("    <MIXER />")
         lines.append("</LITTLEGPTRACKER>")
         return "\n".join(lines) + "\n"
 

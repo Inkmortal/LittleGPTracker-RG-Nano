@@ -8,11 +8,28 @@ A handful of finished songs to open, play and pull apart: the walkthrough song y
 <img src="images/demo-mixer.png" width="240" alt="Mixer during playback">
 </p>
 
-## Dusk — the walkthrough song
+## Afterglow — the walkthrough song
 
-`lgpt_Dusk` · D minor · 88 BPM with swing · 1:05
+`lgpt_Afterglow` · C minor · 128 BPM with swing · 1:00
 
-The song [Your First Song](Your-First-Song) builds step by step, finished. Only the new-song synth kit: bouncy kick, backbeat snare, breathing hats, `Dm7 Bbmaj7 Gm7 A7` pad chords with `CHRD`, a bass locked to the kick, a plucked hook with a dotted-8th echo, and a pad through the chorus.
+The melodic house track [Your First Song](Your-First-Song) builds press by press, finished. It starts from the synth kit every new song has and ends up using nearly everything the app does.
+
+| Track | Part |
+| --- | --- |
+| 1 | Macro Synth kick, four on the floor |
+| 2 | Macro Synth snare with a reverb send; a `ROLL` + `VOLM` roll into each drop |
+| 3 | Macro Synth hats, 16ths made with the fill tool, every 4th one `CHNC 0080` |
+| 4 | rolling 8th-note bass (the starter kit's `bass`) |
+| 5 | HyperSynth `hyper pad`, chord `maj9` with `scale on`, ducked by the kick (MOD `trig`), lows cut with its EQ |
+| 6 | FM4 `epiano` stabs on the off-beats, `CHRD 007E` |
+| 7 | HyperSynth `trance lead`: the hook |
+| 8 | a reversed crash from the `drums-909` pack, and one bar of the pad rendered to a sample and reversed |
+
+**Look at:**
+- **One bar, four chords** — the bass, pad and keys chains play the same phrase four times with transposes `00 FC 03 FE`: Cm9, A♭maj9, E♭maj9, B♭9.
+- **Song rows 00–07** — intro, build, drop, drop, break, build, drop, outro. Chain `07` is the rest (a `KILL`), on every cell where a part drops out.
+- **The Groove** — `07 05` swings the 16ths.
+- **Mix** — Mixer (kick up, bass down), FX reverb size, master EQ, limiter, and Project `Drive: 70` for headroom.
 
 ## Neon Drive — synthwave
 

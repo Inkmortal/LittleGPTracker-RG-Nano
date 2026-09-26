@@ -6,7 +6,7 @@ the helper, dialogs, playback, live mode, faders. Seeded, so a crash found
 with one seed can be replayed exactly.
 
     python tools/make_soak_script.py --minutes 15 --seed 1
-    powershell -File tools/run-rgnano-sim.ps1 -Script projects/resources/RGNANO_SIM/soak.rgsim -Mute -OpenDemo Dusk
+    powershell -File tools/run-rgnano-sim.ps1 -Script projects/resources/RGNANO_SIM/soak.rgsim -Mute -OpenDemo Afterglow
 
 Memory is logged every 30 s as [HEARTBEAT] lines in projects/rgnano-sim.log.
 """

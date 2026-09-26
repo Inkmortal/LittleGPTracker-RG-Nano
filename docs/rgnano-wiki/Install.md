@@ -13,7 +13,7 @@ The zip contains:
 ```text
 lgpt-rgnano/
 ├── lgpt-rgnano.opk          the app
-├── Tracks/                  demo songs (lgpt_Dusk, lgpt_NeonDrive, ... one per genre)
+├── Tracks/                  demo songs (lgpt_Afterglow, lgpt_NeonDrive, ... one per genre)
 ├── Samples/                 sample packs (keys, strings, drums-808, ...)
 └── LGPT-Guide/              this guide, as Markdown files
 ```

@@ -4,10 +4,16 @@ param(
   [switch]$Skin,
   [switch]$SeedSampleFixture,
   [switch]$SeedLofiFixture,
+  # Copy the shipped sample packs (projects/resources/samples) into the sim
+  [switch]$SeedSamplePacks,
   [switch]$ResetLastProject,
   # Copy a shipped demo song (e.g. JadeSword) into the sim and auto-load it
   [string]$OpenDemo = "",
   [switch]$Mute,
+  # Seed for the suggested song names, so they are the same every run
+  [string]$NameSeed = "",
+  # No key auto-repeat: every scripted press is exactly one press
+  [switch]$NoKeyRepeat,
   [switch]$Visible,
   [string]$ArtifactsDir = ""
 )
@@ -186,8 +192,21 @@ function Write-LofiWav {
   }
 }
 
-if ($SeedSampleFixture -or $SeedLofiFixture) {
+if ($SeedSampleFixture -or $SeedLofiFixture -or $SeedSamplePacks) {
   Get-ChildItem -LiteralPath $sampleDir -Filter "*.wav" -File -ErrorAction SilentlyContinue | Remove-Item -Force
+  # Pack folders from a -SeedSamplePacks run would change what the sample
+  # browser lists first
+  Get-ChildItem -LiteralPath $sampleDir -Directory -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+}
+
+if ($SeedSamplePacks) {
+  # The sample packs the install puts in Applications/Samples
+  Get-ChildItem -LiteralPath (Join-Path $root "projects\resources\samples") -Directory | ForEach-Object {
+    $packDest = Join-Path $sampleDir $_.Name
+    New-Item -ItemType Directory -Force -Path $packDest | Out-Null
+    Get-ChildItem -LiteralPath $_.FullName -File | Where-Object { $_.Extension -in ".wav", ".md" } |
+      Copy-Item -Destination $packDest -Force
+  }
 }
 
 if ($SeedSampleFixture) {
@@ -255,6 +274,15 @@ $args += "-RGNANOSIM_LOG=$(Join-Path $exeDir 'rgnano-sim.log')"
 if ($Mute) {
   # Audio is still rendered, measured and captured, just not played
   $args += "-RGNANOSIM_MUTE=YES"
+}
+if ($NoKeyRepeat) {
+  # Long scripts of single presses: a busy machine can hold a key past the
+  # repeat delay (250 ms) and turn one press into two
+  $args += "-KEYDELAY=600000"
+}
+if ($NameSeed) {
+  # The same "random" song names every run (walkthrough screenshots)
+  $args += "-RGNANOSIM_NAMESEED=$NameSeed"
 }
 if ($Skin -or -not $Script) {
   $args += "-RGNANOSIM_SKIN=YES"

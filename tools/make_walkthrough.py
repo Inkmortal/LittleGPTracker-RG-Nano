@@ -1,0 +1,397 @@
+#!/usr/bin/env python3
+"""Build "Your First Song" from its step list, in the real app.
+
+tools/walkthrough/steps.py lists every button press of the walkthrough with a
+caption. This script:
+
+1. writes projects/resources/RGNANO_SIM/first-song-walkthrough.rgsim: the
+   presses as a simulator test that ends by checking that the song you built
+   equals the demo song (tools/demos/afterglow.py) knob for knob. It runs in
+   the sim suite, so the guide can never drift from the app;
+2. runs those presses in the simulator from a fresh start (the start screen
+   lists only the shipped demo songs, the suggested song name is seeded),
+   with a screenshot after every step;
+3. draws each screenshot at 2x above a picture of the RG Nano's buttons, the
+   pressed ones lit (held ones in cream, the tapped one in orange), into
+   docs/rgnano-wiki/images/walkthrough/NNN.png;
+4. writes docs/rgnano-wiki/Your-First-Song.md: one caption and one picture
+   per step.
+
+Then run python tools/build_ingame_guide.py so the app's built-in guide (text
+only) gets the new captions.
+
+Usage:
+    python tools/make_walkthrough.py            # everything (sim already built)
+    python tools/make_walkthrough.py --no-capture   # script + page, reuse images
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import shutil
+import subprocess
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFont
+
+TOOLS = Path(__file__).resolve().parent
+ROOT = TOOLS.parent
+PROJECTS = ROOT / "projects"
+SIM_SCRIPTS = PROJECTS / "resources" / "RGNANO_SIM"
+TEST_SCRIPT = SIM_SCRIPTS / "first-song-walkthrough.rgsim"
+REFERENCE_SCRIPT = SIM_SCRIPTS / "first-song-reference.rgsim"
+WIKI = ROOT / "docs" / "rgnano-wiki"
+PAGE = WIKI / "Your-First-Song.md"
+IMAGES = WIKI / "images" / "walkthrough"
+TRACKS = ROOT / "rgnano-sim-data" / "tracks"
+PARKED = ROOT / "rgnano-sim-data" / "tracks-parked-for-walkthrough"
+# Written by the first-song-reference suite case (the demo, opened in the
+# app) and read by the walkthrough case; both run in the suite, in order
+RENDER_ASSET = TOOLS / "demos" / "assets" / "afterglow-rs_01.wav"
+REFERENCE_DUMP = "sim-artifacts-suite/first-song-reference.txt"
+WALKTHROUGH_DUMP = "sim-artifacts-suite/first-song-walkthrough.txt"
+NAME_SEED = "7"
+SONG_NAME = "GLOW"      # what the walkthrough types in the New song box
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+
+sys.path.insert(0, str(TOOLS))
+from walkthrough.steps import DEMO_NAME, INTRO, OUTRO, SECTIONS, Section, Step  # noqa: E402
+
+# --- keys ---------------------------------------------------------------------
+
+BUTTONS = {
+    # name in steps.py: (simulator key, label on the page)
+    "Up": ("u", "Up"), "Down": ("d", "Down"), "Left": ("l", "Left"), "Right": ("r", "Right"),
+    "A": ("a", "A"), "B": ("b", "B"), "LB": ("m", "LB"), "RB": ("n", "RB"),
+    "Start": ("s", "Start"), "Select": ("k", "Select"),
+}
+PRESS_MS = 80
+SETTLE_MS = 150
+
+
+@dataclass
+class Input:
+    held: list[str]    # modifiers, held down in this order
+    key: str           # the button tapped while they are held
+    count: int         # how many taps
+
+    @property
+    def label(self) -> str:
+        text = " + ".join(BUTTONS[b][1] for b in self.held + [self.key])
+        return f"{text} ({self.count} times)" if self.count > 1 else text
+
+
+def parse_keys(spec: str) -> Input | None:
+    """'A', 'Down x4', 'RB+Right', 'A+Right x15' -> Input; '' -> None (no input)."""
+    spec = spec.strip()
+    if not spec:
+        return None
+    m = re.fullmatch(r"([A-Za-z+]+)(?:\s+x(\d+))?", spec)
+    if not m:
+        raise ValueError(f"bad keys {spec!r}")
+    names = m.group(1).split("+")
+    for n in names:
+        if n not in BUTTONS:
+            raise ValueError(f"unknown button {n!r} in {spec!r}")
+    return Input(held=names[:-1], key=names[-1], count=int(m.group(2) or 1))
+
+
+# The test doesn't need to hear a whole bar after every Start: longer waits
+# are only for the pictures (a step without a button keeps its wait: it is
+# waiting for the app, like a render finishing)
+TEST_MAX_WAIT_MS = 800
+
+
+def sim_lines(inp: Input | None, step: Step, screenshots: bool = True) -> list[str]:
+    lines: list[str] = []
+    if inp:
+        for mod in inp.held:
+            lines.append(f"down {BUTTONS[mod][0]}")
+        for _ in range(inp.count):
+            lines.append(f"press {BUTTONS[inp.key][0]} {PRESS_MS}")
+        for mod in reversed(inp.held):
+            lines.append(f"up {BUTTONS[mod][0]}")
+    wait = step.wait or SETTLE_MS
+    if not screenshots and inp:
+        wait = min(wait, TEST_MAX_WAIT_MS)
+    lines.append(f"wait {wait}")
+    for text in step.expect:
+        lines.append(f"expect_screen_text {text}")
+    return lines
+
+
+def all_steps() -> list[tuple[Section, Step]]:
+    return [(section, step) for section in SECTIONS for step in section.steps]
+
+
+def build_script(screenshots: bool, check: bool = True) -> str:
+    out = [
+        "# GENERATED by tools/make_walkthrough.py from tools/walkthrough/steps.py.",
+        "# Every button press of docs/rgnano-wiki/Your-First-Song.md, from the start",
+        f"# screen of a fresh app to the finished {DEMO_NAME}; at the end the song must",
+        f"# equal the {DEMO_NAME} demo (dumped by first-song-reference.rgsim).",
+        # A GLOW left by an earlier run would make the name "taken"
+        f"sim_remove_project lgpt_{SONG_NAME}",
+        "wait 800",
+    ]
+    n = 0
+    for section, step in all_steps():
+        inp = parse_keys(step.keys)
+        out.append(f"# {n:03d} [{section.title}] {inp.label if inp else '(no input)'}")
+        out.extend(sim_lines(inp, step, screenshots))
+        if screenshots:
+            out.append(f"screenshot_app wt-{n:03d}.bmp")
+        n += 1
+    # The song as built, for a look when the check below fails
+    out.append(f"sim_dump_song {WALKTHROUGH_DUMP}")
+    if check:
+        out.append(f"expect_song_dump {REFERENCE_DUMP}")
+    out += ["expect_no_error", "quit"]
+    return "\n".join(out) + "\n"
+
+
+# --- simulator ----------------------------------------------------------------
+
+def run_sim(script: Path, *extra: str) -> None:
+    cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+           str(TOOLS / "run-rgnano-sim.ps1"), "-Script", str(script), "-Mute", *extra]
+    result = subprocess.run(cmd, cwd=ROOT, creationflags=NO_WINDOW)
+    if result.returncode != 0:
+        raise SystemExit(f"{script.name} failed (exit {result.returncode}); see projects/rgnano-sim.log")
+
+
+def capture(check: bool = True, update_asset: bool = False) -> list[Path]:
+    """Run the walkthrough with a screenshot after every step; returns the BMPs."""
+    for old in ROOT.glob("wt-*.bmp"):
+        old.unlink()
+    (ROOT / "sim-artifacts-suite").mkdir(exist_ok=True)
+    run_sim(REFERENCE_SCRIPT, "-OpenDemo", DEMO_NAME)
+
+    capture_script = PROJECTS / "first-song-capture.rgsim"
+    capture_script.write_text(build_script(screenshots=True, check=check), encoding="ascii")
+    # The start screen should look like a fresh install: only the shipped demos
+    if PARKED.exists():
+        raise SystemExit(f"{PARKED} is left from an interrupted run; move it back to {TRACKS}")
+    if TRACKS.exists():
+        TRACKS.rename(PARKED)
+    try:
+        TRACKS.mkdir(parents=True)
+        for demo in sorted((PROJECTS / "resources" / "demos").iterdir()):
+            if demo.is_dir():
+                shutil.copytree(demo, TRACKS / demo.name)
+        run_sim(capture_script, "-ResetLastProject", "-SeedSamplePacks", "-NoKeyRepeat", "-NameSeed", NAME_SEED)
+        if update_asset:
+            # The bar the walkthrough resamples, for the demo song
+            shutil.copyfile(TRACKS / f"lgpt_{SONG_NAME}" / "samples" / "rs_01.wav", RENDER_ASSET)
+            print(f"updated {RENDER_ASSET.relative_to(ROOT)}")
+    finally:
+        shutil.rmtree(TRACKS, ignore_errors=True)
+        if PARKED.exists():
+            PARKED.rename(TRACKS)
+        capture_script.unlink(missing_ok=True)
+    shots = sorted(ROOT.glob("wt-*.bmp"))
+    if len(shots) != len(all_steps()):
+        raise SystemExit(f"expected {len(all_steps())} screenshots, got {len(shots)}")
+    return shots
+
+
+# --- pictures -----------------------------------------------------------------
+
+# The app's own colours (default theme)
+BG = (0x12, 0x12, 0x14)
+TEXT = (0xE6, 0xE4, 0xDF)
+CREAM = (0xE8, 0xD8, 0xB8)     # the cursor / selection colour
+ORANGE = (0xF0, 0xA0, 0x60)    # headings, "play" accents
+GREY = (0x80, 0x7C, 0x78)
+DARK = (0x34, 0x32, 0x31)
+BODY = (0x1C, 0x1C, 0x1F)
+KEY_IDLE = (0x2A, 0x29, 0x28)
+
+SCREEN = 480            # 240x240 at 2x, nearest neighbour
+PANEL = 196
+
+
+def font(size: int) -> ImageFont.FreeTypeFont:
+    return ImageFont.load_default(size=size)
+
+
+def draw_panel(draw: ImageDraw.ImageDraw, top: int, inp: Input | None) -> None:
+    held = set(inp.held) if inp else set()
+    tapped = inp.key if inp else None
+    draw.rectangle([0, top, SCREEN - 1, top + PANEL - 1], fill=BODY)
+    draw.line([0, top, SCREEN - 1, top], fill=DARK, width=2)
+
+    def colours(name: str) -> tuple[tuple, tuple, tuple]:
+        if name == tapped:
+            return ORANGE, ORANGE, BG
+        if name in held:
+            return CREAM, CREAM, BG
+        return KEY_IDLE, GREY, GREY
+
+    def tag(x: int, y: int, name: str) -> None:
+        """'HOLD' over a held button, the tap count next to the tapped one."""
+        if name in held:
+            draw.text((x, y), "HOLD", fill=CREAM, font=font(13), anchor="mm")
+        if name == tapped and inp and inp.count > 1:
+            draw.text((x, y), f"x{inp.count}", fill=ORANGE, font=font(17), anchor="mm")
+
+    def pill(box: tuple[int, int, int, int], name: str, label: str, size: int = 16) -> None:
+        fill, outline, ink = colours(name)
+        draw.rounded_rectangle(box, radius=(box[3] - box[1]) // 2, fill=fill, outline=outline, width=2)
+        draw.text(((box[0] + box[2]) // 2, (box[1] + box[3]) // 2), label, fill=ink,
+                  font=font(size), anchor="mm")
+
+    # Shoulders
+    y0 = top + 14
+    pill((16, y0, 124, y0 + 30), "LB", "LB")
+    pill((SCREEN - 124, y0, SCREEN - 16, y0 + 30), "RB", "RB")
+    tag(70, y0 + 44, "LB")
+    tag(SCREEN - 70, y0 + 44, "RB")
+
+    # D-pad: a cross of four keys around a hub
+    cx, cy, s = 104, top + 112, 30
+    draw.rectangle([cx - s // 2, cy - s // 2, cx + s // 2, cy + s // 2], fill=KEY_IDLE)
+    arms = {"Up": (0, -1), "Down": (0, 1), "Left": (-1, 0), "Right": (1, 0)}
+    for name, (dx, dy) in arms.items():
+        x, y = cx + dx * s, cy + dy * s
+        fill, outline, ink = colours(name)
+        draw.rectangle([x - s // 2, y - s // 2, x + s // 2, y + s // 2], fill=fill, outline=outline, width=2)
+        # a small triangle pointing out of the pad
+        t = 7
+        tip = (x + dx * t, y + dy * t)
+        base = [(x - dy * t - dx * t // 2, y - dx * t - dy * t // 2),
+                (x + dy * t - dx * t // 2, y + dx * t - dy * t // 2)]
+        draw.polygon([tip] + base, fill=ink)
+    # Tap count / hold, just outside the pad on the right
+    for name, (dx, dy) in arms.items():
+        label = None
+        if name == tapped and inp and inp.count > 1:
+            label, colour, size = f"x{inp.count}", ORANGE, 18
+        elif name in held:
+            label, colour, size = "HOLD", CREAM, 13
+        if label:
+            draw.text((cx + 2 * s + 4, cy + dy * s), label, fill=colour, font=font(size), anchor="lm")
+
+    # Face buttons, laid out like the RG Nano: Y top, X left, B right, A bottom
+    fx, fy, gap, r = SCREEN - 104, top + 112, 36, 19
+    faces = {"Y": (0, -1), "X": (-1, 0), "B": (1, 0), "A": (0, 1)}
+    for name, (dx, dy) in faces.items():
+        x, y = fx + dx * gap, fy + dy * gap
+        fill, outline, ink = colours(name)
+        if name in ("X", "Y"):   # the app doesn't use them
+            fill, outline, ink = BODY, DARK, DARK
+        draw.ellipse([x - r, y - r, x + r, y + r], fill=fill, outline=outline, width=2)
+        draw.text((x, y), name, fill=ink, font=font(18), anchor="mm")
+    for name in ("A", "B"):
+        dx, dy = faces[name]
+        x, y = fx + dx * gap, fy + dy * gap
+        label = None
+        if name == tapped and inp and inp.count > 1:
+            label, colour, size = f"x{inp.count}", ORANGE, 18
+        elif name in held:
+            label, colour, size = "HOLD", CREAM, 13
+        if label:
+            # left of A, under B
+            pos = (x - r - 8, y) if name == "A" else (x, y + r + 12)
+            draw.text(pos, label, fill=colour, font=font(size), anchor="rm" if name == "A" else "mm")
+
+    # Select (the FN key) and Start
+    sy = top + PANEL - 34
+    pill((SCREEN // 2 - 92, sy, SCREEN // 2 - 8, sy + 22), "Select", "SELECT", 13)
+    pill((SCREEN // 2 + 8, sy, SCREEN // 2 + 92, sy + 22), "Start", "START", 13)
+    tag(SCREEN // 2 - 50, sy - 12, "Select")
+    tag(SCREEN // 2 + 50, sy - 12, "Start")
+
+    # What to do, in words
+    words = inp.label if inp else "no button: just look"
+    draw.text((SCREEN // 2, top + 30), words, fill=ORANGE if inp else GREY, font=font(20), anchor="mm")
+
+
+def compose(bmp: Path, inp: Input | None, out: Path) -> None:
+    screen = Image.open(bmp).convert("RGB")
+    if screen.size != (240, 240):
+        screen = screen.resize((240, 240), Image.NEAREST)
+    screen = screen.resize((SCREEN, SCREEN), Image.NEAREST)
+    img = Image.new("RGB", (SCREEN, SCREEN + PANEL), BG)
+    img.paste(screen, (0, 0))
+    draw_panel(ImageDraw.Draw(img), SCREEN, inp)
+    # A handful of flat colours: a small palette PNG
+    img.quantize(colors=32, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).save(out, optimize=True)
+
+
+# --- the page -----------------------------------------------------------------
+
+def image_name(n: int) -> str:
+    return f"{n:03d}.png"
+
+
+def anchor(title: str) -> str:
+    """GitHub wiki heading anchor."""
+    return re.sub(r"[^a-z0-9 -]", "", title.lower()).replace(" ", "-")
+
+
+def build_page() -> str:
+    out = [INTRO.strip(), "", "## Contents", ""]
+    first = 0
+    for section in SECTIONS:
+        out.append(f"- [{section.title}](#{anchor(section.title)}) (steps {first}-{first + len(section.steps) - 1})")
+        first += len(section.steps)
+    out.append("")
+    n = 0
+    for section in SECTIONS:
+        out.append(f"## {section.title}")
+        out.append("")
+        if section.text.strip():
+            out.append(section.text.strip())
+            out.append("")
+        for step in section.steps:
+            inp = parse_keys(step.keys)
+            keys = f"**{inp.label}**: " if inp else ""
+            out.append(f"**{n}.** {keys}{step.say.strip()}")
+            out.append("")
+            alt = (inp.label if inp else "Look") + " - " + re.sub(r"[`*_\"<>]", "", step.say.strip())
+            out.append(f'<img src="images/walkthrough/{image_name(n)}" width="240" alt="{alt}">')
+            out.append("")
+            n += 1
+    out.append(OUTRO.strip())
+    return "\n".join(out) + "\n"
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--no-capture", action="store_true", help="only write the test script and the page")
+    ap.add_argument("--draft", action="store_true",
+                    help="while writing steps.py: capture without checking the finished song")
+    ap.add_argument("--update-asset", action="store_true",
+                    help="copy the bar the walkthrough renders (rs_01.wav) into the demo's assets")
+    args = ap.parse_args()
+
+    steps = all_steps()
+    for _, step in steps:
+        parse_keys(step.keys)  # fail early on a typo
+    TEST_SCRIPT.write_text(build_script(screenshots=False), encoding="ascii", newline="\n")
+    print(f"wrote {TEST_SCRIPT.relative_to(ROOT)}: {len(steps)} steps")
+
+    if not args.no_capture:
+        shots = capture(check=not args.draft, update_asset=args.update_asset)
+        IMAGES.mkdir(parents=True, exist_ok=True)
+        for old in IMAGES.glob("*.png"):
+            old.unlink()
+        total = 0
+        for n, ((_, step), bmp) in enumerate(zip(steps, shots)):
+            target = IMAGES / image_name(n)
+            compose(bmp, parse_keys(step.keys), target)
+            total += target.stat().st_size
+            bmp.unlink()
+        print(f"wrote {len(shots)} pictures to {IMAGES.relative_to(ROOT)} ({total / 1024:.0f} KB)")
+
+    PAGE.write_text(build_page(), encoding="utf-8", newline="\n")
+    print(f"wrote {PAGE.relative_to(ROOT)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdlib>
 #include "time.h"
+#include "Application/Model/Config.h"
 
 // Song-title style names: a mood word + a place/thing, e.g. NeonTide,
 // JadeRiver, MidnightRun. Every pair fits MAX_NAME_LENGTH (12).
@@ -32,7 +33,10 @@ static bool randomNamesSeeded = false;
 
 std::string getRandomName() {
     if (!randomNamesSeeded) {
-        srand((unsigned)time(NULL));
+        // The simulator can ask for the same names every run
+        // (-RGNANOSIM_NAMESEED=n), so scripted screenshots don't change
+        const char *seed = Config::GetInstance()->GetValue("RGNANOSIM_NAMESEED");
+        srand(seed ? (unsigned)atoi(seed) : (unsigned)time(NULL));
         randomNamesSeeded = true;
     }
     const int moods = sizeof(nameMoods) / sizeof(nameMoods[0]);

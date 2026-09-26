@@ -240,7 +240,20 @@ $suite = @(
   @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
-    Args = @("-OpenDemo=Dusk")
+    Args = @("-OpenDemo=Afterglow")
+  },
+  @{
+    # Dumps the Afterglow demo for first-song-walkthrough (keep them in order)
+    Name = "first-song-reference"
+    Script = "first-song-reference.rgsim"
+    Args = @("-OpenDemo=Afterglow")
+  },
+  @{
+    # Every press of "Your First Song" (tools/make_walkthrough.py), from a
+    # fresh start; the song it ends with must equal the Afterglow demo
+    Name = "first-song-walkthrough"
+    Script = "first-song-walkthrough.rgsim"
+    Args = @("-ResetLastProject", "-SeedSamplePacks", "-NoKeyRepeat", "-NameSeed=7")
   },
   @{
     Name = "fx-screen"

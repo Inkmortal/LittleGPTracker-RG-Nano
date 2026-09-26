@@ -158,6 +158,9 @@ private:
 	bool SimSetPhraseCommand(int phrase, int row, int slot, const std::string &command, const std::string &param);
 	bool SimSetTableCommand(int table, int row, int slot, const std::string &command, const std::string &param);
 	bool SimSaveProject();
+	std::string BuildSimSongDump();
+	bool SimDumpSong(const std::string &path);
+	bool ExpectSimSongDump(const std::string &path);
 	bool ExpectSimScreenSize(SDLGUIWindowImp *window, int width, int height);
 	bool ExpectSimScreenColors(SDLGUIWindowImp *window, int minColors);
 	bool ExpectSimSkinFrameClean(SDLGUIWindowImp *window);

@@ -79,7 +79,7 @@ def main() -> int:
             parked.rename(tracks)
 
     # Demo screens: open each demo through AUTO_LOAD_LAST
-    for demo_name, script in (("NeonDrive", "wiki-shots-demo.rgsim"), ("Dusk", "wiki-shots-dusk.rgsim")):
+    for demo_name, script in (("NeonDrive", "wiki-shots-demo.rgsim"), ("Afterglow", "wiki-shots-afterglow.rgsim")):
         run_demo(demo_name, SCRIPTS / script)
 
     count = 0
