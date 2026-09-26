@@ -2477,14 +2477,16 @@
    mute / solo the track;
    RB + LB unmutes all
 *B + LB
-   start a selection
-   (again: grow it to whole
-   rows, then the whole
-   block). In a selection B
-   copies, A + LB cuts, A +
-   D-pad changes every
-   selected value; without
-   one, A + LB pastes
+   start a selection; move
+   to grow it, or hold LB
+   and tap B to grow it to
+   whole rows, then the
+   whole block. In a
+   selection B copies, A +
+   LB cuts, A + D-pad
+   changes every selected
+   value; without one, A +
+   LB pastes
 *Select
    this screen's special
    tool: command picker,

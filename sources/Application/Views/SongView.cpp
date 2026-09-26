@@ -771,7 +771,7 @@ void SongView::toggleLiveMode() {
     Player *player = Player::GetInstance();
     bool live = player->GetSequencerMode() != SM_LIVE;
     player->SetSequencerMode(live ? SM_LIVE : SM_SONG);
-    SetNotification(live ? "LIVE: Start cues a cell" : "SONG mode", 0);
+    SetNotification(live ? "LIVE: Start cues a cell" : "SONG mode");
     isDirty_ = true;
 }
 

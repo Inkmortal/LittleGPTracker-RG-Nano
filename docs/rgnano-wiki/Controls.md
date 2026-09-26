@@ -18,7 +18,7 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **LB + Start** | capture or launch: record this bar/chain into a sample, or on the Song launch the row live |
 | **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, MOD slot, song section or bookmark) |
 | **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
-| **B + LB** | start a selection (again: grow it to whole rows, then the whole block). In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
+| **B + LB** | start a selection; move to grow it, or hold **LB** and tap **B** to grow it to whole rows, then the whole block. In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
 | **Select** | this screen's special tool: command picker, Live mode, sample import/root/editor, rename, sort |
 | **A + Select** | mark it: bookmark the Song row |
 | **B + Select** / **LB + Select** | undo / redo any change, on every screen (hold B or LB first) |
