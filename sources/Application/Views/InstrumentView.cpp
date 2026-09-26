@@ -1404,6 +1404,15 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
                 (varID == SIP_PRINTFX)) {
                 viewMode_ = VM_NEW;
 			}
+            // No sample yet (no markers to move either): A adds one
+            if (varID == SIP_SAMPLE) {
+                I_Instrument *instr = viewData_->project_->GetInstrumentBank()
+                    ->GetInstrument(viewData_->currentInstrument_);
+                if (instr && instr->IsEmpty()) {
+                    openSampleEditor();
+                    return;
+                }
+            }
         } else {
 
             // R Modifier

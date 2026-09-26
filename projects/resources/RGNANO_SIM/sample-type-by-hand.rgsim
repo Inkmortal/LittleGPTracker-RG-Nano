@@ -1,0 +1,38 @@
+# The by-hand path: Phrase -> Instrument, type to sample with A+Left,
+# Down to "sample none", A opens the browser, Import assigns the file
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+wait 100
+down n
+press r 80
+up n
+wait 300
+expect_view instrument
+press u 80
+wait 100
+press u 80
+wait 100
+down a
+press l 80
+up a
+wait 300
+expect_screen_text SAMPLE
+press d 80
+wait 100
+press a 80
+wait 400
+expect_screen_text Listen
+press d 80
+wait 100
+press r 80
+wait 100
+press a 80
+wait 800
+expect_screen_text lofi-chord.wav
+expect_no_error
+quit

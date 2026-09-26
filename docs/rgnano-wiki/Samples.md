@@ -93,6 +93,7 @@ Source and Loop show the waveform with three markers: **S** start, **L** loop st
 | **LB + A + Left/Right** | nudge it |
 | **A + Start** | hear the sample from S to E (**RB + A + Left/Right**: an octave down/up) |
 | **RB + Start** | switch that preview between once and loop (`PREV:` on screen), in the play mode's direction |
+| **A** on `sample none` | open the sample browser to pick one |
 | **Select** | open the [sample editor](#sample-editing) from any page (on `sample`: import; on `root`: find the root; no sample yet: the sample browser) |
 
 ## Sample editing

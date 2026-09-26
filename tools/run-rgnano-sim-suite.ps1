@@ -233,6 +233,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "sample-type-by-hand"
+    Script = "sample-type-by-hand.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "undo"
     Script = "undo.rgsim"
     Args = @("-ResetLastProject")
