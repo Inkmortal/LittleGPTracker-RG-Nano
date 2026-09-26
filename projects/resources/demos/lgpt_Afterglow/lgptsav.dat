@@ -2,7 +2,7 @@
     <PROJECT VERSION="1">
         <PARAMETER NAME="tempo" VALUE="128" />
         <PARAMETER NAME="master" VALUE="100" />
-        <PARAMETER NAME="pregain" VALUE="100" />
+        <PARAMETER NAME="pregain" VALUE="70" />
         <PARAMETER NAME="softclip" VALUE="Bypass" />
         <PARAMETER NAME="softclipGain" VALUE="[unity]" />
         <PARAMETER NAME="wrap" VALUE="false" />
@@ -14,7 +14,7 @@
         <PARAMETER NAME="midi" VALUE="(null)" />
         <PARAMETER NAME="reverb size" VALUE="176" />
         <PARAMETER NAME="eq high gain" VALUE="144" />
-        <PARAMETER NAME="limiter drive" VALUE="64" />
+        <PARAMETER NAME="limiter drive" VALUE="16" />
     </PROJECT>
     <SONG>
         <SONG>

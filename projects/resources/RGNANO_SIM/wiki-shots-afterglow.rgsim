@@ -1,0 +1,19 @@
+# Screenshots of the shared effects: the Afterglow demo (loaded via
+# AUTO_LOAD_LAST), the song "Your First Song" builds.
+wait 1500
+expect_view song
+goto fx
+wait 200
+expect_screen_text CHORUS
+screenshot_app wiki-fx.bmp
+goto eq
+goto limit
+focus drive
+press s 80
+wait 2500
+screenshot_app wiki-limit.bmp
+press s 80
+wait 200
+goto song
+expect_no_error
+quit

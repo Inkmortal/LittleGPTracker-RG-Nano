@@ -12,6 +12,8 @@ param(
   [switch]$Mute,
   # Seed for the suggested song names, so they are the same every run
   [string]$NameSeed = "",
+  # No key auto-repeat: every scripted press is exactly one press
+  [switch]$NoKeyRepeat,
   [switch]$Visible,
   [string]$ArtifactsDir = ""
 )
@@ -272,6 +274,11 @@ $args += "-RGNANOSIM_LOG=$(Join-Path $exeDir 'rgnano-sim.log')"
 if ($Mute) {
   # Audio is still rendered, measured and captured, just not played
   $args += "-RGNANOSIM_MUTE=YES"
+}
+if ($NoKeyRepeat) {
+  # Long scripts of single presses: a busy machine can hold a key past the
+  # repeat delay (250 ms) and turn one press into two
+  $args += "-KEYDELAY=600000"
 }
 if ($NameSeed) {
   # The same "random" song names every run (walkthrough screenshots)

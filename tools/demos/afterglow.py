@@ -49,9 +49,10 @@ def build() -> Project:
     p.key("C", "Aeolian mode (minor)")
     p.groove(0, [7, 5])                       # swing
     # Mix: FX screen, master EQ and limiter, mixer faders
+    p.set("pregain", 70)                      # Project "Drive": headroom for 8 tracks
     p.params["reverb size"] = str(0xB0)       # a bigger room
     p.params["eq high gain"] = str(0x90)      # a little air on the whole mix
-    p.params["limiter drive"] = str(0x40)     # louder, and never clips
+    p.params["limiter drive"] = str(0x10)     # catches every peak
     p.mixer(0, 0xFF)                          # kick up
     p.mixer(3, 0x90)                          # bass down
 

@@ -4,69 +4,69 @@
 # equal the Afterglow demo (dumped by first-song-reference.rgsim).
 sim_remove_project lgpt_GLOW
 wait 800
-# 000 [1. A new song] (no input)
+# 000 [1. The start screen] (no input)
 wait 150
-# 001 [1. A new song] Right
+# 001 [1. The start screen] Right
 press r 80
 wait 150
-# 002 [1. A new song] A
+# 002 [1. The start screen] A
 press a 80
 wait 150
 expect_screen_text NEW SONG
-# 003 [1. A new song] Down
+# 003 [1. The start screen] Down
 press d 80
 wait 150
-# 004 [1. A new song] Left (3 times)
+# 004 [1. The start screen] Left (3 times)
 press l 80
 press l 80
 press l 80
 wait 150
-# 005 [1. A new song] A
+# 005 [1. The start screen] A
 press a 80
 wait 150
-# 006 [1. A new song] Down
+# 006 [1. The start screen] Down
 press d 80
 wait 150
-# 007 [1. A new song] Left (5 times)
+# 007 [1. The start screen] Left (5 times)
 press l 80
 press l 80
 press l 80
 press l 80
 press l 80
 wait 150
-# 008 [1. A new song] A
+# 008 [1. The start screen] A
 press a 80
 wait 150
-# 009 [1. A new song] Right (3 times)
+# 009 [1. The start screen] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 010 [1. A new song] A
+# 010 [1. The start screen] A
 press a 80
 wait 150
-# 011 [1. A new song] Down
+# 011 [1. The start screen] Down
 press d 80
 wait 150
-# 012 [1. A new song] Left (2 times)
+# 012 [1. The start screen] Left (2 times)
 press l 80
 press l 80
 wait 150
-# 013 [1. A new song] A
+# 013 [1. The start screen] A
 press a 80
 wait 150
 expect_screen_text GLOW
-# 014 [1. A new song] Start
+# 014 [1. The start screen] Start
 press s 80
 wait 800
 expect_screen_text Song - GLOW
-# 015 [1. A new song] RB + Select
+# 015 [1. The start screen] RB + Select
 down n
 press k 80
 up n
 wait 150
 expect_screen_text MAP
-# 016 [1. A new song] RB + Select
+# 016 [1. The start screen] RB + Select
 down n
 press k 80
 up n
@@ -173,30 +173,30 @@ press a 80
 wait 150
 # 038 [3. The kick] Start
 press s 80
-wait 2600
+wait 800
 # 039 [3. The kick] Start
 press s 80
 wait 150
-# 040 [4. A bigger kick: the Macro Synth] RB + Right
+# 040 [4. A Macro Synth kick] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text KICK
-# 041 [4. A bigger kick: the Macro Synth] Up (2 times)
+# 041 [4. A Macro Synth kick] Up (2 times)
 press u 80
 press u 80
 wait 150
-# 042 [4. A bigger kick: the Macro Synth] A + Right
+# 042 [4. A Macro Synth kick] A + Right
 down a
 press r 80
 up a
 wait 150
 expect_screen_text MACRO
-# 043 [4. A bigger kick: the Macro Synth] Down
+# 043 [4. A Macro Synth kick] Down
 press d 80
 wait 150
-# 044 [4. A bigger kick: the Macro Synth] A + Right (15 times)
+# 044 [4. A Macro Synth kick] A + Right (15 times)
 down a
 press r 80
 press r 80
@@ -216,41 +216,41 @@ press r 80
 up a
 wait 150
 expect_screen_text kick
-# 045 [4. A bigger kick: the Macro Synth] Start
+# 045 [4. A Macro Synth kick] Start
 press s 80
-wait 2600
-# 046 [4. A bigger kick: the Macro Synth] Start
+wait 800
+# 046 [4. A Macro Synth kick] Start
 press s 80
 wait 150
-# 047 [4. A bigger kick: the Macro Synth] RB + Left
+# 047 [4. A Macro Synth kick] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 048 [4. A bigger kick: the Macro Synth] RB + Left
+# 048 [4. A Macro Synth kick] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 049 [4. A bigger kick: the Macro Synth] Down
+# 049 [4. A Macro Synth kick] Down
 press d 80
 wait 150
-# 050 [4. A bigger kick: the Macro Synth] A
+# 050 [4. A Macro Synth kick] A
 press a 80
 wait 150
-# 051 [4. A bigger kick: the Macro Synth] Down
+# 051 [4. A Macro Synth kick] Down
 press d 80
 wait 150
-# 052 [4. A bigger kick: the Macro Synth] A
+# 052 [4. A Macro Synth kick] A
 press a 80
 wait 150
-# 053 [4. A bigger kick: the Macro Synth] Down
+# 053 [4. A Macro Synth kick] Down
 press d 80
 wait 150
-# 054 [4. A bigger kick: the Macro Synth] A
+# 054 [4. A Macro Synth kick] A
 press a 80
 wait 150
-# 055 [4. A bigger kick: the Macro Synth] RB + Left
+# 055 [4. A Macro Synth kick] RB + Left
 down n
 press l 80
 up n
@@ -421,65 +421,65 @@ down n
 press l 80
 up n
 wait 150
-# 088 [6. Hi-hats: fill and chance] Right
+# 088 [6. Hats: fill and chance] Right
 press r 80
 wait 150
-# 089 [6. Hi-hats: fill and chance] A
+# 089 [6. Hats: fill and chance] A
 press a 80
 wait 150
-# 090 [6. Hi-hats: fill and chance] A
+# 090 [6. Hats: fill and chance] A
 press a 80
 wait 150
 expect_screen_text New chain 02
-# 091 [6. Hi-hats: fill and chance] RB + Right
+# 091 [6. Hats: fill and chance] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 092 [6. Hi-hats: fill and chance] Up (3 times)
+# 092 [6. Hats: fill and chance] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 093 [6. Hi-hats: fill and chance] A
+# 093 [6. Hats: fill and chance] A
 press a 80
 wait 150
-# 094 [6. Hi-hats: fill and chance] A
+# 094 [6. Hats: fill and chance] A
 press a 80
 wait 150
 expect_screen_text New phrase 02
-# 095 [6. Hi-hats: fill and chance] RB + Right
+# 095 [6. Hats: fill and chance] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 096 [6. Hi-hats: fill and chance] Up (4 times)
+# 096 [6. Hats: fill and chance] Up (4 times)
 press u 80
 press u 80
 press u 80
 press u 80
 wait 150
-# 097 [6. Hi-hats: fill and chance] A
+# 097 [6. Hats: fill and chance] A
 press a 80
 wait 150
-# 098 [6. Hi-hats: fill and chance] Right
+# 098 [6. Hats: fill and chance] Right
 press r 80
 wait 150
-# 099 [6. Hi-hats: fill and chance] A + Right
+# 099 [6. Hats: fill and chance] A + Right
 down a
 press r 80
 up a
 wait 150
 expect_screen_text HAT
-# 100 [6. Hi-hats: fill and chance] Left
+# 100 [6. Hats: fill and chance] Left
 press l 80
 wait 150
-# 101 [6. Hi-hats: fill and chance] B + LB
+# 101 [6. Hats: fill and chance] B + LB
 down b
 press m 80
 up b
 wait 150
-# 102 [6. Hi-hats: fill and chance] Down (15 times)
+# 102 [6. Hats: fill and chance] Down (15 times)
 press d 80
 press d 80
 press d 80
@@ -496,43 +496,43 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 103 [6. Hi-hats: fill and chance] LB + Left
+# 103 [6. Hats: fill and chance] LB + Left
 down m
 press l 80
 up m
 wait 150
-# 104 [6. Hi-hats: fill and chance] B
+# 104 [6. Hats: fill and chance] B
 press b 80
 wait 150
-# 105 [6. Hi-hats: fill and chance] Down (3 times)
+# 105 [6. Hats: fill and chance] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 106 [6. Hi-hats: fill and chance] Right (2 times)
+# 106 [6. Hats: fill and chance] Right (2 times)
 press r 80
 press r 80
 wait 150
-# 107 [6. Hi-hats: fill and chance] Select
+# 107 [6. Hats: fill and chance] Select
 press k 80
 wait 150
 expect_screen_text ARPG
-# 108 [6. Hi-hats: fill and chance] Right
+# 108 [6. Hats: fill and chance] Right
 press r 80
 wait 150
-# 109 [6. Hi-hats: fill and chance] A
+# 109 [6. Hats: fill and chance] A
 press a 80
 wait 150
 expect_screen_text CHNC
-# 110 [6. Hi-hats: fill and chance] Right
+# 110 [6. Hats: fill and chance] Right
 press r 80
 wait 150
-# 111 [6. Hi-hats: fill and chance] A + Left
+# 111 [6. Hats: fill and chance] A + Left
 down a
 press l 80
 up a
 wait 150
-# 112 [6. Hi-hats: fill and chance] A + Up (8 times)
+# 112 [6. Hats: fill and chance] A + Up (8 times)
 down a
 press u 80
 press u 80
@@ -544,72 +544,72 @@ press u 80
 press u 80
 up a
 wait 150
-# 113 [6. Hi-hats: fill and chance] Left
+# 113 [6. Hats: fill and chance] Left
 press l 80
 wait 150
-# 114 [6. Hi-hats: fill and chance] B + LB
+# 114 [6. Hats: fill and chance] B + LB
 down b
 press m 80
 up b
 wait 150
-# 115 [6. Hi-hats: fill and chance] Right
+# 115 [6. Hats: fill and chance] Right
 press r 80
 wait 150
-# 116 [6. Hi-hats: fill and chance] B
+# 116 [6. Hats: fill and chance] B
 press b 80
 wait 150
 expect_screen_text Copied
-# 117 [6. Hi-hats: fill and chance] Down (4 times)
+# 117 [6. Hats: fill and chance] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 118 [6. Hi-hats: fill and chance] A + LB
+# 118 [6. Hats: fill and chance] A + LB
 down a
 press m 80
 up a
 wait 150
-# 119 [6. Hi-hats: fill and chance] Down (3 times)
+# 119 [6. Hats: fill and chance] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 120 [6. Hi-hats: fill and chance] A + LB
+# 120 [6. Hats: fill and chance] A + LB
 down a
 press m 80
 up a
 wait 150
-# 121 [6. Hi-hats: fill and chance] Down (3 times)
+# 121 [6. Hats: fill and chance] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 122 [6. Hi-hats: fill and chance] A + LB
+# 122 [6. Hats: fill and chance] A + LB
 down a
 press m 80
 up a
 wait 150
-# 123 [6. Hi-hats: fill and chance] RB + Right
+# 123 [6. Hats: fill and chance] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text HAT
-# 124 [6. Hi-hats: fill and chance] Up (2 times)
+# 124 [6. Hats: fill and chance] Up (2 times)
 press u 80
 press u 80
 wait 150
-# 125 [6. Hi-hats: fill and chance] A + Right
+# 125 [6. Hats: fill and chance] A + Right
 down a
 press r 80
 up a
 wait 150
 expect_screen_text MACRO
-# 126 [6. Hi-hats: fill and chance] Down
+# 126 [6. Hats: fill and chance] Down
 press d 80
 wait 150
-# 127 [6. Hi-hats: fill and chance] A + Right (17 times)
+# 127 [6. Hats: fill and chance] A + Right (17 times)
 down a
 press r 80
 press r 80
@@ -631,49 +631,49 @@ press r 80
 up a
 wait 150
 expect_screen_text hat
-# 128 [6. Hi-hats: fill and chance] Start
+# 128 [6. Hats: fill and chance] Start
 press s 80
-wait 2600
-# 129 [6. Hi-hats: fill and chance] Start
+wait 800
+# 129 [6. Hats: fill and chance] Start
 press s 80
 wait 150
-# 130 [6. Hi-hats: fill and chance] RB + Left
+# 130 [6. Hats: fill and chance] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 131 [6. Hi-hats: fill and chance] RB + Left
+# 131 [6. Hats: fill and chance] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 132 [6. Hi-hats: fill and chance] Down
+# 132 [6. Hats: fill and chance] Down
 press d 80
 wait 150
-# 133 [6. Hi-hats: fill and chance] A
+# 133 [6. Hats: fill and chance] A
 press a 80
 wait 150
-# 134 [6. Hi-hats: fill and chance] Down
+# 134 [6. Hats: fill and chance] Down
 press d 80
 wait 150
-# 135 [6. Hi-hats: fill and chance] A
+# 135 [6. Hats: fill and chance] A
 press a 80
 wait 150
-# 136 [6. Hi-hats: fill and chance] Down
+# 136 [6. Hats: fill and chance] Down
 press d 80
 wait 150
-# 137 [6. Hi-hats: fill and chance] A
+# 137 [6. Hats: fill and chance] A
 press a 80
 wait 150
-# 138 [6. Hi-hats: fill and chance] RB + Left
+# 138 [6. Hats: fill and chance] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 139 [6. Hi-hats: fill and chance] Start
+# 139 [6. Hats: fill and chance] Start
 press s 80
-wait 2600
-# 140 [6. Hi-hats: fill and chance] Start
+wait 800
+# 140 [6. Hats: fill and chance] Start
 press s 80
 wait 150
 # 141 [7. Swing] RB + Right
@@ -708,7 +708,7 @@ wait 150
 expect_screen_text swing
 # 147 [7. Swing] Start
 press s 80
-wait 2600
+wait 800
 # 148 [7. Swing] Start
 press s 80
 wait 150
@@ -742,51 +742,29 @@ down n
 press r 80
 up n
 wait 150
-# 156 [8. Bass] Up (3 times)
-press u 80
-press u 80
-press u 80
+# 156 [8. Bass] A
+press a 80
 wait 150
 # 157 [8. Bass] A
 press a 80
 wait 150
-# 158 [8. Bass] A
-press a 80
-wait 150
 expect_screen_text New phrase 03
-# 159 [8. Bass] RB + Right
+# 158 [8. Bass] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 160 [8. Bass] Left (2 times)
+# 159 [8. Bass] Left (2 times)
 press l 80
 press l 80
 wait 150
-# 161 [8. Bass] Up (15 times)
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-wait 150
-# 162 [8. Bass] A
+# 160 [8. Bass] A
 press a 80
 wait 150
-# 163 [8. Bass] Right
+# 161 [8. Bass] Right
 press r 80
 wait 150
-# 164 [8. Bass] A + Right (3 times)
+# 162 [8. Bass] A + Right (3 times)
 down a
 press r 80
 press r 80
@@ -794,8 +772,15 @@ press r 80
 up a
 wait 150
 expect_screen_text BASS
-# 165 [8. Bass] Left
+# 163 [8. Bass] Left
 press l 80
+wait 150
+# 164 [8. Bass] Down (2 times)
+press d 80
+press d 80
+wait 150
+# 165 [8. Bass] A
+press a 80
 wait 150
 # 166 [8. Bass] Down (2 times)
 press d 80
@@ -804,29 +789,29 @@ wait 150
 # 167 [8. Bass] A
 press a 80
 wait 150
-# 168 [8. Bass] Down (2 times)
-press d 80
-press d 80
-wait 150
-# 169 [8. Bass] A
-press a 80
-wait 150
-# 170 [8. Bass] A + Up
+# 168 [8. Bass] A + Up
 down a
 press u 80
 up a
 wait 150
-# 171 [8. Bass] Down (2 times)
+# 169 [8. Bass] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 172 [8. Bass] A
+# 170 [8. Bass] A
 press a 80
 wait 150
-# 173 [8. Bass] A + Down
+# 171 [8. Bass] A + Down
 down a
 press d 80
 up a
+wait 150
+# 172 [8. Bass] Down (2 times)
+press d 80
+press d 80
+wait 150
+# 173 [8. Bass] A
+press a 80
 wait 150
 # 174 [8. Bass] Down (2 times)
 press d 80
@@ -842,70 +827,69 @@ wait 150
 # 177 [8. Bass] A
 press a 80
 wait 150
-# 178 [8. Bass] Down (2 times)
-press d 80
-press d 80
-wait 150
-# 179 [8. Bass] A
-press a 80
-wait 150
-# 180 [8. Bass] A + Up
+# 178 [8. Bass] A + Up
 down a
 press u 80
 up a
 wait 150
-# 181 [8. Bass] Down (2 times)
+# 179 [8. Bass] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 182 [8. Bass] A
+# 180 [8. Bass] A
 press a 80
 wait 150
-# 183 [8. Bass] A + Left (3 times)
+# 181 [8. Bass] A + Left (3 times)
 down a
 press l 80
 press l 80
 press l 80
 up a
 wait 150
-# 184 [8. Bass] Start
+# 182 [8. Bass] Start
 press s 80
-wait 2600
-# 185 [8. Bass] Start
+wait 800
+# 183 [8. Bass] Start
 press s 80
 wait 150
-# 186 [9. Try a sound, then undo] RB + Right
+# 184 [9. Try a sound, then undo] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text BASS
-# 187 [9. Try a sound, then undo] A + Right
+# 185 [9. Try a sound, then undo] A + Right
 down a
 press r 80
 up a
 wait 150
-# 188 [9. Try a sound, then undo] Start
+# 186 [9. Try a sound, then undo] Start
 press s 80
-wait 2600
-# 189 [9. Try a sound, then undo] Start
+wait 800
+# 187 [9. Try a sound, then undo] Start
 press s 80
 wait 150
-# 190 [9. Try a sound, then undo] B + Select
+# 188 [9. Try a sound, then undo] B + Select
 down b
 press k 80
 up b
 wait 150
 expect_screen_text bass
-# 191 [9. Try a sound, then undo] RB + Left
+# 189 [9. Try a sound, then undo] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 192 [9. Try a sound, then undo] RB + Left
+# 190 [9. Try a sound, then undo] RB + Left
 down n
 press l 80
 up n
+wait 150
+# 191 [9. Try a sound, then undo] Down
+press d 80
+wait 150
+# 192 [9. Try a sound, then undo] A
+press a 80
 wait 150
 # 193 [9. Try a sound, then undo] Down
 press d 80
@@ -919,35 +903,29 @@ wait 150
 # 196 [9. Try a sound, then undo] A
 press a 80
 wait 150
-# 197 [9. Try a sound, then undo] Down
-press d 80
-wait 150
-# 198 [9. Try a sound, then undo] A
-press a 80
-wait 150
-# 199 [10. Four chords from one bar] Right
+# 197 [10. Four chords, one bar] Right
 press r 80
 wait 150
-# 200 [10. Four chords from one bar] A + Left (2 times)
+# 198 [10. Four chords, one bar] A + Left (2 times)
 down a
 press l 80
 press l 80
 up a
 wait 150
-# 201 [10. Four chords from one bar] Up
+# 199 [10. Four chords, one bar] Up
 press u 80
 wait 150
-# 202 [10. Four chords from one bar] A + Right (3 times)
+# 200 [10. Four chords, one bar] A + Right (3 times)
 down a
 press r 80
 press r 80
 press r 80
 up a
 wait 150
-# 203 [10. Four chords from one bar] Up
+# 201 [10. Four chords, one bar] Up
 press u 80
 wait 150
-# 204 [10. Four chords from one bar] A + Left (4 times)
+# 202 [10. Four chords, one bar] A + Left (4 times)
 down a
 press l 80
 press l 80
@@ -955,51 +933,51 @@ press l 80
 press l 80
 up a
 wait 150
-# 205 [10. Four chords from one bar] Start
+# 203 [10. Four chords, one bar] Start
 press s 80
-wait 5200
-# 206 [10. Four chords from one bar] Start
+wait 800
+# 204 [10. Four chords, one bar] Start
 press s 80
 wait 150
-# 207 [10. Four chords from one bar] RB + Left
+# 205 [10. Four chords, one bar] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 208 [11. The pad: a whole chord from one note] Right
+# 206 [11. The HyperSynth pad] Right
 press r 80
 wait 150
-# 209 [11. The pad: a whole chord from one note] A
+# 207 [11. The HyperSynth pad] A
 press a 80
 wait 150
-# 210 [11. The pad: a whole chord from one note] A
+# 208 [11. The HyperSynth pad] A
 press a 80
 wait 150
 expect_screen_text New chain 04
-# 211 [11. The pad: a whole chord from one note] RB + Right
+# 209 [11. The HyperSynth pad] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 212 [11. The pad: a whole chord from one note] Left
+# 210 [11. The HyperSynth pad] Left
 press l 80
 wait 150
-# 213 [11. The pad: a whole chord from one note] Up
+# 211 [11. The HyperSynth pad] Up
 press u 80
 wait 150
-# 214 [11. The pad: a whole chord from one note] A
+# 212 [11. The HyperSynth pad] A
 press a 80
 wait 150
-# 215 [11. The pad: a whole chord from one note] A
+# 213 [11. The HyperSynth pad] A
 press a 80
 wait 150
 expect_screen_text New phrase 04
-# 216 [11. The pad: a whole chord from one note] RB + Right
+# 214 [11. The HyperSynth pad] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 217 [11. The pad: a whole chord from one note] Up (14 times)
+# 215 [11. The HyperSynth pad] Up (14 times)
 press u 80
 press u 80
 press u 80
@@ -1015,10 +993,10 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 218 [11. The pad: a whole chord from one note] A
+# 216 [11. The HyperSynth pad] A
 press a 80
 wait 150
-# 219 [11. The pad: a whole chord from one note] A + Left (4 times)
+# 217 [11. The HyperSynth pad] A + Left (4 times)
 down a
 press l 80
 press l 80
@@ -1026,53 +1004,53 @@ press l 80
 press l 80
 up a
 wait 150
-# 220 [11. The pad: a whole chord from one note] Right
+# 218 [11. The HyperSynth pad] Right
 press r 80
 wait 150
-# 221 [11. The pad: a whole chord from one note] A + Right (2 times)
+# 219 [11. The HyperSynth pad] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
 expect_screen_text PAD
-# 222 [11. The pad: a whole chord from one note] Left
+# 220 [11. The HyperSynth pad] Left
 press l 80
 wait 150
-# 223 [11. The pad: a whole chord from one note] RB + Right
+# 221 [11. The HyperSynth pad] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text PAD
-# 224 [11. The pad: a whole chord from one note] Up
+# 222 [11. The HyperSynth pad] Up
 press u 80
 wait 150
-# 225 [11. The pad: a whole chord from one note] A + Right (2 times)
+# 223 [11. The HyperSynth pad] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
 expect_screen_text hyper
-# 226 [11. The pad: a whole chord from one note] Down
+# 224 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 227 [11. The pad: a whole chord from one note] A + Right
+# 225 [11. The HyperSynth pad] A + Right
 down a
 press r 80
 up a
 wait 150
 expect_screen_text hyper pad
-# 228 [11. The pad: a whole chord from one note] Down
+# 226 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 229 [11. The pad: a whole chord from one note] A + Left
+# 227 [11. The HyperSynth pad] A + Left
 down a
 press l 80
 up a
 wait 150
-# 230 [11. The pad: a whole chord from one note] Down (7 times)
+# 228 [11. The HyperSynth pad] Down (7 times)
 press d 80
 press d 80
 press d 80
@@ -1081,18 +1059,18 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 231 [11. The pad: a whole chord from one note] A + Right
+# 229 [11. The HyperSynth pad] A + Right
 down a
 press r 80
 up a
 wait 150
-# 232 [11. The pad: a whole chord from one note] Start
+# 230 [11. The HyperSynth pad] Start
 press s 80
-wait 2600
-# 233 [11. The pad: a whole chord from one note] Start
+wait 800
+# 231 [11. The HyperSynth pad] Start
 press s 80
 wait 150
-# 234 [11. The pad: a whole chord from one note] LB + Right (4 times)
+# 232 [11. The HyperSynth pad] LB + Right (4 times)
 down m
 press r 80
 press r 80
@@ -1101,10 +1079,10 @@ press r 80
 up m
 wait 150
 expect_screen_text MOD
-# 235 [11. The pad: a whole chord from one note] Down
+# 233 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 236 [11. The pad: a whole chord from one note] A + Right (5 times)
+# 234 [11. The HyperSynth pad] A + Right (5 times)
 down a
 press r 80
 press r 80
@@ -1114,18 +1092,18 @@ press r 80
 up a
 wait 150
 expect_screen_text trig
-# 237 [11. The pad: a whole chord from one note] Down
+# 235 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 238 [11. The pad: a whole chord from one note] A + Left
+# 236 [11. The HyperSynth pad] A + Left
 down a
 press l 80
 up a
 wait 150
-# 239 [11. The pad: a whole chord from one note] Down
+# 237 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 240 [11. The pad: a whole chord from one note] A + Down (8 times)
+# 238 [11. The HyperSynth pad] A + Down (8 times)
 down a
 press d 80
 press d 80
@@ -1137,21 +1115,21 @@ press d 80
 press d 80
 up a
 wait 150
-# 241 [11. The pad: a whole chord from one note] LB + Right (2 times)
+# 239 [11. The HyperSynth pad] LB + Right (2 times)
 down m
 press r 80
 press r 80
 up m
 wait 150
 expect_screen_text EQ
-# 242 [11. The pad: a whole chord from one note] A + Down (3 times)
+# 240 [11. The HyperSynth pad] A + Down (3 times)
 down a
 press d 80
 press d 80
 press d 80
 up a
 wait 150
-# 243 [11. The pad: a whole chord from one note] LB + Left (6 times)
+# 241 [11. The HyperSynth pad] LB + Left (6 times)
 down m
 press l 80
 press l 80
@@ -1161,57 +1139,57 @@ press l 80
 press l 80
 up m
 wait 150
-# 244 [11. The pad: a whole chord from one note] RB + Left
+# 242 [11. The HyperSynth pad] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 245 [11. The pad: a whole chord from one note] RB + Left
+# 243 [11. The HyperSynth pad] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 246 [11. The pad: a whole chord from one note] Down
+# 244 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 247 [11. The pad: a whole chord from one note] A
+# 245 [11. The HyperSynth pad] A
 press a 80
 wait 150
-# 248 [11. The pad: a whole chord from one note] Down
+# 246 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 249 [11. The pad: a whole chord from one note] A
+# 247 [11. The HyperSynth pad] A
 press a 80
 wait 150
-# 250 [11. The pad: a whole chord from one note] Down
+# 248 [11. The HyperSynth pad] Down
 press d 80
 wait 150
-# 251 [11. The pad: a whole chord from one note] A
+# 249 [11. The HyperSynth pad] A
 press a 80
 wait 150
-# 252 [11. The pad: a whole chord from one note] Right
+# 250 [11. The HyperSynth pad] Right
 press r 80
 wait 150
-# 253 [11. The pad: a whole chord from one note] A + Left (2 times)
+# 251 [11. The HyperSynth pad] A + Left (2 times)
 down a
 press l 80
 press l 80
 up a
 wait 150
-# 254 [11. The pad: a whole chord from one note] Up
+# 252 [11. The HyperSynth pad] Up
 press u 80
 wait 150
-# 255 [11. The pad: a whole chord from one note] A + Right (3 times)
+# 253 [11. The HyperSynth pad] A + Right (3 times)
 down a
 press r 80
 press r 80
 press r 80
 up a
 wait 150
-# 256 [11. The pad: a whole chord from one note] Up
+# 254 [11. The HyperSynth pad] Up
 press u 80
 wait 150
-# 257 [11. The pad: a whole chord from one note] A + Left (4 times)
+# 255 [11. The HyperSynth pad] A + Left (4 times)
 down a
 press l 80
 press l 80
@@ -1219,85 +1197,82 @@ press l 80
 press l 80
 up a
 wait 150
-# 258 [11. The pad: a whole chord from one note] RB + Left
+# 256 [11. The HyperSynth pad] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 259 [11. The pad: a whole chord from one note] Start
+# 257 [11. The HyperSynth pad] Start
 press s 80
-wait 5200
-# 260 [11. The pad: a whole chord from one note] Start
+wait 800
+# 258 [11. The HyperSynth pad] Start
 press s 80
 wait 150
-# 261 [12. FM keys: one note, a chord stab] Right
+# 259 [12. FM keys and CHRD] Right
 press r 80
 wait 150
-# 262 [12. FM keys: one note, a chord stab] A
+# 260 [12. FM keys and CHRD] A
 press a 80
 wait 150
-# 263 [12. FM keys: one note, a chord stab] A
+# 261 [12. FM keys and CHRD] A
 press a 80
 wait 150
 expect_screen_text New chain 05
-# 264 [12. FM keys: one note, a chord stab] RB + Right
+# 262 [12. FM keys and CHRD] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 265 [12. FM keys: one note, a chord stab] Left
+# 263 [12. FM keys and CHRD] Left
 press l 80
 wait 150
-# 266 [12. FM keys: one note, a chord stab] Up
-press u 80
-wait 150
-# 267 [12. FM keys: one note, a chord stab] A
+# 264 [12. FM keys and CHRD] A
 press a 80
 wait 150
-# 268 [12. FM keys: one note, a chord stab] A
+# 265 [12. FM keys and CHRD] A
 press a 80
 wait 150
 expect_screen_text New phrase 05
-# 269 [12. FM keys: one note, a chord stab] RB + Right
+# 266 [12. FM keys and CHRD] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 270 [12. FM keys: one note, a chord stab] Down (2 times)
+# 267 [12. FM keys and CHRD] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 271 [12. FM keys: one note, a chord stab] A
+# 268 [12. FM keys and CHRD] A
 press a 80
 wait 150
-# 272 [12. FM keys: one note, a chord stab] Right
+# 269 [12. FM keys and CHRD] Right
 press r 80
 wait 150
-# 273 [12. FM keys: one note, a chord stab] A + Right (2 times)
+# 270 [12. FM keys and CHRD] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
 expect_screen_text KEYS
-# 274 [12. FM keys: one note, a chord stab] Right
+# 271 [12. FM keys and CHRD] Right
 press r 80
 wait 150
-# 275 [12. FM keys: one note, a chord stab] Select
+# 272 [12. FM keys and CHRD] Select
 press k 80
 wait 150
-# 276 [12. FM keys: one note, a chord stab] Right (2 times)
+# 273 [12. FM keys and CHRD] Right (2 times)
 press r 80
 press r 80
 wait 150
-# 277 [12. FM keys: one note, a chord stab] A
+# 274 [12. FM keys and CHRD] A
 press a 80
 wait 150
 expect_screen_text CHRD
-# 278 [12. FM keys: one note, a chord stab] Right
+# 275 [12. FM keys and CHRD] Right
 press r 80
 wait 150
-# 279 [12. FM keys: one note, a chord stab] A + Up (7 times)
+# 276 [12. FM keys and CHRD] A + Up (7 times)
 down a
 press u 80
 press u 80
@@ -1308,12 +1283,12 @@ press u 80
 press u 80
 up a
 wait 150
-# 280 [12. FM keys: one note, a chord stab] A + Right
+# 277 [12. FM keys and CHRD] A + Right
 down a
 press r 80
 up a
 wait 150
-# 281 [12. FM keys: one note, a chord stab] A + Up (14 times)
+# 278 [12. FM keys and CHRD] A + Up (14 times)
 down a
 press u 80
 press u 80
@@ -1332,138 +1307,138 @@ press u 80
 up a
 wait 150
 expect_screen_text 007E
-# 282 [12. FM keys: one note, a chord stab] Left (3 times)
+# 279 [12. FM keys and CHRD] Left (3 times)
 press l 80
 press l 80
 press l 80
 wait 150
-# 283 [12. FM keys: one note, a chord stab] B + LB
+# 280 [12. FM keys and CHRD] B + LB
 down b
 press m 80
 up b
 wait 150
-# 284 [12. FM keys: one note, a chord stab] Right (3 times)
+# 281 [12. FM keys and CHRD] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 285 [12. FM keys: one note, a chord stab] B
+# 282 [12. FM keys and CHRD] B
 press b 80
 wait 150
 expect_screen_text Copied
-# 286 [12. FM keys: one note, a chord stab] Down (4 times)
+# 283 [12. FM keys and CHRD] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 287 [12. FM keys: one note, a chord stab] A + LB
+# 284 [12. FM keys and CHRD] A + LB
 down a
 press m 80
 up a
 wait 150
 expect_screen_text CHRD
-# 288 [12. FM keys: one note, a chord stab] Down (3 times)
+# 285 [12. FM keys and CHRD] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 289 [12. FM keys: one note, a chord stab] A + LB
+# 286 [12. FM keys and CHRD] A + LB
 down a
 press m 80
 up a
 wait 150
-# 290 [12. FM keys: one note, a chord stab] Down (3 times)
+# 287 [12. FM keys and CHRD] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 291 [12. FM keys: one note, a chord stab] A + LB
+# 288 [12. FM keys and CHRD] A + LB
 down a
 press m 80
 up a
 wait 150
-# 292 [12. FM keys: one note, a chord stab] RB + Right
+# 289 [12. FM keys and CHRD] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text KEYS
-# 293 [12. FM keys: one note, a chord stab] Up
+# 290 [12. FM keys and CHRD] Up
 press u 80
 wait 150
-# 294 [12. FM keys: one note, a chord stab] A + Right
+# 291 [12. FM keys and CHRD] A + Right
 down a
 press r 80
 up a
 wait 150
 expect_screen_text fm4
-# 295 [12. FM keys: one note, a chord stab] Down
+# 292 [12. FM keys and CHRD] Down
 press d 80
 wait 150
-# 296 [12. FM keys: one note, a chord stab] A + Right
+# 293 [12. FM keys and CHRD] A + Right
 down a
 press r 80
 up a
 wait 150
 expect_screen_text epiano
-# 297 [12. FM keys: one note, a chord stab] Start
+# 294 [12. FM keys and CHRD] Start
 press s 80
-wait 2600
-# 298 [12. FM keys: one note, a chord stab] Start
+wait 800
+# 295 [12. FM keys and CHRD] Start
 press s 80
 wait 150
-# 299 [12. FM keys: one note, a chord stab] RB + Left
+# 296 [12. FM keys and CHRD] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 300 [12. FM keys: one note, a chord stab] RB + Left
+# 297 [12. FM keys and CHRD] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 301 [12. FM keys: one note, a chord stab] Down
+# 298 [12. FM keys and CHRD] Down
 press d 80
 wait 150
-# 302 [12. FM keys: one note, a chord stab] A
+# 299 [12. FM keys and CHRD] A
 press a 80
 wait 150
-# 303 [12. FM keys: one note, a chord stab] Down
+# 300 [12. FM keys and CHRD] Down
 press d 80
 wait 150
-# 304 [12. FM keys: one note, a chord stab] A
+# 301 [12. FM keys and CHRD] A
 press a 80
 wait 150
-# 305 [12. FM keys: one note, a chord stab] Down
+# 302 [12. FM keys and CHRD] Down
 press d 80
 wait 150
-# 306 [12. FM keys: one note, a chord stab] A
+# 303 [12. FM keys and CHRD] A
 press a 80
 wait 150
-# 307 [12. FM keys: one note, a chord stab] Right
+# 304 [12. FM keys and CHRD] Right
 press r 80
 wait 150
-# 308 [12. FM keys: one note, a chord stab] A + Left (2 times)
+# 305 [12. FM keys and CHRD] A + Left (2 times)
 down a
 press l 80
 press l 80
 up a
 wait 150
-# 309 [12. FM keys: one note, a chord stab] Up
+# 306 [12. FM keys and CHRD] Up
 press u 80
 wait 150
-# 310 [12. FM keys: one note, a chord stab] A + Right (3 times)
+# 307 [12. FM keys and CHRD] A + Right (3 times)
 down a
 press r 80
 press r 80
 press r 80
 up a
 wait 150
-# 311 [12. FM keys: one note, a chord stab] Up
+# 308 [12. FM keys and CHRD] Up
 press u 80
 wait 150
-# 312 [12. FM keys: one note, a chord stab] A + Left (4 times)
+# 309 [12. FM keys and CHRD] A + Left (4 times)
 down a
 press l 80
 press l 80
@@ -1471,45 +1446,45 @@ press l 80
 press l 80
 up a
 wait 150
-# 313 [12. FM keys: one note, a chord stab] RB + Left
+# 310 [12. FM keys and CHRD] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 314 [13. The hook] Right
+# 311 [13. The hook] Right
 press r 80
 wait 150
-# 315 [13. The hook] A
+# 312 [13. The hook] A
 press a 80
 wait 150
-# 316 [13. The hook] A
+# 313 [13. The hook] A
 press a 80
 wait 150
 expect_screen_text New chain 06
-# 317 [13. The hook] RB + Right
+# 314 [13. The hook] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 318 [13. The hook] Left
+# 315 [13. The hook] Left
 press l 80
 wait 150
-# 319 [13. The hook] Up
+# 316 [13. The hook] Up
 press u 80
 wait 150
-# 320 [13. The hook] A
+# 317 [13. The hook] A
 press a 80
 wait 150
-# 321 [13. The hook] A
+# 318 [13. The hook] A
 press a 80
 wait 150
 expect_screen_text New phrase 06
-# 322 [13. The hook] RB + Right
+# 319 [13. The hook] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 323 [13. The hook] Up (15 times)
+# 320 [13. The hook] Up (15 times)
 press u 80
 press u 80
 press u 80
@@ -1526,12 +1501,12 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 324 [13. The hook] B + LB
+# 321 [13. The hook] B + LB
 down b
 press m 80
 up b
 wait 150
-# 325 [13. The hook] Down (15 times)
+# 322 [13. The hook] Down (15 times)
 press d 80
 press d 80
 press d 80
@@ -1548,32 +1523,29 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 326 [13. The hook] LB + Right
+# 323 [13. The hook] LB + Right
 down m
 press r 80
 up m
 wait 150
-# 327 [13. The hook] Start
+# 324 [13. The hook] Start
 press s 80
-wait 2600
-# 328 [13. The hook] Start
+wait 800
+# 325 [13. The hook] Start
 press s 80
 wait 150
-# 329 [13. The hook] B + Select
+# 326 [13. The hook] B + Select
 down b
 press k 80
 up b
 wait 150
-# 330 [13. The hook] B
-press b 80
-wait 150
-# 331 [13. The hook] A
+# 327 [13. The hook] A
 press a 80
 wait 150
-# 332 [13. The hook] Right
+# 328 [13. The hook] Right
 press r 80
 wait 150
-# 333 [13. The hook] A + Left (3 times)
+# 329 [13. The hook] A + Left (3 times)
 down a
 press l 80
 press l 80
@@ -1581,15 +1553,15 @@ press l 80
 up a
 wait 150
 expect_screen_text LEAD
-# 334 [13. The hook] Left
+# 330 [13. The hook] Left
 press l 80
 wait 150
-# 335 [13. The hook] A + Up
+# 331 [13. The hook] A + Up
 down a
 press u 80
 up a
 wait 150
-# 336 [13. The hook] A + Right (4 times)
+# 332 [13. The hook] A + Right (4 times)
 down a
 press r 80
 press r 80
@@ -1597,197 +1569,215 @@ press r 80
 press r 80
 up a
 wait 150
-# 337 [13. The hook] Down (3 times)
+# 333 [13. The hook] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 338 [13. The hook] A
+# 334 [13. The hook] A
 press a 80
 wait 150
-# 339 [13. The hook] Down (3 times)
+# 335 [13. The hook] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 340 [13. The hook] A
+# 336 [13. The hook] A
 press a 80
 wait 150
-# 341 [13. The hook] A + Right (2 times)
+# 337 [13. The hook] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
-# 342 [13. The hook] Down (4 times)
+# 338 [13. The hook] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 343 [13. The hook] A
+# 339 [13. The hook] A
 press a 80
 wait 150
-# 344 [13. The hook] A + Left (2 times)
+# 340 [13. The hook] A + Left (2 times)
 down a
 press l 80
-press l 80
-up a
-wait 150
-# 345 [13. The hook] Down (2 times)
-press d 80
-press d 80
-wait 150
-# 346 [13. The hook] A
-press a 80
-wait 150
-# 347 [13. The hook] A + Left
-down a
 press l 80
 up a
 wait 150
-# 348 [13. The hook] Down (2 times)
+# 341 [13. The hook] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 349 [13. The hook] A
+# 342 [13. The hook] A
 press a 80
 wait 150
-# 350 [13. The hook] A + Left
+# 343 [13. The hook] A + Left
 down a
 press l 80
 up a
 wait 150
-# 351 [13. The hook] RB + Right
+# 344 [13. The hook] Down (2 times)
+press d 80
+press d 80
+wait 150
+# 345 [13. The hook] A
+press a 80
+wait 150
+# 346 [13. The hook] A + Left
+down a
+press l 80
+up a
+wait 150
+# 347 [13. The hook] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text LEAD
-# 352 [13. The hook] Up
+# 348 [13. The hook] Up
 press u 80
 wait 150
-# 353 [13. The hook] A + Right (2 times)
+# 349 [13. The hook] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
 expect_screen_text hyper
-# 354 [13. The hook] Down
+# 350 [13. The hook] Down
 press d 80
 wait 150
-# 355 [13. The hook] A + Right (2 times)
+# 351 [13. The hook] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
 expect_screen_text trance lead
-# 356 [13. The hook] Start
+# 352 [13. The hook] Start
 press s 80
-wait 2600
-# 357 [13. The hook] Start
+wait 800
+# 353 [13. The hook] Start
 press s 80
 wait 150
-# 358 [13. The hook] RB + Left
+# 354 [13. The hook] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 359 [13. The hook] RB + Left
+# 355 [13. The hook] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 360 [13. The hook] Down (2 times)
+# 356 [13. The hook] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 361 [13. The hook] A
+# 357 [13. The hook] A
 press a 80
 wait 150
-# 362 [13. The hook] Up
+# 358 [13. The hook] Up
+press u 80
+wait 150
+# 359 [13. The hook] A
+press a 80
+wait 150
+# 360 [13. The hook] A
+press a 80
+wait 150
+expect_screen_text New phrase 07
+# 361 [13. The hook] RB + Right
+down n
+press r 80
+up n
+wait 150
+# 362 [13. The hook] Up (14 times)
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
 press u 80
 wait 150
 # 363 [13. The hook] A
 press a 80
 wait 150
-# 364 [13. The hook] A
+# 364 [13. The hook] Down (3 times)
+press d 80
+press d 80
+press d 80
+wait 150
+# 365 [13. The hook] A
 press a 80
 wait 150
-expect_screen_text New phrase 07
-# 365 [13. The hook] RB + Right
-down n
-press r 80
-up n
-wait 150
-# 366 [13. The hook] Up (14 times)
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
+# 366 [13. The hook] Down (3 times)
+press d 80
+press d 80
+press d 80
 wait 150
 # 367 [13. The hook] A
 press a 80
 wait 150
-# 368 [13. The hook] Down (3 times)
-press d 80
-press d 80
-press d 80
-wait 150
-# 369 [13. The hook] A
-press a 80
-wait 150
-# 370 [13. The hook] Down (3 times)
-press d 80
-press d 80
-press d 80
-wait 150
-# 371 [13. The hook] A
-press a 80
-wait 150
-# 372 [13. The hook] A + Right (2 times)
+# 368 [13. The hook] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
-# 373 [13. The hook] Down (4 times)
+# 369 [13. The hook] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 374 [13. The hook] A
+# 370 [13. The hook] A
 press a 80
 wait 150
-# 375 [13. The hook] A + Left
+# 371 [13. The hook] A + Left
 down a
 press l 80
 up a
 wait 150
-# 376 [13. The hook] Down (2 times)
+# 372 [13. The hook] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 377 [13. The hook] A
+# 373 [13. The hook] A
 press a 80
 wait 150
-# 378 [13. The hook] A + Left
+# 374 [13. The hook] A + Left
 down a
 press l 80
 up a
+wait 150
+# 375 [13. The hook] Down (2 times)
+press d 80
+press d 80
+wait 150
+# 376 [13. The hook] A
+press a 80
+wait 150
+# 377 [13. The hook] A + Left (2 times)
+down a
+press l 80
+press l 80
+up a
+wait 150
+# 378 [13. The hook] RB + Left
+down n
+press l 80
+up n
 wait 150
 # 379 [13. The hook] Down (2 times)
 press d 80
@@ -1796,145 +1786,127 @@ wait 150
 # 380 [13. The hook] A
 press a 80
 wait 150
-# 381 [13. The hook] A + Left (2 times)
-down a
-press l 80
-press l 80
-up a
+# 381 [13. The hook] A
+press a 80
 wait 150
-# 382 [13. The hook] RB + Left
+expect_screen_text New phrase 08
+# 382 [13. The hook] RB + Right
 down n
-press l 80
+press r 80
 up n
 wait 150
-# 383 [13. The hook] Down (2 times)
-press d 80
-press d 80
+# 383 [13. The hook] Up (14 times)
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
 wait 150
 # 384 [13. The hook] A
 press a 80
 wait 150
-# 385 [13. The hook] A
-press a 80
-wait 150
-expect_screen_text New phrase 08
-# 386 [13. The hook] RB + Right
-down n
-press r 80
-up n
-wait 150
-# 387 [13. The hook] Up (14 times)
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-wait 150
-# 388 [13. The hook] A
-press a 80
-wait 150
-# 389 [13. The hook] A + Right (3 times)
+# 385 [13. The hook] A + Right (3 times)
 down a
 press r 80
 press r 80
 press r 80
 up a
 wait 150
-# 390 [13. The hook] Down (3 times)
+# 386 [13. The hook] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 391 [13. The hook] A
+# 387 [13. The hook] A
 press a 80
 wait 150
-# 392 [13. The hook] Down (3 times)
+# 388 [13. The hook] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 393 [13. The hook] A
+# 389 [13. The hook] A
 press a 80
 wait 150
-# 394 [13. The hook] A + Right (3 times)
+# 390 [13. The hook] A + Right (3 times)
 down a
 press r 80
 press r 80
 press r 80
 up a
 wait 150
-# 395 [13. The hook] Down (4 times)
+# 391 [13. The hook] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 396 [13. The hook] A
+# 392 [13. The hook] A
 press a 80
 wait 150
-# 397 [13. The hook] A + Right
+# 393 [13. The hook] A + Right
 down a
 press r 80
 up a
 wait 150
-# 398 [13. The hook] Down (2 times)
+# 394 [13. The hook] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 399 [13. The hook] A
+# 395 [13. The hook] A
 press a 80
 wait 150
-# 400 [13. The hook] A + Left
+# 396 [13. The hook] A + Left
 down a
 press l 80
 up a
 wait 150
-# 401 [13. The hook] Down (2 times)
+# 397 [13. The hook] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 402 [13. The hook] A
+# 398 [13. The hook] A
 press a 80
 wait 150
-# 403 [13. The hook] A + Left (3 times)
+# 399 [13. The hook] A + Left (3 times)
 down a
 press l 80
 press l 80
 press l 80
 up a
 wait 150
-# 404 [13. The hook] RB + Left
+# 400 [13. The hook] RB + Left
 down n
 press l 80
 up n
 wait 150
+# 401 [13. The hook] Start
+press s 80
+wait 800
+# 402 [13. The hook] Start
+press s 80
+wait 150
+# 403 [13. The hook] RB + Left
+down n
+press l 80
+up n
+wait 150
+# 404 [13. The hook] Start
+press s 80
+wait 800
 # 405 [13. The hook] Start
 press s 80
-wait 7800
-# 406 [13. The hook] Start
-press s 80
 wait 150
-# 407 [13. The hook] RB + Left
-down n
-press l 80
-up n
-wait 150
-# 408 [13. The hook] Start
-press s 80
-wait 7800
-# 409 [13. The hook] Start
-press s 80
-wait 150
-# 410 [14. Copy the drop] Left (6 times)
+# 406 [14. Copy the drop] Left (6 times)
 press l 80
 press l 80
 press l 80
@@ -1942,12 +1914,12 @@ press l 80
 press l 80
 press l 80
 wait 150
-# 411 [14. Copy the drop] B + LB
+# 407 [14. Copy the drop] B + LB
 down b
 press m 80
 up b
 wait 150
-# 412 [14. Copy the drop] Right (7 times)
+# 408 [14. Copy the drop] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -1956,35 +1928,35 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 413 [14. Copy the drop] B
+# 409 [14. Copy the drop] B
 press b 80
 wait 150
 expect_screen_text copied
-# 414 [14. Copy the drop] Down
+# 410 [14. Copy the drop] Down
 press d 80
 wait 150
-# 415 [14. Copy the drop] A + LB
+# 411 [14. Copy the drop] A + LB
 down a
 press m 80
 up a
 wait 150
-# 416 [14. Copy the drop] A + LB
+# 412 [14. Copy the drop] A + LB
 down a
 press m 80
 up a
 wait 150
-# 417 [14. Copy the drop] A + LB
+# 413 [14. Copy the drop] A + LB
 down a
 press m 80
 up a
 wait 150
-# 418 [15. Silence: a rest chain] Up (4 times)
+# 414 [15. A rest chain] Up (4 times)
 press u 80
 press u 80
 press u 80
 press u 80
 wait 150
-# 419 [15. Silence: a rest chain] Right (7 times)
+# 415 [15. A rest chain] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -1993,31 +1965,31 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 420 [15. Silence: a rest chain] A
+# 416 [15. A rest chain] A
 press a 80
 wait 150
-# 421 [15. Silence: a rest chain] A
+# 417 [15. A rest chain] A
 press a 80
 wait 150
 expect_screen_text New chain 07
-# 422 [15. Silence: a rest chain] RB + Right
+# 418 [15. A rest chain] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 423 [15. Silence: a rest chain] A
+# 419 [15. A rest chain] A
 press a 80
 wait 150
-# 424 [15. Silence: a rest chain] A
+# 420 [15. A rest chain] A
 press a 80
 wait 150
 expect_screen_text New phrase 09
-# 425 [15. Silence: a rest chain] RB + Right
+# 421 [15. A rest chain] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 426 [15. Silence: a rest chain] Up (14 times)
+# 422 [15. A rest chain] Up (14 times)
 press u 80
 press u 80
 press u 80
@@ -2033,79 +2005,79 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 427 [15. Silence: a rest chain] Right (2 times)
+# 423 [15. A rest chain] Right (2 times)
 press r 80
 press r 80
 wait 150
-# 428 [15. Silence: a rest chain] Select
+# 424 [15. A rest chain] Select
 press k 80
 wait 150
-# 429 [15. Silence: a rest chain] Down (2 times)
+# 425 [15. A rest chain] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 430 [15. Silence: a rest chain] Right (4 times)
+# 426 [15. A rest chain] Right (4 times)
 press r 80
 press r 80
 press r 80
 press r 80
 wait 150
-# 431 [15. Silence: a rest chain] A
+# 427 [15. A rest chain] A
 press a 80
 wait 150
 expect_screen_text KILL
-# 432 [15. Silence: a rest chain] RB + Left
+# 428 [15. A rest chain] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 433 [15. Silence: a rest chain] Down
+# 429 [15. A rest chain] Down
 press d 80
 wait 150
-# 434 [15. Silence: a rest chain] A
+# 430 [15. A rest chain] A
 press a 80
 wait 150
-# 435 [15. Silence: a rest chain] Down
+# 431 [15. A rest chain] Down
 press d 80
 wait 150
-# 436 [15. Silence: a rest chain] A
+# 432 [15. A rest chain] A
 press a 80
 wait 150
-# 437 [15. Silence: a rest chain] Down
+# 433 [15. A rest chain] Down
 press d 80
 wait 150
-# 438 [15. Silence: a rest chain] A
+# 434 [15. A rest chain] A
 press a 80
 wait 150
-# 439 [15. Silence: a rest chain] RB + Left
+# 435 [15. A rest chain] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 440 [15. Silence: a rest chain] Down
+# 436 [15. A rest chain] Down
 press d 80
 wait 150
-# 441 [15. Silence: a rest chain] A
+# 437 [15. A rest chain] A
 press a 80
 wait 150
-# 442 [15. Silence: a rest chain] Down
+# 438 [15. A rest chain] Down
 press d 80
 wait 150
-# 443 [15. Silence: a rest chain] A
+# 439 [15. A rest chain] A
 press a 80
 wait 150
-# 444 [15. Silence: a rest chain] Down
+# 440 [15. A rest chain] Down
 press d 80
 wait 150
-# 445 [15. Silence: a rest chain] A
+# 441 [15. A rest chain] A
 press a 80
 wait 150
-# 446 [15. Silence: a rest chain] Up (3 times)
+# 442 [15. A rest chain] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 447 [15. Silence: a rest chain] Left (7 times)
+# 443 [15. A rest chain] Left (7 times)
 press l 80
 press l 80
 press l 80
@@ -2114,7 +2086,7 @@ press l 80
 press l 80
 press l 80
 wait 150
-# 448 [15. Silence: a rest chain] A + Right (7 times)
+# 444 [15. A rest chain] A + Right (7 times)
 down a
 press r 80
 press r 80
@@ -2125,10 +2097,10 @@ press r 80
 press r 80
 up a
 wait 150
-# 449 [15. Silence: a rest chain] Right
+# 445 [15. A rest chain] Right
 press r 80
 wait 150
-# 450 [15. Silence: a rest chain] A + Right (6 times)
+# 446 [15. A rest chain] A + Right (6 times)
 down a
 press r 80
 press r 80
@@ -2138,11 +2110,11 @@ press r 80
 press r 80
 up a
 wait 150
-# 451 [15. Silence: a rest chain] Right (2 times)
+# 447 [15. A rest chain] Right (2 times)
 press r 80
 press r 80
 wait 150
-# 452 [15. Silence: a rest chain] A + Right (4 times)
+# 448 [15. A rest chain] A + Right (4 times)
 down a
 press r 80
 press r 80
@@ -2150,32 +2122,32 @@ press r 80
 press r 80
 up a
 wait 150
-# 453 [15. Silence: a rest chain] Right (3 times)
+# 449 [15. A rest chain] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 454 [15. Silence: a rest chain] A + Right
+# 450 [15. A rest chain] A + Right
 down a
 press r 80
 up a
 wait 150
-# 455 [15. Silence: a rest chain] Down
+# 451 [15. A rest chain] Down
 press d 80
 wait 150
-# 456 [15. Silence: a rest chain] A + Right
+# 452 [15. A rest chain] A + Right
 down a
 press r 80
 up a
 wait 150
-# 457 [16. A snare roll] Left (5 times)
+# 453 [16. A snare roll] Left (5 times)
 press l 80
 press l 80
 press l 80
 press l 80
 press l 80
 wait 150
-# 458 [16. A snare roll] A + Right (7 times)
+# 454 [16. A snare roll] A + Right (7 times)
 down a
 press r 80
 press r 80
@@ -2186,17 +2158,17 @@ press r 80
 press r 80
 up a
 wait 150
-# 459 [16. A snare roll] RB + Right
+# 455 [16. A snare roll] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 460 [16. A snare roll] Up (3 times)
+# 456 [16. A snare roll] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 461 [16. A snare roll] A + Left (8 times)
+# 457 [16. A snare roll] A + Left (8 times)
 down a
 press l 80
 press l 80
@@ -2207,6 +2179,18 @@ press l 80
 press l 80
 press l 80
 up a
+wait 150
+# 458 [16. A snare roll] Down
+press d 80
+wait 150
+# 459 [16. A snare roll] A
+press a 80
+wait 150
+# 460 [16. A snare roll] Down
+press d 80
+wait 150
+# 461 [16. A snare roll] A
+press a 80
 wait 150
 # 462 [16. A snare roll] Down
 press d 80
@@ -2214,50 +2198,38 @@ wait 150
 # 463 [16. A snare roll] A
 press a 80
 wait 150
-# 464 [16. A snare roll] Down
-press d 80
-wait 150
-# 465 [16. A snare roll] A
-press a 80
-wait 150
-# 466 [16. A snare roll] Down
-press d 80
-wait 150
-# 467 [16. A snare roll] A
-press a 80
-wait 150
-# 468 [16. A snare roll] A
+# 464 [16. A snare roll] A
 press a 80
 wait 150
 expect_screen_text New phrase 0A
-# 469 [16. A snare roll] RB + Right
+# 465 [16. A snare roll] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 470 [16. A snare roll] Left (2 times)
+# 466 [16. A snare roll] Left (2 times)
 press l 80
 press l 80
 wait 150
-# 471 [16. A snare roll] A
+# 467 [16. A snare roll] A
 press a 80
 wait 150
-# 472 [16. A snare roll] A + Down
+# 468 [16. A snare roll] A + Down
 down a
 press d 80
 up a
 wait 150
-# 473 [16. A snare roll] A + Left (3 times)
+# 469 [16. A snare roll] A + Left (3 times)
 down a
 press l 80
 press l 80
 press l 80
 up a
 wait 150
-# 474 [16. A snare roll] Right
+# 470 [16. A snare roll] Right
 press r 80
 wait 150
-# 475 [16. A snare roll] A + Left (5 times)
+# 471 [16. A snare roll] A + Left (5 times)
 down a
 press l 80
 press l 80
@@ -2267,62 +2239,62 @@ press l 80
 up a
 wait 150
 expect_screen_text SNARE
-# 476 [16. A snare roll] Right
+# 472 [16. A snare roll] Right
 press r 80
 wait 150
-# 477 [16. A snare roll] Select
+# 473 [16. A snare roll] Select
 press k 80
 wait 150
-# 478 [16. A snare roll] Down (5 times)
+# 474 [16. A snare roll] Down (5 times)
 press d 80
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 479 [16. A snare roll] Right (2 times)
+# 475 [16. A snare roll] Right (2 times)
 press r 80
 press r 80
 wait 150
-# 480 [16. A snare roll] A
+# 476 [16. A snare roll] A
 press a 80
 wait 150
 expect_screen_text ROLL
+# 477 [16. A snare roll] Right
+press r 80
+wait 150
+# 478 [16. A snare roll] A + Up (3 times)
+down a
+press u 80
+press u 80
+press u 80
+up a
+wait 150
+# 479 [16. A snare roll] A + Left
+down a
+press l 80
+up a
+wait 150
+# 480 [16. A snare roll] A + Up (9 times)
+down a
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+up a
+wait 150
 # 481 [16. A snare roll] Right
 press r 80
 wait 150
-# 482 [16. A snare roll] A + Up (3 times)
-down a
-press u 80
-press u 80
-press u 80
-up a
-wait 150
-# 483 [16. A snare roll] A + Left
-down a
-press l 80
-up a
-wait 150
-# 484 [16. A snare roll] A + Up (9 times)
-down a
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-press u 80
-up a
-wait 150
-# 485 [16. A snare roll] Right
-press r 80
-wait 150
-# 486 [16. A snare roll] Select
+# 482 [16. A snare roll] Select
 press k 80
 wait 150
-# 487 [16. A snare roll] Down (7 times)
+# 483 [16. A snare roll] Down (7 times)
 press d 80
 press d 80
 press d 80
@@ -2331,42 +2303,42 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 488 [16. A snare roll] Right (4 times)
+# 484 [16. A snare roll] Right (4 times)
 press r 80
 press r 80
 press r 80
 press r 80
 wait 150
-# 489 [16. A snare roll] A
+# 485 [16. A snare roll] A
 press a 80
 wait 150
 expect_screen_text VOLM
-# 490 [16. A snare roll] Right
+# 486 [16. A snare roll] Right
 press r 80
 wait 150
-# 491 [16. A snare roll] A + Up (2 times)
+# 487 [16. A snare roll] A + Up (2 times)
 down a
 press u 80
 press u 80
 up a
 wait 150
-# 492 [16. A snare roll] Start
+# 488 [16. A snare roll] Start
 press s 80
-wait 2600
-# 493 [16. A snare roll] Start
+wait 800
+# 489 [16. A snare roll] Start
 press s 80
 wait 150
-# 494 [16. A snare roll] RB + Left
+# 490 [16. A snare roll] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 495 [16. A snare roll] RB + Left
+# 491 [16. A snare roll] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 496 [17. A sample: the reversed cymbal] Right (6 times)
+# 492 [17. Sample: reverse cymbal] Right (6 times)
 press r 80
 press r 80
 press r 80
@@ -2374,102 +2346,102 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 497 [17. A sample: the reversed cymbal] A + Right (2 times)
+# 493 [17. Sample: reverse cymbal] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
-# 498 [17. A sample: the reversed cymbal] RB + Right
+# 494 [17. Sample: reverse cymbal] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 499 [17. A sample: the reversed cymbal] Up (3 times)
+# 495 [17. Sample: reverse cymbal] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 500 [17. A sample: the reversed cymbal] A + Left
+# 496 [17. Sample: reverse cymbal] A + Left
 down a
 press l 80
 up a
 wait 150
-# 501 [17. A sample: the reversed cymbal] Down
+# 497 [17. Sample: reverse cymbal] Down
 press d 80
 wait 150
-# 502 [17. A sample: the reversed cymbal] A
+# 498 [17. Sample: reverse cymbal] A
 press a 80
 wait 150
-# 503 [17. A sample: the reversed cymbal] Down
+# 499 [17. Sample: reverse cymbal] Down
 press d 80
 wait 150
-# 504 [17. A sample: the reversed cymbal] A
+# 500 [17. Sample: reverse cymbal] A
 press a 80
 wait 150
-# 505 [17. A sample: the reversed cymbal] Down
+# 501 [17. Sample: reverse cymbal] Down
 press d 80
 wait 150
-# 506 [17. A sample: the reversed cymbal] A
+# 502 [17. Sample: reverse cymbal] A
 press a 80
 wait 150
-# 507 [17. A sample: the reversed cymbal] A
+# 503 [17. Sample: reverse cymbal] A
 press a 80
 wait 150
 expect_screen_text New phrase 0B
-# 508 [17. A sample: the reversed cymbal] RB + Right
+# 504 [17. Sample: reverse cymbal] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 509 [17. A sample: the reversed cymbal] Left (5 times)
+# 505 [17. Sample: reverse cymbal] Left (5 times)
 press l 80
 press l 80
 press l 80
 press l 80
 press l 80
 wait 150
-# 510 [17. A sample: the reversed cymbal] A
+# 506 [17. Sample: reverse cymbal] A
 press a 80
 wait 150
-# 511 [17. A sample: the reversed cymbal] A + Right (3 times)
+# 507 [17. Sample: reverse cymbal] A + Right (3 times)
 down a
 press r 80
 press r 80
 press r 80
 up a
 wait 150
-# 512 [17. A sample: the reversed cymbal] Right
+# 508 [17. Sample: reverse cymbal] Right
 press r 80
 wait 150
-# 513 [17. A sample: the reversed cymbal] A + Right (2 times)
+# 509 [17. Sample: reverse cymbal] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
-# 514 [17. A sample: the reversed cymbal] RB + Right
+# 510 [17. Sample: reverse cymbal] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 515 [17. A sample: the reversed cymbal] Up (2 times)
+# 511 [17. Sample: reverse cymbal] Up (2 times)
 press u 80
 press u 80
 wait 150
-# 516 [17. A sample: the reversed cymbal] A + Left
+# 512 [17. Sample: reverse cymbal] A + Left
 down a
 press l 80
 up a
 wait 150
 expect_screen_text SAMPLE
-# 517 [17. A sample: the reversed cymbal] Down
+# 513 [17. Sample: reverse cymbal] Down
 press d 80
 wait 150
-# 518 [17. A sample: the reversed cymbal] Select
+# 514 [17. Sample: reverse cymbal] Select
 press k 80
 wait 300
-# 519 [17. A sample: the reversed cymbal] Down (6 times)
+# 515 [17. Sample: reverse cymbal] Down (6 times)
 press d 80
 press d 80
 press d 80
@@ -2477,122 +2449,122 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 520 [17. A sample: the reversed cymbal] A
+# 516 [17. Sample: reverse cymbal] A
 press a 80
 wait 200
-# 521 [17. A sample: the reversed cymbal] Down (2 times)
+# 517 [17. Sample: reverse cymbal] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 522 [17. A sample: the reversed cymbal] Right
+# 518 [17. Sample: reverse cymbal] Right
 press r 80
 wait 150
-# 523 [17. A sample: the reversed cymbal] A
+# 519 [17. Sample: reverse cymbal] A
 press a 80
 wait 500
-# 524 [17. A sample: the reversed cymbal] Right (2 times)
+# 520 [17. Sample: reverse cymbal] Right (2 times)
 press r 80
 press r 80
 wait 150
-# 525 [17. A sample: the reversed cymbal] A
+# 521 [17. Sample: reverse cymbal] A
 press a 80
 wait 300
 expect_screen_text crash
-# 526 [17. A sample: the reversed cymbal] Down
+# 522 [17. Sample: reverse cymbal] Down
 press d 80
 wait 150
-# 527 [17. A sample: the reversed cymbal] A + Right
+# 523 [17. Sample: reverse cymbal] A + Right
 down a
 press r 80
 up a
 wait 150
-# 528 [17. A sample: the reversed cymbal] Start
+# 524 [17. Sample: reverse cymbal] Start
 press s 80
-wait 2600
-# 529 [17. A sample: the reversed cymbal] Start
+wait 800
+# 525 [17. Sample: reverse cymbal] Start
 press s 80
 wait 150
-# 530 [17. A sample: the reversed cymbal] RB + Left
+# 526 [17. Sample: reverse cymbal] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 531 [17. A sample: the reversed cymbal] RB + Left
+# 527 [17. Sample: reverse cymbal] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 532 [17. A sample: the reversed cymbal] RB + Left
+# 528 [17. Sample: reverse cymbal] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 533 [18. Resampling: the reversed pad] Up
+# 529 [18. Resample: reverse pad] Up
 press u 80
 wait 150
-# 534 [18. Resampling: the reversed pad] Left (3 times)
+# 530 [18. Resample: reverse pad] Left (3 times)
 press l 80
 press l 80
 press l 80
 wait 150
-# 535 [18. Resampling: the reversed pad] RB + Right
+# 531 [18. Resample: reverse pad] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 536 [18. Resampling: the reversed pad] Up (3 times)
+# 532 [18. Resample: reverse pad] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 537 [18. Resampling: the reversed pad] RB + Right
+# 533 [18. Resample: reverse pad] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 538 [18. Resampling: the reversed pad] LB + Start
+# 534 [18. Resample: reverse pad] LB + Start
 down m
 press s 80
 up m
 wait 300
-# 539 [18. Resampling: the reversed pad] (no input)
+# 535 [18. Resample: reverse pad] (no input)
 wait 2600
 expect_screen_text saved
-# 540 [18. Resampling: the reversed pad] A
+# 536 [18. Resample: reverse pad] A
 press a 80
 wait 300
-# 541 [18. Resampling: the reversed pad] A + Right
+# 537 [18. Resample: reverse pad] A + Right
 down a
 press r 80
 up a
 wait 150
-# 542 [18. Resampling: the reversed pad] RB + Left
+# 538 [18. Resample: reverse pad] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 543 [18. Resampling: the reversed pad] RB + Left
+# 539 [18. Resample: reverse pad] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 544 [18. Resampling: the reversed pad] RB + Left
+# 540 [18. Resample: reverse pad] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 545 [19. The break] Left (4 times)
+# 541 [19. The break] Left (4 times)
 press l 80
 press l 80
 press l 80
 press l 80
 wait 150
-# 546 [19. The break] B + LB
+# 542 [19. The break] B + LB
 down b
 press m 80
 up b
 wait 150
-# 547 [19. The break] Right (7 times)
+# 543 [19. The break] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -2601,28 +2573,28 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 548 [19. The break] B
+# 544 [19. The break] B
 press b 80
 wait 150
-# 549 [19. The break] Down (4 times)
+# 545 [19. The break] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 550 [19. The break] A + LB
+# 546 [19. The break] A + LB
 down a
 press m 80
 up a
 wait 150
-# 551 [19. The break] Up
+# 547 [19. The break] Up
 press u 80
 wait 150
-# 552 [19. The break] Right (2 times)
+# 548 [19. The break] Right (2 times)
 press r 80
 press r 80
 wait 150
-# 553 [19. The break] A + Right (5 times)
+# 549 [19. The break] A + Right (5 times)
 down a
 press r 80
 press r 80
@@ -2631,45 +2603,57 @@ press r 80
 press r 80
 up a
 wait 150
-# 554 [19. The break] Right (3 times)
+# 550 [19. The break] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 555 [19. The break] A + Right (2 times)
+# 551 [19. The break] A + Right (2 times)
 down a
 press r 80
 press r 80
 up a
 wait 150
-# 556 [19. The break] Right
+# 552 [19. The break] Right
 press r 80
 wait 150
-# 557 [19. The break] A + Left
+# 553 [19. The break] A + Left
 down a
 press l 80
 up a
 wait 150
-# 558 [19. The break] Right
+# 554 [19. The break] Right
 press r 80
 wait 150
-# 559 [19. The break] A + Right (3 times)
+# 555 [19. The break] A + Right (3 times)
 down a
 press r 80
 press r 80
 press r 80
 up a
 wait 150
-# 560 [19. The break] RB + Right
+# 556 [19. The break] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 561 [19. The break] A + Left (2 times)
+# 557 [19. The break] A + Left (2 times)
 down a
 press l 80
 press l 80
 up a
+wait 150
+# 558 [19. The break] Down
+press d 80
+wait 150
+# 559 [19. The break] A
+press a 80
+wait 150
+# 560 [19. The break] Down
+press d 80
+wait 150
+# 561 [19. The break] A
+press a 80
 wait 150
 # 562 [19. The break] Down
 press d 80
@@ -2677,49 +2661,37 @@ wait 150
 # 563 [19. The break] A
 press a 80
 wait 150
-# 564 [19. The break] Down
-press d 80
-wait 150
-# 565 [19. The break] A
-press a 80
-wait 150
-# 566 [19. The break] Down
-press d 80
-wait 150
-# 567 [19. The break] A
-press a 80
-wait 150
-# 568 [19. The break] A
+# 564 [19. The break] A
 press a 80
 wait 150
 expect_screen_text New phrase 0C
-# 569 [19. The break] RB + Right
+# 565 [19. The break] RB + Right
 down n
 press r 80
 up n
 wait 150
-# 570 [19. The break] Left
+# 566 [19. The break] Left
 press l 80
 wait 150
-# 571 [19. The break] A
+# 567 [19. The break] A
 press a 80
 wait 150
-# 572 [19. The break] A + Left (3 times)
+# 568 [19. The break] A + Left (3 times)
 down a
 press l 80
 press l 80
 press l 80
 up a
 wait 150
-# 573 [19. The break] Right
+# 569 [19. The break] Right
 press r 80
 wait 150
-# 574 [19. The break] A + Up
+# 570 [19. The break] A + Up
 down a
 press u 80
 up a
 wait 150
-# 575 [19. The break] A + Left (3 times)
+# 571 [19. The break] A + Left (3 times)
 down a
 press l 80
 press l 80
@@ -2727,28 +2699,28 @@ press l 80
 up a
 wait 150
 expect_screen_text I10
-# 576 [19. The break] Start
+# 572 [19. The break] Start
 press s 80
-wait 2600
-# 577 [19. The break] Start
+wait 800
+# 573 [19. The break] Start
 press s 80
 wait 150
-# 578 [19. The break] RB + Left
+# 574 [19. The break] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 579 [19. The break] RB + Left
+# 575 [19. The break] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 580 [20. Build, drop, outro] Up (3 times)
+# 576 [20. Build, drop, outro] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 581 [20. Build, drop, outro] Left (7 times)
+# 577 [20. Build, drop, outro] Left (7 times)
 press l 80
 press l 80
 press l 80
@@ -2757,12 +2729,12 @@ press l 80
 press l 80
 press l 80
 wait 150
-# 582 [20. Build, drop, outro] B + LB
+# 578 [20. Build, drop, outro] B + LB
 down b
 press m 80
 up b
 wait 150
-# 583 [20. Build, drop, outro] Right (7 times)
+# 579 [20. Build, drop, outro] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -2771,29 +2743,29 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 584 [20. Build, drop, outro] B
+# 580 [20. Build, drop, outro] B
 press b 80
 wait 150
-# 585 [20. Build, drop, outro] Down (4 times)
+# 581 [20. Build, drop, outro] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 586 [20. Build, drop, outro] A + LB
+# 582 [20. Build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 587 [20. Build, drop, outro] Up
+# 583 [20. Build, drop, outro] Up
 press u 80
 wait 150
-# 588 [20. Build, drop, outro] Right (3 times)
+# 584 [20. Build, drop, outro] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 589 [20. Build, drop, outro] A + Right (4 times)
+# 585 [20. Build, drop, outro] A + Right (4 times)
 down a
 press r 80
 press r 80
@@ -2801,22 +2773,22 @@ press r 80
 press r 80
 up a
 wait 150
-# 590 [20. Build, drop, outro] Right (3 times)
+# 586 [20. Build, drop, outro] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 591 [20. Build, drop, outro] A + Left
+# 587 [20. Build, drop, outro] A + Left
 down a
 press l 80
 up a
 wait 150
-# 592 [20. Build, drop, outro] Up (3 times)
+# 588 [20. Build, drop, outro] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 593 [20. Build, drop, outro] Left (6 times)
+# 589 [20. Build, drop, outro] Left (6 times)
 press l 80
 press l 80
 press l 80
@@ -2824,12 +2796,12 @@ press l 80
 press l 80
 press l 80
 wait 150
-# 594 [20. Build, drop, outro] B + LB
+# 590 [20. Build, drop, outro] B + LB
 down b
 press m 80
 up b
 wait 150
-# 595 [20. Build, drop, outro] Right (7 times)
+# 591 [20. Build, drop, outro] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -2838,21 +2810,21 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 596 [20. Build, drop, outro] B
+# 592 [20. Build, drop, outro] B
 press b 80
 wait 150
-# 597 [20. Build, drop, outro] Down (4 times)
+# 593 [20. Build, drop, outro] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 598 [20. Build, drop, outro] A + LB
+# 594 [20. Build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 599 [20. Build, drop, outro] Up (7 times)
+# 595 [20. Build, drop, outro] Up (7 times)
 press u 80
 press u 80
 press u 80
@@ -2861,12 +2833,12 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 600 [20. Build, drop, outro] B + LB
+# 596 [20. Build, drop, outro] B + LB
 down b
 press m 80
 up b
 wait 150
-# 601 [20. Build, drop, outro] Right (7 times)
+# 597 [20. Build, drop, outro] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -2875,10 +2847,10 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 602 [20. Build, drop, outro] B
+# 598 [20. Build, drop, outro] B
 press b 80
 wait 150
-# 603 [20. Build, drop, outro] Down (7 times)
+# 599 [20. Build, drop, outro] Down (7 times)
 press d 80
 press d 80
 press d 80
@@ -2887,12 +2859,12 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 604 [20. Build, drop, outro] A + LB
+# 600 [20. Build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 605 [21. Bookmarks] Up (8 times)
+# 601 [21. Bookmarks] Up (8 times)
 press u 80
 press u 80
 press u 80
@@ -2901,13 +2873,30 @@ press u 80
 press u 80
 press u 80
 press u 80
+wait 150
+# 602 [21. Bookmarks] A + Select
+down a
+press k 80
+up a
+wait 150
+# 603 [21. Bookmarks] Down
+press d 80
+wait 150
+# 604 [21. Bookmarks] A + Select
+down a
+press k 80
+up a
+wait 150
+# 605 [21. Bookmarks] Down
+press d 80
 wait 150
 # 606 [21. Bookmarks] A + Select
 down a
 press k 80
 up a
 wait 150
-# 607 [21. Bookmarks] Down
+# 607 [21. Bookmarks] Down (2 times)
+press d 80
 press d 80
 wait 150
 # 608 [21. Bookmarks] A + Select
@@ -2915,7 +2904,8 @@ down a
 press k 80
 up a
 wait 150
-# 609 [21. Bookmarks] Down
+# 609 [21. Bookmarks] Down (2 times)
+press d 80
 press d 80
 wait 150
 # 610 [21. Bookmarks] A + Select
@@ -2923,51 +2913,33 @@ down a
 press k 80
 up a
 wait 150
-# 611 [21. Bookmarks] Down (2 times)
-press d 80
-press d 80
-wait 150
-# 612 [21. Bookmarks] A + Select
-down a
-press k 80
-up a
-wait 150
-# 613 [21. Bookmarks] Down (2 times)
-press d 80
-press d 80
-wait 150
-# 614 [21. Bookmarks] A + Select
-down a
-press k 80
-up a
-wait 150
-# 615 [21. Bookmarks] LB + Up
+# 611 [21. Bookmarks] LB + Up
 down m
 press u 80
 up m
 wait 150
-# 616 [21. Bookmarks] LB + Up (2 times)
+# 612 [21. Bookmarks] LB + Up (2 times)
 down m
 press u 80
 press u 80
 up m
 wait 150
-# 617 [21. Bookmarks] Up
+# 613 [21. Bookmarks] Up
 press u 80
 wait 150
-# 618 [21. Bookmarks] Start
+# 614 [21. Bookmarks] Start
 press s 80
-wait 10400
-# 619 [21. Bookmarks] Start
+wait 800
+# 615 [21. Bookmarks] Start
 press s 80
 wait 150
-# 620 [22. Mix] RB + Down
+# 616 [22. Mix] RB + Down
 down n
 press d 80
 up n
 wait 150
 expect_screen_text Mixer
-# 621 [22. Mix] A + Up (4 times)
+# 617 [22. Mix] A + Up (4 times)
 down a
 press u 80
 press u 80
@@ -2975,99 +2947,113 @@ press u 80
 press u 80
 up a
 wait 150
-# 622 [22. Mix] Right (3 times)
+# 618 [22. Mix] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 623 [22. Mix] A + Down (3 times)
+# 619 [22. Mix] A + Down (3 times)
 down a
 press d 80
 press d 80
 press d 80
 up a
 wait 150
-# 624 [23. Effects, EQ and limiter] RB + Down
+# 620 [23. Effects, EQ, limiter] RB + Down
 down n
 press d 80
 up n
 wait 150
 expect_screen_text REVERB
-# 625 [23. Effects, EQ and limiter] Down (4 times)
+# 621 [23. Effects, EQ, limiter] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 626 [23. Effects, EQ and limiter] A + Up (2 times)
+# 622 [23. Effects, EQ, limiter] A + Up (2 times)
 down a
 press u 80
 press u 80
 up a
 wait 150
-# 627 [23. Effects, EQ and limiter] RB + Right
+# 623 [23. Effects, EQ, limiter] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text LOW
-# 628 [23. Effects, EQ and limiter] Down (4 times)
+# 624 [23. Effects, EQ, limiter] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 629 [23. Effects, EQ and limiter] A + Up
+# 625 [23. Effects, EQ, limiter] A + Up
 down a
 press u 80
 up a
 wait 150
-# 630 [23. Effects, EQ and limiter] RB + Right
+# 626 [23. Effects, EQ, limiter] RB + Right
 down n
 press r 80
 up n
 wait 150
 expect_screen_text LIMITER
-# 631 [23. Effects, EQ and limiter] A + Up (4 times)
+# 627 [23. Effects, EQ, limiter] A + Up
 down a
-press u 80
-press u 80
-press u 80
 press u 80
 up a
 wait 150
-# 632 [23. Effects, EQ and limiter] Start
+# 628 [23. Effects, EQ, limiter] Start
 press s 80
-wait 5200
-# 633 [23. Effects, EQ and limiter] Start
+wait 800
+# 629 [23. Effects, EQ, limiter] Start
 press s 80
 wait 150
-# 634 [23. Effects, EQ and limiter] RB + Left
+# 630 [23. Effects, EQ, limiter] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 635 [23. Effects, EQ and limiter] RB + Left
+# 631 [23. Effects, EQ, limiter] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 636 [23. Effects, EQ and limiter] RB + Up
+# 632 [23. Effects, EQ, limiter] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 637 [23. Effects, EQ and limiter] RB + Up
+# 633 [23. Effects, EQ, limiter] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 638 [24. Save] RB + Up
+# 634 [24. Headroom and save] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 639 [24. Save] Up (6 times)
+# 635 [24. Headroom and save] Down (4 times)
+press d 80
+press d 80
+press d 80
+press d 80
+wait 150
+# 636 [24. Headroom and save] A + Down (3 times)
+down a
+press d 80
+press d 80
+press d 80
+up a
+wait 150
+# 637 [24. Headroom and save] Up (10 times)
+press u 80
+press u 80
+press u 80
+press u 80
 press u 80
 press u 80
 press u 80
@@ -3075,23 +3061,33 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 640 [24. Save] A
+# 638 [24. Headroom and save] A
 press a 80
 wait 500
-# 641 [24. Save] RB + Down
+# 639 [24. Headroom and save] RB + Down
 down n
 press d 80
 up n
 wait 150
-# 642 [25. Play it live] Select
+# 640 [25. Play it live] Select
 press k 80
 wait 150
 expect_screen_text Live
+# 641 [25. Play it live] LB + Start
+down m
+press s 80
+up m
+wait 800
+# 642 [25. Play it live] LB + Down
+down m
+press d 80
+up m
+wait 150
 # 643 [25. Play it live] LB + Start
 down m
 press s 80
 up m
-wait 5200
+wait 800
 # 644 [25. Play it live] LB + Down
 down m
 press d 80
@@ -3101,70 +3097,60 @@ wait 150
 down m
 press s 80
 up m
-wait 7800
-# 646 [25. Play it live] LB + Down
-down m
-press d 80
-up m
-wait 150
-# 647 [25. Play it live] LB + Start
-down m
-press s 80
-up m
-wait 7800
-# 648 [25. Play it live] B + Start
+wait 800
+# 646 [25. Play it live] B + Start
 down b
 press s 80
 up b
 wait 150
-# 649 [25. Play it live] Select
+# 647 [25. Play it live] Select
 press k 80
 wait 150
 expect_screen_text Song
-# 650 [25. Play it live] LB + Up (2 times)
+# 648 [25. Play it live] LB + Up (2 times)
 down m
 press u 80
 press u 80
 up m
 wait 150
-# 651 [26. Export a WAV] RB + Up
+# 649 [26. Export a WAV] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 652 [26. Export a WAV] Down (4 times)
+# 650 [26. Export a WAV] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 653 [26. Export a WAV] A + Right
+# 651 [26. Export a WAV] A + Right
 down a
 press r 80
 up a
 wait 150
-# 654 [26. Export a WAV] RB + Down
+# 652 [26. Export a WAV] RB + Down
 down n
 press d 80
 up n
 wait 150
-# 655 [26. Export a WAV] Start
+# 653 [26. Export a WAV] Start
 press s 80
-wait 7800
-# 656 [26. Export a WAV] Start
+wait 800
+# 654 [26. Export a WAV] Start
 press s 80
 wait 150
-# 657 [26. Export a WAV] RB + Up
+# 655 [26. Export a WAV] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 658 [26. Export a WAV] A + Left
+# 656 [26. Export a WAV] A + Left
 down a
 press l 80
 up a
 wait 150
-# 659 [26. Export a WAV] RB + Down
+# 657 [26. Export a WAV] RB + Down
 down n
 press d 80
 up n

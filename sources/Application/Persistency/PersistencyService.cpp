@@ -43,10 +43,14 @@ bool PersistencyService::Load() {
 	file->Seek(0,SEEK_END) ;
 	int length=file->Tell() ;
 
-	unsigned char *compBuffer=(unsigned char *)SYS_MALLOC(length) ;
+	// One more byte for a terminator: the XML parser reads up to it, and
+	// without one it ran into whatever followed the buffer (a song that
+	// sometimes failed to load, or was taken for a compressed one)
+	unsigned char *compBuffer=(unsigned char *)SYS_MALLOC(length+1) ;
 
   file->Seek(0,SEEK_SET) ;
 	file->Read(compBuffer,1,length) ;
+	compBuffer[length]=0 ;
 	file->Close();
 	delete file ;
 	

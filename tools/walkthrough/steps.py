@@ -99,8 +99,10 @@ def transposes(done: str) -> list[Step]:
 
 SECTIONS: list[Section] = [
     # ------------------------------------------------------------------ start
-    Section("1. A new song", """
-The start screen lists your songs. You'll make a new one and call it GLOW.
+    Section("1. The start screen", """
+Launching the app shows **Your Songs**. **Up/Down** picks a song, **Left/Right** picks a button along the bottom, **A** runs it; the line under the buttons says what **A** will do. The songs you opened last are at the top (**Select** sorts them A to Z and back). `Help` opens this whole guide, built into the app.
+
+You'll make a new song and call it GLOW.
 """, [
         S("", "The app opens on **Your Songs**. Along the bottom are four buttons; `Open` is lit."),
         S("Right", "`New` is lit. The line under the buttons says what **A** will do."),
@@ -163,7 +165,7 @@ You'll start with a kick on every beat, in track 1.
         S("Start", "The bar plays on a loop: `PLAY:PHR`, and a marker runs down the steps.", wait=LISTEN),
         S("Start", "Stop."),
     ]),
-    Section("4. A bigger kick: the Macro Synth", """
+    Section("4. A Macro Synth kick", """
 `I00` is a plain synth kick, from the kit every new song starts with. The **Macro Synth** has a much punchier one. Switching an instrument over is the same few moves for every sound in this song.
 """, [
         S("RB+Right", "The **Instrument** screen of `I00`, the KICK. The cursor is on `preset`.", expect="KICK"),
@@ -214,7 +216,7 @@ The Chain and Phrase screens keep the cursor where you left it, even in a new ch
         *rows_of("01", "01"),
         S("RB+Left", "Back on the Song screen."),
     ]),
-    Section("6. Hi-hats: fill and chance", """
+    Section("6. Hats: fill and chance", """
 Track 3: a hi-hat on every 16th. You'll enter one and let the **fill** tool copy it down the bar. Then every 4th hat gets `CHNC 0080`: it plays only half the time, so the pattern never loops exactly the same.
 """, [
         S("Right", "Track 3, row `00`."),
@@ -289,13 +291,11 @@ Track 4: a rolling bass, a note on every 8th: `C C C(high) C C C C(high) G`. Jus
         S("Right", "Track 4, row `00`."),
         S("A", "Chain `02` goes in."),
         S("A", "A new chain `03`.", expect="New chain 03"),
-        S("RB+Right", "Chain `03`, cursor on row `3`."),
-        S("Up x3", "Row `0`."),
+        S("RB+Right", "Chain `03`, empty, cursor on row `0`."),
         S("A", "Phrase `02` goes in."),
         S("A", "A new phrase `03`.", expect="New phrase 03"),
-        S("RB+Right", "Phrase `03`. The cursor is on step `F`, in the command column, where you left the hats."),
+        S("RB+Right", "Phrase `03`, empty. The cursor is on step `0`, in the command column, where you left the hats."),
         S("Left x2", "The note column."),
-        S("Up x15", "Step `0`."),
         S("A", "`C 3 I02`, a copy of the hat."),
         S("Right", "The cursor is on `I02`."),
         S("A+Right x3", "`I05`, the **BASS**: a saw and a sub, tuned two octaves down.", expect="BASS"),
@@ -333,7 +333,7 @@ Every synth has presets to flip through. Try one, and if you don't like it, **B 
         S("RB+Left", "Back on chain `03`."),
         *rows_of("03", "03"),
     ]),
-    Section("10. Four chords from one bar", """
+    Section("10. Four chords, one bar", """
 The second column of a chain **transposes** its row: every note of that bar moves up or down, in semitones. So one bar of bass plays four chords:
 
 | Row | Transpose | Chord |
@@ -350,7 +350,7 @@ That's the song's chord progression. The pad and the keys use the same trick.
         S("Start", "Stop."),
         S("RB+Left", "Back on the Song screen."),
     ]),
-    Section("11. The pad: a whole chord from one note", """
+    Section("11. The HyperSynth pad", """
 Track 5 gets the big chords. The **HyperSynth** engine plays a six-note chord from every note, and with its `scale` switch on, every chord stays in C minor whatever the transpose: a C makes C minor 9, an A♭ makes A♭ major 9.
 
 Two more things make it sit in the mix: a **MOD** slot that ducks it every time the kick hits (the "pumping" of house music), and its own **EQ** taking out the low end, which belongs to the kick and bass.
@@ -400,15 +400,14 @@ Two more things make it sit in the mix: a **MOD** slot that ducks it every time 
         S("Start", "Drums, bass and pumping chords.", wait=2 * LISTEN),
         S("Start", "Stop."),
     ]),
-    Section("12. FM keys: one note, a chord stab", """
+    Section("12. FM keys and CHRD", """
 Track 6: an FM electric piano stabbing on the off-beats. The `CHRD` command turns one note into a chord: each digit of its value adds a note that many semitones up. `007E` adds 7 (the 5th) and `E` = 14 (the 9th): an open sound that fits all four chords.
 """, [
         S("Right", "Track 6, row `00`."),
         S("A", "Chain `04` goes in."),
         S("A", "A new chain `05`.", expect="New chain 05"),
-        S("RB+Right", "Chain `05`, cursor on row `1`'s transpose."),
+        S("RB+Right", "Chain `05`, cursor on row `0`'s transpose."),
         S("Left", "The phrase column."),
-        S("Up", "Row `0`."),
         S("A", "Phrase `04` goes in."),
         S("A", "A new phrase `05`.", expect="New phrase 05"),
         S("RB+Right", "Phrase `05`, cursor on step `0`."),
@@ -474,8 +473,7 @@ The same rhythm every bar with a new shape each time: that's what makes a hook s
         S("LB+Right", "**LB + Right**: random notes in C minor on random steps."),
         S("Start", "A melody out of nowhere. Press **LB + Right** again for another.", wait=LISTEN),
         S("Start", "Stop."),
-        S("B+Select", "Undo: the phrase is empty again. You'll write this one yourself."),
-        S("B", "**B** ends the selection."),
+        S("B+Select", "Undo: the phrase is empty again, and the selection is gone. You'll write this one yourself."),
         S("A", "`C 3 I09`."),
         S("Right", "The cursor is on `I09`."),
         S("A+Left x3", "`I06`, the **LEAD**.", expect="LEAD"),
@@ -570,7 +568,7 @@ Row `00` is the whole drop. The arrangement is that row, copied and changed: par
         S("A+LB", "Row `02`."),
         S("A+LB", "Row `03`."),
     ]),
-    Section("15. Silence: a rest chain", """
+    Section("15. A rest chain", """
 A track only goes quiet where it plays something silent: a chain whose phrase says `KILL` (stop the note). Chain `07` is that rest. You'll put it everywhere a part should drop out, and every track needs something on every row: a track that reaches an empty cell stops for the rest of the song.
 """, [
         S("Up x4", "Row `00`: it becomes the intro, just hats, pad and keys."),
@@ -651,7 +649,7 @@ Row `01` is the build before the drop. Its snare plays three bars of snare, then
         S("RB+Left", "Back on chain `08`."),
         S("RB+Left", "Back on the Song screen."),
     ]),
-    Section("17. A sample: the reversed cymbal", """
+    Section("17. Sample: reverse cymbal", """
 Track 8 plays effects. The first is a crash cymbal from the sample packs, played backwards: it swells up into the drop. Instrument `03` (the kit's open hat, unused) becomes a sample.
 
 The crash is 2.5 seconds long and a bar is 1.9. Played at `F 3`, five semitones up, it's faster and lasts exactly one bar.
@@ -694,7 +692,7 @@ The crash is 2.5 seconds long and a bar is 1.9. Played at `F 3`, five semitones 
         S("RB+Left", "Back on chain `09`."),
         S("RB+Left", "Back on the Song screen."),
     ]),
-    Section("18. Resampling: the reversed pad", """
+    Section("18. Resample: reverse pad", """
 **Render to sample** records a bar of your song into a new sample. You'll record one bar of the pad and play it backwards: a swell that pulls you out of the break.
 """, [
         S("Up", "Row `00`."),
@@ -806,8 +804,8 @@ The **Mixer** sets each track's level. The kick should hit hardest; the bass sit
         S("Right x3", "Track 4, the bass."),
         S("A+Down x3", "`90`: a bit down."),
     ]),
-    Section("23. Effects, EQ and limiter", """
-The **FX** screen sets up the shared chorus, echo and reverb the instruments send to. **EQ** shapes the whole mix, **Limit** makes it loud without clipping.
+    Section("23. Effects, EQ, limiter", """
+The **FX** screen sets up the shared chorus, echo and reverb the instruments send to. **EQ** shapes the whole mix, **Limit** keeps it from clipping.
 """, [
         S("RB+Down", "The **FX** screen.", expect="REVERB"),
         S("Down x4", "The cursor is on the reverb's `size 90`."),
@@ -816,7 +814,7 @@ The **FX** screen sets up the shared chorus, echo and reverb the instruments sen
         S("Down x4", "The cursor is on the high `gain 80`."),
         S("A+Up", "`gain 90`: a little air on top."),
         S("RB+Right", "The **Limit** screen, cursor on `drive 00` (off).", expect="LIMITER"),
-        S("A+Up x4", "`drive 40`: the limiter pushes the mix up and catches every peak."),
+        S("A+Up", "`drive 10`: the mix goes into the limiter a little hotter, and every peak is caught before it can crackle."),
         S("Start", "Listen: `GR` shows how much it's catching.", wait=2 * LISTEN),
         S("Start", "Stop."),
         S("RB+Left", "EQ."),
@@ -825,10 +823,14 @@ The **FX** screen sets up the shared chorus, echo and reverb the instruments sen
         S("RB+Up", "Song."),
     ]),
     # ------------------------------------------------------------------ finish
-    Section("24. Save", "", [
-        S("RB+Up", "Project."),
-        S("Up x6", "The cursor is on `Save Song`."),
-        S("A", "Saved.", wait=500),
+    Section("24. Headroom and save", """
+Eight tracks add up. The Project screen's `Drive` sets how hard the whole song goes into the mix: a little lower leaves room, and the limiter brings the level back without distortion.
+""", [
+        S("RB+Up", "Project, cursor on `Scale`."),
+        S("Down x4", "The cursor is on `Drive: 100`."),
+        S("A+Down x3", "`Drive: 70`."),
+        S("Up x10", "The cursor is on `Save Song`."),
+        S("A", "Saved: the song is written to the SD card.", wait=500),
         S("RB+Down", "Song."),
     ]),
     Section("25. Play it live", """

@@ -99,7 +99,13 @@ def parse_keys(spec: str) -> Input | None:
     return Input(held=names[:-1], key=names[-1], count=int(m.group(2) or 1))
 
 
-def sim_lines(inp: Input | None, step: Step) -> list[str]:
+# The test doesn't need to hear a whole bar after every Start: longer waits
+# are only for the pictures (a step without a button keeps its wait: it is
+# waiting for the app, like a render finishing)
+TEST_MAX_WAIT_MS = 800
+
+
+def sim_lines(inp: Input | None, step: Step, screenshots: bool = True) -> list[str]:
     lines: list[str] = []
     if inp:
         for mod in inp.held:
@@ -108,7 +114,10 @@ def sim_lines(inp: Input | None, step: Step) -> list[str]:
             lines.append(f"press {BUTTONS[inp.key][0]} {PRESS_MS}")
         for mod in reversed(inp.held):
             lines.append(f"up {BUTTONS[mod][0]}")
-    lines.append(f"wait {step.wait or SETTLE_MS}")
+    wait = step.wait or SETTLE_MS
+    if not screenshots and inp:
+        wait = min(wait, TEST_MAX_WAIT_MS)
+    lines.append(f"wait {wait}")
     for text in step.expect:
         lines.append(f"expect_screen_text {text}")
     return lines
@@ -132,7 +141,7 @@ def build_script(screenshots: bool, check: bool = True) -> str:
     for section, step in all_steps():
         inp = parse_keys(step.keys)
         out.append(f"# {n:03d} [{section.title}] {inp.label if inp else '(no input)'}")
-        out.extend(sim_lines(inp, step))
+        out.extend(sim_lines(inp, step, screenshots))
         if screenshots:
             out.append(f"screenshot_app wt-{n:03d}.bmp")
         n += 1
@@ -173,7 +182,7 @@ def capture(check: bool = True, update_asset: bool = False) -> list[Path]:
         for demo in sorted((PROJECTS / "resources" / "demos").iterdir()):
             if demo.is_dir():
                 shutil.copytree(demo, TRACKS / demo.name)
-        run_sim(capture_script, "-ResetLastProject", "-SeedSamplePacks", "-NameSeed", NAME_SEED)
+        run_sim(capture_script, "-ResetLastProject", "-SeedSamplePacks", "-NoKeyRepeat", "-NameSeed", NAME_SEED)
         if update_asset:
             # The bar the walkthrough resamples, for the demo song
             shutil.copyfile(TRACKS / f"lgpt_{SONG_NAME}" / "samples" / "rs_01.wav", RENDER_ASSET)
@@ -243,27 +252,31 @@ def draw_panel(draw: ImageDraw.ImageDraw, top: int, inp: Input | None) -> None:
     tag(SCREEN - 70, y0 + 44, "RB")
 
     # D-pad: a cross of four keys around a hub
-    cx, cy, s = 104, top + 118, 30
+    cx, cy, s = 104, top + 112, 30
     draw.rectangle([cx - s // 2, cy - s // 2, cx + s // 2, cy + s // 2], fill=KEY_IDLE)
     arms = {"Up": (0, -1), "Down": (0, 1), "Left": (-1, 0), "Right": (1, 0)}
-    arrows = {"Up": "^", "Down": "v", "Left": "<", "Right": ">"}
     for name, (dx, dy) in arms.items():
         x, y = cx + dx * s, cy + dy * s
         fill, outline, ink = colours(name)
         draw.rectangle([x - s // 2, y - s // 2, x + s // 2, y + s // 2], fill=fill, outline=outline, width=2)
-        draw.text((x, y), arrows[name], fill=ink, font=font(18), anchor="mm")
-    if tapped in arms and inp and inp.count > 1:
-        dx, dy = arms[tapped]
-        draw.text((cx + dx * s * 2 + (18 if dx > 0 else -18 if dx < 0 else 36),
-                   cy + dy * s * 2 - (0 if dy else 0)), f"x{inp.count}", fill=ORANGE,
-                  font=font(17), anchor="mm")
-    for name in held & set(arms):
-        dx, dy = arms[name]
-        draw.text((cx + dx * s * 2 + (20 if dx else 40), cy + dy * s * 2), "HOLD", fill=CREAM,
-                  font=font(13), anchor="mm")
+        # a small triangle pointing out of the pad
+        t = 7
+        tip = (x + dx * t, y + dy * t)
+        base = [(x - dy * t - dx * t // 2, y - dx * t - dy * t // 2),
+                (x + dy * t - dx * t // 2, y + dx * t - dy * t // 2)]
+        draw.polygon([tip] + base, fill=ink)
+    # Tap count / hold, just outside the pad on the right
+    for name, (dx, dy) in arms.items():
+        label = None
+        if name == tapped and inp and inp.count > 1:
+            label, colour, size = f"x{inp.count}", ORANGE, 18
+        elif name in held:
+            label, colour, size = "HOLD", CREAM, 13
+        if label:
+            draw.text((cx + 2 * s + 4, cy + dy * s), label, fill=colour, font=font(size), anchor="lm")
 
     # Face buttons, laid out like the RG Nano: Y top, X left, B right, A bottom
-    fx, fy, gap, r = SCREEN - 104, top + 118, 36, 19
+    fx, fy, gap, r = SCREEN - 104, top + 112, 36, 19
     faces = {"Y": (0, -1), "X": (-1, 0), "B": (1, 0), "A": (0, 1)}
     for name, (dx, dy) in faces.items():
         x, y = fx + dx * gap, fy + dy * gap
@@ -275,12 +288,15 @@ def draw_panel(draw: ImageDraw.ImageDraw, top: int, inp: Input | None) -> None:
     for name in ("A", "B"):
         dx, dy = faces[name]
         x, y = fx + dx * gap, fy + dy * gap
-        if name in held:
-            draw.text((x + (0 if name == "A" else 0), y + r + 12 if name == "A" else y - r - 12),
-                      "HOLD", fill=CREAM, font=font(13), anchor="mm")
+        label = None
         if name == tapped and inp and inp.count > 1:
-            draw.text((x - r - 22, y + (8 if name == "A" else -r - 6)), f"x{inp.count}", fill=ORANGE,
-                      font=font(17), anchor="mm")
+            label, colour, size = f"x{inp.count}", ORANGE, 18
+        elif name in held:
+            label, colour, size = "HOLD", CREAM, 13
+        if label:
+            # left of A, under B
+            pos = (x - r - 8, y) if name == "A" else (x, y + r + 12)
+            draw.text(pos, label, fill=colour, font=font(size), anchor="rm" if name == "A" else "mm")
 
     # Select (the FN key) and Start
     sy = top + PANEL - 34
@@ -290,7 +306,7 @@ def draw_panel(draw: ImageDraw.ImageDraw, top: int, inp: Input | None) -> None:
     tag(SCREEN // 2 + 50, sy - 12, "Start")
 
     # What to do, in words
-    words = inp.label if inp else "look"
+    words = inp.label if inp else "no button: just look"
     draw.text((SCREEN // 2, top + 30), words, fill=ORANGE if inp else GREY, font=font(20), anchor="mm")
 
 
@@ -312,8 +328,18 @@ def image_name(n: int) -> str:
     return f"{n:03d}.png"
 
 
+def anchor(title: str) -> str:
+    """GitHub wiki heading anchor."""
+    return re.sub(r"[^a-z0-9 -]", "", title.lower()).replace(" ", "-")
+
+
 def build_page() -> str:
-    out = [INTRO.strip(), ""]
+    out = [INTRO.strip(), "", "## Contents", ""]
+    first = 0
+    for section in SECTIONS:
+        out.append(f"- [{section.title}](#{anchor(section.title)}) (steps {first}-{first + len(section.steps) - 1})")
+        first += len(section.steps)
+    out.append("")
     n = 0
     for section in SECTIONS:
         out.append(f"## {section.title}")

@@ -1,12 +1,12 @@
-# Live mode on the Dusk demo: Select switches it on, LB+Start launches a
+# Live mode on the Afterglow demo: Select switches it on, LB+Start launches a
 # row, Start cues one track's cell, B+Start stops everything, Select
 # switches back. Start on other screens still plays while in Live.
 wait 1500
 expect_view song
-expect_screen_text Song - Dusk
+expect_screen_text Song - Afterglow
 press k 80
 wait 200
-expect_screen_text Live - Dusk
+expect_screen_text Live - Afterglow
 expect_screen_text St cue  LB+St row  RB+St stop
 # The drop (row 02): every track together
 row 02
@@ -48,6 +48,6 @@ goto song
 # Select switches back to Song mode
 press k 80
 wait 200
-expect_screen_text Song - Dusk
+expect_screen_text Song - Afterglow
 expect_no_error
 quit
