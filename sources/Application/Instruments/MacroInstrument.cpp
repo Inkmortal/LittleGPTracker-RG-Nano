@@ -1,4 +1,5 @@
 #include "MacroInstrument.h"
+#include "VoiceOutput.h"
 #include "CommandList.h"
 #include "Application/Player/SyncMaster.h"
 #include "Application/Model/Table.h"
@@ -9,6 +10,9 @@
 
 #include <math.h>
 #include <string.h>
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+#include <arm_neon.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -375,6 +379,38 @@ static double besselI0(double x) {
 	return sum ;
 }
 
+// One output sample of the resampler: the 48 input samples against one
+// kernel row. On the device four taps at a time in NEON (the A7 runs a
+// 128-bit multiply-accumulate in two cycles against one per tap on VFP);
+// the sum order differs from the scalar loop only in float rounding.
+typedef char macro_taps_check[(MACRO_TAPS%16==0)?1:-1] __attribute__((unused)) ;
+static inline float macroDot(const float *x,const float *k) {
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+	float32x4_t a0=vdupq_n_f32(0.0f) ;
+	float32x4_t a1=vdupq_n_f32(0.0f) ;
+	float32x4_t a2=vdupq_n_f32(0.0f) ;
+	float32x4_t a3=vdupq_n_f32(0.0f) ;
+	for (int t=0;t<MACRO_TAPS;t+=16) {
+		a0=vmlaq_f32(a0,vld1q_f32(x+t),vld1q_f32(k+t)) ;
+		a1=vmlaq_f32(a1,vld1q_f32(x+t+4),vld1q_f32(k+t+4)) ;
+		a2=vmlaq_f32(a2,vld1q_f32(x+t+8),vld1q_f32(k+t+8)) ;
+		a3=vmlaq_f32(a3,vld1q_f32(x+t+12),vld1q_f32(k+t+12)) ;
+	}
+	float32x4_t s=vaddq_f32(vaddq_f32(a0,a1),vaddq_f32(a2,a3)) ;
+	float32x2_t h=vadd_f32(vget_low_f32(s),vget_high_f32(s)) ;
+	return vget_lane_f32(vpadd_f32(h,h),0) ;
+#else
+	float s0=0.0f,s1=0.0f,s2=0.0f,s3=0.0f ;
+	for (int t=0;t<MACRO_TAPS;t+=4) {
+		s0+=x[t]*k[t] ;
+		s1+=x[t+1]*k[t+1] ;
+		s2+=x[t+2]*k[t+2] ;
+		s3+=x[t+3]*k[t+3] ;
+	}
+	return (s0+s1)+(s2+s3) ;
+#endif
+}
+
 int MacroInstrument::ResampleL() {
 	return macroL ;
 }
@@ -605,6 +641,14 @@ MacroInstrument::~MacroInstrument() {
 
 bool MacroInstrument::Init() {
 	tableState_.Reset() ;
+	// The resampler's kernel (thousands of sin/Bessel terms) is made here,
+	// when the song loads, not by the first note on the audio thread (that
+	// buffer took a quarter of the device's time on its own)
+	if (!macroKernel) {
+		float sampleRate=(float)Audio::GetInstance()->GetSampleRate() ;
+		if (sampleRate<8000.0f) sampleRate=44100.0f ;
+		setupResampler(sampleRate) ;
+	}
 	return true ;
 }
 
@@ -1191,11 +1235,22 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	bool eqOn=eq_.Prepare() ;
 	int rendered=0 ;
 
+	// Made one control block (MACRO_BLOCK samples) at a time, stage by
+	// stage like the synth (SynthInstrument::Render): envelope, the model
+	// through the resampler, drive, filter, then level, pan and output. The
+	// same arithmetic per sample in the same order as a per-sample loop; a
+	// new note after the steal fade or the end of the voice cuts the block.
 	fixed *out=buffer ;
-	for (int i=0;i<size;i++) {
+	float lev[MACRO_BLOCK] ;
+	float sigBuf[MACRO_BLOCK] ;
+	int preIndex=-1 ;      // a sample whose envelope step is already done
+	float preLevel=0.0f ;
+	bool alive=true ;
+	int i=0 ;
+	while (i<size && alive) {
 
 		// Control rate: pitch, timbre/color, filter, lfo, command ramps
-		if ((i%MACRO_BLOCK)==0) {
+		if ((i%MACRO_BLOCK)==0 && i!=preIndex) {
 			if (--v.krateCount_<=0) {
 				v.krateCount_=MACRO_KRATE/MACRO_BLOCK ;
 				processUpdaters(v,false) ;
@@ -1257,123 +1312,182 @@ bool MacroInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			gainR=volf*fp2fl(panlaw[254-pan]) ;
 		}
 
-		// Amp envelope
-		switch(v.stage_) {
-			case MSS_ATTACK:
-				v.level_+=attackInc ;
-				if (v.level_>=1.0f) {
-					v.level_=1.0f ;
-					v.stage_=MSS_DECAY ;
-				}
-				break ;
-			case MSS_DECAY:
-				v.level_=sustain+(v.level_-sustain)*decayCoef ;
-				if (sustain<=0.0f && v.level_<MACRO_SILENCE) {
-					v.level_=0.0f ;
-					v.stage_=MSS_OFF ;
-				}
-				break ;
-			case MSS_RELEASE:
-				v.level_*=v.fastRelease_?quickReleaseCoef:releaseCoef ;
-				if (!(v.level_>=MACRO_SILENCE)) {  // also ends a NaN level
-					v.level_=0.0f ;
-					v.stage_=MSS_OFF ;
-				}
-				break ;
-			case MSS_FADE:
-				v.level_-=fadeInc ;
-				if (v.level_<=0.0f) {
-					v.level_=0.0f ;
-					if (v.pendingStart_) {
-						startVoice(channel,v.pendingNote_,v.pendingClean_) ;
-					} else {
+		// The run: to the end of the block, or up to a note start / the end
+		// of the voice
+		int blockEnd=(i/MACRO_BLOCK+1)*MACRO_BLOCK ;
+		if (blockEnd>size) blockEnd=size ;
+		int end=i ;
+		bool startEvent=false ;
+		bool offEvent=false ;
+		for (int j=i;j<blockEnd;j++) {
+			if (j==preIndex) {
+				lev[j-i]=preLevel ;
+				end=j+1 ;
+				continue ;
+			}
+			// Amp envelope
+			switch(v.stage_) {
+				case MSS_ATTACK:
+					v.level_+=attackInc ;
+					if (v.level_>=1.0f) {
+						v.level_=1.0f ;
+						v.stage_=MSS_DECAY ;
+					}
+					break ;
+				case MSS_DECAY:
+					v.level_=sustain+(v.level_-sustain)*decayCoef ;
+					if (sustain<=0.0f && v.level_<MACRO_SILENCE) {
+						v.level_=0.0f ;
 						v.stage_=MSS_OFF ;
 					}
-				}
-				break ;
-			default:
-				break ;
-		}
-		if (v.stage_==MSS_OFF) {
-			v.active_=false ;
-			break ;
-		}
-
-		// Next output sample of the model: polyphase sinc over 96 kHz input
-		while (v.fifoCount_<v.readPos_+MACRO_TAPS) {
-			fillBlock(v) ;
-		}
-		const float *x=v.fifo_+v.readPos_ ;
-		const float *k=macroKernel+v.phaseAcc_*MACRO_TAPS ;
-		float s0=0.0f,s1=0.0f,s2=0.0f,s3=0.0f ;
-		for (int t=0;t<MACRO_TAPS;t+=4) {
-			s0+=x[t]*k[t] ;
-			s1+=x[t+1]*k[t+1] ;
-			s2+=x[t+2]*k[t+2] ;
-			s3+=x[t+3]*k[t+3] ;
-		}
-		float sig=(s0+s1)+(s2+s3) ;
-		v.phaseAcc_+=M ;
-		while (v.phaseAcc_>=L) {
-			v.phaseAcc_-=L ;
-			v.readPos_++ ;
-		}
-		if (v.readPos_>=MACRO_FIFO_COMPACT) {
-			int keep=v.fifoCount_-v.readPos_ ;
-			memmove(v.fifo_,v.fifo_+v.readPos_,keep*sizeof(float)) ;
-			v.fifoCount_=keep ;
-			v.readPos_=0 ;
-		}
-
-		if (driveAmount>0.0f) {
-			sig=softSat(sig*driveGain) ;
-		}
-
-		// State variable filter (TPT), as the synth
-		if (filterType!=SFT_OFF) {
-			float v3=sig-v.ic2eq_ ;
-			float v1=v.fa1_*v.ic1eq_+v.fa2_*v3 ;
-			float v2=v.ic2eq_+v.fa2_*v.ic1eq_+v.fa3_*v3 ;
-			v.ic1eq_=2.0f*v1-v.ic1eq_ ;
-			v.ic2eq_=2.0f*v2-v.ic2eq_ ;
-			switch(filterType) {
-				case SFT_HIGHPASS:
-					sig=sig-v.fk_*v1-v2 ;
 					break ;
-				case SFT_BANDPASS:
-					sig=v1*v.fk_ ;
+				case MSS_RELEASE:
+					v.level_*=v.fastRelease_?quickReleaseCoef:releaseCoef ;
+					if (!(v.level_>=MACRO_SILENCE)) {  // also ends a NaN level
+						v.level_=0.0f ;
+						v.stage_=MSS_OFF ;
+					}
+					break ;
+				case MSS_FADE:
+					v.level_-=fadeInc ;
+					if (v.level_<=0.0f) {
+						v.level_=0.0f ;
+						if (v.pendingStart_) {
+							startEvent=true ;
+						} else {
+							v.stage_=MSS_OFF ;
+						}
+					}
 					break ;
 				default:
-					sig=v2 ;
 					break ;
+			}
+			if (startEvent) {
+				end=j ;
+				break ;
+			}
+			if (v.stage_==MSS_OFF) {
+				offEvent=true ;
+				end=j ;
+				break ;
+			}
+			lev[j-i]=v.level_ ;
+			end=j+1 ;
+		}
+		int n=end-i ;
+
+		if (n>0) {
+			float *sig=sigBuf ;
+			// The model: polyphase sinc over its 96 kHz output
+			for (int k=0;k<n;k++) {
+				while (v.fifoCount_<v.readPos_+MACRO_TAPS) {
+					fillBlock(v) ;
+				}
+				const float *x=v.fifo_+v.readPos_ ;
+				const float *kr=macroKernel+v.phaseAcc_*MACRO_TAPS ;
+				sig[k]=macroDot(x,kr) ;
+				v.phaseAcc_+=M ;
+				while (v.phaseAcc_>=L) {
+					v.phaseAcc_-=L ;
+					v.readPos_++ ;
+				}
+				if (v.readPos_>=MACRO_FIFO_COMPACT) {
+					int keep=v.fifoCount_-v.readPos_ ;
+					memmove(v.fifo_,v.fifo_+v.readPos_,keep*sizeof(float)) ;
+					v.fifoCount_=keep ;
+					v.readPos_=0 ;
+				}
+			}
+
+			if (driveAmount>0.0f) {
+				for (int k=0;k<n;k++) sig[k]=softSat(sig[k]*driveGain) ;
+			}
+
+			// State variable filter (TPT), as the synth
+			if (filterType!=SFT_OFF) {
+				const float fa1=v.fa1_,fa2=v.fa2_,fa3=v.fa3_,fk=v.fk_ ;
+				float ic1=v.ic1eq_,ic2=v.ic2eq_ ;
+				for (int k=0;k<n;k++) {
+					float x=sig[k] ;
+					float v3=x-ic2 ;
+					float v1=fa1*ic1+fa2*v3 ;
+					float v2=ic2+fa2*ic1+fa3*v3 ;
+					ic1=2.0f*v1-ic1 ;
+					ic2=2.0f*v2-ic2 ;
+					switch(filterType) {
+						case SFT_HIGHPASS:
+							sig[k]=x-fk*v1-v2 ;
+							break ;
+						case SFT_BANDPASS:
+							sig[k]=v1*fk ;
+							break ;
+						default:
+							sig[k]=v2 ;
+							break ;
+					}
+				}
+				v.ic1eq_=ic1 ;
+				v.ic2eq_=ic2 ;
+			}
+
+			// NaN / runaway state: silence this voice from that sample on
+			// instead of letting it ring on forever
+			int good=voiceFirstBroken(sig,sig,lev,n) ;
+
+			if (!eqOn) {
+				// level, clamp, pan, output and sends (see VoiceOutput.h)
+				int sendable=SENDFX_MAX_FRAMES-i ;
+				if (sendable>good) sendable=good ;
+				if (sendable<0) sendable=0 ;
+				voiceOutput(sig,sig,lev,ampMod,gainL,gainR,out,sending?sendBuffer+i*2:0,sendable) ;
+				if (good>sendable) {
+					voiceOutput(sig+sendable,sig+sendable,lev+sendable,ampMod,gainL,gainR,
+					            out+sendable*2,0,good-sendable) ;
+				}
+				out+=good*2 ;
+				if (sending && sendable>0) rendered=i+sendable ;
+			} else {
+				for (int k=0;k<good;k++) {
+					float s=sig[k]*(lev[k]*ampMod) ;
+					// The instrument's own EQ (EQ page), before pan and the sends
+					s=eq_.TickMono(channel,s) ;
+					if (s>2.0f) s=2.0f ;
+					if (s<-2.0f) s=-2.0f ;
+					float outL=s*gainL ;
+					float outR=s*gainR ;
+					*out++=fl2fp(outL*32767.0f) ;
+					*out++=fl2fp(outR*32767.0f) ;
+					int at=i+k ;
+					if (sending && at<SENDFX_MAX_FRAMES) {
+						sendBuffer[at*2]=outL ;
+						sendBuffer[at*2+1]=outR ;
+						rendered=at+1 ;
+					}
+				}
+			}
+			if (good<n) {
+				brokenVoices_++ ;
+				v.stage_=MSS_OFF ;
+				v.active_=false ;
+				v.level_=0.0f ;
+				v.ic1eq_=v.ic2eq_=0.0f ;
+				alive=false ;
+				break ;
 			}
 		}
 
-		if (sig!=sig || sig>1e6f || sig<-1e6f || v.level_!=v.level_) {
-			// NaN / runaway state: silence this voice instead of letting it
-			// ring on forever
-			brokenVoices_++ ;
-			v.stage_=MSS_OFF ;
+		if (offEvent) {
 			v.active_=false ;
-			v.level_=0.0f ;
-			v.ic1eq_=v.ic2eq_=0.0f ;
 			break ;
 		}
-		sig*=v.level_*ampMod ;
-		// The instrument's own EQ (EQ page), before pan and the sends
-		if (eqOn) sig=eq_.TickMono(channel,sig) ;
-		if (sig>2.0f) sig=2.0f ;
-		if (sig<-2.0f) sig=-2.0f ;
-
-		float outL=sig*gainL ;
-		float outR=sig*gainR ;
-		*out++=fl2fp(outL*32767.0f) ;
-		*out++=fl2fp(outR*32767.0f) ;
-		if (sending && i<SENDFX_MAX_FRAMES) {
-			sendBuffer[i*2]=outL ;
-			sendBuffer[i*2+1]=outR ;
-			rendered=i+1 ;
+		if (startEvent) {
+			// the new note starts on sample 'end', which then goes on as
+			// the first sample of the next run
+			startVoice(channel,v.pendingNote_,v.pendingClean_) ;
+			preIndex=end ;
+			preLevel=v.level_ ;
 		}
+		i=end ;
 	}
 	if (sending && rendered>0) {
 		SendFX::GetInstance()->AddSend(channel,sendBuffer,rendered,reverbSend,delaySend,chorusSend) ;

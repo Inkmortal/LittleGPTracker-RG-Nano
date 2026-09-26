@@ -137,6 +137,10 @@ struct SynthVoice {
 	float lfoPhase_ ;
 	float glideNote_ ;
 	bool hasPlayed_ ;
+	// the last note's frequency factor 2^((note-69)/12) (pow is slow)
+	bool pitchCacheValid_ ;
+	float pitchCacheNote_ ;
+	float pitchCacheFactor_ ;
 
 	float ic1eq_ ;
 	float ic2eq_ ;

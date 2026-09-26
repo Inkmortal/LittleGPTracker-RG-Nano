@@ -1250,8 +1250,10 @@ void SampleInstrument::sendToEffects(int channel,fixed *buffer,int size) {
   if (reverb<=0.0f && delay<=0.0f && chorus<=0.0f) return ;
   static float send[SENDFX_MAX_FRAMES*2] ;
   int frames=size<SENDFX_MAX_FRAMES ? size : SENDFX_MAX_FRAMES ;
+  // a multiply, not a division per sample (VDIV takes ~14 cycles on the A7)
+  const float scale=1.0f/32767.0f ;
   for (int i=0;i<frames*2;i++) {
-    send[i]=fp2fl(buffer[i])/32767.0f ;
+    send[i]=fp2fl(buffer[i])*scale ;
   }
   SendFX::GetInstance()->AddSend(channel,send,frames,reverb,delay,chorus) ;
 }

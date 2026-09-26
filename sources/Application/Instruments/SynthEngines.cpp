@@ -148,7 +148,7 @@ void HyperStart(HyperOsc &o,unsigned int seed) {
 	unsigned int s=seed|1u ;
 	for (int n=0;n<HYPER_NOTES;n++) {
 		for (int k=0;k<2;k++) {
-			o.phase_[n][k]=(float)(synthXorshift(s)&0xFFFF)/65536.0f ;
+			o.phase_[n][k]=(synthXorshift(s)&0xFFFFu)<<16 ;
 		}
 	}
 	o.subPhase_=0.0f ;

@@ -10,6 +10,8 @@ public:
 	static void Note(const char *fmt, ...);
 	// Returns true when it wrote a line (every 30 s)
 	static bool Heartbeat(const char *state);
+	// True when the next Heartbeat() call will write a line
+	static bool HeartbeatDue();
 	// Async-signal-safe: plain write() calls, no allocation
 	static void Dump(int fd);
 	// Resident memory of the process in KB, -1 if unknown

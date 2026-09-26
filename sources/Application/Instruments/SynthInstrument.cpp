@@ -1,4 +1,5 @@
 #include "SynthInstrument.h"
+#include "VoiceOutput.h"
 #include "CommandList.h"
 #include "Application/Player/SyncMaster.h"
 #include "Application/Model/Table.h"
@@ -513,6 +514,22 @@ static inline float fastSin(float phase) {
 	return synthSineTable[i]+(synthSineTable[i+1]-synthSineTable[i])*frac ;
 }
 
+// 2^(semitones/12) for a chord note, from a table filled on first use
+// (the same pow() values, not one pow() per partial per control block)
+#define CHORD_RATIO_MIN -128
+#define CHORD_RATIO_MAX 255
+static float chordRatio(int semis) {
+	static float table[CHORD_RATIO_MAX-CHORD_RATIO_MIN+1] ;
+	static bool ready[CHORD_RATIO_MAX-CHORD_RATIO_MIN+1] ;
+	if (semis<CHORD_RATIO_MIN || semis>CHORD_RATIO_MAX) return (float)pow(2.0,semis/12.0) ;
+	int k=semis-CHORD_RATIO_MIN ;
+	if (!ready[k]) {
+		table[k]=(float)pow(2.0,semis/12.0) ;
+		ready[k]=true ;
+	}
+	return table[k] ;
+}
+
 static inline unsigned int xorshift(unsigned int &state) {
 	unsigned int x=state ;
 	x^=x<<13 ;
@@ -847,6 +864,7 @@ SynthInstrument::SynthInstrument() {
 			v.hyperRatio_[n]=1.0f ;
 		}
 		v.hyperKey_=-1 ;
+		v.pitchCacheValid_=false ;
 		v.baseVolume_=v.volume_=i2fp(0x80) ;
 		v.basePan_=v.pan_=i2fp(0x7F) ;
 		v.baseCutoff_=v.cutoff_=fl2fp(0.75f) ;
@@ -1739,11 +1757,27 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 	bool eqOn=eq_.Prepare() ;
 	int rendered=0 ;
 
+	// The buffer is made one control block (SYNTH_BLOCK samples) at a
+	// time, and each block stage by stage: the amp envelope, then the
+	// oscillators, then noise, drive, filter, level, EQ and pan, each as its
+	// own tight loop over the block. Every sample goes through the same
+	// arithmetic in the same order as the old sample-by-sample loop (the
+	// output is the same), without re-testing the engine, filter type and
+	// the rest for every sample. A note that starts after the steal fade, or
+	// a voice that ends, cuts the block there (a "run").
 	fixed *out=buffer ;
-	for (int i=0;i<size;i++) {
+	float lev[SYNTH_BLOCK] ;
+	float sigL[SYNTH_BLOCK] ;
+	float sigRBuf[SYNTH_BLOCK] ;
+	float part[SYNTH_BLOCK] ;
+	int preIndex=-1 ;      // a sample whose envelope step is already done
+	float preLevel=0.0f ;
+	bool alive=true ;
+	int i=0 ;
+	while (i<size && alive) {
 
 		// Control rate: pitch, filter, lfo, command ramps
-		if ((i%SYNTH_BLOCK)==0) {
+		if ((i%SYNTH_BLOCK)==0 && i!=preIndex) {
 			if (--v.krateCount_<=0) {
 				v.krateCount_=SYNTH_KRATE/SYNTH_BLOCK ;
 				processUpdaters(v,false) ;
@@ -1758,12 +1792,19 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			}
 			float note=v.glideNote_+tune+pitchEnvAmt*v.pitchEnv_ ;
 			if (lfoDest==SLD_PITCH) note+=lfo*lfoAmt*2.0f ;
-			float freq=440.0f*(float)pow(2.0,(note-69.0f)/12.0f)*fp2fl(v.speed_) ;
+			// pow() is slow on the device: the note's factor is only worked
+			// out again when the note moved (glide, pitch envelope, LFO)
+			if (!v.pitchCacheValid_ || note!=v.pitchCacheNote_) {
+				v.pitchCacheNote_=note ;
+				v.pitchCacheFactor_=(float)pow(2.0,(note-69.0f)/12.0f) ;
+				v.pitchCacheValid_=true ;
+			}
+			float freq=440.0f*v.pitchCacheFactor_*fp2fl(v.speed_) ;
 			float baseInc=freq/sampleRate ;
 			if (baseInc>0.45f) baseInc=0.45f ;
 			if (baseInc<0.0f) baseInc=0.0f ;
 			for (int p=0;p<v.chordCount_;p++) {
-				float pi=baseInc*(float)pow(2.0,v.chord_[p]/12.0) ;
+				float pi=baseInc*chordRatio(v.chord_[p]) ;
 				inc[p]=pi>0.45f?0.45f:pi ;
 			}
 			subInc=baseInc*0.5f ;
@@ -1842,171 +1883,275 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 			gainR=volf*fp2fl(panlaw[254-pan]) ;
 		}
 
-		// Amp envelope
-		switch(v.stage_) {
-			case SS_ATTACK:
-				v.level_+=attackInc ;
-				if (v.level_>=1.0f) {
-					v.level_=1.0f ;
-					v.stage_=SS_DECAY ;
-				}
-				break ;
-			case SS_DECAY:
-				v.level_=sustain+(v.level_-sustain)*decayCoef ;
-				if (sustain<=0.0f && v.level_<SYNTH_SILENCE) {
-					v.level_=0.0f ;
-					v.stage_=SS_OFF ;
-				}
-				break ;
-			case SS_RELEASE:
-				v.level_*=v.fastRelease_?quickReleaseCoef:releaseCoef ;
-				if (!(v.level_>=SYNTH_SILENCE)) {  // also ends a NaN level
-					v.level_=0.0f ;
-					v.stage_=SS_OFF ;
-				}
-				break ;
-			case SS_FADE:
-				v.level_-=fadeInc ;
-				if (v.level_<=0.0f) {
-					v.level_=0.0f ;
-					if (v.pendingStart_) {
-						startVoice(channel,v.pendingNote_,v.pendingClean_) ;
-					} else {
+		// The run: from i to the end of the block, or up to a note start /
+		// the end of the voice
+		int blockEnd=(i/SYNTH_BLOCK+1)*SYNTH_BLOCK ;
+		if (blockEnd>size) blockEnd=size ;
+		int end=i ;
+		bool startEvent=false ;
+		bool offEvent=false ;
+		for (int j=i;j<blockEnd;j++) {
+			if (j==preIndex) {
+				lev[j-i]=preLevel ;
+				end=j+1 ;
+				continue ;
+			}
+			// Amp envelope
+			switch(v.stage_) {
+				case SS_ATTACK:
+					v.level_+=attackInc ;
+					if (v.level_>=1.0f) {
+						v.level_=1.0f ;
+						v.stage_=SS_DECAY ;
+					}
+					break ;
+				case SS_DECAY:
+					v.level_=sustain+(v.level_-sustain)*decayCoef ;
+					if (sustain<=0.0f && v.level_<SYNTH_SILENCE) {
+						v.level_=0.0f ;
 						v.stage_=SS_OFF ;
 					}
-				}
-				break ;
-			default:
-				break ;
-		}
-		if (v.stage_==SS_OFF) {
-			v.active_=false ;
-			// fill the rest with silence (already cleared)
-			break ;
-		}
-		v.pitchEnv_*=pitchCoef ;
-		v.filterEnv_*=envCoef ;
-
-		// Oscillators
-		float sig=0.0f ;
-		float sigR=0.0f ;
-		switch(engine) {
-			case SE_FM4:
-				for (int p=0;p<v.chordCount_;p++) {
-					sig+=fm4Tick(v.fm_[p],fmp) ;
-				}
-				sig*=partialNorm ;
-				break ;
-			case SE_HYPER:
-				hyperTick(v.hyper_,hyp,sig,sigR) ;
-				break ;
-			case SE_WAV:
-				for (int p=0;p<v.chordCount_;p++) {
-					sig+=wavTick(v.wav_[p],wvp,inc[p]) ;
-				}
-				sig*=partialNorm ;
-				break ;
-			default:
-				for (int p=0;p<v.chordCount_;p++) {
-					sig+=renderPartial(v,p,inc[p],shape,fmIndex,fmRatio,wave) ;
-				}
-				sig*=partialNorm ;
-
-				if (subLevel>0.0f) {
-					float st=v.subPhase_ ;
-					float s=(st<0.5f)?1.0f:-1.0f ;
-					s+=polyBlep(st,subInc) ;
-					s-=polyBlep(wrap01(st+0.5f),subInc) ;
-					sig+=s*subLevel*0.7f ;
-					v.subPhase_=wrap01(st+subInc) ;
-				}
-
-				break ;
-		}
-		if (noiseMix>0.0f) {
-			float nz=whiteNoise(v.noiseState_)*noiseGain ;
-			sig=sig*toneGain+nz ;
-			sigR=sigR*toneGain+nz ;
-		}
-
-		if (driveAmount>0.0f) {
-			sig=synthLimit(limit,sig*driveGain) ;
-			if (stereo) sigR=synthLimit(limit,sigR*driveGain) ;
-		}
-
-		// State variable filter (TPT), a second one for the right channel
-		if (filterType!=SFT_OFF) {
-			float v3=sig-v.ic2eq_ ;
-			float v1=v.fa1_*v.ic1eq_+v.fa2_*v3 ;
-			float v2=v.ic2eq_+v.fa2_*v.ic1eq_+v.fa3_*v3 ;
-			v.ic1eq_=2.0f*v1-v.ic1eq_ ;
-			v.ic2eq_=2.0f*v2-v.ic2eq_ ;
-			switch(filterType) {
-				case SFT_HIGHPASS:
-					sig=sig-v.fk_*v1-v2 ;
 					break ;
-				case SFT_BANDPASS:
-					sig=v1*v.fk_ ;
+				case SS_RELEASE:
+					v.level_*=v.fastRelease_?quickReleaseCoef:releaseCoef ;
+					if (!(v.level_>=SYNTH_SILENCE)) {  // also ends a NaN level
+						v.level_=0.0f ;
+						v.stage_=SS_OFF ;
+					}
+					break ;
+				case SS_FADE:
+					v.level_-=fadeInc ;
+					if (v.level_<=0.0f) {
+						v.level_=0.0f ;
+						if (v.pendingStart_) {
+							startEvent=true ;
+						} else {
+							v.stage_=SS_OFF ;
+						}
+					}
 					break ;
 				default:
-					sig=v2 ;
 					break ;
 			}
-			if (stereo) {
-				float r3=sigR-v.ic2eqR_ ;
-				float r1=v.fa1_*v.ic1eqR_+v.fa2_*r3 ;
-				float r2=v.ic2eqR_+v.fa2_*v.ic1eqR_+v.fa3_*r3 ;
-				v.ic1eqR_=2.0f*r1-v.ic1eqR_ ;
-				v.ic2eqR_=2.0f*r2-v.ic2eqR_ ;
-				switch(filterType) {
-					case SFT_HIGHPASS:
-						sigR=sigR-v.fk_*r1-r2 ;
-						break ;
-					case SFT_BANDPASS:
-						sigR=r1*v.fk_ ;
-						break ;
-					default:
-						sigR=r2 ;
-						break ;
+			if (startEvent) {
+				// sample j starts the new note: the run ends before it
+				end=j ;
+				break ;
+			}
+			if (v.stage_==SS_OFF) {
+				offEvent=true ;
+				end=j ;
+				break ;
+			}
+			v.pitchEnv_*=pitchCoef ;
+			v.filterEnv_*=envCoef ;
+			lev[j-i]=v.level_ ;
+			end=j+1 ;
+		}
+		int n=end-i ;
+
+		if (n>0) {
+			float *sig=sigL ;
+			float *sigR=sigRBuf ;
+			// Oscillators
+			switch(engine) {
+				case SE_FM4:
+					// the first partial straight into sig, the others added
+					for (int p=0;p<v.chordCount_;p++) {
+						if (p==0) {
+							fm4Render(v.fm_[p],fmp,sig,n) ;
+						} else {
+							fm4Render(v.fm_[p],fmp,part,n) ;
+							for (int k=0;k<n;k++) sig[k]+=part[k] ;
+						}
+					}
+					if (v.chordCount_<1) {
+						for (int k=0;k<n;k++) sig[k]=0.0f ;
+					}
+					for (int k=0;k<n;k++) {
+						sig[k]*=partialNorm ;
+						sigR[k]=0.0f ;
+					}
+					break ;
+				case SE_HYPER:
+					hyperRender(v.hyper_,hyp,sig,sigR,n) ;
+					break ;
+				case SE_WAV:
+					for (int k=0;k<n;k++) {
+						float s=0.0f ;
+						for (int p=0;p<v.chordCount_;p++) {
+							s+=wavTick(v.wav_[p],wvp,inc[p]) ;
+						}
+						sig[k]=s*partialNorm ;
+						sigR[k]=0.0f ;
+					}
+					break ;
+				default:
+					for (int k=0;k<n;k++) {
+						float s=0.0f ;
+						for (int p=0;p<v.chordCount_;p++) {
+							s+=renderPartial(v,p,inc[p],shape,fmIndex,fmRatio,wave) ;
+						}
+						s*=partialNorm ;
+						if (subLevel>0.0f) {
+							float st=v.subPhase_ ;
+							float q=(st<0.5f)?1.0f:-1.0f ;
+							q+=polyBlep(st,subInc) ;
+							q-=polyBlep(wrap01(st+0.5f),subInc) ;
+							s+=q*subLevel*0.7f ;
+							v.subPhase_=wrap01(st+subInc) ;
+						}
+						sigR[k]=0.0f ;
+						// the noise knob draws from the same generator as the
+						// noise wave: in the same per-sample order
+						if (noiseMix>0.0f) {
+							float nz=whiteNoise(v.noiseState_)*noiseGain ;
+							s=s*toneGain+nz ;
+							sigR[k]=sigR[k]*toneGain+nz ;
+						}
+						sig[k]=s ;
+					}
+					break ;
+			}
+			if (noiseMix>0.0f && engine!=SE_SYNTH) {
+				for (int k=0;k<n;k++) {
+					float nz=whiteNoise(v.noiseState_)*noiseGain ;
+					sig[k]=sig[k]*toneGain+nz ;
+					sigR[k]=sigR[k]*toneGain+nz ;
 				}
 			}
-		}
-		if (!stereo) sigR=sig ;
 
-		if (sig!=sig || sig>1e6f || sig<-1e6f || sigR!=sigR || sigR>1e6f || sigR<-1e6f ||
-		    v.level_!=v.level_) {
+			if (driveAmount>0.0f) {
+				for (int k=0;k<n;k++) sig[k]=synthLimit(limit,sig[k]*driveGain) ;
+				if (stereo) {
+					for (int k=0;k<n;k++) sigR[k]=synthLimit(limit,sigR[k]*driveGain) ;
+				}
+			}
+
+			// State variable filter (TPT), a second one for the right channel
+			if (filterType!=SFT_OFF) {
+				const float fa1=v.fa1_,fa2=v.fa2_,fa3=v.fa3_,fk=v.fk_ ;
+				float ic1=v.ic1eq_,ic2=v.ic2eq_ ;
+				for (int k=0;k<n;k++) {
+					float x=sig[k] ;
+					float v3=x-ic2 ;
+					float v1=fa1*ic1+fa2*v3 ;
+					float v2=ic2+fa2*ic1+fa3*v3 ;
+					ic1=2.0f*v1-ic1 ;
+					ic2=2.0f*v2-ic2 ;
+					switch(filterType) {
+						case SFT_HIGHPASS:
+							sig[k]=x-fk*v1-v2 ;
+							break ;
+						case SFT_BANDPASS:
+							sig[k]=v1*fk ;
+							break ;
+						default:
+							sig[k]=v2 ;
+							break ;
+					}
+				}
+				v.ic1eq_=ic1 ;
+				v.ic2eq_=ic2 ;
+				if (stereo) {
+					ic1=v.ic1eqR_ ;
+					ic2=v.ic2eqR_ ;
+					for (int k=0;k<n;k++) {
+						float x=sigR[k] ;
+						float r3=x-ic2 ;
+						float r1=fa1*ic1+fa2*r3 ;
+						float r2=ic2+fa2*ic1+fa3*r3 ;
+						ic1=2.0f*r1-ic1 ;
+						ic2=2.0f*r2-ic2 ;
+						switch(filterType) {
+							case SFT_HIGHPASS:
+								sigR[k]=x-fk*r1-r2 ;
+								break ;
+							case SFT_BANDPASS:
+								sigR[k]=r1*fk ;
+								break ;
+							default:
+								sigR[k]=r2 ;
+								break ;
+						}
+					}
+					v.ic1eqR_=ic1 ;
+					v.ic2eqR_=ic2 ;
+				}
+			}
+			if (!stereo) {
+				for (int k=0;k<n;k++) sigR[k]=sig[k] ;
+			}
+
 			// NaN / runaway state (e.g. the filter): silence this voice
-			// instead of letting it ring on forever
-			synthBrokenVoices_++ ;
-			v.stage_=SS_OFF ;
+			// from that sample on instead of letting it ring on forever
+			int good=voiceFirstBroken(sig,sigR,lev,n) ;
+
+			if (!eqOn) {
+				// level, clamp, pan, output and sends (see VoiceOutput.h)
+				int sendable=SENDFX_MAX_FRAMES-i ;
+				if (sendable>good) sendable=good ;
+				if (sendable<0) sendable=0 ;
+				voiceOutput(sig,sigR,lev,ampMod,gainL,gainR,out,
+				            sending?sendBuffer+i*2:0,sendable) ;
+				if (good>sendable) {
+					voiceOutput(sig+sendable,sigR+sendable,lev+sendable,ampMod,gainL,gainR,
+					            out+sendable*2,0,good-sendable) ;
+				}
+				out+=good*2 ;
+				if (sending && sendable>0) rendered=i+sendable ;
+			}
+			for (int k=0;k<good && eqOn;k++) {
+				float amp=lev[k]*ampMod ;
+				float s=sig[k]*amp ;
+				float r=sigR[k]*amp ;
+				// The instrument's own EQ (EQ page), before pan and the sends
+				if (eqOn) {
+					if (stereo) eq_.TickStereo(channel,s,r) ;
+					else r=s=eq_.TickMono(channel,s) ;
+				}
+				if (s>2.0f) s=2.0f ;
+				if (s<-2.0f) s=-2.0f ;
+				if (r>2.0f) r=2.0f ;
+				if (r<-2.0f) r=-2.0f ;
+				float outL=s*gainL ;
+				float outR=r*gainR ;
+				*out++=fl2fp(outL*32767.0f) ;
+				*out++=fl2fp(outR*32767.0f) ;
+				int at=i+k ;
+				if (sending && at<SENDFX_MAX_FRAMES) {
+					sendBuffer[at*2]=outL ;
+					sendBuffer[at*2+1]=outR ;
+					rendered=at+1 ;
+				}
+			}
+			if (good<n) {
+				synthBrokenVoices_++ ;
+				v.stage_=SS_OFF ;
+				v.active_=false ;
+				v.level_=0.0f ;
+				v.ic1eq_=v.ic2eq_=0.0f ;
+				v.ic1eqR_=v.ic2eqR_=0.0f ;
+				alive=false ;
+				break ;
+			}
+		}
+
+		if (offEvent) {
 			v.active_=false ;
-			v.level_=0.0f ;
-			v.ic1eq_=v.ic2eq_=0.0f ;
-			v.ic1eqR_=v.ic2eqR_=0.0f ;
+			// the rest stays silent (already cleared)
 			break ;
 		}
-		float amp=v.level_*ampMod ;
-		sig*=amp ;
-		sigR*=amp ;
-		// The instrument's own EQ (EQ page), before pan and the sends
-		if (eqOn) {
-			if (stereo) eq_.TickStereo(channel,sig,sigR) ;
-			else sigR=sig=eq_.TickMono(channel,sig) ;
+		if (startEvent) {
+			// the new note starts on sample 'end', which then goes on as
+			// the first sample of the next run
+			startVoice(channel,v.pendingNote_,v.pendingClean_) ;
+			v.pitchEnv_*=pitchCoef ;
+			v.filterEnv_*=envCoef ;
+			preIndex=end ;
+			preLevel=v.level_ ;
 		}
-		if (sig>2.0f) sig=2.0f ;
-		if (sig<-2.0f) sig=-2.0f ;
-		if (sigR>2.0f) sigR=2.0f ;
-		if (sigR<-2.0f) sigR=-2.0f ;
-
-		float outL=sig*gainL ;
-		float outR=sigR*gainR ;
-		*out++=fl2fp(outL*32767.0f) ;
-		*out++=fl2fp(outR*32767.0f) ;
-		if (sending && i<SENDFX_MAX_FRAMES) {
-			sendBuffer[i*2]=outL ;
-			sendBuffer[i*2+1]=outR ;
-			rendered=i+1 ;
-		}
+		i=end ;
 	}
 	if (sending && rendered>0) {
 		SendFX::GetInstance()->AddSend(channel,sendBuffer,rendered,reverbSend,delaySend,chorusSend) ;

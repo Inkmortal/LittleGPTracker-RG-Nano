@@ -1,7 +1,11 @@
 #include "System/Console/Trace.h"
 #include "AudioMixer.h"
+#include "AudioProfiler.h"
 #include "System/System/System.h"
 #include <math.h>
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+#include <arm_neon.h>
+#endif
 
 #define MAX_POSITIVE_FIXED i2fp(32767)
 #define MAX_NEGATIVE_FIXED i2fp(-32768)
@@ -83,13 +87,19 @@ bool AudioMixer::Render(fixed *buffer,int samplecount) {
     IteratorPtr<AudioModule> it(GetIterator());
     for (it->Begin(); !it->IsDone(); it->Next()) {
         AudioModule &current = it->CurrentItem();
+        int slot = current.GetProfileSlot();
         if (!gotData) {
-            gotData=current.Render(buffer,samplecount) ;           
+            AudioProfiler::Enter(slot);
+            gotData=current.Render(buffer,samplecount) ;
+            AudioProfiler::Leave(slot);
          } else {
             if (!mixBuffer) {
                mixBuffer=(fixed *)malloc(samplecount*2*sizeof(fixed)) ;
-            } 
-            if (current.Render(mixBuffer,samplecount)) {
+            }
+            AudioProfiler::Enter(slot);
+            bool rendered=current.Render(mixBuffer,samplecount) ;
+            AudioProfiler::Leave(slot);
+            if (rendered) {
                fixed *dst=buffer ;
                fixed *src=mixBuffer ;
                int count=samplecount*2 ;
@@ -104,11 +114,14 @@ bool AudioMixer::Render(fixed *buffer,int samplecount) {
 
      // The mixer's insert effects (master EQ, limiter) on the sum
      for (int i=0;i<insertCount_;i++) {
+         int slot = inserts_[i]->GetProfileSlot();
+         AudioProfiler::Enter(slot);
          if (gotData) {
              inserts_[i]->Process(buffer,samplecount) ;
          } else {
              inserts_[i]->Silence() ;
          }
+         AudioProfiler::Leave(slot);
      }
 
      //  Apply volume
@@ -124,16 +137,38 @@ bool AudioMixer::Render(fixed *buffer,int samplecount) {
              }
          }
 
-         // Apply soft/hard clipping before recording
+         // Apply soft/hard clipping before recording (and find the peak
+         // for the meters). Runs on every bus and the master each buffer:
+         // the constants are worked out once here, and a unity master
+         // volume skips its multiply (and the float round trip with it).
          c = buffer;
          int peak = 0;
-         for (int i = 0; i < samplecount * 2; i++) {
-             fixed sample = *c;
-             sample = fl2fp(damp * fp2fl(hardClip(softClip(sample))));
-             *c++ = sample;
-             int absSample = sample < 0 ? -sample : sample;
-             if (absSample > peak) {
-                 peak = absSample;
+         const int count = samplecount * 2;
+         const bool unity = (damp == 1.0f);
+         // The meters' waveform: lowest and highest L+R of the buffer
+         fixed sumMin = 0, sumMax = 0;
+         if (softclip_ == -1 && unity) {
+             // Hard clip only (every channel bus): clamp, peak and the
+             // waveform's min/max in one pass
+             clipScan(buffer, samplecount, peak, sumMin, sumMax);
+         } else {
+             SoftClipCurve curve;
+             prepareSoftClip(curve);
+             for (int i = 0; i < count; i++) {
+                 fixed sample = hardClip(softClip(*c, curve));
+                 if (!unity) {
+                     sample = fl2fp(damp * fp2fl(sample));
+                 }
+                 *c++ = sample;
+                 int absSample = sample < 0 ? -sample : sample;
+                 if (absSample > peak) {
+                     peak = absSample;
+                 }
+             }
+             for (int frame = 0; frame < samplecount; frame++) {
+                 fixed sum = buffer[frame * 2] + buffer[frame * 2 + 1];
+                 if (frame == 0 || sum < sumMin) sumMin = sum;
+                 if (frame == 0 || sum > sumMax) sumMax = sum;
              }
          }
          int percent = (int)(((long long)peak * 100) / MAX_POSITIVE_FIXED);
@@ -141,7 +176,7 @@ bool AudioMixer::Render(fixed *buffer,int samplecount) {
              percent = 100;
          }
          peakPercent_ = percent;
-         updateWaveform(buffer,samplecount,peak);
+         updateWaveform(sumMin, sumMax, samplecount, peak);
      } else if (peakPercent_ > 0) {
          peakPercent_ -= 8;
          if (peakPercent_ < 0) {
@@ -231,23 +266,76 @@ int AudioMixer::GetWaveformMax(int index) {
     return waveformMax_[index];
 }
 
-void AudioMixer::updateWaveform(fixed *buffer,int samplecount,int peak) {
-    if (!buffer || samplecount<=0 || peak<=0) {
+// Clamp to 16 bits, and find the peak and the lowest/highest L+R: one pass,
+// four frames at a time in NEON on the device (this runs on every channel
+// bus for every buffer, for the meters)
+void AudioMixer::clipScan(fixed *buffer, int frames, int &peak, fixed &sumMin, fixed &sumMax) {
+    int frame = 0;
+    int pk = 0;
+    fixed mn = 0, mx = 0;
+    bool clip = false;
+#if defined(__ARM_NEON__) || defined(__ARM_NEON)
+    if (frames >= 4) {
+        const int32x4_t hi = vdupq_n_s32(MAX_POSITIVE_FIXED);
+        const int32x4_t lo = vdupq_n_s32(MAX_NEGATIVE_FIXED);
+        int32x4_t vpk = vdupq_n_s32(0);
+        int32x4_t vmn = vdupq_n_s32(0x7FFFFFFF);
+        int32x4_t vmx = vdupq_n_s32((int)0x80000000);
+        uint32x4_t vclip = vdupq_n_u32(0);
+        for (; frame + 4 <= frames; frame += 4) {
+            int32x4x2_t v = vld2q_s32(buffer + frame * 2);
+            int32x4_t l = vminq_s32(vmaxq_s32(v.val[0], lo), hi);
+            int32x4_t r = vminq_s32(vmaxq_s32(v.val[1], lo), hi);
+            vclip = vorrq_u32(vclip, vmvnq_u32(vceqq_s32(l, v.val[0])));
+            vclip = vorrq_u32(vclip, vmvnq_u32(vceqq_s32(r, v.val[1])));
+            v.val[0] = l;
+            v.val[1] = r;
+            vst2q_s32(buffer + frame * 2, v);
+            vpk = vmaxq_s32(vpk, vmaxq_s32(vabsq_s32(l), vabsq_s32(r)));
+            int32x4_t sum = vaddq_s32(l, r);
+            vmn = vminq_s32(vmn, sum);
+            vmx = vmaxq_s32(vmx, sum);
+        }
+        int32x2_t p2 = vpmax_s32(vget_low_s32(vpk), vget_high_s32(vpk));
+        pk = vget_lane_s32(vpmax_s32(p2, p2), 0);
+        int32x2_t n2 = vpmin_s32(vget_low_s32(vmn), vget_high_s32(vmn));
+        mn = vget_lane_s32(vpmin_s32(n2, n2), 0);
+        int32x2_t x2 = vpmax_s32(vget_low_s32(vmx), vget_high_s32(vmx));
+        mx = vget_lane_s32(vpmax_s32(x2, x2), 0);
+        uint32x2_t c2 = vorr_u32(vget_low_u32(vclip), vget_high_u32(vclip));
+        clip = (vget_lane_u32(c2, 0) | vget_lane_u32(c2, 1)) != 0;
+    }
+#endif
+    for (; frame < frames; frame++) {
+        fixed l = buffer[frame * 2];
+        fixed r = buffer[frame * 2 + 1];
+        if (l > MAX_POSITIVE_FIXED) { l = MAX_POSITIVE_FIXED; clip = true; }
+        else if (l < MAX_NEGATIVE_FIXED) { l = MAX_NEGATIVE_FIXED; clip = true; }
+        if (r > MAX_POSITIVE_FIXED) { r = MAX_POSITIVE_FIXED; clip = true; }
+        else if (r < MAX_NEGATIVE_FIXED) { r = MAX_NEGATIVE_FIXED; clip = true; }
+        buffer[frame * 2] = l;
+        buffer[frame * 2 + 1] = r;
+        int al = l < 0 ? -l : l;
+        int ar = r < 0 ? -r : r;
+        if (al > pk) pk = al;
+        if (ar > pk) pk = ar;
+        fixed sum = l + r;
+        if (frame == 0 || sum < mn) mn = sum;
+        if (frame == 0 || sum > mx) mx = sum;
+    }
+    if (clip) clipped_ = true;
+    peak = pk;
+    sumMin = mn;
+    sumMax = mx;
+}
+
+void AudioMixer::updateWaveform(fixed sumMin,fixed sumMax,int samplecount,int peak) {
+    if (samplecount<=0 || peak<=0) {
         return;
     }
-    fixed minSample=0;
-    fixed maxSample=0;
-    for (int frame=0; frame<samplecount; frame++) {
-        fixed left=buffer[frame*2];
-        fixed right=buffer[frame*2+1];
-        fixed mono=(left+right)/2;
-        if (frame==0 || mono<minSample) {
-            minSample=mono;
-        }
-        if (frame==0 || mono>maxSample) {
-            maxSample=mono;
-        }
-    }
+    // (L+R)/2 of the lowest / highest frame (halving keeps the order)
+    fixed minSample=sumMin/2;
+    fixed maxSample=sumMax/2;
 
     fixed midpoint=(minSample+maxSample)/2;
     int sample=(int)(((long long)midpoint*100)/peak);
@@ -281,25 +369,35 @@ fixed AudioMixer::hardClip(fixed sample) {
 /* Implements standard cubic algorithm
  * https://wiki.analog.com/resources/tools-software/sigmastudio/toolbox/nonlinearprocessors/standardcubic
  */
-fixed AudioMixer::softClip(fixed sample) {
-    if (softclip_ == -1 || sample == 0)
+void AudioMixer::prepareSoftClip(SoftClipCurve &curve) {
+    curve.on = (softclip_ >= 0 && softclip_ < 4);
+    SoftClipData *data = &softClipData_[curve.on ? softclip_ : 0];
+    curve.posMax = fp2fl(MAX_POSITIVE_FIXED);
+    curve.negMax = fp2fl(MAX_NEGATIVE_FIXED);
+    curve.posScale = data->alphaInv / curve.posMax;
+    curve.negScale = data->alphaInv / curve.negMax;
+    curve.alpha = data->alpha;
+    curve.alpha23 = data->alpha23;
+    curve.gain = softclipGain_ ? data->gainCmp : 1.0f;
+}
+
+/* Implements standard cubic algorithm (the multiplies by reciprocals and
+ * x*x*x instead of a division and powf per sample: the same curve)
+ */
+fixed AudioMixer::softClip(fixed sample, const SoftClipCurve &curve) {
+    if (!curve.on || sample == 0)
         return sample;
 
-    float x;
     float sampleFloat = fp2fl(sample);
-	float maxFloat = fp2fl(sampleFloat > 0 ? MAX_POSITIVE_FIXED : MAX_NEGATIVE_FIXED);
-	SoftClipData* data = &softClipData_[softclip_];
-
-    x = data->alphaInv * (sampleFloat / maxFloat);
+    bool positive = sampleFloat > 0;
+    float maxFloat = positive ? curve.posMax : curve.negMax;
+    float x = sampleFloat * (positive ? curve.posScale : curve.negScale);
     if (x > -1.0f && x < 1.0f) {
-        sampleFloat = maxFloat * (data->alpha * (x - (pow(x, 3.0f) / 3.0f)));
+        sampleFloat = maxFloat * (curve.alpha * (x - x * x * x * (1.0f / 3.0f)));
     } else {
-        sampleFloat = maxFloat * data->alpha23;
+        sampleFloat = maxFloat * curve.alpha23;
     }
-
-    if (softclipGain_) {
-        sampleFloat = sampleFloat * data->gainCmp;
-    }
+    sampleFloat = sampleFloat * curve.gain;
 
     return fl2fp(sampleFloat);
 }

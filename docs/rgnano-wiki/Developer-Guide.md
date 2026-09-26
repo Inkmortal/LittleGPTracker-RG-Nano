@@ -110,6 +110,31 @@ Soak test for crashes and leaks: `python tools/make_soak_script.py --minutes 15 
 
 `DUMPEVENT` in `config.xml` logs every player tick and key: keep it `NO` on the device.
 
+## Audio performance
+
+**On the device.** The audio engine renders on its own thread, one buffer per sequencer tick. Its load is the time a buffer took to render (sequencer, every instrument, the buses, send effects, master EQ, limiter, master mix) over the time the buffer plays, smoothed; it is the number on the Mixer screen and in the heartbeat. The RG Nano has one core, so this wall time also counts any moment the screen's thread had the CPU while a buffer was being rendered. The heartbeat therefore logs both:
+
+```
+[HEARTBEAT] up 60s mem 10192KB view song player on load peak 52% (smoothed 50% cpu 44%) worst buffer 61%: seq 1 ch1 6 ch2 6 ... fx 5 meq 2 lim 3 mst 2
+```
+
+- `load peak`: the highest load the Mixer screen showed (read once a beat); `smoothed` the highest smoothed load, from wall time; `cpu` the same from the render thread's own CPU time. `smoothed` well above `cpu` means other threads took the CPU while audio was rendering.
+- `worst buffer`: the slowest buffer since the last line, with where its time went, in percent of that buffer's play time: `seq` sequencer, `ch1`..`ch8` each track's instruments (sends and instrument EQ included), `bus` the channel buses (sum, clip, meters), `fx` reverb/echo/chorus, `meq` master EQ, `lim` limiter, `mst` master mix. (`Services/Audio/AudioProfiler.*`, a few clock reads per buffer.)
+- The player's play-position updates (cursor marks, mini waveform, Mixer meters) are drawn by the UI thread: the audio thread only queues them (`AppWindow::queuePlayerUpdate`), so it never waits for the screen.
+
+**In the ARM harness.** `tools/dsp-harness/engine_room_check.cpp` plays the *Engine Room* demo through the real player and mixer of the device build and measures it with `a7cost`, a qemu plugin (`tools/dsp-harness/qemu-plugin/`) that counts executed instructions weighted by their Cortex-A7 cost and charges them to the parts above. Unlike qemu's wall time (every float operation is emulated in software there) this is exact and repeatable, so it guards against regressions: `run-all.sh` fails when the song costs 25% more than the recorded figure. The first run builds the plugin-enabled qemu in `~/qemu-plugin` (a few minutes, no root).
+
+```
+wsl bash tools/dsp-harness/run.sh tools/dsp-harness/engine_room_check.cpp
+wsl python3 tools/dsp-harness/a7profile.py --top 30            # cost per function
+wsl python3 tools/dsp-harness/a7profile.py --lines fm4Render   # ... per source line
+python tools/dsp-harness/compare_wav.py before.wav projects/buildRGNANO/harness/engine_room.wav
+```
+
+The check writes the mix to `projects/buildRGNANO/harness/engine_room.wav`; `compare_wav.py` gives the difference level (dBFS) and both spectra per octave, to prove an optimisation left the sound alone. `ENGINE_ROOM_WORST=10` lists the ten most expensive buffers part by part.
+
+Rules that paid off in the DSP code: work a control block (16 samples) at a time and stage by stage, not every stage per sample; keep per-sample libm calls (`sin`, `pow`, `exp`), divisions and double-precision maths out of inner loops (tables, cached values, multiplies by a reciprocal); copy members used in a loop to locals (a store through a `float *` can alias them); NEON four samples at a time where the samples do not depend on each other (resampler, FM operators without feedback, saw ramps, buses, voice output). Where a change keeps the arithmetic, the render must stay bit-identical; where it changes it (HyperSynth's integer saw phase), `hyper_saw_check.cpp` shows the sound is the same.
+
 ## Code map
 
 | Area | Where |

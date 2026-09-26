@@ -1,0 +1,24 @@
+# Engine Room (every heavy engine at once) plays, and the screen follows the
+# player while the audio thread only queues the play-position updates: the
+# song and mixer screens still show the playing rows and the load meter.
+# The heartbeat line carries the audio profile (load, cpu, worst buffer).
+wait 1500
+expect_view song
+expect_log worst buffer
+reset_audio_stats
+press s 80
+wait 2500
+expect_audio_activity 1000
+screenshot_app engine-room-song.bmp
+# the play state and the clip indicator are drawn by the player updates
+expect_screen_text PLAY:SONG
+goto mixer
+wait 800
+screenshot_app engine-room-mixer.bmp
+expect_screen_text TRACK 1  C0  100%
+expect_screen_text PLAY:SONG
+expect_screen_text ----
+press s 80
+wait 600
+expect_no_error
+quit

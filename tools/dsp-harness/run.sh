@@ -29,6 +29,15 @@ if grep -q "harness: standalone" "$src"; then
 fi
 objs=$(ls "$proj"/buildRGNANO/*.o | grep -v GPSDLMain.o)
 "$cxx" -L"$sysroot/usr/lib" -o "$out" "$out.o" $objs -lSDL -lasound -lpthread
+if grep -q "harness: a7cost" "$src"; then
+  # Cost measured by the a7cost plugin (instructions weighted for the
+  # Cortex-A7), on a qemu built with plugin support
+  bash "$here/qemu-plugin/setup.sh"
+  export A7COST_OUT="$proj/buildRGNANO/harness/$name.a7cost"
+  "$HOME/qemu-plugin/qemu-arm" -plugin "$HOME/qemu-plugin/liba7cost.so,out=$A7COST_OUT" \
+    -L "$sysroot" "$sysroot/lib/libc.so" "$out"
+  exit $?
+fi
 # The sysroot loader symlink is absolute (/lib/libc.so), so start musl's
 # loader directly
 "$qemu" -L "$sysroot" "$sysroot/lib/libc.so" "$out"

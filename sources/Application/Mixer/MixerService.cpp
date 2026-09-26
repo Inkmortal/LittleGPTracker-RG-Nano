@@ -8,6 +8,7 @@
 #include "Application/Model/Project.h"
 #include "Services/Audio/Audio.h"
 #include "Services/Audio/AudioDriver.h"
+#include "Services/Audio/AudioProfiler.h"
 #include "Services/Midi/MidiService.h"
 #include "System/Console/Trace.h"
 #include "SendFX.h"
@@ -35,18 +36,26 @@ bool MixerService::Init() {
         break;
 	}
 
+	// Where the audio time goes, per part of the mix: a few clock reads per
+	// buffer, summarised in the log's heartbeat line
+	AudioProfiler::Enable(true);
 	for (int i=0;i<MAX_BUS_COUNT;i++) {
 		master_.Insert(bus_[i]);
+		bus_[i].SetProfileSlot(APS_BUSES);
 	}
 	// Send effects render last so every channel has added its sends
 	master_.Insert(*SendFX::GetInstance());
+	SendFX::GetInstance()->SetProfileSlot(APS_SENDFX);
 	// Counts rendered samples for free-running MOD LFOs (adds no sound)
 	master_.Insert(*ModClock::GetInstance());
+	ModClock::GetInstance()->SetProfileSlot(APS_MODCLOCK);
 	// The master EQ shapes the whole mix, effects included
 	master_.SetInsert(MasterEQ::GetInstance());
+	MasterEQ::GetInstance()->SetProfileSlot(APS_MASTER_EQ);
 	// Then the limiter keeps it under the ceiling (the Project's soft
 	// clip and master volume come after, on the output)
 	master_.AddInsert(MasterLimiter::GetInstance());
+	MasterLimiter::GetInstance()->SetProfileSlot(APS_LIMITER);
 
 	bool result = false;
 	if (out_) {
@@ -143,10 +152,15 @@ void MixerService::Update(Observable &o,I_ObservableData *d)  {
   if (event->type_ == AudioDriver::Event::ADET_BUFFERNEEDED)
   {  
     Lock() ;
+    // The player moves the song on (sequencer), then the mix renders
+    AudioProfiler::Enter(APS_SEQUENCER) ;
     SetChanged() ;
     NotifyObservers() ;
+    AudioProfiler::Leave(APS_SEQUENCER) ;
 
+    AudioProfiler::Enter(APS_MASTER) ;
     out_->Trigger();
+    AudioProfiler::Leave(APS_MASTER) ;
     Unlock();
   }
 }

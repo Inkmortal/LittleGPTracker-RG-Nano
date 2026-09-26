@@ -20,6 +20,9 @@ class InstrumentView: public FieldView, public I_Observer {
 public:
 	InstrumentView(GUIWindow &w,ViewData *data) ;
 	virtual ~InstrumentView() ;
+	// The instrument is about to be deleted (its slot changes type): stop
+	// observing it and forget it (as the type field does before switching)
+	void ForgetInstrument(I_Instrument *instrument) ;
 
 	virtual void ProcessButtonMask(unsigned short mask,bool pressed) ;
 	virtual void DrawView() ;

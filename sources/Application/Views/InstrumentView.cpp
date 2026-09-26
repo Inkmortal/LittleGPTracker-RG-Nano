@@ -60,6 +60,14 @@ InstrumentView::~InstrumentView() {
 	delete modSlotVar_ ;
 }
 
+void InstrumentView::ForgetInstrument(I_Instrument *instrument) {
+	if (!instrument || current_!=instrument) return ;
+	current_->RemoveObserver(*this) ;
+	current_=0 ;
+	ClearFocus() ;
+	T_SimpleList<UIField>::Empty() ;
+}
+
 InstrumentType InstrumentView::getInstrumentType() {
 	int i=viewData_->currentInstrument_ ;
 	InstrumentBank *bank=viewData_->project_->GetInstrumentBank() ;

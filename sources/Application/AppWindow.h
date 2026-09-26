@@ -72,6 +72,9 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     void SetDirty();
     void SetCurrentViewDirty();
     void RefreshCurrentView();
+    // An instrument is about to be replaced (its slot changes type) by code
+    // outside the instrument screen: the screen lets go of it first
+    void ForgetInstrument(I_Instrument *instrument);
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
     const char *GetCurrentViewName() const;
     // Variable behind the focused field on Instrument/Project screens, or 0
@@ -172,6 +175,22 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     static int charHeight_;
 
     SysMutex drawMutex_;
+
+    // Play position updates come from the player on the audio thread; the
+    // screen work they cause (cursor marks, the mini waveform, meters) is
+    // done on the UI thread instead, so the audio never waits for (or
+    // spends its time on) drawing
+    struct PendingPlayerUpdate {
+        int type_;
+        unsigned int tick_;
+    };
+    static const int PLAYER_UPDATE_QUEUE = 16;
+    PendingPlayerUpdate playerUpdates_[PLAYER_UPDATE_QUEUE];
+    int playerUpdateCount_;
+    SysMutex playerUpdateMutex_;
+    unsigned int uiThread_;
+    void queuePlayerUpdate(int type, unsigned int tick);
+    void drawPendingPlayerUpdates();
 
     Path GetLastProjectPath();
 };
