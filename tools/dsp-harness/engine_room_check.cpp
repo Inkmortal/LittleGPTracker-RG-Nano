@@ -19,7 +19,10 @@
 //    the figure recorded below
 // Build + run: wsl bash tools/dsp-harness/run.sh <this file>
 // Environment: ENGINE_ROOM_SECONDS (default 19.2 = two rows of the song),
-// ENGINE_ROOM_WAV (output path), ENGINE_ROOM_PASSES (wall-time passes, 3)
+// ENGINE_ROOM_WAV (output path), ENGINE_ROOM_PASSES (wall-time passes, 3),
+// ENGINE_ROOM_DEMO (another demo song to price, e.g. Joyride: then the
+// Engine Room checks and the regression guard are skipped) and
+// ENGINE_ROOM_ROW (the song row to play from, e.g. its busiest section)
 #include "Adapters/DINGOO/System/DINGOOSystem.h"
 #include "Adapters/Dummy/Midi/DummyMidi.h"
 #include "Adapters/SDL/Process/SDLProcess.h"
@@ -252,8 +255,13 @@ static void writeWav(const char *path, const std::vector<short> &data) {
 
 // Plays the song from the top for 'seconds'; frames of each buffer go to
 // bufferFrames, the audio to out (when given)
+static int gStartRow = 0;
+static ViewData *gViewData = 0;
+
 static void playSong(Player *player, double seconds, std::vector<int> &bufferFrames,
                      std::vector<short> *out) {
+	gViewData->songOffset_ = gStartRow;
+	gViewData->songY_ = 0;
 	player->Start(PM_SONG, false);
 	long total = (long)(seconds * RATE);
 	long done = 0;
@@ -295,8 +303,13 @@ int main() {
 	Audio::Install(new HarnessAudio(settings));
 	Audio::GetInstance()->Init();
 
-	const char *root = isDir("resources/demos/lgpt_EngineRoom") ? "." : "projects";
-	std::string demo = std::string(root) + "/resources/demos/lgpt_EngineRoom";
+	const char *demoName = getenv("ENGINE_ROOM_DEMO") ? getenv("ENGINE_ROOM_DEMO") : "EngineRoom";
+	bool engineRoom = strcmp(demoName, "EngineRoom") == 0;
+	gStartRow = getenv("ENGINE_ROOM_ROW") ? atoi(getenv("ENGINE_ROOM_ROW")) : 0;
+	const char *root = isDir("resources/demos") ? "." : "projects";
+	std::string demo = std::string(root) + "/resources/demos/lgpt_" + demoName;
+	printf("song: %s from row %d
+", demo.c_str(), gStartRow);
 	if (!isDir(demo.c_str())) {
 		printf("demo song not found (run from the worktree or projects/)\n");
 		return 1;
@@ -319,12 +332,15 @@ int main() {
 	SamplePool::GetInstance()->Load();
 	Project *project = new Project();
 	bool loaded = persist->Load();
-	expect(project->GetTempo() == 100, "song tempo read from the file", project->GetTempo(), 100);
-	expect(loaded, "Engine Room song file loads", loaded, 1);
+	if (engineRoom) {
+		expect(project->GetTempo() == 100, "song tempo read from the file", project->GetTempo(), 100);
+	}
+	expect(loaded, "the song file loads", loaded, 1);
 	WatchedVariable::Disable();
 	project->GetInstrumentBank()->Init();
 	WatchedVariable::Enable();
 	ViewData *viewData = new ViewData(project);
+	gViewData = viewData;
 	Player *player = Player::GetInstance();
 	bool started = player->Init(project, viewData);
 	expect(started, "player and mixer start", started, 1);
@@ -506,6 +522,9 @@ int main() {
 	if (!a7) {
 		printf("a7cost plugin not loaded: the cost guard cannot run\n");
 		failures++;
+	} else if (!engineRoom) {
+		printf("%s: no recorded cost to guard (Engine Room only)
+", demoName);
 	} else if (RECORDED_COST_PER_SECOND > 0) {
 		printf("cost against the unoptimised engine: %.1f%% (%.1f%% less)\n",
 		       100.0 * costPerSecond / BEFORE_COST_PER_SECOND,

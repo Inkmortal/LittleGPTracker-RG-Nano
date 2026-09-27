@@ -6491,14 +6491,15 @@
  A handful of finished songs
  to open, play and pull
  apart: the walkthrough song
- you can build yourself,
- synthwave, a wuxia epic on
- real Chinese instruments,
- chiptune, house, and a
- stress test that runs every
- engine at once. Open them
- from the project list
- (they're in
+ you can build yourself, a
+ funk / city pop feature
+ tour, synthwave, a wuxia
+ epic on real Chinese
+ instruments, chiptune,
+ house, and a stress test
+ that runs every engine at
+ once. Open them from the
+ project list (they're in
  Applications/Tracks after
  Install), press Start on the
 ~0,7,install,
@@ -6588,6 +6589,142 @@
    master EQ, limiter, and
    Project Drive: 70 for
    headroom.
+=Joyride - funk / city pop, the feature tour
+ lgpt_Joyride  C major (the
+ last choruses in D)  112 BPM
+ with swing  2:17
+ 
+ A fun one with a video-game
+ soundtrack feel, and a tour
+ of the whole app: the new
+ drum and physical-modelling
+ engines, FM, the HyperSynth,
+ a wavetable chip lead, two
+ samples from the packs,
+ commands and a table, the
+ effects and the mix. Every
+ part is one small idea you
+ can copy into your own
+ songs.
+ 
+*1
+   kick, and the tom fills
+   What it shows: drum
+   engine: 808 kick (decay
+   shortened so it's deep but
+   tight), 808 tom walking
+   down at the end of each
+   chorus
+*2  snare
+   What it shows: drum engine
+   909 snare: ghost notes are
+   quiet VOLMs between the
+   backbeats; a VOLM
+   0030 + ROLL 0092 roll
+   swells into every chorus;
+   reverb send
+*3  hats
+   What it shows: 808 hat
+   16ths with accents; the
+   in-between ghosts have
+   CHNC 00B0, so they play
+   most of the time; an 808
+   open hat on step E with
+   NTH 0044 (the 4th pass
+   only), cut short by the
+   next closed hat
+*4  bass
+   What it shows: FM4 slap
+   bass: a funk line with
+   octave pops, ghost notes
+   and KILLs, one bar that
+   the chains transpose into
+   every chord
+*5  pad
+   What it shows: HyperSynth
+   strings, chord maj7 with
+   scale on: one note a bar
+   becomes the whole diatonic
+   chord. Its own EQ cuts the
+   lows. In the break a table
+   gates it (TABL 0000 + TICK
+   0006)
+*6  keys
+   What it shows: FM4 epiano
+   comping, CHRD voicings
+   that move smoothly from
+   chord to chord
+*7  lead
+   What it shows: wav chip
+   lead (pulse wave, vibrato,
+   glide, dotted-8th echo):
+   the hook, with LEGA
+   slides, a PTCH bend and
+   VIBR on the long notes; in
+   the break a phys vibes
+   plays it slowly; in the
+   build an ARPG climbs
+*8  colour
+   What it shows: phys
+   kalimba arpeggios through
+   the echo, a trumpet sample
+   (brass pack) for the horn
+   stabs (a CHRD triad on
+   each hit), a riser sample
+   (textures pack) into every
+   chorus
+ 
+ What to listen for:
+ - Two chord progressions
+   from one bar each. The
+   verse is I-vi-ii-V (Cmaj7,
+   Am7, Dm7, G7), the chorus
+   the "royal road"
+   IV-V-iii-vi (Fmaj7, G7,
+   Em7, Am7) that city pop
+   and anime songs love. The
+   bass and pad chains play
+   one phrase four times with
+   transposes: 00 09 02 07
+   and 05 07 04 09.
+ - The key change. The last
+   two choruses go up a whole
+   tone: those chains
+   transpose everything by 2
+   more, and a SCAL 0215 on
+   the pad moves the song's
+   key to D so the
+   HyperSynth's scale on
+   chords follow. The intro's
+   SCAL 0015 puts it back in
+   C.
+ - The song gets bigger and
+   smaller. Intro (kalimba,
+   pad, a tom run), groove,
+   verse (the lead softer,
+   VOLM on every note),
+   pre-chorus (riser + snare
+   roll), chorus (pad, horns,
+   the hook on top), break
+   (drums out, gated pad,
+   vibes), build, two
+   choruses in D, outro.
+   Compare the loudness of
+   each row.
+ - The mix. Mixer: keys down
+   (A8), track 8 up (E0).
+   Sends: reverb on the
+   snare, pad and kalimba,
+   the echo (delay steps 3,
+   dotted 8ths) on the lead
+   and kalimba, chorus on the
+   pad. Master EQ adds a
+   little weight and sparkle,
+   the limiter catches the
+   peaks, Project Drive: 62
+   leaves headroom for eight
+   tracks.
+ - Swing - groove 07 05.
 =Neon Drive - synthwave
  lgpt_NeonDrive  A minor  100
  BPM  1:55

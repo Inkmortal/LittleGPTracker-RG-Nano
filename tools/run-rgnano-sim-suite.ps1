@@ -203,6 +203,11 @@ $suite = @(
     Args = @("-OpenDemo=EngineRoom")
   },
   @{
+    Name = "joyride-demo"
+    Script = "joyride-demo.rgsim"
+    Args = @("-OpenDemo=Joyride")
+  },
+  @{
     Name = "instrument-eq"
     Script = "instrument-eq.rgsim"
     Args = @("-OpenDemo=JadeSword")
