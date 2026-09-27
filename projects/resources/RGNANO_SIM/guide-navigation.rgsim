@@ -1,0 +1,111 @@
+# The built-in guide: sections, pages, links, contents, index, B stepping
+# back one place at a time and RB+Select closing it from anywhere.
+route boot.new_project_random
+expect_view song
+# A in the helper opens the guide at this screen's own section
+down n
+press k 80
+up n
+press a 80
+wait 200
+expect_log GUIDE] open screens / Song
+expect_screen_text Screens > Song
+expect_screen_text Up/Dn scroll  L/R section
+expect_screen_text B back  RB+Sel close
+# Right: the next section, named in the title
+press r 80
+wait 60
+expect_screen_text Screens > Bookmarks
+# LB+Right: the next page
+down m
+press r 80
+up m
+wait 100
+expect_log GUIDE] go synth /
+expect_screen_text Synth
+# B: back to the exact place we left
+press b 80
+wait 60
+expect_log GUIDE] back
+expect_screen_text Screens > Bookmarks
+# Left twice: back to the top of the page, where "see Controls" is a link
+press l 80
+wait 60
+press l 80
+wait 60
+press l 80
+wait 60
+expect_screen_text Every screen at a glance.
+expect_screen_text A links  B back
+# A: Go to lists the links on screen first
+press a 80
+wait 80
+expect_screen_text Go to
+expect_selected_text Controls
+screenshot_app guide-goto.bmp
+# B cancels Go to without leaving the page
+press b 80
+wait 60
+expect_screen_text Every screen at a glance.
+press a 80
+wait 60
+press a 80
+wait 100
+expect_log GUIDE] go controls /
+expect_screen_text The RG Nano has few buttons
+# B: back to Screens; B again: nobody led there, so the contents
+press b 80
+wait 60
+expect_screen_text Every screen at a glance.
+press b 80
+wait 80
+expect_log GUIDE] contents
+expect_screen_text GUIDE  Contents
+expect_selected_text Screens
+# Right opens the topic up to its sections, A reads one
+press r 80
+wait 60
+expect_screen_text Instrument (synth)
+press d 80
+press d 80
+wait 60
+expect_selected_text Chain
+press a 80
+wait 100
+expect_log GUIDE] go screens / Chain
+expect_screen_text Screens > Chain
+press b 80
+wait 60
+expect_selected_text Chain
+# Left folds the sections away again
+press l 80
+wait 60
+expect_selected_text Screens
+# The index: the last row of the contents
+press u 80
+press u 80
+press u 80
+press u 80
+wait 60
+expect_selected_text Index: keys, commands
+press a 80
+wait 100
+expect_log GUIDE] index
+expect_screen_text GUIDE  Index
+screenshot_app guide-index.bmp
+# Right: the next first letter, A reads it
+press r 80
+wait 60
+screenshot_app guide-index-letter.bmp
+press a 80
+wait 100
+expect_log GUIDE] go
+# RB+Select closes the guide from anywhere, straight back to the song
+down n
+press k 80
+up n
+wait 150
+expect_log GUIDE] close
+expect_view song
+expect_no_error
+quit

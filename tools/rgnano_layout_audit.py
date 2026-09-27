@@ -396,10 +396,65 @@ def audit_sample_lab(path: str, mask: List[List[bool]]) -> List[Issue]:
     return issues
 
 
+def audit_guide(path: str, img: Image.Image) -> List[Issue]:
+    """The built-in guide (guide-*.bmp) draws its own pixel layout: text on
+    10 px lines, examples on tinted panels, a scroll bar on the right. Checks
+    that text stays inside its margins, clear of the scroll bar, and that no
+    two lines touch (lines that overlap or run together)."""
+    issues: List[Issue] = []
+    if img.size != (240, 240):
+        return [Issue(path, f"expected 240x240 app screenshot, got {img.size[0]}x{img.size[1]}")]
+    width, height = img.size
+    get_pixels = getattr(img, "get_flattened_data", img.getdata)
+    pixels = list(get_pixels())
+    bg = dominant_color(pixels)
+    # Example panels are a dark tint of the background: a second background
+    tints = [p for p in pixels if 0 < dist(p, bg) < 90]
+    panel = dominant_color(tints) if len(tints) > 400 else bg
+
+    def ink(x: int, y: int) -> bool:
+        p = pixels[y * width + x]
+        return dist(p, bg) >= 34 and dist(p, panel) >= 34
+
+    rules = {14, 218}  # title and footer rules span the screen on purpose
+    for y in range(height):
+        if y in rules:
+            continue
+        for x in (0, 1, 238, 239):
+            if ink(x, y):
+                issues.append(Issue(path, f"ink at the screen edge ({x},{y}); text or panel clipped"))
+                break
+    # Text ends by x=232, the scroll bar starts at 235: nothing in between
+    for y in range(18, 217):
+        if ink(233, y) or ink(234, y):
+            issues.append(Issue(path, f"text touches the scroll bar at y={y}"))
+            break
+    # Lines of 8 px letters have air between them; a taller run of inked
+    # rows means two lines touch. Selection bars (mostly filled rows) are
+    # their own background and end a run; a popup's side borders (columns
+    # inked most of the way down) are frame, not text.
+    body = range(18, 217)
+    frame = {x for x in range(3, 233) if sum(1 for y in body if ink(x, y)) > 0.4 * len(body)}
+    run = 0
+    for y in body:
+        count = sum(1 for x in range(3, 233) if x not in frame and ink(x, y))
+        if count > 0.6 * 230:
+            run = 0
+            continue
+        run = run + 1 if count else 0
+        if run > 9:
+            issues.append(Issue(path, f"lines touch around y={y}; text overlaps or has no line gap"))
+            run = 0
+    return issues
+
+
 def audit_paths(paths: Iterable[str]) -> List[Issue]:
     issues: List[Issue] = []
     for path in paths:
         img = load_rgb(path)
+        if os.path.basename(path).lower().startswith("guide-"):
+            issues.extend(audit_guide(path, img))
+            continue
         mask = foreground_mask(img)
         issues.extend(audit_generic(path, img, mask))
         issues.extend(audit_pixel_artifacts(path, mask))

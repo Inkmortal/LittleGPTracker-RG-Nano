@@ -10,6 +10,24 @@ Commands live in the two command columns of a phrase and the three columns of a 
 - On a step without a note, it changes whatever is already playing on that track.
 - A note **with** an instrument number resets that instrument's ramps. A note **without** one (`I--`) keeps sweeps and fades running.
 
+Example — a bass line with a ghost note, a cut and a bend. Columns: step, note, instrument, command:
+
+```phrase
+00 C 2 01 ----
+01 --- -- ----
+02 C 2 01 VOLM 0050
+03 --- -- KILL 0002
+04 D#2 01 ----
+05 --- -- PTCH 1002
+06 G 1 01 LEGA 10F4
+07 --- -- ----
+```
+
+- Row `02`: the same note at a lower volume, a ghost note.
+- Row `03`: no note, so `KILL` cuts the one still playing, 2 ticks in.
+- Row `05`: bends the `D#2` from row `04` up 2 semitones.
+- Row `06`: the new note slides in from an octave below.
+
 Timing: 1 step = 6 ticks at the default groove. Ramp speeds (`aa`) count in groups of ticks — bigger `aa` = slower.
 
 <br clear="right">
@@ -109,26 +127,26 @@ A table is a little 16-row loop of commands that advances one row per tick. Poin
 
 Example — a trance gate on a pad:
 
-```text
-00  VOLM 00FF
-01  VOLM 0000
-02  HOP  0000   (jump back to row 00)
+```table
+00 VOLM 00FF
+01 VOLM 0000
+02 HOP  0000 (back to 00)
 ```
 
 Example — a slow arpeggio, one row per step (`TICK` in the table itself):
 
-```text
-00  PTCH 0000   TICK 0006
-01  PTCH 000C
-02  PTCH 0007
-03  HOP  0000
+```table
+00 PTCH 0000 TICK 0006
+01 PTCH 000C
+02 PTCH 0007
+03 HOP  0000
 ```
 
 Example — a fast octave, root, fifth arpeggio:
 
-```text
-00  PTCH 000C
-01  PTCH 0000
-02  PTCH 0007
-03  HOP  0000
+```table
+00 PTCH 000C
+01 PTCH 0000
+02 PTCH 0007
+03 HOP  0000
 ```

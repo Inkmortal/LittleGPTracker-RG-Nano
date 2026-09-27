@@ -42,6 +42,9 @@ public: // Added functionality
 	void ProcessQuit() ;
 	void ProcessUserEvent(SDL_Event &event) ;
 	SDL_Surface* GetSurface() { return screen_; }
+	// Only the letters' own pixels, in the current color, at a pixel
+	// position: text over a colored panel (the guide's example boxes)
+	void DrawTransparentString(const char *string,GUIPoint &pos) ;
 	bool IsRGNanoSkinEnabled() const { return rgnanoSkin_; }
 	bool IsRGNanoSkinFrameClean() ;
 	int GetAppAnchorX() const { return appAnchorX_; }

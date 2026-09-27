@@ -1206,6 +1206,10 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 	if (cursorAnimFrame_ > 60) cursorAnimFrame_ = 0;
 
 	if (pressed && !modalView_) {
+		if (mask == (EPBM_R|EPBM_SELECT) && HandlesHelperCombo()) {
+			ProcessButtonMask(mask, pressed);
+			return;
+		}
 		if (mask == (EPBM_R|EPBM_SELECT)) {
 			contextOverlay_ = !contextOverlay_;
 			if (contextOverlay_) {

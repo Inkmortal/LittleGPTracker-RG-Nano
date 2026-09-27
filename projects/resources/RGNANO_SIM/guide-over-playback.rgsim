@@ -1,0 +1,27 @@
+# The guide opened while a song plays: the Song screen's meters and play
+# markers must not draw over it, and nothing on it may move.
+wait 1500
+expect_view song
+press s 80
+wait 1500
+down n
+press k 80
+up n
+wait 200
+press a 80
+wait 900
+screenshot_app guide-playing-1.bmp
+wait 700
+screenshot_app guide-playing-2.bmp
+expect_screen_text Screens > Song
+expect_screens_same guide-playing-1.bmp guide-playing-2.bmp
+expect_player_running yes
+down n
+press k 80
+up n
+wait 150
+expect_view song
+press s 80
+wait 300
+expect_no_error
+quit

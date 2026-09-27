@@ -12,11 +12,13 @@ The zip contains:
 
 ```text
 lgpt-rgnano/
-├── lgpt-rgnano.opk          the app
-├── Tracks/                  demo songs (lgpt_Afterglow, lgpt_NeonDrive, ... one per genre)
-├── Samples/                 sample packs (keys, strings, drums-808, ...)
-└── LGPT-Guide/              this guide, as Markdown files
+├ lgpt-rgnano.opk  the app
+├ Tracks/      demo songs
+├ Samples/     sample packs
+└ LGPT-Guide/  this guide
 ```
+
+`Tracks` holds one demo song per genre (`lgpt_Afterglow`, `lgpt_NeonDrive`, ...), `Samples` the sample packs (keys, strings, drums-808, ...) and `LGPT-Guide` this guide as Markdown files.
 
 Put them on the SD card like this:
 

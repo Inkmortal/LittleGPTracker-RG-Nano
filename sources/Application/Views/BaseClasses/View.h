@@ -163,6 +163,9 @@ class View : public Observable {
     InstrumentType currentInstrumentType();
     // Dialogs override: they are not the screen underneath
     virtual bool IsModal() { return false; }
+    // RB+Select goes to ProcessButtonMask instead of opening the helper
+    // (the guide: it is the help, so the combo that opened it closes it)
+    virtual bool HandlesHelperCombo() { return false; }
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,
                                          const char *&edit, const char *&field,
                                          const char *&cmd1, const char *&cmd2,

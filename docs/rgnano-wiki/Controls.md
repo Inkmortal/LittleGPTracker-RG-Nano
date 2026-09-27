@@ -188,6 +188,23 @@ Sample instruments have their own pages, play modes, trim controls and a sample 
 | **B + RB** / **A + RB** | mute / solo the track (Mixer); **RB + LB** unmutes all |
 | **Start** | play / stop the song |
 
+## The guide
+
+This guide, built in: **Help** on the start screen, or **A** in the **RB + Select** helper (it opens at the part about the screen you're on). It has three places: the contents, a page, and an index of every key, command and heading.
+
+| Input | Does |
+| --- | --- |
+| **Up/Down** | scroll the page, or pick in a list |
+| **LB + Up/Down** | a whole screen up / down |
+| **Left/Right** | previous / next section of the page (its name is in the title) |
+| **LB + Left/Right** | previous / next page |
+| **A** on a page | Go to: the links on screen (underlined), the pages this one points to, the contents and the index |
+| **A** in the contents / index | read that page or section |
+| **Right / Left** in the contents | open a topic up to its sections / fold them away |
+| **Left/Right** in the index | jump to the next / previous first letter |
+| **B** | step back to where you were (a link, a page, the contents); from the contents, close |
+| **RB + Select** | close the guide from anywhere |
+
 ## Naming a new song
 
 The letters are in alphabetical order (not QWERTY), so the next letter is always one press away.

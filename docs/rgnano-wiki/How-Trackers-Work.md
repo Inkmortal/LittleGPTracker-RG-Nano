@@ -5,11 +5,13 @@ A tracker is a spreadsheet that plays music. Time runs **down** the screen one r
 ## Four layers
 
 ```text
-SONG            the whole arrangement: 8 tracks side by side, rows = time
- └─ CHAIN       one track's list of bars, played in order
-     └─ PHRASE  one bar: 16 steps of notes and commands
-         └─ INSTRUMENT   the sound each note uses
+SONG        the arrangement
+ └─ CHAIN   a track's bars
+   └─ PHRASE one bar
+     └─ INSTRUMENT the sound
 ```
+
+The song is 8 tracks side by side, rows are time. A chain lists one track's bars in order. A phrase is one bar: 16 steps of notes and commands. The instrument is the sound each note uses.
 
 | Layer | Screen | Think of it as |
 | --- | --- | --- |
@@ -17,6 +19,43 @@ SONG            the whole arrangement: 8 tracks side by side, rows = time
 | **Chain** | <img src="images/demo-chain.png" width="200"> | A section of one track, e.g. "4 bars of drums". Each row is one phrase; the second column transposes it. |
 | **Phrase** | <img src="images/demo-phrase-melody.png" width="200"> | One bar. 16 rows = 16 steps = 16th notes. Columns: note, instrument, two commands. |
 | **Instrument** | <img src="images/synth-1-sound.png" width="200"> | The sound: a built-in synth or a WAV sample. |
+
+Here is how they point at each other. A song row names a chain for each track:
+
+```song
+00 00 01 -- -- -- -- -- --
+01 00 02 -- -- -- -- -- --
+```
+
+Chain `00` lists the phrases track 1 plays, one per row; the second column transposes that phrase:
+
+```chain
+00 00 00
+01 00 00
+02 00 00
+03 01 00
+```
+
+And phrase `00` is the kick itself: instrument `00` on every beat, rows `00 04 08 0C`, with a quieter kick just before the bar ends. The clap would be another phrase, on track 2:
+
+```phrase
+00 C 3 00 ----
+01 --- -- ----
+02 --- -- ----
+03 --- -- ----
+04 C 3 00 ----
+05 --- -- ----
+06 --- -- ----
+07 --- -- ----
+08 C 3 00 ----
+09 --- -- ----
+0A --- -- ----
+0B --- -- ----
+0C C 3 00 ----
+0D --- -- ----
+0E C 3 00 VOLM 0060
+0F --- -- ----
+```
 
 Two helpers sit to the side:
 

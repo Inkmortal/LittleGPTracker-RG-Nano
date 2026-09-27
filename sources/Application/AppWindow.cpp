@@ -544,6 +544,10 @@ void AppWindow::Flush() {
         pos._x = 0;
     }
     long flushEnd = System::GetInstance()->GetClock();
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+    _pixelText.clear();
+    _pixelSelection.clear();
+#endif
     if (_currentView) {
         _currentView->DrawGraphics();
     }
@@ -969,7 +973,15 @@ bool AppWindow::ScreenContains(const char *needle) const {
             return true;
         }
     }
-    return false;
+    return _pixelText.find(needle) != std::string::npos;
+}
+
+void AppWindow::NotePixelText(const char *text, bool selected) {
+    _pixelText += text;
+    _pixelText += '\n';
+    if (selected) {
+        _pixelSelection = text;
+    }
 }
 
 std::string AppWindow::GetSimSelectionSummary() const {
@@ -1004,6 +1016,13 @@ std::string AppWindow::GetSimSelectionSummary() const {
             }
         }
     }
+    if (!_pixelSelection.empty()) {
+        if (any) {
+            out << "; ";
+        }
+        out << "pixels=\"" << _pixelSelection << "\"";
+        any = true;
+    }
     if (!any) {
         out << "(none)";
     }
@@ -1026,6 +1045,9 @@ std::string AppWindow::GetSimScreenDump() const {
             out << " ";
         }
         out << "| " << row << "\n";
+    }
+    if (!_pixelText.empty()) {
+        out << "pixel text:\n" << _pixelText;
     }
     out << "selected: " << GetSimSelectionSummary();
     return out.str();
