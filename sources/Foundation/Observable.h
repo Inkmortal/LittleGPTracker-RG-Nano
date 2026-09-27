@@ -2,6 +2,7 @@
 #pragma once
 
 #include <vector>
+#include "System/Process/SysMutex.h"
 
 // Data to be passed from the observable to the observer
 
@@ -37,8 +38,19 @@ public:
 	inline void ClearChanged() { _hasChanged=false ; } ;
 	bool HasChanged() ;
 private:
+	// _mutex owns an SDL_mutex* it creates lazily: never copy an Observable
+	Observable(const Observable &) ;
+	Observable &operator=(const Observable &) ;
+
 	std::vector<I_Observer *> _list ;
 	bool _hasChanged ;
+	// AudioDriver (and anything it notifies, e.g. AudioOutDriver) is
+	// notified from the real-time audio callback thread while the main
+	// thread can Add/RemoveObserver at the same time (a view opening,
+	// closing or a project reload). Without this, NotifyObservers walking
+	// _list while the main thread mutates it is a use-after-free / bad
+	// iterator crash (seen as a SIGSEGV inside NotifyObservers under load).
+	SysMutex _mutex ;
 };
 
 

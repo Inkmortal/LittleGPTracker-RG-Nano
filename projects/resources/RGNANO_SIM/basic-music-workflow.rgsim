@@ -24,6 +24,6 @@ route instrument.open_sample_import
 screenshot basic-music-workflow.bmp
 expect_size 240 240
 expect_colors 4
-expect_file projects/last_project
+expect_file bin:last_project
 expect_no_error
 quit

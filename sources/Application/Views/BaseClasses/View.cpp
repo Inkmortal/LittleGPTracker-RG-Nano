@@ -1305,8 +1305,13 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 
 	// Undo / redo: B+Select steps back, LB+Select forward again
 	// (no song loaded yet on the start screen: nothing to snapshot)
+	// IsModal(): a modal dialog delegates unhandled keys to this same
+	// View::ProcessButton on itself (modalView_->ProcessButton, below), so
+	// without this check the shortcut would fire from inside the dialog
+	// (its own modalView_ is null) and draw a notification over it, in
+	// its coordinate space, clipped at the dialog's edge
 	bool haveSong=viewData_ && viewData_->project_ && viewData_->song_ ;
-	if (haveSong && pressed && !modalView_ &&
+	if (haveSong && pressed && !modalView_ && !IsModal() &&
 	    (mask==(EPBM_B|EPBM_SELECT) || mask==(EPBM_L|EPBM_SELECT))) {
 		bool undo=(mask&EPBM_B)!=0 ;
 		const char *what=undo?UndoHistory::Undo(viewData_->project_,viewData_->song_)
@@ -1428,17 +1433,25 @@ void View::EnableNotification() {
     Optionally set display y offset if not in a project (default == 2)
     Allows negative offsets, use with care!
 */
+// A screen with nothing to copy says so. A dialog (a list, the guide, a
+// picker) has no copy of its own: X and Y do nothing there, like any key a
+// dialog doesn't use (a notification would be drawn over its list)
 void View::CopyAtCursor() {
+	if (IsModal()) return ;
 	SetNotification("Nothing to copy here") ;
 }
 
 void View::PasteAtCursor(bool) {
+	if (IsModal()) return ;
 	SetNotification("Nothing to paste here") ;
 }
+
+std::string View::simLastNotification_;
 
 void View::SetNotification(const char *notification, int offset) {
     notificationTime_ = SDL_GetTicks();
     displayNotification_ = notification;
+    simLastNotification_ = notification;
     notiDistY_ = offset;
     isDirty_ = true;
 }
