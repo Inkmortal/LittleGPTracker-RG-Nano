@@ -860,7 +860,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (!command.arg2.empty() && command.arg2[0]==' ') command.arg2.erase(0,1);
 	} else if (command.op=="expect_sample_stats") {
 		iss >> command.arg >> command.arg2 >> command.value >> command.value2;
-	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command") {
+	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command" || command.op=="expect_table_command") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2 >> command.arg3;
 	} else if (command.op=="wait_player") {
 		iss >> command.arg >> command.value >> command.value2;
@@ -1396,6 +1396,11 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="sim_set_phrase_command") {
 		if (!SimSetPhraseCommand(command.value,command.value2,atoi(command.arg.c_str()),command.arg2,command.arg3)) {
 			FailSimScript("phrase command setup failed");
+			return;
+		}
+	} else if (command.op=="expect_table_command") {
+		if (!ExpectSimTableCommand(command.value,command.value2,atoi(command.arg.c_str()),command.arg2,command.arg3)) {
+			FailSimScript("table command assertion failed");
 			return;
 		}
 	} else if (command.op=="sim_set_table_command") {
@@ -3063,6 +3068,24 @@ bool SDLEventManager::SimSetTableCommand(int tableIndex, int row, int slot, cons
 	TableHolder::GetInstance()->SetUsed(tableIndex);
 	Trace::Log("RGNANO_SIM","sim_set_table_command table=%02X row=%d slot=%d command=%s param=%04X",tableIndex,row,slot,commandName.c_str(),param);
 	return true;
+}
+
+// <table> <row> <slot 1-3> <command> <hex param>: what that cell holds
+bool SDLEventManager::ExpectSimTableCommand(int tableIndex, int row, int slot, const std::string &commandName, const std::string &paramText)
+{
+	FourCC command=I_CMD_NONE;
+	ushort param=0;
+	if (tableIndex<0 || tableIndex>=TABLE_COUNT || row<0 || row>=TABLE_STEPS || slot<1 || slot>3 ||
+		!ParseSimCommandName(commandName,&command) || !ParseSimHexWord(paramText,&param)) {
+		Trace::Error("RGNANO_SIM expect_table_command invalid args table=%d row=%d slot=%d command=%s param=%s",tableIndex,row,slot,commandName.c_str(),paramText.c_str());
+		return false;
+	}
+	Table &table=TableHolder::GetInstance()->GetTable(tableIndex);
+	FourCC *cmds[3]={table.cmd1_,table.cmd2_,table.cmd3_};
+	ushort *params[3]={table.param1_,table.param2_,table.param3_};
+	bool ok=cmds[slot-1][row]==command && params[slot-1][row]==param;
+	Trace::Log("RGNANO_SIM","expect_table_command table=%02X row=%d slot=%d param=%04X expected %s %04X => %s",tableIndex,row,slot,params[slot-1][row],commandName.c_str(),param,ok?"match":"mismatch");
+	return ok;
 }
 
 bool SDLEventManager::SimSaveProject()

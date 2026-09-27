@@ -172,6 +172,39 @@ bool SamplePool::loadSample(const char *path, bool showStatus) {
 
 #define IMPORT_CHUNK_SIZE 1000
 
+bool SamplePool::CopyFile(const char *src,const char *dst) {
+	I_File *fin=FileSystem::GetInstance()->Open(src,"r") ;
+	if (!fin) {
+		Trace::Error("Failed to open input file %s",src);
+		return false ;
+	}
+	fin->Seek(0,SEEK_END) ;
+	long size=fin->Tell() ;
+	fin->Seek(0,SEEK_SET) ;
+
+	I_File *fout=FileSystem::GetInstance()->Open(dst,"w") ;
+	if (!fout) {
+		Trace::Error("Failed to open output file %s",dst);
+		fin->Close() ;
+		delete (fin) ;
+		return false ;
+	}
+
+	char buffer[IMPORT_CHUNK_SIZE] ;
+	while (size>0) {
+		int count=(size>IMPORT_CHUNK_SIZE)?IMPORT_CHUNK_SIZE:size ;
+		fin->Read(buffer,1,count) ;
+		fout->Write(buffer,1,count) ;
+		size-=count ;
+	}
+
+	fin->Close() ;
+	fout->Close() ;
+	delete(fin) ;
+	delete(fout) ;
+	return true ;
+}
+
 int SamplePool::ImportSample(Path &path) {
 
 	if (count_==MAX_PIG_SAMPLES) return -1 ;
@@ -186,41 +219,11 @@ int SamplePool::ImportSample(Path &path) {
 	dpath+=path.GetName() ;
 	Path dstPath(dpath.c_str()) ;
 
-    // Opens files
-
-	I_File *fin=FileSystem::GetInstance()->Open(path.GetPath().c_str(),"r") ;
-    if (!fin) {
-        Trace::Error("Failed to open input file %s",
-                     path.GetCanonicalPath().c_str());
-        return -1;
-    };
-    fin->Seek(0,SEEK_END) ;
-	long size=fin->Tell() ;
-	fin->Seek(0,SEEK_SET) ;
-
-	I_File *fout=FileSystem::GetInstance()->Open(dstPath.GetPath().c_str(),"w") ;
-	if (!fout) {
-		Trace::Error("Failed to open output file %s",
-		             dstPath.GetCanonicalPath().c_str());
-		fin->Close() ;
-		delete (fin) ;
-		return -1 ;
-	} ;
-
 	// copy file to current project
 
-	char buffer[IMPORT_CHUNK_SIZE] ;
-	while (size>0) {
-		int count=(size>IMPORT_CHUNK_SIZE)?IMPORT_CHUNK_SIZE:size ;
-		fin->Read(buffer,1,count) ;
-		fout->Write(buffer,1,count) ;
-		size-=count ;
-	} ;
-
-	fin->Close() ;
-	fout->Close() ;
-	delete(fin) ;
-	delete(fout) ;
+	if (!CopyFile(path.GetPath().c_str(),dstPath.GetPath().c_str())) {
+		return -1 ;
+	}
 
 	// now load the sample
 

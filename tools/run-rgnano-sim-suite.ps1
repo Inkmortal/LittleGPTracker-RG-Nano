@@ -279,6 +279,17 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "sound-files"
+    Script = "sound-files.rgsim"
+    Args = @("-ResetLastProject", "-SeedSampleFixture")
+  },
+  @{
+    # Right after sound-files: its template kit is what a new song gets
+    Name = "sound-template-new-song"
+    Script = "sound-template-new-song.rgsim"
+    Args = @("-ResetLastProject", "-KeepSounds")
+  },
+  @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
     Args = @("-OpenDemo=Afterglow")

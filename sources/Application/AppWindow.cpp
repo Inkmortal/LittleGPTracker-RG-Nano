@@ -687,6 +687,16 @@ void AppWindow::LoadProject(const Path &p) {
     _currentView = _songView;
     _currentView->OnFocus();
 
+    // A new song whose template kit didn't load says why
+    std::string templateError =
+        project->GetInstrumentBank()->TakeTemplateError();
+    if (!templateError.empty()) {
+        static char message[48];
+        snprintf(message, sizeof(message), "Your kit: %s",
+                 templateError.c_str());
+        _songView->SetNotification(message);
+    }
+
     if (!playerOK) {
         MessageBox *mb =
             new MessageBox(*_songView, "Failed to initialize audio", MBBF_OK);

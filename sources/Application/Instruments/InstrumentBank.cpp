@@ -13,6 +13,7 @@
 #include "Application/Model/Config.h"
 #include "Application/Persistency/PersistencyService.h"
 #include "Filters.h"
+#include "SoundLibrary.h"
 
 char *InstrumentTypeData[IT_LAST]= {
 	"Sample",
@@ -66,6 +67,16 @@ void InstrumentBank::AssignDefaults() {
 
 	SamplePool *pool=SamplePool::GetInstance() ;
 	int sampleCount=pool->GetNameListSize() ;
+	// Your own kit, when you made one the new-song template
+	templateError_.clear() ;
+	if (sampleCount==0 && SoundLibrary::HasTemplate()) {
+		if (SoundLibrary::LoadTemplate(this,templateError_)) {
+			return ;
+		}
+		// Said on screen when the song opens; the starter kit keeps the
+		// new song playable meanwhile
+		Trace::Error("SOUNDLIB template kit not loaded: %s",templateError_.c_str()) ;
+	}
    	for (int i=0;i<MAX_SAMPLEINSTRUMENT_COUNT;i++) {
 		if (sampleCount==0 && i<STARTER_KIT_SIZE) {
 			SetInstrumentType(i,IT_SYNTH) ;
@@ -100,6 +111,19 @@ bool InstrumentBank::SetInstrumentType(int i,InstrumentType type) {
 	return true ;
 }
 
+void InstrumentBank::ClearSlot(int id) {
+	if (id<0 || id>=MAX_SAMPLEINSTRUMENT_COUNT) return ;
+	I_Instrument *old=instrument_[id] ;
+	if (old) {
+		Player::GetInstance()->ForgetInstrument(old) ;
+	}
+	SampleInstrument *fresh=new SampleInstrument() ;
+	fresh->Init() ;
+	fresh->AssignSample(-1) ;
+	instrument_[id]=fresh ;
+	delete old ;
+}
+
 InstrumentBank::~InstrumentBank() {
 	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
 		delete instrument_[i] ;
@@ -110,31 +134,47 @@ I_Instrument *InstrumentBank::GetInstrument(int i) {
 	return instrument_[i] ;
 } ;
 
-void InstrumentBank::SaveContent(TiXmlNode *node) {
-	char hex[3] ;
-	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
+void InstrumentBank::SaveInstrument(TiXmlNode *node,int id,I_Instrument *instr) {
+	TiXmlElement data("INSTRUMENT") ;
+	if (id>=0) {
+		char hex[3] ;
+		hex2char(id,hex) ;
+		data.SetAttribute("ID",hex) ;
+	}
+	data.SetAttribute("TYPE",InstrumentTypeData[instr->GetType()]) ;
 
+	IteratorPtr<Variable> it(instr->GetIterator()) ;
+	int count=0 ;
+	for (it->Begin();!it->IsDone();it->Next()) {
+		Variable &v=it->CurrentItem() ;
+		TiXmlElement param("PARAM") ;
+		param.SetAttribute("NAME",v.GetName()) ;
+		param.SetAttribute("VALUE",v.GetString()) ;
+		data.InsertEndChild(param) ;
+		count++ ;
+	}
+	if (count) node->InsertEndChild(data) ;
+}
+
+void InstrumentBank::SaveContent(TiXmlNode *node) {
+	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
 		I_Instrument *instr=instrument_[i] ;
 		if (!instr->IsEmpty()) {
-			TiXmlElement data("INSTRUMENT") ;
-			hex2char(i,hex) ;
-			data.SetAttribute("ID",hex) ;
-			data.SetAttribute("TYPE",InstrumentTypeData[instr->GetType()]) ;
-
-			IteratorPtr<Variable> it(instr->GetIterator()) ;
-			int count=0 ;
-			for (it->Begin();!it->IsDone();it->Next()) {
-				Variable &v=it->CurrentItem() ;
-				TiXmlElement param("PARAM") ;
-				param.SetAttribute("NAME",v.GetName()) ;
-				param.SetAttribute("VALUE",v.GetString()) ;
-				data.InsertEndChild(param) ;
-				count++ ;
-			}
-			if (count) node->InsertEndChild(data) ;
+			SaveInstrument(node,i,instr) ;
 		}
 	}
 } ;
+
+InstrumentType InstrumentBank::TypeFromName(const char *name) {
+	if (name) {
+		for (int i=0;i<IT_LAST;i++) {
+			if (!strcmp(name,InstrumentTypeData[i])) {
+				return (InstrumentType)i ;
+			}
+		}
+	}
+	return IT_LAST ;
+}
 
 // One saved PARAM onto an instrument, translating names older songs used
 void InstrumentBank::RestoreParam(I_Instrument *instr,const char *name,const char *value) {
@@ -177,78 +217,104 @@ void InstrumentBank::RestoreContent(TiXmlElement *element) {
 			unsigned char b1=(c2h__(hexid[0]))<<4 ;
 			unsigned char b2=c2h__(hexid[1]) ;
 			unsigned char id=b1+b2 ;			
-
-			InstrumentType it=IT_LAST ;
-			const char* instype=current->Attribute("TYPE") ;
-			if (instype) {
-				for (int i=0;i<IT_LAST;i++) {
-					if (!strcmp(instype,InstrumentTypeData[i])) {
-						it=(InstrumentType)i ;
-						break ;
-					}
-				}
-			} else {
-				it=(id<MAX_SAMPLEINSTRUMENT_COUNT)?IT_SAMPLE:IT_MIDI ;
-			} ;
 			if (id<MAX_INSTRUMENT_COUNT) {
-        I_Instrument *instr=instrument_[id] ;
-				if (instr->GetType()!=it) {
-					delete instr ;
-					instr=createInstrument(it) ;
-					instrument_[id]=instr ;
-				} ;
-
-        TiXmlElement *param=current->FirstChildElement() ;
-				InstrumentMods *mods=instr->GetMods() ;
-				while (param) {
-					const char *name=param->Attribute("NAME") ;
-					const char *value=param->Attribute("VALUE") ;
-
-          // Songs from the first MOD release (two slots, LFO shapes as
-          // types, a "rate"): converted to the four-slot settings
-          if (mods && mods->RestoreLegacy(name,value)) {
-            param=param->NextSiblingElement() ;
-            continue ;
-          }
-
-          // Convert old filter dist to newer filter mode
-
-          if (!strcmp(name,"filter dist"))
-          {
-            name = "filter mode";
-            if (!strcmp(value,"none"))
-            {
-              value = "original";
-            }
-            else
-            {
-              value = "scream";
-            }
-          }
-
-					RestoreParam(instr,name,value) ;
-					param=param->NextSiblingElement() ;
-				}
-				if (mods) {
-					mods->FinishRestore() ;
-				}
-				if (doc->version_<38) {
-					Variable *cvl=instr->FindVariable(SIP_CRUSHVOL) ;
-					Variable *vol=instr->FindVariable(SIP_VOLUME);
-					Variable *crs=instr->FindVariable(SIP_CRUSH) ;
-					if ((vol)&&(cvl)&&(crs)) {
-						if (crs->GetInt()!=16) {
-							int temp=vol->GetInt() ;
-							vol->SetInt(cvl->GetInt()) ;
-							cvl->SetInt(temp) ;
-						}
-					} ;
-				}
+				RestoreInstrument(current,id,doc->version_,false) ;
 			}
 		}
 		current=current->NextSiblingElement() ;
 	} ;
 };
+
+bool InstrumentBank::RestoreInstrument(TiXmlElement *current,int id,int version,bool live) {
+	if (id<0 || id>=MAX_INSTRUMENT_COUNT) return false ;
+
+	InstrumentType it=TypeFromName(current->Attribute("TYPE")) ;
+	if (!current->Attribute("TYPE")) {
+		it=(id<MAX_SAMPLEINSTRUMENT_COUNT)?IT_SAMPLE:IT_MIDI ;
+	}
+	if (it==IT_LAST) {
+		// Songs: an unknown type always loaded as a sample instrument
+		if (live) return false ;
+		it=IT_SAMPLE ;
+	}
+	// Sound and kit files: MIDI lives in its own slots, the others in the
+	// sample slots (song files keep loading as they always have)
+	if (live && (it==IT_MIDI)!=(id>=MAX_SAMPLEINSTRUMENT_COUNT)) return false ;
+
+	I_Instrument *instr=instrument_[id] ;
+	if (live) {
+		// Start from a fresh instrument: nothing of the old sound stays
+		if (instr) {
+			Player::GetInstance()->ForgetInstrument(instr) ;
+		}
+		I_Instrument *fresh=createInstrument(it) ;
+		if (it==IT_MIDI) {
+			((MidiInstrument *)fresh)->SetChannel(id-MAX_SAMPLEINSTRUMENT_COUNT) ;
+		}
+		instrument_[id]=fresh ;
+		delete instr ;
+		instr=fresh ;
+	} else if (instr->GetType()!=it) {
+		delete instr ;
+		instr=createInstrument(it) ;
+		instrument_[id]=instr ;
+	} ;
+
+	TiXmlElement *param=current->FirstChildElement() ;
+	InstrumentMods *mods=instr->GetMods() ;
+	while (param) {
+		const char *name=param->Attribute("NAME") ;
+		const char *value=param->Attribute("VALUE") ;
+		if (!name || !value) {
+			param=param->NextSiblingElement() ;
+			continue ;
+		}
+
+		// Songs from the first MOD release (two slots, LFO shapes as
+		// types, a "rate"): converted to the four-slot settings
+		if (mods && mods->RestoreLegacy(name,value)) {
+			param=param->NextSiblingElement() ;
+			continue ;
+		}
+
+		// Convert old filter dist to newer filter mode
+
+		if (!strcmp(name,"filter dist"))
+		{
+			name = "filter mode";
+			if (!strcmp(value,"none"))
+			{
+				value = "original";
+			}
+			else
+			{
+				value = "scream";
+			}
+		}
+
+		RestoreParam(instr,name,value) ;
+		param=param->NextSiblingElement() ;
+	}
+	if (mods) {
+		mods->FinishRestore() ;
+	}
+	if (version<38) {
+		Variable *cvl=instr->FindVariable(SIP_CRUSHVOL) ;
+		Variable *vol=instr->FindVariable(SIP_VOLUME);
+		Variable *crs=instr->FindVariable(SIP_CRUSH) ;
+		if ((vol)&&(cvl)&&(crs)) {
+			if (crs->GetInt()!=16) {
+				int temp=vol->GetInt() ;
+				vol->SetInt(cvl->GetInt()) ;
+				cvl->SetInt(temp) ;
+			}
+		} ;
+	}
+	if (live) {
+		instr->Init() ;
+	}
+	return true ;
+}
 
 void InstrumentBank::Init() {
 	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {

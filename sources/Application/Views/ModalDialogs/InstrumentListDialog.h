@@ -27,6 +27,7 @@ public:
 
   int GetSelection() { return selected_; }
   void Rename(const std::string &name);
+  void SoundsChanged();
 
 protected:
   virtual void drawGraphics();

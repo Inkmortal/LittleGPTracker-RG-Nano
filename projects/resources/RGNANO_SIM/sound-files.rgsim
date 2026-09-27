@@ -1,0 +1,120 @@
+# Your own sounds and kits, kept outside the song: save a sound, load it
+# into another slot, save the kit and make it what new songs start with.
+# (sound-template-new-song runs next and checks a new song gets the kit.)
+route boot.new_project_random
+expect_view song
+expect_instrument_name 0 KICK
+expect_instrument_name 5 BASS
+# Song A, chain A, phrase A, then the Instrument screen and its list
+press a 80
+down n
+press r 80
+up n
+wait 150
+press a 80
+down n
+press r 80
+up n
+wait 150
+press a 80
+down n
+press r 80
+up n
+wait 150
+expect_view instrument
+down n
+press u 80
+up n
+wait 200
+expect_screen_text INSTRUMENTS
+expect_screen_text LB+START save/load
+# LB+Start: my sounds. Save sound 00 (the name is filled in: A saves)
+down m
+press s 80
+up m
+wait 200
+expect_screen_text MY SOUNDS
+expect_screen_text Save sound 00
+expect_open instrument>INSTRUMENTS>MY SOUNDS
+press a 80
+wait 200
+expect_screen_text NAME THIS SOUND
+press a 80
+wait 300
+expect_screen_text saved KICK
+expect_file rgnano-sim-data/sounds/KICK.lgs
+# B closes the menu, back on the list
+press b 80
+wait 150
+expect_screen_text INSTRUMENTS
+# Load it into slot 05 (bass)
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+wait 100
+down m
+press s 80
+up m
+wait 200
+expect_screen_text Load a sound into 05
+press d 80
+press a 80
+wait 200
+expect_screen_text SAVED SOUNDS
+expect_screen_text KICK
+# B in a list: one step back, to the menu
+press b 80
+wait 150
+expect_screen_text MY SOUNDS
+press d 80
+press a 80
+wait 150
+press a 80
+wait 300
+expect_screen_text KICK now in 05
+expect_instrument_name 5 KICK
+expect_instrument_type 5 Synth
+# The kit also holds a sample sound (its WAV goes to the library) and a
+# sound with a table (the table travels with it)
+sim_import_sample_to_instrument 16 rgnano-test-tone.wav
+sim_set_table_command 3 0 1 VOLM 0040
+sim_set_instrument_param 0 table 3
+expect_instrument_param 0 table 3
+# Save the kit (named after the song: A saves). B: list to menu first
+press b 80
+wait 150
+expect_screen_text MY SOUNDS
+press d 80
+press d 80
+wait 100
+expect_screen_text Save this kit
+press a 80
+wait 200
+expect_screen_text NAME THIS KIT
+press a 80
+wait 300
+expect_screen_text kit saved
+# New songs start with this kit: a question, No is selected, Left = Yes
+press d 80
+press d 80
+wait 100
+expect_screen_text New songs: this kit
+press a 80
+wait 200
+expect_screen_text New songs start with it?
+press l 80
+press a 80
+wait 300
+expect_screen_text new songs start with it
+expect_file rgnano-sim-data/sounds/template.lgk
+expect_screen_text kit: mine
+# Close everything: B, B
+press b 80
+wait 150
+press b 80
+wait 150
+expect_view instrument
+expect_no_error
+quit

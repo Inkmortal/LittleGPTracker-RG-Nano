@@ -31,6 +31,10 @@ public:
 	char **GetNameList() ;
 	int GetNameListSize();
     int ImportSample(Path &path);
+    // Index of the sample with this file name, -1 if the song hasn't it
+    int FindSample(const char *name) { return getIndexOf(name); }
+    // Byte copy through the file system (the card on the Nano)
+    static bool CopyFile(const char *src, const char *dst);
     // Load a file already in the project's samples folder (e.g. a render)
     int AddProjectSample(const char *name);
     // The song's samples folder exists (a song copied without it, like a

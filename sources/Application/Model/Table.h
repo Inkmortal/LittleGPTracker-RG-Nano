@@ -17,6 +17,10 @@ public:
 	void Reset() ;
 	bool IsEmpty() ;
 	void Copy(const Table &other) ;
+	// The table's steps as the song file writes them (CMD1..PARAM3 hex
+	// children of node), and back
+	void Save(TiXmlNode *node) ;
+	void Restore(TiXmlElement *element) ;
 public:
 	FourCC cmd1_[TABLE_STEPS] ;
 	ushort param1_[TABLE_STEPS] ;

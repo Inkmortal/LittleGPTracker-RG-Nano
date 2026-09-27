@@ -1,5 +1,6 @@
 #include "InstrumentListDialog.h"
 #include "NewProjectDialog.h"
+#include "SoundFilesDialog.h"
 #include "Application/AppWindow.h"
 #include "Application/Instruments/InstrumentBank.h"
 #include "Application/Instruments/SampleInstrument.h"
@@ -28,6 +29,12 @@ static void renameCallback(View &v, ModalView &dialog) {
     if (dialog.GetReturnCode() > 0) {
         NewProjectDialog &npd = (NewProjectDialog &)dialog;
         ((InstrumentListDialog &)v).Rename(npd.GetTypedName());
+    }
+}
+
+static void soundFilesCallback(View &v, ModalView &dialog) {
+    if (dialog.GetReturnCode() > 0) {
+        ((InstrumentListDialog &)v).SoundsChanged();
     }
 }
 
@@ -154,6 +161,7 @@ void InstrumentListDialog::DrawView() {
     SetColor(CD_NORMAL);
     DrawString(0, HINT_Y, "A open      START hear", props);
     DrawString(0, HINT_Y + 1, "SEL name    LB+A copy", props);
+    DrawString(0, HINT_Y + 2, "LB+START save/load", props);
     SetColor(CD_NORMAL);
 }
 
@@ -367,6 +375,14 @@ void InstrumentListDialog::duplicate() {
     status_ = msg;
 }
 
+// A sound or kit came in from the library: counts and picture are stale
+void InstrumentListDialog::SoundsChanged() {
+    countUsage();
+    previewFor_ = -1;
+    status_.clear();
+    isDirty_ = true;
+}
+
 void InstrumentListDialog::Rename(const std::string &name) {
     I_Instrument *instr =
         viewData_->project_->GetInstrumentBank()->GetInstrument(selected_);
@@ -383,6 +399,10 @@ void InstrumentListDialog::ProcessButtonMask(unsigned short mask,
         return;
     if (mask == (EPBM_L | EPBM_A)) {
         duplicate();
+        return;
+    }
+    if (mask == (EPBM_L | EPBM_START)) {
+        DoModal(new SoundFilesDialog(*this, selected_), soundFilesCallback);
         return;
     }
     if (mask == EPBM_UP) {
@@ -434,6 +454,6 @@ void InstrumentListDialog::CustomizeContextOverlay(
     cmd3 = "START hear it, again stop";
     cmd4 = "SEL give it a name";
     cmd5 = "LB+A copy to a free slot";
-    cmd6 = "number = phrases using it";
-    cmd7 = "green dot = playing now";
+    cmd6 = "LB+START save/load sounds";
+    cmd7 = "number = phrases using it";
 }
