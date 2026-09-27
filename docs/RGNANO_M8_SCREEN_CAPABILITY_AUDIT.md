@@ -1,197 +1,285 @@
-# RG Nano / M8 Screen And Capability Audit
+# RG Nano vs Dirtywave M8: capability audit
 
-Last updated: 2026-09-21
+Rewritten 2026-09-27 against the code at `fdffa33` plus the work merged since, and the M8 at firmware 6.6 (Dirtywave manual 6.0.0 and the community EFX/sampler/FM/hypersynth/macrosynth references, see Sources). It replaces the 2026-09-21 audit, which listed EQ, limiter, Macro Synth, mod slots, Scale screen, render-to-sample, sample editing, FX screen and Live mode as missing. All of those exist now.
 
-This is the durable build note for M8-style parity work. It tracks what a producer can do today on the RG Nano fork, what the Dirtywave M8 exposes as a reference workflow, what exists only partially, and what should be built next.
+Status: **Have** = works, proven by code and a sim test. **Partial** = an equivalent exists but does less than the M8. **Missing** = not built. **Hardware** = the Nano can't do it (not a build gap). **In progress** = another agent is building it right now.
 
-## Source Of Truth
+Proof is a file (`sources/...`) or a sim script (`projects/resources/RGNANO_SIM/<name>.rgsim`). Key paths use the Nano's names: LB/RB = shoulders, Select = FN.
 
-- Dirtywave M8 manual v6.5.2, 2026-04-21: https://cdn.shopify.com/s/files/1/0455/0485/6229/files/m8_operation_manual_v20260421.pdf?v=1776791699
-- Dirtywave resources page: https://dirtywave.com/pages/resources-downloads
-- Dirtywave product/spec overview: https://dirtywave.com/
-- Sound On Sound M8 Model:02 workflow review, useful for confirming the practical song/chain/phrase model: https://www.soundonsound.com/reviews/dirtywave-m8-model02
-- Anbernic RG Nano technical specification, confirming the 1.54-inch 240x240 screen: https://win.anbernic.com/product/339.html
-- M8 manual crop extractor: `tools/extract_m8_manual_screens.py`
-- Interactive parity site: `docs/m8-rgnano-parity/index.html`
-- RG Nano producer acceptance note: `docs/RGNANO_PRODUCER_ACCEPTANCE.md`
-- RG Nano app-only audit script: `projects/resources/RGNANO_SIM/producer-screen-audit-appshots.rgsim`
+## Short answer
 
-The M8 visual references in the parity site can be regenerated from exact manual crop rectangles with:
+The musical core is at M8 level: 8 tracks, 256-row song, 255 chains/phrases, 128 instruments, tables, grooves, Live mode, sampler with editor and slices, four synth engines that mirror the M8's (FM4, Hyper, Wav, Macro with the same 47 Braids models), four mod slots with the M8's modulator types, send FX, master EQ, limiter and render-to-sample. Where the Nano is behind is **depth, not breadth**: 2 FX columns instead of 3 and no velocity column; about half of the M8's 3-letter commands, and almost none of its per-parameter instrument/mixer commands; simpler send FX; no wavetables in the Wav engine; a smaller sample editor; no MIDI; no instrument/kit files yet (in progress).
 
-```powershell
-python tools\extract_m8_manual_screens.py --scale 4
-```
+Counts (rows in the tables below): **Have 79 · Partial 32 · Missing 47 · Hardware 2 (MIDI) · In progress 1 (kits/instrument files; the pool counts as Partial) · Nano-only extras 6**. Most of the Missing rows are single commands; the screens and engines are nearly all Have or Partial.
 
-The generated crops are intentionally ignored by git. They are manual-derived assets and should be regenerated locally instead of published.
+## Hardware: what the Nano can't match
 
-## Status Legend
-
-| Status | Meaning |
-| --- | --- |
-| Implemented | Producer workflow exists and has a simulator capture or direct code path. |
-| Partial | Some useful equivalent exists, but parity, polish, or tests are incomplete. |
-| Missing | No real RG Nano workflow exists yet. Do not imply it exists in UI/docs. |
-| Audit needed | Code hints exist, but the producer path or hardware reality is not verified. |
-| Out of scope now | Useful M8 feature, but intentionally deferred for the current RG Nano goal. |
-
-## Current RG Nano App Surface
-
-The RG Nano hardware constraint that drives most UI decisions is the 240x240 square display. The parity site should therefore document which RG screens show all columns at once and which screens are compact cursor windows over a wider or longer data model.
-
-The actual RG Nano/LGPT view enum currently exposes:
-
-| RG view type | Source | Producer role |
-| --- | --- | --- |
-| `VT_SONG` | `sources/Application/Views/SongView.cpp` | Arrange chains across 8 channels. |
-| `VT_CHAIN` | `sources/Application/Views/ChainView.cpp` | Sequence phrases and transpose per chain row. |
-| `VT_PHRASE` | `sources/Application/Views/PhraseView.cpp` | Main note, instrument, command, and value editor. |
-| `VT_PROJECT` | `sources/Application/Views/ProjectView.cpp` | Save/load, tempo, key/scale, note spelling, render mode. |
-| `VT_INSTRUMENT` | `sources/Application/Views/InstrumentView.cpp` | Sample/MIDI instrument parameters and sample import entry. |
-| `VT_TABLE` | `sources/Application/Views/TableView.cpp` | Phrase-side command automation table. |
-| `VT_TABLE2` | `sources/Application/Views/TableView.cpp` | Instrument-side command automation table. |
-| `VT_GROOVE` | `sources/Application/Views/GrooveView.cpp` | Groove/tick timing editor. |
-| `VT_MIXER` | `sources/Application/Views/MixerView.cpp` | Levels, scopes, waveform monitoring. |
-
-## Documentation/UI Requirements
-
-The parity site should behave more like a compact manual than a marketing page:
-
-- Every M8 map node should cite the manual page and explain the producer job of that screen.
-- Every RG Nano map node should explain what exists, how to reach it, what fields are visible, and what to do when the full data model cannot fit on 240x240.
-- Producer flow steps should let the reader switch between M8 instructions and RG Nano instructions for the same step.
-- RG Nano screens with compact/windowed editing should explicitly say whether all columns fit, whether vertical scrolling is used, or whether another screen/table/modal holds the extra controls.
-- Missing RG Nano equivalents must be labeled as missing, not illustrated as though they exist.
-
-Modal and overlay workflows also matter:
-
-| Modal/overlay | Source | Producer role |
-| --- | --- | --- |
-| Project selector/new project | `SelectProjectDialog`, `NewProjectDialog` | Start or create a project. |
-| Import sample dialog | `ImportSampleDialog` | Preview/import WAVs into sample library/instruments. |
-| Record sample dialog | `RecordSampleDialog` | Live recording path exists in code, but RG Nano hardware input is not current scope. |
-| Power menu/debug overlay | `SDLEventManager`/SDL UI | App exit/debug path. Real RG Nano Menu/Power maps to `q`; simulator maps to `p`. |
-
-## Structural Capability Audit
-
-| Capability | M8 reference | RG Nano status | Evidence | Build note |
-| --- | --- | --- | --- | --- |
-| Tracks/channels | 8 monophonic tracks | Implemented | `SONG_CHANNEL_COUNT 8`; all-8-channel sim coverage noted in acceptance doc | Keep testing all 8 channels after layout/audio changes. |
-| Song length | Song arranger rows | Implemented | `SONG_ROW_COUNT 256` | Document max row count for users. |
-| Chains | Chain list per track | Implemented | `CHAIN_COUNT 0xFF`; `ChainView` | Good core parity. |
-| Phrases | 16-step phrase units | Implemented | `PHRASE_COUNT 0xFF`; `PhraseView`; phrase data is 16 rows | Good core parity, but phrase screen is highest polish priority. |
-| Instruments | 128 M8 instruments | Partial | RG has `MAX_SAMPLEINSTRUMENT_COUNT 0x80` plus `MAX_MIDIINSTRUMENT_COUNT 0x10` | RG has enough slots, but lacks M8 synth engines and pool UX. |
-| Tables | 256 M8 instrument tables | Partial | RG has `TABLE_COUNT 0x80`, phrase/instrument table views | Strong existing movement tool; count is lower than M8. |
-| Grooves | Groove/timing table | Implemented | `MAX_GROOVES 0x20`; `GrooveView` | Good, needs producer docs. |
-| Scales/key | Dedicated M8 Scale View | Partial | Project `Key`, `Scale`, `Notes`; scale-aware phrase edits | Needs dedicated compact Scale screen or improved project route. |
-| Sample import | M8 sampler/SD workflow | Implemented for uploaded WAV | `SamplePool`, `ImportSampleDialog`, sample import sim capture | Core RG workaround for no mic. Needs better sample management. |
-| Live sampling | M8 Model:02 mic/line sampling | Out of scope now | RG Nano no mic; `RecordSampleDialog` not hardware-proven | Do not prioritize until hardware path is known. |
-| Render/bounce | M8 Render View, selection-to-sample | Partial | `ProjectView` render mode; native Off/Stereo/Stems; `render-export-workflow.rgsim` verifies `mixdown.wav` and `channel0.wav` | Stereo/stems bounce works. Missing M8-style render range/name controls and render-to-sample. |
-| Mixer/meters | M8 Mixer, EQ, limiter/scope | Partial | `MixerView`, `MixerService`, phrase/mixer waveforms | Mixer exists; EQ/limiter parity missing. |
-| MIDI | M8 MIDI Mapping/Settings/MIDI Out instrument | Audit needed | MIDI services and MIDI instruments exist | Needs RG Nano hardware/USB route proof. |
-| Theme | M8 Theme View | Missing | App has config colors, no producer theme screen | Low priority. One strong readable theme is enough for now. |
-| System/time stats | M8 System and Time Stats | Partial | Config, logs, simulator debug | Not a producer priority, but debug overlay can carry this. |
-
-## Screen-By-Screen Parity Audit
-
-| M8 screen | Manual source | Website visual source | RG Nano equivalent | Status | Next build/audit action |
-| --- | --- | --- | --- | --- | --- |
-| Song View | Manual p. 10 | Exact manual crop, dark rendered | Song View | Implemented | Keep all 8 channels visible; document 256 rows. |
-| Live Mode | Manual p. 10 | Same page crop, dark rendered | Song/Live behavior via playback/cue concepts | Partial | Verify real RG live/cue controls and capture a dedicated live-mode screenshot. |
-| Chain View | Manual p. 12 | Exact manual crop, dark rendered | Chain View | Implemented | Add route/navigation doc and test transpose editing. |
-| Phrase View | Manual p. 14 | Exact manual crop, dark rendered | Phrase View | Implemented | Keep waveform smooth and nonintrusive; add command edit coverage. |
-| Instrument View | Manual p. 16 | Exact manual crop, dark rendered | Instrument View | Partial | Audit all fields on 240x240; identify cramped labels; plan engines. |
-| Instrument Modulation View | Manual p. 18 | Exact manual crop, dark rendered | Tables/instrument table only | Missing | Design compact modulation page or table-driven equivalent. |
-| Instrument Pool View | Manual p. 22 | Exact manual crop, dark rendered | No dedicated pool | Missing | Build compact instrument pool/browser for copy/manage/audition. |
-| Table View | Manual p. 24 | Exact manual crop, dark rendered | Table View and Table2 | Implemented | Add tests for both phrase table and instrument table command selection. |
-| Groove View | Manual p. 26 | Exact manual crop, dark rendered | Groove View | Implemented | Add docs explaining groove use in song production. |
-| Scale View | Manual p. 28 | Exact manual crop, dark rendered | Project Key/Scale fields | Partial | Decide between dedicated Scale screen vs Project subpage. |
-| Mixer View | Manual p. 30 | Exact manual crop, dark rendered | Mixer View | Partial | Keep channel scopes; add clearer level controls if missing. |
-| EQ Editor View | Manual p. 32 | Exact manual crop, dark rendered | None dedicated | Missing | Research current filter/EQ capabilities, then design minimal EQ screen. |
-| Limiter & Mix Scope View | Manual p. 34 | Extractor creates crop, site currently groups under EQ/Limiter | Mixer waveform only | Partial | Add separate parity node or detail entry; audit limiter/render clipping behavior. |
-| Effect Settings View | Manual p. 36 | Exact manual crop, dark rendered | Project `Reverb`/`Damp`/`Echo`/`Fdbk` + per-synth reverb/delay sends | Partial | Shared reverb and tempo-synced echo exist (`Mixer/SendFX`). No chorus/mod FX, sample instruments do not send yet. |
-| Project View | Manual p. 38 | Exact manual crop, dark rendered | Project View | Implemented | Improve render/save/key docs; verify field order after changes. |
-| System Settings View | Manual p. 40 | Exact manual crop, dark rendered | Config/debug paths | Partial | Keep low priority unless hardware setting blocks production. |
-| Theme View | Manual p. 42 | Exact manual crop, dark rendered | Config colors only | Missing | Low priority; do not build before core music features. |
-| MIDI Mapping View | Manual p. 43 | Extractor creates crop, site currently groups under MIDI | MIDI code exists | Audit needed | Verify physical/USB MIDI on RG Nano and document constraints. |
-| MIDI Settings View | Manual p. 44 | Exact manual crop, dark rendered | MIDI config/code exists | Audit needed | Same as above. |
-| Time Stats View | Manual p. 46 | Not currently mapped in site | Debug/log equivalent | Missing/low priority | Consider debug overlay, not a main producer screen. |
-| Render View | Manual p. 47 | Exact manual crop, dark rendered | Project render mode | Partial | Native Project bounce is tested for Stereo/Stems. Add clearer range/name/output feedback and render-to-sample parity. |
-| Selection to Sample | Manual p. 48 | Extractor captures page, not currently a site node | None | Missing | High value for no-live-sampling workflow: render selected song/chain to sample. |
-| Effect Command Help View | Manual p. 48 | Exact manual crop, dark rendered | Command selector exists in command columns | Partial | Confirm universal shortcut and add contextual command help test. |
-| Wavsynth | Manual p. 50 | Not currently a site node | Synth instrument (`SynthInstrument`) | Implemented | Sine/triangle/saw/pulse/supersaw/noise/metal with shape knob, sub, ADSR, filter, LFO, 17 presets, CHRD chords. |
-| Macrosynth | Manual p. 52 | Not currently a site node | None | Missing | Later engine; study open-source references. |
-| Sampler | Manual p. 54 | Exact manual crop, dark rendered | Sample instrument/import | Partial | Add deeper sample parameter/tutorial coverage. |
-| Sample Editor | Manual p. 56 | Extractor creates crop, site currently groups under Sampler | None dedicated | Missing | Build crop/loop/slice/normalize editor after render/export basics. |
-| FM Synth | Manual p. 58 | Not currently a site node | Synth `fm`/`ratio` knobs | Partial | 2-operator phase modulation with envelope-driven brightness (KEYS, BELL presets). No 4-op algorithms. |
-| Hypersynth | Manual p. 60 | Not currently a site node | Synth `supersaw` wave + `chord`/CHRD | Partial | Detuned supersaw with one-note chords; no per-voice chord memory like M8. |
-| External Instrument | Manual p. 62 | Not currently a site node | Maybe MIDI/external audio only | Out of scope/audit needed | Hardware path likely limits this. |
-| MIDI Out Instrument | Manual p. 64 | Not currently a site node | MIDI instrument code exists | Audit needed | Verify RG Nano MIDI output before UX promises. |
-
-## Producer Workflow Audit
-
-| Producer job | Can RG Nano do it today? | Confidence | Notes |
+| Area | M8 | RG Nano | Consequence |
 | --- | --- | --- | --- |
-| Start/load project | Yes | High | Project selector and new project dialog captured. |
-| Create a loop | Yes | High | Song -> Chain -> Phrase flow exists. |
-| Use all 8 channels | Yes | High | Code constant and prior sim workflow coverage. |
-| Enter notes fast | Yes | Medium-high | Phrase editor works; scale/chromatic override exists. Needs shortcut docs. |
-| Enter notes outside scale | Yes | Medium-high | `L + D-pad` chromatic override is documented in acceptance note. |
-| Change key/scale mid-writing | Project-level yes, time-varying no | Medium | Existing notes are not rewritten. No row-based key command yet. |
-| Use sharps/flats | Yes | Medium-high | Project `Notes:` setting controls display spelling. |
-| Load uploaded WAV samples | Yes | High | Import sample dialog and SamplePool path exist. |
-| Preview samples before import | Yes | Medium-high | Acceptance doc notes native Listen preview is assertable. |
-| Edit sample start/loop/slice deeply | Limited | Low-medium | Instrument params exist, but no M8-like sample editor. |
-| Record live audio | Not target now | Low | Code exists, hardware path not trusted. |
-| Make movement/automation | Yes, through tables | Medium | Powerful but needs discoverability and command tests. |
-| Use native synth engines | Yes | High | New projects start with a 16-instrument synth kit; `type` switches any slot between synth and sample. |
-| Mix levels with visual feedback | Partially | Medium | Mixer scopes/waveforms exist; actual level editing parity needs audit. |
-| EQ/limiter/mastering | Mostly no | Medium | M8 has dedicated screens; RG has effects/filter pieces but no parity UI. |
-| Bounce a song | Yes, basic stereo/stems | Medium-low | Project `Render: Stereo` writes `mixdown.wav`; `Render: Stems` writes `channelN.wav` files. Needs M8-style range/name/render-to-sample controls. |
-| Resample selection into instrument | No | High | Important future feature because RG lacks live sampling. |
-| Use external MIDI gear | Unknown | Low | Code exists, hardware path unverified. |
-| Learn commands in context | Yes for Phrase/Table command columns, plus a universal helper | Medium-high | Raw `Select` opens the command selector/help picker while focused on Phrase or Table command columns. `R + Select` opens a paged helper: minimap first, then `Up`/`Down` shows current-screen commands. `command-runtime-workflow.rgsim` verifies measurable `TABL`, `GROV`, and `TMPO` behavior. |
+| CPU | Teensy 4.1, 600 MHz Cortex-M7, bare metal, nothing else running | V3s, 1.2 GHz Cortex-A7, single core, Linux + SDL | Similar raw budget; ours pays for the OS and the screen. Heavy engines (Hyper, FM4 feedback, Macro) must be costed per voice (tools/dsp-harness) |
+| Memory | Sample RAM of the M8 Model 02 | ~40 MB usable heap of 64 MB (sim enforces it, `RGNanoSimMemory.cpp`) | Plenty for a song; very long samples are refused cleanly (`sample-too-long.rgsim`) |
+| Audio I/O | Line in/out, headphone, USB audio in/out, built-in mic on some models | Speaker + USB-C; input needs a UAC USB adapter and a kernel with USB audio (README_AUDIO_INPUT.md) | Recording and live input are optional extras, not the default |
+| MIDI | TRS MIDI in/out + USB MIDI | No ports; USB-C OTG host is possible but not in the firmware | MIDI features are a firmware project, not an app one |
+| Screen / keys | 320x240, 8 keys (arrows, Shift, Play, Option, Edit) | 240x240, D-pad + A B X Y + LB RB + Start Select + Power | We have **more** buttons. **X and Y are unmapped today** (`projects/opk_build/config.xml` has no KEY_X/KEY_Y; the device logs show them arriving as `key(x)`/`key(y)`) |
 
-## Immediate Build Backlog
+So nothing the M8 does musically is out of reach for the hardware except MIDI and a built-in line in. The rest is build work.
 
-### P0: Stop Guessing
+## Screens
 
-1. Keep `tools/extract_m8_manual_screens.py` as the only source for M8 visual reference crops.
-2. Add an audit flag in the parity site for representative nodes, especially EQ/Limiter, MIDI, Sampler/Sample Editor, and Selection to Sample.
-3. Regenerate RG Nano app-only screenshots after every layout change.
+| M8 screen | Nano | Status | Proof | Nano key path |
+| --- | --- | --- | --- | --- |
+| Song | Song | Have | `SongView.cpp`, `song-tools-create.rgsim` | start screen |
+| Live mode | Song → Select | Have | `live-mode.rgsim` | Select (1) |
+| Chain | Chain | Have | `ChainView.cpp`, `chain-warp.rgsim` | RB+Right (1) |
+| Phrase | Phrase | Partial: 2 FX columns, no velocity column | `PhraseView.cpp` | RB+Right ×2 |
+| Instrument | Instrument (synth / sample / macro / MIDI) | Have | `synth-instrument-pages.rgsim`, `sample-screen-full-audit.rgsim` | RB+Right ×3 |
+| Instrument modulation | MOD page, 4 slots | Have | `InstrumentViewMod.cpp`, `mod-slots.rgsim` | LB+Right on Instrument |
+| Instrument pool | Instrument list (RB+Up) | Partial → In progress (Sound Rack) | `InstrumentListDialog.cpp`, `instrument-list.rgsim`; docs/INSTRUMENT_FIRST_WORKFLOW.md | RB+Up from Instrument |
+| Table | Table | Partial: 128 tables (M8 256), no TIC map modes | `TableView.cpp`, `sequencer-commands.rgsim` | RB+Down from Phrase |
+| Groove | Groove | Have (32 grooves) | `GrooveView.cpp`, `command-runtime-workflow.rgsim` | RB+Up from Phrase |
+| Scale | Scale | Have (keys, all scales, custom scale) | `ScaleView.cpp`, `scale-editor.rgsim` | Project → RB+Right |
+| Mixer | Mixer | Partial: no input strip, no DJ filter | `MixerView.cpp`, `mixer-levels.rgsim` | Song → RB+Down |
+| Effect settings | FX | Partial (fewer knobs, see Send FX) | `FXView.cpp`, `fx-screen.rgsim` | Mixer → RB+Down |
+| EQ editor | EQ (master) + EQ page per instrument | Have | `EQView.cpp`, `eq-screen.rgsim`, `instrument-eq.rgsim` | FX → RB+Right |
+| Limiter & mix scope | Limit | Have | `LimiterView.cpp`, `master-limiter.rgsim` | EQ → RB+Right |
+| Project | Project | Have | `ProjectView.cpp` | Song → RB+Up |
+| Render | Project → Render | Partial: stereo/stems, no range/name | `render-export-workflow.rgsim` | Project, Render field |
+| Selection to sample (quick render) | LB+Start on Phrase / Chain | Partial: bar or chain, not a song selection | `render-to-sample.rgsim` | LB+Start (1) |
+| Sampler | Sample instrument, 7 pages | Have | `sample-lab-pages-preview.rgsim` | Instrument, type sample |
+| Sample editor | Select on a sample page | Partial (6 of ~16 processes, no markers) | `SampleEditDialog.cpp`, `sample-processing.rgsim` | Select (1) |
+| Sample browser | Import dialog with preview | Have | `ImportSampleDialog.cpp`, `sample-import-workflow.rgsim` | A on `sample` |
+| Recording | Record dialog | Partial: USB adapter + custom kernel only; no track/resample sources | `RecordSampleDialog.cpp` | Import → Record |
+| Effect command help | Command picker + helper page | Have | `CommandSelectorModal.cpp`, `command-selector-workflow.rgsim` | Select on a command |
+| System settings | Power menu (volume, brightness, save/quit, debug) | Partial | `SDLEventManager.cpp` power menu, `power-menu-input-isolation.rgsim` | Power |
+| Theme | none | Missing | | |
+| MIDI settings / mapping | none on the Nano | Hardware | `DummyMidi` in the RGNANO build | |
+| Time stats | heartbeat log, debug tools | Partial | `CrashLog.cpp`, Debug tools | Power → Debug tools |
+| Snapshots (save/recall song state) | none | Missing | | |
+| — (Nano only) Helper overlay | RB+Select on every screen | Nano extra | `context-overlay-all-screens.rgsim` | RB+Select |
+| — (Nano only) Built-in guide | from the helper or start screen | Nano extra | `help-topics.rgsim` | helper → A |
+| — (Nano only) Undo/redo, 32 steps | B+Select / LB+Select | Nano extra | `undo.rgsim` | 1 press |
 
-### P1: Producer Core
+## Instrument engines
 
-1. Command selector/help audit and test:
-   - Phrase command column.
-   - Phrase table command column.
-   - Instrument table command column.
-   - Extend command runtime coverage to audio-shaping commands: volume automation, retrigger, pitch/legato, and sample offset.
-2. Render/export workflow:
-   - Verify `Off`, `Stereo`, and `Stems`.
-   - Verify output file path and completion notification.
-   - Add simulator assertions and documentation.
-3. Sample import/editor workflow:
-   - Keep upload/import preview.
-   - Add clear sample assignment confirmation.
-   - Plan start/end/loop/slice/normalize operations.
+| M8 | Nano | Status | Proof |
+| --- | --- | --- | --- |
+| Wavsynth: 9 basic shapes, size, mult, warp, scan/mirror | `wav` engine: same 9 shapes and knobs, drive + limit | Have | Synth.md "WAV engine", `synth-engines.rgsim` |
+| Wavsynth wavetables 09–45 (scan through 64 waves) | none in `wav` (Macro models 25–28 cover some) | Missing |  |
+| Wavsynth WAV LP/HP/BP/BS 8-bit filters | none | Missing |  |
+| Macrosynth: 47 Braids models, timbre, color | Macro synth, the same 47 models | Have | `MacroInstrument.cpp`, `macro-synth.rgsim` |
+| Macrosynth DEGRADE / REDUX, TRG re-strike | drive only | Missing |  |
+| Sampler: play modes incl. ping-pong, OSC | 10 play modes incl. osc and loop-sync | Have | Samples.md "Play modes", `looping-sample-stops.rgsim` |
+| Sampler REPITCH / BPM (loop follows tempo) | `loop-sync` mode | Partial (no STEPS/BPM field) | Samples.md |
+| Sampler start / loop start / length / detune / degrade | start, loop, end markers, fine, crush | Have | `instrument-start-trim-preview.rgsim` |
+| Sampler slices: equal, from file markers, 128 max | equal slices only (`slices`) | Partial | `SampleInstrument.cpp:358` |
+| FM: 4 ops, 12 algorithms, ratio, level, feedback, 12 shapes | `fm4`: 4 ops, 12 algorithms, ratio, level, fbk, 12 shapes, **plus a per-operator envelope the M8 lacks** | Have | Synth.md "FM4 engine", `synth-engines.rgsim` |
+| FM op-mods (MOD1–4 routed to LEV/RAT/PIT/FBK per op) | MOD slot → `fm amt` (all modulators together) | Partial |  |
+| FM wavetable shapes (W…) | none | Missing |  |
+| Hypersynth: 6 notes, 16 chord banks, shift, swarm, width, sub, scale | `hyper`: 6 notes, 15 chord presets + custom, shift, swarm, width, sub, scale | Have | Synth.md "HYPER engine" |
+| Hypersynth 12 oscillator shapes | saw only | Partial |  |
+| MIDI Out instrument | MIDI instrument type exists, no port on the Nano | Hardware | `MidiInstrument.cpp` |
+| External instrument (audio in through an instrument) | none | Missing (and needs the input hardware) |  |
+| Per-instrument filter types (LP, HP, BP, BS, LP>HP, …) | lowpass / highpass / bandpass / off | Partial (no notch/combined) | `SynthInstrument.cpp:42` |
+| Per-instrument AMP + LIM (clip, sin, fold, wrap, post) | drive + limit (soft, clip, sin, fold, wrap) | Have | Synth.md "WAV engine" `limit` |
+| Per-instrument sends: mod FX, delay, reverb | chorus, delay, reverb sends on every type (samples too) | Have | `SampleInstrument.cpp:1240` |
+| Per-instrument EQ | EQ page on every type | Have | `instrument-eq.rgsim` |
+| Instrument save/load, kits, templates | none | In progress (Sound Rack step 2) | docs/INSTRUMENT_FIRST_WORKFLOW.md |
+| — (Nano only) the original LGPT synth with 2-op FM + chords, and a 16-sound starter kit | | Nano extra | `synth-starter-kit.rgsim` |
 
-### P2: M8 Power Features In Tiny Form
+## Modulation
 
-1. Instrument Pool/browser.
-2. Dedicated compact Scale screen or Project subpage.
-3. Minimal mixer controls and limiter/clipping feedback.
-4. First native synth engine, likely a simple wavetable/wavsynth before FM/macrosynth.
+| M8 | Nano | Status | Proof |
+| --- | --- | --- | --- |
+| 4 mod slots per instrument | 4 slots | Have | `mod-slots.rgsim` |
+| AHD envelope | `ahd` | Have | Synth.md "MOD" |
+| ADSR envelope (release on OFF) | `adsr`, release on `KILL` | Have |  |
+| Drum envelope | `drum` | Have |  |
+| LFO: shapes tri, sin, ramp, exp, square, random, drunk; trig free/retrig/hold/once | all of those | Have |  |
+| Trig envelope (fired by another track) | `trig` with `source` track | Have |  |
+| Tracking (note / velocity → value) | `track` by note | Partial (no velocity source; there is no velocity column) |  |
+| Destinations incl. sends, filter, pitch, engine params | volume, cutoff, reso, pitch, pan, fine, drive, engine params, sends | Have |  |
+| Mod slot → another mod slot's amount / FM op-mods | none | Missing |  |
 
-### P3: Studio/External Workflow
+## Sequencer and phrase editing
 
-1. MIDI hardware audit.
-2. MIDI mapping/settings UX if hardware path works.
-3. External instrument/audio monitoring only if the RG Nano path is real.
+| M8 | Nano | Status | Proof / keys |
+| --- | --- | --- | --- |
+| 256 song rows, 8 tracks | same | Have | `Song.h:8` |
+| 255 chains, 16 rows, transpose column | same | Have | `Chain.h:4` |
+| 255 phrases, 16 steps | same | Have | `Phrase.h:5` |
+| Phrase columns: note, **velocity**, instrument, **3** FX | note, instrument, **2** FX | Partial | `PhraseView.cpp` |
+| 256 tables | 128 | Partial | `Table.h:8` |
+| 32 grooves | 32 | Have | `Groove.h:10` |
+| Clone (new copy of a chain/phrase) | B+LB then A+LB on Song / Chain | Have (undocumented in Controls.md) | `SongView.cpp:162`, `ChainView.cpp:139` |
+| Deep clone (chain + its phrases) | A+LB a second time on Song | Have (undocumented) | `SongView.cpp:196` |
+| Interpolate a column | selection, B+RB | Have (undocumented; B+RB is also mute outside selection) | `PhraseView.cpp:709`, `TableView.cpp:144` |
+| Note fill / random fill / random notes | LB+Left / LB+Right on a selection; shuffle and reverse too | Have (more than the M8) | `random-tools.rgsim` |
+| Copy / cut / paste selections | B+LB, B, A+LB | Have | Controls.md |
+| Move selection (EDIT+UP/DOWN) | none | Missing |  |
+| Insert row (SHIFT+EDIT) | none as a key; paste shifts rows down on the Song | Partial |  |
+| Bookmarks | A+Select on Song, LB+Up/Down jumps | Have (one colour; M8 has colours) | `song-tools-create.rgsim` |
+| Move track | Up on row 00 | Have | `song-tools-create.rgsim` |
+| Mute / solo / unmute all | B+RB, A+RB, RB+LB | Have | `key-grammar.rgsim` |
+| Cue row while playing | B+Start (jump now), LB+Start in Live | Have | Controls.md |
+| Show track time | none | Missing |  |
+| Render a song selection to a sample | bar / chain only | Partial | `render-to-sample.rgsim` |
+| Capture FX command from a parameter (tap EDIT on a knob) | none | Missing |  |
+| Quick FX jump / parameter map | none | Missing |  |
+| Undo | 32 steps everywhere | Have (Nano extra) | `undo.rgsim` |
 
-## Site Accuracy Notes
+## FX commands
 
-- M8 visuals: accurate to the official manual crop geometry when generated locally, then stylized to a dark display. Not literal live M8 firmware screenshots.
-- RG Nano visuals: accurate to simulator captures for audited screens.
-- M8 capabilities: drawn from the official manual and product overview.
-- RG Nano capabilities: drawn from current code, simulator scripts, and acceptance docs.
-- Any missing RG feature must be labeled missing. Do not show speculative screens as if they exist.
+Nano commands are four letters. "Nano" names the equivalent.
+
+### Sequencer and flow
+
+| M8 | Does | Nano | Status |
+| --- | --- | --- | --- |
+| ARP | 3-note arpeggio | `ARPG` (4 notes) | Have |
+| ARC | arp mode and speed | none | Missing |
+| CHA | chance (per FX side) | `CHNC` (whole step) | Partial |
+| DEL | delay the row | `DLAY` | Have |
+| GRV | track groove | `GROV` | Have |
+| GGR | groove on all tracks | none | Missing |
+| HOP | hop to next phrase row / table row | `HOP` | Have |
+| KIL | cut after ticks | `KILL` | Have |
+| OFF | note off: start the ADSR release | `KILL` releases synths and `adsr` samples | Partial (one command for both) |
+| INS | switch instrument | none (instrument column) | Missing |
+| NXT | set instrument on the next track | none | Missing |
+| RET | retrigger with volume ramp | `ROLL` (and `RTRG`) | Have |
+| REP / RTO | step the previous FX each row | none | Missing |
+| NTH | Nth trigger | `NTH` | Have |
+| RND | randomize previous FX | `RAND` (the other command on the step) | Have |
+| RNL | randomize the FX to the left / note+instrument | `RAND` alone moves the note | Partial |
+| RMX | remix (per-track phrase row) | none | Missing |
+| MTT | micro timing, 1/8 tick | none | Missing |
+| ERR | randomize pitch and params | none | Missing |
+| SCA | scale per track | `SCAL` (song-wide) | Partial |
+| SCG | scale on all tracks | `SCAL` | Have |
+| SED | seed | `SEED` | Have |
+| PSL | pitch slide | `LEGA` | Have |
+| PBN | continuous pitch bend | `PTCH` bends to a target | Partial |
+| PVB / PVX | vibrato / extreme vibrato | `VIBR` | Partial (no PVX range) |
+| TPO | tempo | `TMPO` | Have |
+| TSP | global transpose | `TRSP` | Have |
+| TBL | table select | `TABL` | Have |
+| TIC | table tick rate | `TICK` | Have |
+| TIC modes FC–FF (octave/velocity/note map, 200 Hz) | table row picked by note etc. | none | Missing |
+| THO | table hop | `THOP` | Have |
+| TBX | aux table beside the note | none | Missing |
+| — | stop the song | `STOP` | Nano extra |
+
+### Common instrument FX
+
+| M8 | Nano | Status |
+| --- | --- | --- |
+| VOL | `VOLM` (absolute with ramp, M8 is relative) | Have |
+| PIT | `PTCH` | Have |
+| FIN | `PFIN` | Have |
+| CUT / RES | `FCUT` / `FRES` (with speed), `FLTR` both at once | Have |
+| FIL (filter type) | none | Missing |
+| AMP / LIM | `CRSH` drive; limit mode not a command | Partial |
+| PAN | `PAN` | Have |
+| SMX / SDL / SRV (send amounts) | none (knobs and MOD slots only) | Missing |
+| EA/AT/HO/DE/ET (envelope amount, times, retrigger per slot) | none | Missing |
+| LA/LF/LT (LFO amount, rate, retrigger) | none | Missing |
+
+### Engine-specific
+
+| M8 | Nano | Status |
+| --- | --- | --- |
+| Sampler PLY | `PLAY` | Have |
+| Sampler SLI | `SLCE` is listed in Commands.md and the picker but **nothing handles it** (no `I_CMD_SLCE` case in `SampleInstrument.cpp`) | Missing (doc bug) |
+| Sampler STA | `PLOF` | Have |
+| Sampler LOP | `LPOF` | Have |
+| Sampler LEN | none | Missing |
+| Macro OSC (model per step) | none | Missing |
+| Macro TBR / COL | `TIMB` / `COLR` | Have |
+| Macro DEG / RED | `CRSH` on samples only | Missing for macro |
+| Macro TRG | none | Missing |
+| FM ALG / FM1–4 | none | Missing |
+| Wav OSC / SIZ / MUL / WRP / SCN | none | Missing |
+| Hyper CRD | `CHRD` (sets the six notes) | Have |
+| Hyper SWM / WID / SUB | none | Missing |
+| — sample feedback (`FBMX`/`FBTN`), `IRTG` | | Nano extra |
+
+### Mixer FX (global)
+
+| M8 | Nano | Status |
+| --- | --- | --- |
+| VMV, VCH, VDE, VRE, VT1–VT8 (mixer levels per step) | none | Missing |
+| XCM/XCF/XCW (chorus), XDT/XDF/XDW (delay), XRS/XRD/XRW (reverb) per step | none | Missing |
+| DJC / DJR / DJT (global DJ filter) | none | Missing |
+
+## Send FX, mixer, master
+
+| M8 | Nano | Status | Proof |
+| --- | --- | --- | --- |
+| Mod FX (chorus / phaser / flanger types), rate, depth, width, reverb send | chorus: speed, depth | Partial | `SendFX.cpp`, `fx-screen.rgsim` |
+| Delay: time L/R, feedback, width, reverb send | echo: tempo-synced time, feedback | Partial (mono time, no width/ping-pong, no send to reverb) |  |
+| Reverb: size, decay, mod, width | size, damp | Partial |  |
+| Track faders, FX returns, master | 8 tracks, C/D/R returns, master | Have | `mixer-levels.rgsim` |
+| Input strip (line in / USB in level, FX sends) | none | Missing (needs input hardware) |  |
+| DJ filter on the master | none | Missing |  |
+| OTT / multiband squash | none | Missing |  |
+| Master EQ | 3-band with curve | Have | `eq-screen.rgsim` |
+| Limiter with look-ahead and GR scope | yes | Have | `master-limiter.rgsim` |
+| Master soft clip | Project `Clip`/`Drive` | Have (Nano extra) |  |
+
+## Sample editor processes
+
+| M8 | Nano | Status |
+| --- | --- | --- |
+| Crop | `crop to S..E` | Have |
+| Delete / Duplicate selection | none | Missing |
+| Normalize | `normalize` | Have |
+| Reverse | `reverse S..E` | Have |
+| Invert polarity | none | Missing |
+| Fade in / out | both | Have |
+| XFade loop | none | Missing |
+| Squish (OTT) | none | Missing |
+| Mono mix / left / right | none | Missing |
+| Downsample, 16-bit, 8-bit | none (crush is a playback knob) | Missing |
+| Slice: auto (transients), silence, N equal, lazy chop by tapping | equal slices at playback only | Partial |
+| Snap selection to the song's beats | none | Missing |
+| Trim silence | `trim silence` | Have (Nano extra) |
+| Root note detection | Select on `root` | Have (Nano extra) |
+
+## Navigation: Nano vs M8
+
+Better on the Nano:
+- **More buttons.** A, B, LB, RB, Start and Select each have one meaning everywhere, where the M8 overloads Shift/Option/Edit with taps, double-taps and triple-taps (deep clone = "SHIFT+OPTION then double-tap EDIT"; bookmark = "triple-tap OPTION"). The Nano's rule "a combo never fires two actions at once" (Controls.md) is easier to learn.
+- **Helper on every screen** (RB+Select: map, keys for this screen, how-to), **built-in guide** with an index, and **undo/redo** everywhere. The M8 has none of these on the device.
+- **Pictures on every sound page** (envelopes, filter curve, FM routing, hyper lanes, EQ curve, limiter GR scope) and a tiny piano roll per chain row.
+- The **helper map** makes the RB+direction screen map discoverable; the M8's is learned from the manual.
+
+Worse on the Nano, or weak spots:
+- **X and Y are unused.** Two free buttons on a device short of combos. Candidates: X = play the instrument under the cursor (keyjazz), Y = the command picker/quick FX, or X/Y as page switches so LB+Left/Right is freed.
+- **Clone, deep clone and interpolate exist but aren't in Controls.md or the helper**, so nobody finds them. Interpolate is B+RB inside a selection, the same combo as mute outside one.
+- **Phrase density:** 240 px wide fits note, instrument and 2 FX; the M8's third FX column and velocity column don't fit at this font. A velocity column (2 hex digits) would fit if the instrument name moves to the title (it already shows there).
+- **No per-parameter commands** (the M8 lets any knob be sequenced: FM1, SCN, SWM, sends, mixer). On the Nano, automating a knob means a MOD slot or a table.
+- **The instrument pool is a dialog, not a screen**, and the Instrument screen is only reachable through a phrase (5 presses from a new song). The Sound Rack fixes this (in progress).
+- **Deep menus on 240x240:** 7 instrument pages, reached with LB+Left/Right one at a time (the M8 fits more on one screen). A page list in the helper or X/Y page jumps would help.
+
+## To build next (musical value per effort)
+
+In progress now: **Sound Rack** (instrument pool, keyjazz audition, kit files, new-song template, "compose with it") and **new synth engines + tutorials**. Not repeated below.
+
+1. **Fix `SLCE`** (documented, in the picker, does nothing) and add **LEN**. Small; slicing drum loops is a core M8 move.
+2. **Map X and Y.** Small; biggest navigation win for the least code (keyjazz and quick FX/command picker are the natural fits). Needs the user's say on which.
+3. **Document clone / deep clone / interpolate** in Controls.md and the helper; give interpolate its own combo. Tiny.
+4. **Per-parameter instrument commands**: sends (`SMX/SDL/SRV`), engine knobs (Wav `SIZ/MUL/WRP/SCN`, Hyper `SWM/WID/SUB`, FM `ALG` + op levels, Macro `OSC`), and filter type. Medium; one shared "command → variable" table covers most of them.
+5. **Velocity column** (and velocity as a mod-tracking source). Medium; affects phrase layout and every instrument's note-on.
+6. **Sample editor processes**: slice auto (transients) + silence + lazy chop into file markers, xfade loop, mono, downsample/8-bit, delete, duplicate, invert, snap to beat. Medium; mostly offline DSP on the existing editor.
+7. **Send FX depth**: stereo/ping-pong delay with width, delay→reverb send, reverb mod/width, chorus/phaser/flanger types. Medium; CPU is the constraint, cost each in the DSP harness.
+8. **Global mixer commands + DJ filter** (`VMV/VT1–8/VCH/VDE/VRE`, `DJC/DJR/DJT`, `GGR`). Small to medium; great for live mode.
+9. **Sequencer extras**: `REP/RTO`, `MTT` micro timing, `ARC`, `INS/NXT`, `OFF` separate from `KILL`, `TBX`, TIC map modes. Small each.
+10. **Wavetables** for the Wav engine and FM `W` shapes (scan with a knob/LFO). Medium; licensing of table data must be checked (Plaits/Braids tables are MIT).
+
+Later: song-selection render with range/name, snapshots, per-track scale, themes, OTT, 256 tables, move selection, track time. MIDI and live input depend on firmware/hardware.
+
+## Sources
+
+- [Dirtywave M8 Operation Manual 6.0.0 (2025-06-21)](https://images.equipboard.com/uploads/item/manual/136211/dirtywave-m8-tracker-model-02-manual.pdf)
+- [M8Guide: common EFX, sampler, FM, hypersynth/wavsynth, macrosynth references (firmware 6.6)](https://github.com/cengebretson/M8Guide)
+- [DirtyWave M8 tips](https://github.com/pauley-unsaturated/DirtyWave-M8-Tips)
