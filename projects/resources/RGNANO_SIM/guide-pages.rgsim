@@ -184,6 +184,16 @@ press d 80
 up m
 wait 60
 screenshot_app guide-page-16-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-17-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-17-b.bmp
 expect_log GUIDE] go developer /
 expect_no_error
 quit

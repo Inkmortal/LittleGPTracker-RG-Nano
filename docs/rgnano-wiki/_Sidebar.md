@@ -13,6 +13,7 @@
 - [Synth](Synth)
 - [Macro Synth](Macro-Synth)
 - [Sound Design](Sound-Design)
+- [Chinese Instruments](Chinese-Instruments)
 - [Commands](Commands)
 - [Music Theory Cheat Sheet](Music-Theory-Cheat-Sheet)
 - [Samples](Samples)

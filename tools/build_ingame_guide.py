@@ -58,6 +58,7 @@ PAGES = [
     ("Synth", "synth"),
     ("Macro-Synth", "macro"),
     ("Sound-Design", "sound"),
+    ("Chinese-Instruments", "chinese"),
     ("Commands", "commands"),
     ("Music-Theory-Cheat-Sheet", "theory"),
     ("Demo-Songs", "demos"),

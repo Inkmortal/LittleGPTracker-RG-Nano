@@ -74,7 +74,7 @@ Sequencer commands after the Dirtywave M8's (`RET`, `NTH`, `SED`, `PVB`, `TIC`, 
 | `TICK` | `--bb` | this track's table moves one row every `bb` ticks instead of every tick (in a table: that table's own speed). `0000` goes back to the groove | `TABL 0003` + `TICK 0006` a table that steps once per step, like a slow arpeggio |
 | `THOP` | `--0b` | this track's table jumps to row `b`, all three columns (in a table: jump there on this row) | restart a filter sweep half way through a phrase |
 | `TRSP` | `--bb` | transpose the whole song by `bb` semitones (`01`-`30` up, `FF`-`D0` down), like Project → `Transpose` | `TRSP 0002` up a tone for the last chorus · `TRSP 00F4` an octave down |
-| `SCAL` | `aabb` | set the song's Key to `aa` (`00` C … `0B` B, `0C` no key) and its Scale to number `bb` (the order on the Scale screen: `15` major, `03` minor, `20` minor pentatonic, `2E` your Custom scale). Note editing and `RAND` follow it from then on | `SCAL 0915` A major for a bridge, back with `SCAL 0003` |
+| `SCAL` | `aabb` | set the song's Key to `aa` (`00` C … `0B` B, `0C` no key) and its Scale to number `bb` (the order on the Scale screen: `15` major, `03` minor, `20` minor pentatonic, `2E` your Custom scale, `2F`-`33` the Chinese modes Gong, Shang, Jiao, Zhi, Yu). Note editing and `RAND` follow it from then on | `SCAL 0915` A major for a bridge, back with `SCAL 0003` |
 
 `TRSP` and `SCAL` change the song's settings, the same way `TMPO` sets the tempo: the song keeps them when it stops.
 
