@@ -308,8 +308,7 @@ int main() {
 	gStartRow = getenv("ENGINE_ROOM_ROW") ? atoi(getenv("ENGINE_ROOM_ROW")) : 0;
 	const char *root = isDir("resources/demos") ? "." : "projects";
 	std::string demo = std::string(root) + "/resources/demos/lgpt_" + demoName;
-	printf("song: %s from row %d
-", demo.c_str(), gStartRow);
+	printf("song: %s from row %d\n", demo.c_str(), gStartRow);
 	if (!isDir(demo.c_str())) {
 		printf("demo song not found (run from the worktree or projects/)\n");
 		return 1;
@@ -523,8 +522,7 @@ int main() {
 		printf("a7cost plugin not loaded: the cost guard cannot run\n");
 		failures++;
 	} else if (!engineRoom) {
-		printf("%s: no recorded cost to guard (Engine Room only)
-", demoName);
+		printf("%s: no recorded cost to guard (Engine Room only)\n", demoName);
 	} else if (RECORDED_COST_PER_SECOND > 0) {
 		printf("cost against the unoptimised engine: %.1f%% (%.1f%% less)\n",
 		       100.0 * costPerSecond / BEFORE_COST_PER_SECOND,
