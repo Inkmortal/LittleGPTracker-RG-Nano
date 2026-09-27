@@ -85,6 +85,9 @@ def run_render(name: str, render_mode: int, wait_ms: int, audible: bool) -> int:
     res_dir = PROJECTS / "resources" / "RGNANO_SIM"
     shutil.copy(res_dir / "config.xml", PROJECTS / "config.xml")
     shutil.copy(res_dir / "mapping.xml", PROJECTS / "mapping.xml")
+    # As tools/run-rgnano-sim.ps1 does: a fresh checkout has no SDL.dll next
+    # to the exe (the exe then exits with "DLL not found")
+    shutil.copy(PROJECTS / "resources" / "W32" / "SDL.dll", PROJECTS / "SDL.dll")
     env = os.environ.copy()
     env["PATH"] = "C:\\msys64\\mingw32\\bin;" + env.get("PATH", "")
     # Headless: hidden window, nothing on screen, no focus stealing
