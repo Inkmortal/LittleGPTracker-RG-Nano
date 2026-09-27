@@ -45,6 +45,20 @@ unsigned short Phrase::GetNext() {
 	return NO_MORE_PHRASE ;
 } ;
 
+unsigned short Phrase::Clone(uchar src) {
+	unsigned short next=GetNext() ;
+	if (next==NO_MORE_PHRASE) return next ;
+	for (int i=0;i<16;i++) {
+		note_[16*next+i]=note_[16*src+i] ;
+		instr_[16*next+i]=instr_[16*src+i] ;
+		cmd1_[16*next+i]=cmd1_[16*src+i] ;
+		param1_[16*next+i]=param1_[16*src+i] ;
+		cmd2_[16*next+i]=cmd2_[16*src+i] ;
+		param2_[16*next+i]=param2_[16*src+i] ;
+	}
+	return next ;
+}
+
 void Phrase::SetUsed(unsigned char c) {
 	isUsed_[c]=true ;
 }

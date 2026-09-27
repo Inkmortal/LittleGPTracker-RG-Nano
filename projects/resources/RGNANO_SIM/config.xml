@@ -16,6 +16,9 @@
 	<KEY_START value="s"/>
 	<!-- Match the RG Nano OS: FN/Select sends KEY_K. MENU/Power is separate. -->
 	<KEY_SELECT value="k"/>
+	<!-- X copies, Y pastes (LB+Y: paste new copies) -->
+	<KEY_X value="x"/>
+	<KEY_Y value="y"/>
 	<KEY_POWER value="p"/>
 	<KEYDELAY value="250"/>  <!-- hold this long before a key repeats -->
 	<KEYREPEAT value="66"/>  <!-- then every 66 ms (about 15 per second) -->

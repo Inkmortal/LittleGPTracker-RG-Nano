@@ -7,10 +7,61 @@
 #include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
 #endif
 #include <stdio.h>
+#include <string.h>
 
 GrooveView::GrooveView(GUIWindow &w,ViewData *viewData):View(w,viewData) {
 	position_=0 ;
 	lastPosition_=0 ;
+	haveClipboard_=false ;
+}
+
+void GrooveView::CopyAtCursor() {
+	unsigned char *grooveData=Groove::GetInstance()->GetGrooveData(viewData_->currentGroove_) ;
+	memcpy(clipboard_,grooveData,16) ;
+	haveClipboard_=true ;
+	static char msg[40] ;
+	sprintf(msg,"Copied groove %2.2X",viewData_->currentGroove_) ;
+	SetNotification(msg) ;
+}
+
+// A groove nobody changed from the default 6 6
+static bool grooveUnused(unsigned char *data) {
+	if (data[0]!=6 || data[1]!=6) return false ;
+	for (int i=2;i<16;i++) {
+		if (data[i]!=NO_GROOVE_DATA) return false ;
+	}
+	return true ;
+}
+
+void GrooveView::PasteAtCursor(bool fresh) {
+	Groove *groove=Groove::GetInstance() ;
+	int source=viewData_->currentGroove_ ;
+	static char msg[40] ;
+	if (fresh) {
+		// Groove 00 is every track's default: never taken as "unused"
+		int next=-1 ;
+		for (int g=1;g<MAX_GROOVES && next<0;g++) {
+			if (g!=source && grooveUnused(groove->GetGrooveData(g))) next=g ;
+		}
+		if (next<0) {
+			SetNotification("No unused groove left") ;
+			return ;
+		}
+		memcpy(groove->GetGrooveData(next),groove->GetGrooveData(source),16) ;
+		viewData_->currentGroove_=next ;
+		isDirty_=true ;
+		sprintf(msg,"Now in %2.2X = copy of %2.2X",next,source) ;
+		SetNotification(msg) ;
+		return ;
+	}
+	if (!haveClipboard_) {
+		SetNotification("Nothing copied: X copies") ;
+		return ;
+	}
+	memcpy(groove->GetGrooveData(source),clipboard_,16) ;
+	isDirty_=true ;
+	sprintf(msg,"Pasted into groove %2.2X",source) ;
+	SetNotification(msg) ;
 }
 
 GrooveView::~GrooveView() {

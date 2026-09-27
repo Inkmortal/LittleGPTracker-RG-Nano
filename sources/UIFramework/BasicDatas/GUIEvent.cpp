@@ -75,6 +75,12 @@ case EPBT_START:
 case EPBT_SELECT: 
 	value="EPBT_SELECT" ;
 	break;
+case EPBT_X:
+	value="EPBT_X" ;
+	break;
+case EPBT_Y:
+	value="EPBT_Y" ;
+	break;
 	}
 }
 

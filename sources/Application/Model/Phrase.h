@@ -10,6 +10,8 @@ public:
 	Phrase() ;
 	~Phrase() ;
 	unsigned short GetNext() ;
+	// A new phrase with the same steps as src; NO_MORE_PHRASE when full
+	unsigned short Clone(uchar src) ;
 	bool IsUsed(uchar i) { return isUsed_[i] ; } ;
 	void SetUsed(uchar c) ;
 	void ClearAllocation() ;

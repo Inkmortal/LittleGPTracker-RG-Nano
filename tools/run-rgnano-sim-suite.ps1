@@ -274,6 +274,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "copy-paste-xy"
+    Script = "copy-paste-xy.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
     Args = @("-OpenDemo=Afterglow")

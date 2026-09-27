@@ -30,6 +30,14 @@ unsigned short Chain::GetNext() {
 	return NO_MORE_CHAIN ;
 } ;
 
+unsigned short Chain::Clone(unsigned char src) {
+	unsigned short next=GetNext() ;
+	if (next==NO_MORE_CHAIN) return next ;
+	memcpy(data_+16*next,data_+16*src,16) ;
+	memcpy(transpose_+16*next,transpose_+16*src,16) ;
+	return next ;
+}
+
 void Chain::SetUsed(unsigned char c) {
 	isUsed_[c]=true ;
 }

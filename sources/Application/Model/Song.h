@@ -27,6 +27,14 @@ public:
 	// Song rows marked on the Song screen (A + Select), 1 = bookmarked;
 	// LB + Up/Down stops at them
 	unsigned char bookmarks_[SONG_ROW_COUNT] ;
+	// Every phrase of 'chain' replaced by a new copy, so editing them
+	// leaves the originals alone (a phrase used twice gets one copy).
+	// False when the phrases ran out part way.
+	bool DeepClonePhrases(unsigned char chain) ;
+	// A new chain whose phrases are new copies of src's: NO_MORE_CHAIN
+	// when there's no free chain. *complete=false: phrases ran out part
+	// way, so some rows still share the original phrase.
+	unsigned short DeepCloneChain(unsigned char src, bool *complete) ;
 	bool IsBookmarked(int row) ;
 	void ToggleBookmark(int row) ;
 } ;

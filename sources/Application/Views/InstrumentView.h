@@ -32,6 +32,8 @@ public:
 		View::OnPlayerUpdate(type,tick) ;
 	} ;
 	virtual void OnFocus() ;
+	virtual void CopyAtCursor() ;
+	virtual void PasteAtCursor(bool fresh) ;
 	virtual void CustomizeContextOverlay(const char *&name, const char *&where,
 	                                     const char *&edit, const char *&field,
 	                                     const char *&cmd1, const char *&cmd2,

@@ -18,7 +18,10 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **LB + Start** | capture or launch: record this bar/chain into a sample, or on the Song launch the row live |
 | **LB + D-pad** | the finer or alternate move (chromatic note, instrument page, trim marker, MOD slot, song section or bookmark) |
 | **B + RB** / **A + RB** | mute / solo the track; **RB + LB** unmutes all |
-| **B + LB** | start a selection; move to grow it, or hold **LB** and tap **B** to grow it to whole rows, then the whole block. In a selection **B** copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
+| **X** | copy what's under the cursor, or the selection. See [Copy and paste](#copy-and-paste) |
+| **Y** | paste it. With nothing copied (Song, Chain): a new copy of the chain or phrase under the cursor in the next empty row |
+| **LB + Y** | make new ones: paste new copies instead of the same chains/phrases again; on a Phrase, Table, Groove or Instrument, duplicate the one you're in |
+| **B + LB** | start a selection; move to grow it, or hold **LB** and tap **B** to grow it to whole rows, then the whole block. In a selection **B** (or **X**) copies, **A + LB** cuts, **A + D-pad** changes every selected value; without one, **A + LB** pastes |
 | **Select** | this screen's special tool: command picker, Live mode, sample import/root/editor, rename, sort |
 | **A + Select** | mark it: bookmark the Song row |
 | **B + Select** / **LB + Select** | undo / redo any change, on every screen (hold B or LB first) |
@@ -26,7 +29,7 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 
 Nothing is mapped twice on a screen, and a combo never fires two actions at once.
 
-> On the RG Nano, **Select** is the `FN` button. **LB/RB** are the shoulder buttons. The Menu/Power button opens the app menu: **Volume** and **Brightness** (Left/Right), **Save and quit**, **Quit, don't save** (asks first) and **Debug tools**. Holding power to switch off saves your song first.
+> On the RG Nano, **Select** is the `FN` button. **LB/RB** are the shoulder buttons. **X** and **Y** are the left and top face buttons (next to **B** and **A**). The Menu/Power button opens the app menu: **Volume** and **Brightness** (Left/Right), **Save and quit**, **Quit, don't save** (asks first) and **Debug tools**. Holding power to switch off saves your song first.
 
 ## Backing out
 
@@ -70,6 +73,25 @@ If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a di
 
 <br clear="right">
 
+## Copy and paste
+
+**X** copies, **Y** pastes, on every screen that has something to copy. Each screen keeps its own copy, and the screen says what happened (`Copied chain 03`, `New phrase 07 = copy of 03`). Every paste can be undone with **B + Select**.
+
+"The same" or "new": a Song cell only points at a chain, and a Chain row at a phrase. **Y** pastes the pointer, so both places play (and change with) the same chain. **LB + Y** makes new ones: fresh chains and phrases with the same notes, so you can edit the copy and leave the original alone.
+
+| Screen | **X** | **Y** | **LB + Y** |
+| --- | --- | --- | --- |
+| Song | copies the chain (or selection) | paste it here, rows below move down. Nothing copied: a new copy of this chain (with new phrases) in the next empty row below, and the cursor goes there | paste new copies (new chains with new phrases) |
+| Chain | copies the phrase or transpose (or selection) | paste it here. Nothing copied: a new copy of this row's phrase in the next empty row below | paste new copies (new phrases) |
+| Phrase | copies the step (or selection) | paste it here | duplicate this phrase into the chain's next empty row and open it |
+| Table | copies the step (or selection) | paste it here | duplicate this table into a new one and open it |
+| Groove | copies the whole groove | paste it into this groove | duplicate this groove into the next unused one and open it |
+| Instrument | copies the whole sound | paste it into this slot (its type changes if needed) | duplicate this sound into the next free slot and open it |
+
+A variation in one press: on the Chain, put the cursor on a phrase and press **Y**. The copy lands in the next empty row, ready to edit with **RB + Right**. On the Song, the same makes a whole new chain.
+
+The older combos still work: **B + LB** then **A + LB** clones the chain or phrase under the cursor (on the Song, **A + LB** again also copies its phrases), and in a selection **B** copies, **A + LB** cuts.
+
 ## Everywhere
 
 | Input | Does |
@@ -81,6 +103,7 @@ If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a di
 | **A + RB** | solo the track (Song, Chain, Phrase, Mixer) |
 | **B + RB** | mute the track (Song, Chain, Phrase, Mixer) |
 | **B + LB** | start a selection; **B** copies it, **A + LB** pastes |
+| **X** / **Y** / **LB + Y** | copy / paste / paste new copies (see [Copy and paste](#copy-and-paste)) |
 
 The small label at the top right says what is playing: `PLAY:SONG`, `PLAY:CHAIN`, `PLAY:PHR`, `PLAY:LIVE`, `AUDITION` or `STOP`.
 

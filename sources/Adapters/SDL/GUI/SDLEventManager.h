@@ -158,6 +158,8 @@ private:
 	                          const std::string &arg2, int value, int value2);
 	bool SimSetPhraseCommand(int phrase, int row, int slot, const std::string &command, const std::string &param);
 	bool SimSetTableCommand(int table, int row, int slot, const std::string &command, const std::string &param);
+	bool ExpectSimTableCommand(int table, int row, int slot, const std::string &command, const std::string &param);
+	bool ExpectSimGrooveStep(int groove, int step, const std::string &expected);
 	bool SimSaveProject();
 	std::string BuildSimSongDump();
 	bool SimDumpSong(const std::string &path);

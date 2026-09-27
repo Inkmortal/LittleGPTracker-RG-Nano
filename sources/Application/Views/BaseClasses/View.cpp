@@ -580,26 +580,33 @@ InstrumentType View::currentInstrumentType() {
 int View::getMoreKeys(const char **lines,int max) {
 	static const char *song[]={"Select  LIVE mode on/off","Live St cue LB+St row",
 		"Live RB+St stop  B+St all","B+Up/Dn 16 rows  B+A delete",
-		"B+LB select  B copy","A+LB paste  RB+LB unmute","A+Select bookmark the row",
+		"X copy  Y paste  LB+Y new","B+LB select, X copies it","RB+LB unmute all",
+		"A+Select bookmark the row",
 		"LB+Up/Dn next mark/section","Up on row 00: move tracks"};
 	static const char *chain[]={"B+Dpad other chain/track","B+A delete",
-		"B+LB select, then B copy","A+LB paste","2nd column: transpose",
+		"X copy  Y paste  LB+Y new","Y, none copied: dup below",
+		"B+LB select, X copies it","2nd column: transpose",
 		"B+RB mute  A+RB solo","RB+LB unmute all"};
 	static const char *phrase[]={"B+Dpad other phrase/track","B+A delete",
-		"B+LB select, then B copy","A+LB paste","Sel LB+R random  LB+L fill",
+		"X copy  Y paste","LB+Y duplicate the phrase","B+LB select, X copies it",
+		"Sel LB+R random  LB+L fill",
 		"Sel LB+U shuffle LB+D rev","A+Up/Dn on cmd: A to Z",
 		"LB+Start render to sample","RB+Up Groove RB+Dn Table"};
 	static const char *instrument[]={"B+Dpad other instrument","B+A clear sample/table",
+		"X copy sound  Y paste it","LB+Y duplicate the sound",
 		"RB+Up list of all sounds","RB+Down instrument table","RB+Start play the song",
 		"MOD page: LB+Up/Dn slot",
 		"Grids: Up/Dn keep column","FM ratio: A+Up/Dn whole"};
 	static const char *sampler[]={"B+Dpad other instrument","B+A clear sample/table",
+		"X copy sound  Y paste it","LB+Y duplicate the sound",
 		"Sel on SOURCE/LOOP: edit","  normalize crop fade rev","PLAY cmd: mode per note",
 		"RB+Up list of all sounds","RB+Down instrument table",
 		"MOD page: LB+Up/Dn slot"};
 	static const char *table[]={"B+Left/Right other table","B+A delete",
-		"B+LB select, then B copy","A+LB paste","RB+Start play the song"};
+		"X copy  Y paste","LB+Y duplicate the table","B+LB select, X copies it",
+		"RB+Start play the song"};
 	static const char *groove[]={"B+Left/Right other groove","B+A clear the step",
+		"X copy  Y paste groove","LB+Y duplicate the groove",
 		"RB+Start play the song"};
 	static const char *project[]={"Start play/stop the song","B on Tempo: tap tempo",
 		"RB+Right the Scale screen"};
@@ -1169,6 +1176,9 @@ void View::Redraw() {
 		modalView_->Redraw() ;
 	} else {
 		DrawView() ;
+		// On top of the screen, so a grid starting on its line can't hide
+		// it (Table, Groove, Mixer ... never showed their messages)
+		EnableNotification() ;
 		if (!suppressPlaybackScope_) {
 			drawPlaybackScope();
 		}
@@ -1331,6 +1341,14 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 	} else if (pressed && mask==EPBM_B && Back()) {
 		// A dialog backed out one step (one rule for every dialog)
 		isDirty_=true ;
+	} else if (pressed && (mask==EPBM_X || mask==EPBM_Y || mask==(EPBM_L|EPBM_Y))) {
+		// X copy, Y paste, LB+Y paste new copies: the same on every screen
+		if (mask==EPBM_X) {
+			CopyAtCursor() ;
+		} else {
+			PasteAtCursor(mask!=EPBM_Y) ;
+		}
+		isDirty_=true ;
 	} else {
 		ProcessButtonMask(mask,pressed);
 		if (pressed && (mask & EPBM_START)) {
@@ -1398,6 +1416,14 @@ void View::EnableNotification() {
     Optionally set display y offset if not in a project (default == 2)
     Allows negative offsets, use with care!
 */
+void View::CopyAtCursor() {
+	SetNotification("Nothing to copy here") ;
+}
+
+void View::PasteAtCursor(bool) {
+	SetNotification("Nothing to paste here") ;
+}
+
 void View::SetNotification(const char *notification, int offset) {
     notificationTime_ = SDL_GetTicks();
     displayNotification_ = notification;

@@ -66,6 +66,15 @@ Two helpers sit to the side:
 
 Reuse. A drum bar you wrote once can appear in 40 places: every chain that lists that phrase plays it, and every song row that lists that chain plays it. Change the phrase once and every copy changes. Songs stay tiny and edits stay fast — that's how people write full albums on a Game Boy.
 
+## Variations: same or new
+
+Because a row only points at a phrase, there are two kinds of copy:
+
+- **Y** pastes the same one. Both rows play phrase `03`; change it and both change. Right for a drum bar that repeats.
+- **LB + Y** makes a new one. You get phrase `07` with the same notes as `03`; change `07` and `03` stays as it was. Right for "the same bar, but the last hit is different".
+
+The quickest variation: on the Chain, put the cursor on phrase `03` and press **Y** with nothing copied. A new copy lands in the next empty row, ready to change. The Song does the same with whole chains. The full table is in [Controls](Controls#copy-and-paste).
+
 ## Numbers are hex
 
 Values count `00 01 02 … 09 0A 0B 0C 0D 0E 0F 10 … FF`.

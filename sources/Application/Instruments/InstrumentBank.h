@@ -19,12 +19,19 @@ public:
 	void OnStart() ;
 	unsigned short GetNext() ;
 	unsigned short Clone(unsigned short i) ;
+	// X on the Instrument screen keeps a copy of the whole sound (false:
+	// MIDI instruments can't be copied); Y puts it into slot i, changing
+	// that slot's type if needed
+	bool CopyToClipboard(int i) ;
+	bool HasClipboard() { return clipboard_!=0 ; }
+	bool PasteClipboard(int i) ;
 	// Swap a sample slot between the sample and synth engines
 	bool SetInstrumentType(int i,InstrumentType type) ;
 	// Apply one saved parameter the way a song load does (old names too)
 	static void RestoreParam(I_Instrument *instr,const char *name,const char *value) ;
 private:
 	I_Instrument *instrument_[MAX_INSTRUMENT_COUNT] ;
+	I_Instrument *clipboard_ ;  // not in the bank: never played or saved
 } ;
 
 #endif

@@ -930,6 +930,86 @@ void PhraseView::pasteClipboard() {
     }
 };
 
+/******************************************************
+ X / Y / LB+Y: copy, paste, duplicate the phrase
+ ******************************************************/
+
+void PhraseView::CopyAtCursor() {
+    if (viewMode_ == VM_SELECTION && clipboard_.active_) {
+        copySelection();
+        isDirty_ = true;
+        return;
+    }
+    viewMode_ = VM_NORMAL;
+    clipboard_.active_ = false;
+    clipboard_.col_ = col_;
+    clipboard_.row_ = row_;
+    fillClipboardData();
+    static const char *what[6] = {"note", "instrument", "command", "value",
+                                  "command", "value"};
+    static char msg[40];
+    sprintf(msg, "Copied %s, row %X", what[col_], row_);
+    View::SetNotification(msg);
+}
+
+void PhraseView::PasteAtCursor(bool fresh) {
+    clipboard_.active_ = false;
+    viewMode_ = VM_NORMAL;
+    if (fresh) {
+        duplicatePhrase();
+        return;
+    }
+    if (clipboard_.width_ == 0) {
+        View::SetNotification("Nothing copied: X copies");
+        return;
+    }
+    int rows = clipboard_.height_;
+    pasteClipboard();
+    static char msg[40];
+    if (rows == 1 && clipboard_.width_ == 1) {
+        sprintf(msg, "Pasted 1 cell");
+    } else {
+        sprintf(msg, "Pasted %d row%s", rows, rows == 1 ? "" : "s");
+    }
+    View::SetNotification(msg);
+}
+
+// A new copy of this phrase in the next empty row of the chain, opened
+// for editing: the one-press way to make a variation
+void PhraseView::duplicatePhrase() {
+    unsigned char *rows =
+        viewData_->song_->chain_->data_ + 16 * viewData_->currentChain_;
+    unsigned char *transpose =
+        viewData_->song_->chain_->transpose_ + 16 * viewData_->currentChain_;
+    int row = viewData_->chainRow_;
+    unsigned char source = viewData_->currentPhrase_;
+    if (row < 0 || row > 15 || rows[row] != source) {
+        View::SetNotification("Open it from a chain first");
+        return;
+    }
+    int target = row + 1;
+    while (target < 16 && rows[target] != 0xFF) {
+        target++;
+    }
+    if (target >= 16) {
+        View::SetNotification("Chain full: no empty row");
+        return;
+    }
+    unsigned short next = viewData_->song_->phrase_->Clone(source);
+    if (next == NO_MORE_PHRASE) {
+        View::SetNotification("no more phrases!");
+        return;
+    }
+    rows[target] = (unsigned char)next;
+    transpose[target] = transpose[row];
+    viewData_->chainRow_ = target;
+    viewData_->currentPhrase_ = (unsigned char)next;
+    isDirty_ = true;
+    static char msg[40];
+    sprintf(msg, "Now in %2.2X = copy of %2.2X", next, source);
+    View::SetNotification(msg);
+}
+
 void PhraseView::unMuteAll() {
 
     UIController *controller = UIController::GetInstance();

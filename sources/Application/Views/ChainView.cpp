@@ -143,46 +143,11 @@ void ChainView::clonePosition() {
     if (current == 255)
         return;
 
-    unsigned short next = viewData_->song_->phrase_->GetNext();
-    if (next == NO_MORE_PHRASE)
+    unsigned short next = viewData_->song_->phrase_->Clone(current);
+    if (next == NO_MORE_PHRASE) {
+        View::SetNotification("no more phrases!");
         return;
-
-    unsigned char *src = viewData_->song_->phrase_->note_ + 16 * current;
-    unsigned char *dst = viewData_->song_->phrase_->note_ + 16 * next;
-    for (int i = 0; i < 16; i++) {
-        *dst++ = *src++;
-    };
-
-    src = viewData_->song_->phrase_->instr_ + 16 * current;
-    dst = viewData_->song_->phrase_->instr_ + 16 * next;
-    for (int i = 0; i < 16; i++) {
-        *dst++ = *src++;
-    };
-
-    uint *isrc = viewData_->song_->phrase_->cmd1_ + 16 * current;
-    uint *idst = viewData_->song_->phrase_->cmd1_ + 16 * next;
-    for (int i = 0; i < 16; i++) {
-        *idst++ = *isrc++;
-    };
-
-    ushort *ssrc = viewData_->song_->phrase_->param1_ + 16 * current;
-    ushort *sdst = viewData_->song_->phrase_->param1_ + 16 * next;
-    for (int i = 0; i < 16; i++) {
-        *sdst++ = *ssrc++;
-    };
-
-    isrc = viewData_->song_->phrase_->cmd2_ + 16 * current;
-    idst = viewData_->song_->phrase_->cmd2_ + 16 * next;
-    for (int i = 0; i < 16; i++) {
-        *idst++ = *isrc++;
-    };
-
-    ssrc = viewData_->song_->phrase_->param2_ + 16 * current;
-    sdst = viewData_->song_->phrase_->param2_ + 16 * next;
-    for (int i = 0; i < 16; i++) {
-        *sdst++ = *ssrc++;
-    };
-
+    }
     setPhrase((unsigned char)next);
     isDirty_ = true;
 };
@@ -366,6 +331,130 @@ void ChainView::pasteClipboard() {
     updateCursor(0x00, height);
     isDirty_ = true;
 };
+
+/******************************************************
+ X / Y / LB+Y: copy, paste, paste new copies
+ ******************************************************/
+
+void ChainView::CopyAtCursor() {
+    if (viewMode_ == VM_SELECTION && clipboard_.active_) {
+        copySelection();
+        isDirty_ = true;
+        return;
+    }
+    viewMode_ = VM_NORMAL;
+    clipboard_.active_ = false;
+    unsigned char *c = viewData_->GetCurrentChainPointer();
+    if (viewData_->chainCol_ == 0 && *c == 0xFF) {
+        View::SetNotification("Empty: nothing to copy");
+        return;
+    }
+    clipboard_.col_ = viewData_->chainCol_;
+    clipboard_.row_ = viewData_->chainRow_;
+    fillClipboardData();
+    static char msg[40];
+    if (viewData_->chainCol_ == 0) {
+        sprintf(msg, "Copied phrase %2.2X", *c);
+    } else {
+        sprintf(msg, "Copied transpose %2.2X", *c);
+    }
+    View::SetNotification(msg);
+}
+
+void ChainView::PasteAtCursor(bool fresh) {
+    // A selection in progress ends; the paste goes to the cursor
+    clipboard_.active_ = false;
+    viewMode_ = VM_NORMAL;
+    if (clipboard_.width_ == 0) {
+        duplicateBelow();
+        return;
+    }
+    int row = viewData_->chainRow_;
+    int height = clipboard_.height_;
+    if (row + height > 16)
+        height = 16 - row;
+    pasteClipboard();
+    static char msg[40];
+    bool phrases = (clipboard_.col_ == 0);
+    if (!fresh || !phrases) {
+        if (height == 1 && phrases && clipboard_.width_ == 1) {
+            sprintf(msg, "Pasted phrase %2.2X", clipboard_.phrase_[0]);
+        } else {
+            sprintf(msg, "Pasted %d row%s", height, height == 1 ? "" : "s");
+        }
+        View::SetNotification(msg);
+        return;
+    }
+    // New copies: each phrase pasted becomes a new phrase (the same
+    // phrase pasted twice becomes the same new one)
+    Phrase *ph = viewData_->song_->phrase_;
+    unsigned char *rows =
+        viewData_->song_->chain_->data_ + 16 * viewData_->currentChain_;
+    unsigned char from[16], to[16];
+    int mapped = 0;
+    for (int j = row; j < row + height; j++) {
+        if (rows[j] == 0xFF)
+            continue;
+        int copy = -1;
+        for (int k = 0; k < mapped; k++) {
+            if (from[k] == rows[j])
+                copy = to[k];
+        }
+        if (copy < 0) {
+            unsigned short next = ph->Clone(rows[j]);
+            if (next == NO_MORE_PHRASE) {
+                View::SetNotification("Pasted; no more phrases!");
+                return;
+            }
+            from[mapped] = rows[j];
+            to[mapped] = (unsigned char)next;
+            mapped++;
+            copy = next;
+        }
+        rows[j] = (unsigned char)copy;
+    }
+    if (mapped == 1) {
+        sprintf(msg, "New phrase %2.2X = copy of %2.2X", to[0], from[0]);
+    } else if (mapped > 1) {
+        sprintf(msg, "New phrases %2.2X-%2.2X", to[0], to[mapped - 1]);
+    } else {
+        sprintf(msg, "Pasted %d row%s", height, height == 1 ? "" : "s");
+    }
+    View::SetNotification(msg);
+}
+
+void ChainView::duplicateBelow() {
+    unsigned char *rows =
+        viewData_->song_->chain_->data_ + 16 * viewData_->currentChain_;
+    unsigned char *transpose =
+        viewData_->song_->chain_->transpose_ + 16 * viewData_->currentChain_;
+    int row = viewData_->chainRow_;
+    if (rows[row] == 0xFF) {
+        View::SetNotification("Nothing copied: X copies");
+        return;
+    }
+    int target = row + 1;
+    while (target < 16 && rows[target] != 0xFF) {
+        target++;
+    }
+    if (target >= 16) {
+        View::SetNotification("No empty row below");
+        return;
+    }
+    unsigned char source = rows[row];
+    unsigned short next = viewData_->song_->phrase_->Clone(source);
+    if (next == NO_MORE_PHRASE) {
+        View::SetNotification("no more phrases!");
+        return;
+    }
+    rows[target] = (unsigned char)next;
+    transpose[target] = transpose[row];
+    lastPhrase_ = (unsigned char)next;
+    updateCursor(0, target - row);
+    static char msg[40];
+    sprintf(msg, "New phrase %2.2X = copy of %2.2X", next, source);
+    View::SetNotification(msg);
+}
 
 void ChainView::unMuteAll() {
 

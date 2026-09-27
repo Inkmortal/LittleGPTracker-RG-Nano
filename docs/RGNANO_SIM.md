@@ -337,6 +337,10 @@ expect_phrase_command 0 0 1 ARPG
 expect_phrase_param 0 0 1 0001
 expect_groove 0 1
 expect_table_active 0 0
+# table 01, row 1, command slot 1 holds VOLM 0040 (slot 1-3, param in hex)
+expect_table_command 1 1 1 VOLM 0040
+# groove 02, step 0 is 7 ticks (hex; FF = empty step)
+expect_groove_step 2 0 07
 expect_tempo 86
 expect_instrument_sample 4 wuxia-guzheng.wav
 

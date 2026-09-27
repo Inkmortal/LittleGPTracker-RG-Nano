@@ -18,6 +18,38 @@ Song::Song():Persistent("SONG") {
 	memset(bookmarks_,0,sizeof(bookmarks_)) ;
 } ;
 
+bool Song::DeepClonePhrases(unsigned char chain) {
+	unsigned char *rows=chain_->data_+16*chain ;
+	unsigned char from[16] ;
+	unsigned char to[16] ;
+	int mapped=0 ;
+	for (int i=0;i<16;i++) {
+		if (rows[i]==0xFF) continue ;
+		int copy=-1 ;
+		for (int j=0;j<mapped;j++) {
+			if (from[j]==rows[i]) copy=to[j] ;
+		}
+		if (copy<0) {
+			unsigned short next=phrase_->Clone(rows[i]) ;
+			if (next==NO_MORE_PHRASE) return false ;
+			from[mapped]=rows[i] ;
+			to[mapped]=(unsigned char)next ;
+			mapped++ ;
+			copy=next ;
+		}
+		rows[i]=(unsigned char)copy ;
+	}
+	return true ;
+}
+
+unsigned short Song::DeepCloneChain(unsigned char src, bool *complete) {
+	unsigned short next=chain_->Clone(src) ;
+	if (next!=NO_MORE_CHAIN) {
+		*complete=DeepClonePhrases((unsigned char)next) ;
+	}
+	return next ;
+}
+
 bool Song::IsBookmarked(int row) {
 	return row>=0 && row<SONG_ROW_COUNT && bookmarks_[row]!=0 ;
 }

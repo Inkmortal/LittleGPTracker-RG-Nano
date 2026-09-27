@@ -14,6 +14,9 @@ class TableView : public View {
     virtual void DrawView();
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int tick = 0);
     virtual void OnFocus();
+    virtual void CopyAtCursor();
+    // Y pastes the copied steps; LB+Y duplicates this table instead
+    virtual void PasteAtCursor(bool fresh);
     void onCommandSelectorResult(ModalView &d);
     void onCommandSelectorPreview(ModalView &d);
 
