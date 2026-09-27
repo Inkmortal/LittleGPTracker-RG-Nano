@@ -261,6 +261,10 @@ void ProjectView::ProcessButtonMask(unsigned short mask,bool pressed) {
 
     FieldView::ProcessButtonMask(mask);
 
+    if (mask == (EPBM_R | EPBM_START)) {
+        // RB+Start plays / stops the song, as on every screen (Start too)
+        mask = EPBM_START;
+    }
     if (mask & EPBM_R) {
         if (mask&EPBM_DOWN) {
 			ViewType vt=VT_SONG;

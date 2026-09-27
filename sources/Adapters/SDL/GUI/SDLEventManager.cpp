@@ -92,6 +92,11 @@ SDLEventManager::SDLEventManager()
 	simMouseKey_=0;
 	simScriptActive_=false;
 	simScriptFailed_=false;
+	simSoftFail_=false;
+	simSoftFailures_=0;
+	simCases_=0;
+	simStableCount_=0;
+	simStableStart_=0;
 #endif
 }
 
@@ -810,7 +815,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (!command.arg2.empty() && command.arg2[0]==' ') {
 			command.arg2.erase(0,1);
 		}
-	} else if (command.op=="expect_no_error" || command.op=="expect_skin_frame_clean" || command.op=="reset_audio_stats" || command.op=="end_audio_capture" || command.op=="sim_save_project" || command.op=="quit") {
+	} else if (command.op=="expect_no_error" || command.op=="expect_skin_frame_clean" || command.op=="reset_audio_stats" || command.op=="end_audio_capture" || command.op=="sim_save_project" || command.op=="quit" || command.op=="expect_no_soft_failures" || command.op=="sim_reload_project" || command.op=="expect_cursor" || command.op=="expect_no_clipping") {
 	} else if (command.op=="expect_memory_below") {
 		iss >> command.value;
 	} else if (command.op=="expect_colors" || command.op=="expect_audio_activity" || command.op=="expect_audio_silence" || command.op=="expect_audio_peak_max" || command.op=="expect_audio_capture_bytes" || command.op=="expect_tempo" || command.op=="expect_render_mode" || command.op=="sim_set_tempo" || command.op=="sim_set_render_mode" || command.op=="sim_set_scale" || command.op=="sim_set_key") {
@@ -890,6 +895,14 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 	} else if (command.op=="expect_mixer_level" || command.op=="sim_set_mixer_level") {
 		// <level index> <hex value>
 		iss >> command.value >> command.arg;
+	} else if (command.op=="case" || command.op=="soft_fail" || command.op=="snap" ||
+	           command.op=="expect_changed" || command.op=="expect_unchanged" ||
+	           command.op=="expect_layer") {
+		// Key sweep (tools/sweep): one word
+		iss >> command.arg;
+	} else if (command.op=="wait_stable") {
+		// wait_stable <max ms>: until the screen stops changing
+		iss >> command.value;
 	}
 	simCommands_.push_back(command);
 	return true;
@@ -1000,6 +1013,41 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			simCommandIndex_++;
 			simNextCommandTime_=now+40;
 		}
+		return;
+	}
+
+	if (command.op=="wait_stable") {
+		// The same screen on 3 polls 50 ms apart: animations, notifications
+		// and redraws have finished, so a snap taken now is a fair baseline
+		std::vector<Uint8> pixels;
+		if (!CaptureSimScreen(window,pixels)) {
+			FailSimScript("wait_stable could not read the screen");
+			return;
+		}
+		if (simStableCount_==0) {
+			simStableStart_=now;
+		}
+		if (simStableCount_>0 && pixels==simStableLast_) {
+			simStableCount_++;
+		} else {
+			if (simStableCount_==0) simStableStart_=now;
+			simStableCount_=1;
+			simStableLast_.swap(pixels);
+		}
+		if (simStableCount_>=3) {
+			simStableCount_=0;
+			simStableLast_.clear();
+			simCommandIndex_++;
+			simNextCommandTime_=now+1;
+			return;
+		}
+		if (now-simStableStart_>(unsigned long)command.value) {
+			simStableCount_=0;
+			simStableLast_.clear();
+			FailSimScript("screen never stops changing");
+			return;
+		}
+		simNextCommandTime_=now+50;
 		return;
 	}
 
@@ -1447,6 +1495,76 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			FailSimScript("skin frame assertion failed");
 			return;
 		}
+	} else if (command.op=="case") {
+		simCaseName_=command.arg;
+		simCases_++;
+		AppWindow::ResetSimClipping();
+		Trace::Log("SWEEP","case %s",command.arg.c_str());
+	} else if (command.op=="soft_fail") {
+		simSoftFail_=(command.arg=="on");
+		if (simSoftFail_) {
+			// The log only keeps its last 1 MB; failures go here in full
+			std::ofstream("sweep-results.txt",std::ios::trunc);
+		}
+	} else if (command.op=="expect_no_soft_failures") {
+		Trace::Log("SWEEP","%d cases, %d failed",simCases_,simSoftFailures_);
+		std::ofstream results("sweep-results.txt",std::ios::app);
+		results << simCases_ << " cases, " << simSoftFailures_ << " failed\n";
+		if (simSoftFailures_>0) {
+			simSoftFail_=false;
+			FailSimScript("sweep cases failed (see [SWEEP_FAIL] lines)");
+			return;
+		}
+	} else if (command.op=="sim_reload_project") {
+		// Test isolation, not an action under test: every case starts from
+		// the song as saved on disk, on its first screen, nothing open
+		ResetSimOverlays();
+		GUIWindow *guiWindow=Application::GetInstance()->GetWindow();
+		AppWindow *appWindow=(AppWindow *)guiWindow;
+		if (!appWindow || !appWindow->ReloadProjectForSim()) {
+			FailSimScript("no song to reload");
+			return;
+		}
+		AudioDriver::ResetSimAudioStats();
+	} else if (command.op=="snap") {
+		std::vector<Uint8> pixels;
+		if (!CaptureSimScreen(window,pixels)) {
+			FailSimScript("snap could not read the screen");
+			return;
+		}
+		simSnaps_[command.arg].swap(pixels);
+	} else if (command.op=="expect_changed" || command.op=="expect_unchanged") {
+		if (!ExpectSimScreenChanged(window,command.arg,command.op=="expect_changed")) {
+			FailSimScript(command.op=="expect_changed" ? "nothing visible happened" : "the screen changed");
+			return;
+		}
+	} else if (command.op=="expect_layer") {
+		if (!ExpectSimLayer(command.arg)) {
+			FailSimScript("layer assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_cursor") {
+		GUIWindow *guiWindow=Application::GetInstance()->GetWindow();
+		AppWindow *appWindow=(AppWindow *)guiWindow;
+		std::string selected=appWindow ? appWindow->GetSimSelectionSummary() : "(none)";
+		Trace::Log("RGNANO_SIM","expect_cursor => %s",selected.c_str());
+		if (selected=="(none)") {
+			FailSimScript("no cursor on screen");
+			return;
+		}
+	} else if (command.op=="expect_no_clipping") {
+		// Only what the current screen draws: repaint it from scratch
+		AppWindow::ResetSimClipping();
+		GUIWindow *clipWindow=Application::GetInstance()->GetWindow();
+		if (clipWindow) {
+			((AppWindow *)clipWindow)->RepaintNow(true);
+		}
+		std::string clipped=AppWindow::GetSimClipping();
+		Trace::Log("RGNANO_SIM","expect_no_clipping => %s",clipped.empty()?"none":clipped.c_str());
+		if (!clipped.empty()) {
+			FailSimScript("text cut off at the screen edge");
+			return;
+		}
 	} else if (command.op=="log") {
 		Trace::Log("RGNANO_SIM","%s",command.arg.c_str());
 	} else if (command.op=="dump_state") {
@@ -1489,6 +1607,11 @@ bool SDLEventManager::HandleSimMouse(SDLGUIWindowImp *window, SDL_Event &event)
 
 void SDLEventManager::SetSimKey(SDLGUIWindowImp *window, int key, bool pressed)
 {
+	if (pressed) {
+		simHeldKeys_.insert(key);
+	} else {
+		simHeldKeys_.erase(key);
+	}
 	SDL_Event event;
 	memset(&event,0,sizeof(event));
 	event.type=pressed ? SDL_KEYDOWN : SDL_KEYUP;
@@ -1537,9 +1660,173 @@ int SDLEventManager::GetSimButtonAt(int x, int y)
 void SDLEventManager::FailSimScript(const char *message)
 {
 	LogSimState("failure",true);
+	if (simSoftFail_) {
+		// Log it (not as an error: the sweep counts these) and go on with
+		// the next case, which starts from a reloaded song
+		simSoftFailures_++;
+		std::string op="?";
+		std::string arg="";
+		if (simCommandIndex_<simCommands_.size()) {
+			op=simCommands_[simCommandIndex_].op;
+			arg=simCommands_[simCommandIndex_].arg;
+		}
+		Trace::Log("SWEEP_FAIL","%s: %s (at %s %s) layer=%s",simCaseName_.c_str(),message,
+		           op.c_str(),arg.c_str(),GetSimLayer().c_str());
+		{
+			std::ofstream results("sweep-results.txt",std::ios::app);
+			GUIWindow *gw=Application::GetInstance()->GetWindow();
+			AppWindow *appWindow=(AppWindow *)gw;
+			results << "FAIL " << simCaseName_ << ": " << message << " (at " << op << " " << arg
+			        << ") view=" << (appWindow?appWindow->GetCurrentViewName():"?")
+			        << " layer=" << GetSimLayer() << "\n";
+			if (appWindow) {
+				std::istringstream lines(appWindow->GetSimScreenDump());
+				std::string line;
+				while (std::getline(lines,line)) {
+					if (line.size()>4) results << "    " << line << "\n";
+				}
+			}
+			std::string clipped=AppWindow::GetSimClipping();
+			if (!clipped.empty()) results << "    clipped: " << clipped << "\n";
+		}
+		GUIWindow *guiWindow=Application::GetInstance()->GetWindow();
+		SkipSimCase(guiWindow ? (SDLGUIWindowImp *)guiWindow->GetImpWindow() : 0);
+		return;
+	}
 	simScriptFailed_=true;
 	Trace::Error("RGNANO_SIM %s",message);
 	PostQuitMessage();
+}
+
+void SDLEventManager::SkipSimCase(SDLGUIWindowImp *window)
+{
+	if (window) {
+		SaveSimAppScreenshot(window,"sweep-fail-"+simCaseName_+".bmp");
+	}
+	std::set<int> held=simHeldKeys_;
+	for (std::set<int>::iterator it=held.begin();it!=held.end();it++) {
+		SetSimKey(window,*it,false);
+	}
+	simPendingReleaseKey_=0;
+	simGoalRelease_.clear();
+	simGoalSteps_=0;
+	simStableCount_=0;
+	size_t next=simCommandIndex_+1;
+	while (next<simCommands_.size() && simCommands_[next].op!="case" &&
+	       simCommands_[next].op!="expect_no_soft_failures") {
+		next++;
+	}
+	simCommandIndex_=next;
+	simNextCommandTime_=System::GetInstance()->GetClock()+100;
+}
+
+void SDLEventManager::ResetSimOverlays()
+{
+	showPowerMenu_=false;
+	showExitConfirm_=false;
+	showDebugScreen_=false;
+	menuHelpOverlay_=false;
+	menuHelpPage_=0;
+	memset(menuInputHeld_,0,sizeof(menuInputHeld_));
+	View::contextOverlay_=false;
+	View::contextOverlayPage_=0;
+}
+
+// The app's 240x240 area, with the power menu / debug overlays drawn in
+bool SDLEventManager::CaptureSimScreen(SDLGUIWindowImp *window, std::vector<Uint8> &out)
+{
+	if (!window) {
+		return false;
+	}
+	window->Flush();
+	RenderPowerMenu(window->GetSurface(),window);
+	RenderDebugScreen(window->GetSurface(),window);
+	SDL_Surface *surface=window->GetSurface();
+	if (!surface) {
+		return false;
+	}
+	int scale=window->GetScale();
+	int x0=window->IsRGNanoSkinEnabled()?window->GetAppAnchorX():0;
+	int y0=window->IsRGNanoSkinEnabled()?window->GetAppAnchorY():0;
+	int bpp=surface->format->BytesPerPixel;
+	int rowBytes=240*scale*bpp;
+	out.resize(rowBytes*240*scale);
+	if (SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
+	for (int y=0;y<240*scale;y++) {
+		const Uint8 *row=(const Uint8 *)surface->pixels+(y0+y)*surface->pitch+x0*bpp;
+		memcpy(&out[y*rowBytes],row,rowBytes);
+	}
+	if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
+	return true;
+}
+
+void SDLEventManager::SaveSimPixels(SDLGUIWindowImp *window, const std::vector<Uint8> &pixels, const std::string &path)
+{
+	SDL_Surface *surface=window ? window->GetSurface() : 0;
+	if (!surface || pixels.empty()) {
+		return;
+	}
+	int size=240*window->GetScale();
+	SDL_PixelFormat *f=surface->format;
+	SDL_Surface *copy=SDL_CreateRGBSurfaceFrom((void *)&pixels[0],size,size,f->BitsPerPixel,
+		size*f->BytesPerPixel,f->Rmask,f->Gmask,f->Bmask,f->Amask);
+	if (copy) {
+		SDL_SaveBMP(copy,path.c_str());
+		SDL_FreeSurface(copy);
+	}
+}
+
+bool SDLEventManager::ExpectSimScreenChanged(SDLGUIWindowImp *window, const std::string &name, bool wantChanged)
+{
+	std::map<std::string, std::vector<Uint8> >::iterator it=simSnaps_.find(name);
+	if (it==simSnaps_.end()) {
+		Trace::Log("RGNANO_SIM","no snap named %s",name.c_str());
+		return false;
+	}
+	std::vector<Uint8> now;
+	if (!CaptureSimScreen(window,now)) {
+		return false;
+	}
+	bool changed=now!=it->second;
+	Trace::Log("RGNANO_SIM","%s %s => %s",wantChanged?"expect_changed":"expect_unchanged",name.c_str(),changed?"changed":"same");
+	if (changed!=wantChanged) {
+		// The screen before, next to the failure screenshot
+		SaveSimPixels(window,it->second,"sweep-fail-"+simCaseName_+"-before.bmp");
+	}
+	return changed==wantChanged;
+}
+
+// What is on top: none, helper, power, power+help, confirm, debug, or the
+// open dialog (modal:GuideDialog), joined with '+'
+std::string SDLEventManager::GetSimLayer()
+{
+	std::string layer;
+	if (showDebugScreen_) {
+		layer="debug";
+	} else if (showPowerMenu_) {
+		layer=showExitConfirm_ ? "confirm" : "power";
+		if (menuHelpOverlay_) layer+="+help";
+	} else {
+		GUIWindow *guiWindow=Application::GetInstance()->GetWindow();
+		AppWindow *appWindow=(AppWindow *)guiWindow;
+		std::string modal=appWindow ? appWindow->GetSimModalName() : "";
+		if (!modal.empty()) {
+			layer="modal:"+modal;
+		}
+		if (View::contextOverlay_) {
+			layer+=layer.empty() ? "helper" : "+helper";
+		}
+	}
+	return layer.empty() ? "none" : layer;
+}
+
+bool SDLEventManager::ExpectSimLayer(const std::string &wanted)
+{
+	std::string layer=GetSimLayer();
+	// "modal" alone: any dialog
+	bool matches=layer==wanted || (wanted=="modal" && layer.compare(0,6,"modal:")==0);
+	Trace::Log("RGNANO_SIM","expect_layer %s => %s",wanted.c_str(),layer.c_str());
+	return matches;
 }
 
 void SDLEventManager::SaveSimScreenshot(SDLGUIWindowImp *window, const std::string &path)

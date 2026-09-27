@@ -87,7 +87,9 @@ void EQView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			SetChanged() ;
 			NotifyObservers(&ve) ;
 		}
-	} else if (mask==EPBM_START) {
+	}
+	// Start, and RB+Start as on every screen: play / stop the song
+	if (mask==EPBM_START || mask==(EPBM_R|EPBM_START)) {
 		Player::GetInstance()->OnStartButton(PM_SONG,viewData_->songX_,false,viewData_->songX_) ;
 	}
 	isDirty_=true ;

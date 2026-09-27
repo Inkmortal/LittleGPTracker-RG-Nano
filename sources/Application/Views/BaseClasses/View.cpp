@@ -864,7 +864,8 @@ void View::drawNotes() {
 				SetColor(current ? CD_HILITE2 : CD_MUTE);
 				DrawString(pos._x,pos._y,player->GetPlayedInstrument(i),props) ;
 			} else {
-				char label[3] = {' ', (char)('1' + i), 0};
+				// M: muted (B+RB, or another track soloed), as on the Mixer
+				char label[3] = {player->IsChannelMuted(i) ? 'M' : ' ', (char)('1' + i), 0};
 				SetColor(current ? CD_HILITE2 : CD_MUTE);
 				DrawString(pos._x,pos._y,label,props) ;
 				pos._y++ ;

@@ -21,6 +21,8 @@ class CommandSelectorModal : public ModalView {
     }
     virtual void DrawView();
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int tick = 0);
+    // Phrase and Table skip the popup's rectangle when they draw
+    virtual bool LetsViewDrawAround() { return true; }
     virtual void OnFocus();
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,
                                          const char *&edit, const char *&field,

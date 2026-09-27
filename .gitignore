@@ -83,3 +83,5 @@ projects/lgpt-rgnano.elf.debug
 rgnano-sim-data/samples/
 # the sim's saved sounds and kits (SOUNDLIB), wiped by each run
 rgnano-sim-data/sounds/
+sweep-fail-*.bmp
+sweep-results.txt

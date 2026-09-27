@@ -460,6 +460,7 @@ void ChainView::unMuteAll() {
 
     UIController *controller = UIController::GetInstance();
     controller->UnMuteAll();
+    isDirty_ = true; // the track strip shows who is muted
 };
 
 void ChainView::toggleMute() {
@@ -467,6 +468,7 @@ void ChainView::toggleMute() {
     UIController *controller = UIController::GetInstance();
     controller->ToggleMute(viewData_->songX_, viewData_->songX_);
     viewMode_ = (viewMode_ != VM_MUTEON) ? VM_MUTEON : VM_NORMAL;
+    isDirty_ = true; // the track strip shows who is muted
 };
 
 void ChainView::switchSoloMode() {

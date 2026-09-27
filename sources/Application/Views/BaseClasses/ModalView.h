@@ -16,6 +16,10 @@ class ModalView : public View {
     // folder, a recording take, typed letters) overrides this to go back
     // one of them first. Return false to handle B in ProcessButtonMask.
     virtual bool Back();
+    // May the screen under it keep drawing its live play markers and
+    // meters? Only for a small popup the screen knows to draw around
+    // (the command picker); anything else would be painted over.
+    virtual bool LetsViewDrawAround() { return false; }
     int GetReturnCode();
 
   protected:

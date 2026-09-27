@@ -530,6 +530,7 @@ void SongView::unMuteAll() {
 
     UIController *controller = UIController::GetInstance();
     controller->UnMuteAll();
+    isDirty_ = true; // the track strip shows who is muted
 };
 
 void SongView::toggleMute() {
@@ -545,6 +546,7 @@ void SongView::toggleMute() {
     };
     controller->ToggleMute(from, to);
     viewMode_ = (viewMode_ != VM_MUTEON) ? VM_MUTEON : VM_NORMAL;
+    isDirty_ = true; // the track strip shows who is muted
 };
 
 void SongView::switchSoloMode() {
@@ -966,9 +968,14 @@ void SongView::processNormalButtonMask(unsigned int mask) {
                     NotifyObservers(&ve);
                 }
 
-                if ((mask & EPBM_START) &&
-                    Player::GetInstance()->GetSequencerMode() == SM_LIVE) {
-                    onStop();
+                // RB+Start plays / stops the whole song on every screen;
+                // in Live mode here it stops this track
+                if (mask & EPBM_START) {
+                    if (Player::GetInstance()->GetSequencerMode() == SM_LIVE) {
+                        onStop();
+                    } else {
+                        onStart();
+                    }
                 }
 
             } else {
@@ -1101,9 +1108,14 @@ void SongView::processSelectionButtonMask(unsigned int mask) {
                     NotifyObservers(&ve);
                 }
 
-                if ((mask & EPBM_START) &&
-                    Player::GetInstance()->GetSequencerMode() == SM_LIVE) {
-                    onStop();
+                // RB+Start plays / stops the whole song on every screen;
+                // in Live mode here it stops this track
+                if (mask & EPBM_START) {
+                    if (Player::GetInstance()->GetSequencerMode() == SM_LIVE) {
+                        onStop();
+                    } else {
+                        onStart();
+                    }
                 }
 
             } else if (!(mask & EPBM_L)) {

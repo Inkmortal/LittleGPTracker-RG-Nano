@@ -362,6 +362,10 @@ if ($ArtifactsDir) {
   Get-ChildItem -Path (Get-Location) -Filter "*.bmp" -File | Where-Object { $_.LastWriteTime -ge $runStarted } | ForEach-Object {
     Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $ArtifactsDir $_.Name) -Force
   }
+  $sweepResults = Join-Path (Get-Location) "sweep-results.txt"
+  if ((Test-Path -LiteralPath $sweepResults) -and (Get-Item -LiteralPath $sweepResults).LastWriteTime -ge $runStarted) {
+    Move-Item -LiteralPath $sweepResults -Destination (Join-Path $ArtifactsDir "sweep-results.txt") -Force
+  }
   Get-ChildItem -Path (Get-Location) -Filter "*.wav" -File | Where-Object { $_.LastWriteTime -ge $runStarted } | ForEach-Object {
     Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $ArtifactsDir $_.Name) -Force
   }
