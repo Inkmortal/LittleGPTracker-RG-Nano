@@ -4470,11 +4470,10 @@
  the note this many steps up
  from mine". 0037 on A 2:
  
-|A              your note
-|A A# B C       3 up: C
-|A A# B C C# D  7 up: E
-|  D# E
-|= A + C + E  (A minor)
+|A               your note
+|A A# B C        3 up = C
+|A .. C# D D# E  7 up = E
+|A + C + E = A minor
  
  Count every key, black ones
  included (A -> A# -> B -> C

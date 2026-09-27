@@ -332,11 +332,10 @@ So `A 2` + `CHRD 0037` = **A minor**, and `F 2` + `CHRD 0047` = **F major**. The
 **What the digits actually do:** each digit says "also play the note this many steps up from mine". `0037` on `A 2`:
 
 ```text
-A              your note
-A A# B C       3 up: C
-A A# B C C# D  7 up: E
-  D# E
-= A + C + E  (A minor)
+A               your note
+A A# B C        3 up = C
+A .. C# D D# E  7 up = E
+A + C + E = A minor
 ```
 
 Count every key, black ones included (A → A# → B → C is 3 steps). Past 9 the digits are hex letters: `A` = 10, `B` = 11.
