@@ -9,9 +9,20 @@ commands, copy logs or inspect anything. Ask only for normal use, e.g. "plug in 
 - Branch `feature/sample-workstation-ui`, pushed to `origin` and mirrored to `main`.
   Push without changing the active gh account:
   `TOKEN=$(gh auth token -u Inkmortal); B64=$(printf "x-access-token:%s" "$TOKEN" | base64 -w0); git -c credential.helper= -c "http.extraheader=Authorization: Basic $B64" push -q origin HEAD HEAD:main && git branch -f main HEAD`
-- **The Nano runs a0e4606** (installed 2026-09-26): Select on sample pages, A on `sample none`,
-  the helper overlay fix, the Chain freeze fix and the hang watchdog. None confirmed on the device yet.
-  Install when the card is mounted as `D:`: `powershell -File tools/install-rgnano.ps1` (builds, runs ARM checks, archives the ELF). Don't eject the card afterwards.
+- **The Nano runs dafec52** (installed 2026-09-27 01:38). Merged since, not yet on the Nano and
+  **not yet verified by a full suite run** (the last run was killed by Windows low memory while 7
+  agents were building): the action sweep (19 sweep-*.rgsim + 5 bug fixes), Joyride demo, the
+  revamped demos (NeonDrive, JadeSword, PixelQuest, EngineRoom, SunsetClub), the preset loudness
+  fix (preset_level_check in the dsp harness), the sidechain duck fix, notification row fixes.
+  Next: run `tools/run-rgnano-sim-suite.ps1` alone, fix what fails, then install.
+- The First Song walkthrough lost 3 steps after step 606 (new notes use the last-made sound), so the
+  guide images after that step are off by 3: rerun `python tools/make_walkthrough.py` (full capture).
+- Install when the card is mounted as `D:`: `powershell -File tools/install-rgnano.ps1` (builds, runs ARM checks, archives the ELF). Don't eject the card afterwards.
+- GBA launchers (mGBA default + gpSP) with shared saves: `tools/rgnano-gba/install.ps1`.
+- Decisions made with the user on 2026-09-27: Sound Rack (docs/INSTRUMENT_FIRST_WORKFLOW.md option A),
+  X copy / Y paste / LB+Y duplicate, B always backs out one step (so B on "Save your work?" cancels;
+  No+A leaves without saving). Afterglow stays the First Song; Joyride is an extra demo.
+- M8 parity status and the ranked build list: docs/RGNANO_M8_SCREEN_CAPABILITY_AUDIT.md.
 - Build the sim with `powershell -File tools/build-rgnano-sim.ps1` (`make` isn't on PATH in Git Bash).
   Run one script: `tools/run-rgnano-sim.ps1 -Script <rgsim> -Mute [-ResetLastProject | -OpenDemo=Name]`.
   Full suite: `tools/run-rgnano-sim-suite.ps1` (~20 min). Run it in the background, and never run two sim jobs at once (they share the exe and the log).
