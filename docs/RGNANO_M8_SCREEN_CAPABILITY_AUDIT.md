@@ -20,7 +20,7 @@ Counts (rows in the tables below): **Have 79 · Partial 32 · Missing 47 · Hard
 | Memory | Sample RAM of the M8 Model 02 | ~40 MB usable heap of 64 MB (sim enforces it, `RGNanoSimMemory.cpp`) | Plenty for a song; very long samples are refused cleanly (`sample-too-long.rgsim`) |
 | Audio I/O | Line in/out, headphone, USB audio in/out, built-in mic on some models | Speaker + USB-C; input needs a UAC USB adapter and a kernel with USB audio (README_AUDIO_INPUT.md) | Recording and live input are optional extras, not the default |
 | MIDI | TRS MIDI in/out + USB MIDI | No ports; USB-C OTG host is possible but not in the firmware | MIDI features are a firmware project, not an app one |
-| Screen / keys | 320x240, 8 keys (arrows, Shift, Play, Option, Edit) | 240x240, D-pad + A B X Y + LB RB + Start Select + Power | We have **more** buttons. **X and Y are unmapped today** (`projects/opk_build/config.xml` has no KEY_X/KEY_Y; the device logs show them arriving as `key(x)`/`key(y)`) |
+| Screen / keys | 320x240, 8 keys (arrows, Shift, Play, Option, Edit) | 240x240, D-pad + A B X Y + LB RB + Start Select + Power | We have **more** buttons. X and Y are copy and paste on every screen (**X** copy, **Y** paste, **LB + Y** paste new copies; `View::CopyAtCursor`/`PasteAtCursor`, `copy-paste-xy.rgsim`) |
 
 So nothing the M8 does musically is out of reach for the hardware except MIDI and a built-in line in. The rest is build work.
 
@@ -110,8 +110,8 @@ So nothing the M8 does musically is out of reach for the hardware except MIDI an
 | Phrase columns: note, **velocity**, instrument, **3** FX | note, instrument, **2** FX | Partial | `PhraseView.cpp` |
 | 256 tables | 128 | Partial | `Table.h:8` |
 | 32 grooves | 32 | Have | `Groove.h:10` |
-| Clone (new copy of a chain/phrase) | B+LB then A+LB on Song / Chain | Have (undocumented in Controls.md) | `SongView.cpp:162`, `ChainView.cpp:139` |
-| Deep clone (chain + its phrases) | A+LB a second time on Song | Have (undocumented) | `SongView.cpp:196` |
+| Clone (new copy of a chain/phrase) | **Y** with nothing copied (new copy in the next empty row), **LB + Y** (paste new copies); B+LB then A+LB still works | Have (Controls.md "Copy and paste", helper) | `Song::DeepCloneChain`, `Phrase::Clone`, `copy-paste-xy.rgsim` |
+| Deep clone (chain + its phrases) | Song **Y** / **LB + Y** always copy the phrases too; A+LB a second time on Song still works | Have (Controls.md "Copy and paste") | `Song::DeepClonePhrases`, `copy-paste-xy.rgsim` |
 | Interpolate a column | selection, B+RB | Have (undocumented; B+RB is also mute outside selection) | `PhraseView.cpp:709`, `TableView.cpp:144` |
 | Note fill / random fill / random notes | LB+Left / LB+Right on a selection; shuffle and reverse too | Have (more than the M8) | `random-tools.rgsim` |
 | Copy / cut / paste selections | B+LB, B, A+LB | Have | Controls.md |
@@ -254,8 +254,8 @@ Better on the Nano:
 - The **helper map** makes the RB+direction screen map discoverable; the M8's is learned from the manual.
 
 Worse on the Nano, or weak spots:
-- **X and Y are unused.** Two free buttons on a device short of combos. Candidates: X = play the instrument under the cursor (keyjazz), Y = the command picker/quick FX, or X/Y as page switches so LB+Left/Right is freed.
-- **Clone, deep clone and interpolate exist but aren't in Controls.md or the helper**, so nobody finds them. Interpolate is B+RB inside a selection, the same combo as mute outside one.
+- **X and Y are copy and paste** (done 2026-09-27): **X** copy, **Y** paste, **LB + Y** new copies, on Song, Chain, Phrase, Table, Groove and Instrument. The user chose this over keyjazz or the command picker: copy, paste and "duplicate as a new phrase/chain" are their most frequent moves.
+- **Interpolate exists but isn't in Controls.md or the helper**, so nobody finds it. It is B+RB inside a selection, the same combo as mute outside one. (Clone and deep clone are now X/Y, documented in Controls.md "Copy and paste" and the helper.)
 - **Phrase density:** 240 px wide fits note, instrument and 2 FX; the M8's third FX column and velocity column don't fit at this font. A velocity column (2 hex digits) would fit if the instrument name moves to the title (it already shows there).
 - **No per-parameter commands** (the M8 lets any knob be sequenced: FM1, SCN, SWM, sends, mixer). On the Nano, automating a knob means a MOD slot or a table.
 - **The instrument pool is a dialog, not a screen**, and the Instrument screen is only reachable through a phrase (5 presses from a new song). The Sound Rack fixes this (in progress).
@@ -266,8 +266,8 @@ Worse on the Nano, or weak spots:
 In progress now: **Sound Rack** (instrument pool, keyjazz audition, kit files, new-song template, "compose with it") and **new synth engines + tutorials**. Not repeated below.
 
 1. **Fix `SLCE`** (documented, in the picker, does nothing) and add **LEN**. Small; slicing drum loops is a core M8 move.
-2. **Map X and Y.** Small; biggest navigation win for the least code (keyjazz and quick FX/command picker are the natural fits). Needs the user's say on which.
-3. **Document clone / deep clone / interpolate** in Controls.md and the helper; give interpolate its own combo. Tiny.
+2. ~~**Map X and Y.**~~ Done: copy / paste / paste new copies.
+3. **Document interpolate** in Controls.md and the helper and give it its own combo (clone and deep clone are done via X/Y). Tiny.
 4. **Per-parameter instrument commands**: sends (`SMX/SDL/SRV`), engine knobs (Wav `SIZ/MUL/WRP/SCN`, Hyper `SWM/WID/SUB`, FM `ALG` + op levels, Macro `OSC`), and filter type. Medium; one shared "command → variable" table covers most of them.
 5. **Velocity column** (and velocity as a mod-tracking source). Medium; affects phrase layout and every instrument's note-on.
 6. **Sample editor processes**: slice auto (transients) + silence + lazy chop into file markers, xfade loop, mono, downsample/8-bit, delete, duplicate, invert, snap to beat. Medium; mostly offline DSP on the existing editor.

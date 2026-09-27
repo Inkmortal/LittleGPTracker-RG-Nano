@@ -9,6 +9,9 @@ public:
 	Chain() ;
 	~Chain() ;
 	unsigned short GetNext() ;
+	// A new chain with the same phrases and transposes as src (the
+	// phrases themselves are shared); NO_MORE_CHAIN when full
+	unsigned short Clone(unsigned char src) ;
 	bool IsUsed(unsigned char i) { return isUsed_[i] ; } ;
 	void SetUsed(unsigned char c) ;
 	void ClearAllocation() ;

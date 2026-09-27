@@ -27,8 +27,8 @@ enum GUIEventPadButtonMasks {
     EPBM_R = 128,
     EPBM_START = 256,
     EPBM_SELECT = 512,
-    EPBM_DOUBLE_A = 1024,
-    EPBM_DOUBLE_B = 2048
+    EPBM_X = 1024,  // copy (the RG Nano face buttons X and Y)
+    EPBM_Y = 2048   // paste
 };
 
 enum ViewType {
@@ -170,6 +170,12 @@ class View : public Observable {
     // return false: there B is a modifier (B+A, B+D-pad) handled by
     // ProcessButtonMask.
     virtual bool Back() { return false; }
+    // X copies what's under the cursor (or the selection), Y pastes it and
+    // LB+Y pastes new copies (fresh chains/phrases/tables, not the same
+    // ones again). Screens with something to copy override these; the
+    // defaults just say there's nothing here. See Controls.md.
+    virtual void CopyAtCursor();
+    virtual void PasteAtCursor(bool fresh);
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,
                                          const char *&edit, const char *&field,
                                          const char *&cmd1, const char *&cmd2,

@@ -162,27 +162,13 @@ bool SongView::pasteLast() {
 void SongView::clonePosition() {
 
     unsigned char *pos = viewData_->GetCurrentSongPointer();
-    unsigned char current = *pos;
-    if (current == 255)
+    if (*pos == 0xFF)
         return;
-
-    unsigned short next = viewData_->song_->chain_->GetNext();
-    if (next == NO_MORE_CHAIN)
+    unsigned short next = viewData_->song_->chain_->Clone(*pos);
+    if (next == NO_MORE_CHAIN) {
+        View::SetNotification("no more chains!");
         return;
-
-    unsigned char *src = viewData_->song_->chain_->data_ + 16 * current;
-    unsigned char *dst = viewData_->song_->chain_->data_ + 16 * next;
-
-    for (int i = 0; i < 16; i++) {
-        *dst++ = *src++;
-    };
-
-    src = viewData_->song_->chain_->transpose_ + 16 * current;
-    dst = viewData_->song_->chain_->transpose_ + 16 * next;
-
-    for (int i = 0; i < 16; i++) {
-        *dst++ = *src++;
-    };
+    }
     setChain((unsigned char)next);
     isDirty_ = true;
 };
@@ -194,76 +180,16 @@ void SongView::clonePosition() {
  ******************************************************/
 
 void SongView::deepClonePosition() {
-    Phrase *ph = viewData_->song_->phrase_;
-    Chain *ch = viewData_->song_->chain_;
     unsigned char *pos = viewData_->GetCurrentSongPointer();
     unsigned char curChainNum = *pos;
-
-    if (curChainNum == CHAIN_COUNT) {
-        View::SetNotification("no more chains!");
+    if (curChainNum == 0xFF)
+        return;
+    if (!viewData_->song_->DeepClonePhrases(curChainNum)) {
+        View::SetNotification("no more phrases!");
         return;
     }
-
-    unsigned char *srcChain = ch->data_ + 16 * curChainNum;
-    unsigned char *dstChain = ch->data_ + 16 * curChainNum;
-    unsigned short srcPhrases[16];
-    unsigned short dstPhrases[16];
-
-    // Init outside valid range
-    for (int i = 0; i < 16; i++) {
-        srcPhrases[i] = NO_MORE_CHAIN;
-        dstPhrases[i] = NO_MORE_CHAIN;
-    }
-
-    for (int i = 0; i < 16; i++) {
-        unsigned short srcPhraseNum = *srcChain;
-
-        // skip when "--"
-        if (srcPhraseNum == CHAIN_COUNT) {
-            srcChain++;
-            dstChain++;
-            continue;
-        }
-
-        unsigned short newPhraseNum = NO_MORE_CHAIN;
-
-        for (int j = 0; j < 16; j++) {
-            if (srcPhrases[j] == srcPhraseNum) {
-                newPhraseNum = dstPhrases[j];
-                break;
-            }
-        }
-
-        if (newPhraseNum == NO_MORE_CHAIN) {
-            newPhraseNum = ph->GetNext();
-            if (newPhraseNum == NO_MORE_PHRASE) {
-                View::SetNotification("no more phrases!");
-                return;
-            }
-            for (int k = 0; k < 16; k++) {
-                *(ph->note_ + 16 * newPhraseNum + k) =
-                    *(ph->note_ + 16 * srcPhraseNum + k);
-                *(ph->instr_ + 16 * newPhraseNum + k) =
-                    *(ph->instr_ + 16 * srcPhraseNum + k);
-                *(ph->cmd1_ + 16 * newPhraseNum + k) =
-                    *(ph->cmd1_ + 16 * srcPhraseNum + k);
-                *(ph->cmd2_ + 16 * newPhraseNum + k) =
-                    *(ph->cmd2_ + 16 * srcPhraseNum + k);
-                *(ph->param1_ + 16 * newPhraseNum + k) =
-                    *(ph->param1_ + 16 * srcPhraseNum + k);
-                *(ph->param2_ + 16 * newPhraseNum + k) =
-                    *(ph->param2_ + 16 * srcPhraseNum + k);
-            }
-        }
-        srcPhrases[i] = srcPhraseNum;
-        dstPhrases[i] = newPhraseNum;
-        *dstChain = newPhraseNum;
-        srcChain++;
-        dstChain++;
-    }
     View::SetNotification("deep clone");
-
-    setChain((unsigned char)curChainNum);
+    setChain(curChainNum);
 }
 
 void SongView::extendSelection() {
@@ -318,7 +244,7 @@ void SongView::fillClipboardData() {
 
     // Clear current selection data
 
-    if (!clipboard_.data_)
+    if (clipboard_.data_)
         SYS_FREE((void *)clipboard_.data_);
 
     // Prepare selection related information
@@ -390,7 +316,8 @@ void SongView::cutSelection() {
         dst += (SONG_CHANNEL_COUNT - clipboard_.width_);
     }
 
-    for (int j = 0; j > clipboard_.height_; j++) {
+    // The rows freed at the bottom are empty now
+    for (int j = 0; j < clipboard_.height_; j++) {
         for (int i = 0; i < clipboard_.width_; i++) {
             *dst++ = 0xFF;
         }
@@ -460,6 +387,143 @@ void SongView::pasteClipboard() {
     }
 
     updateCursor(0, height);
+}
+
+/******************************************************
+ X / Y / LB+Y: copy, paste, paste new copies
+ ******************************************************/
+
+void SongView::CopyAtCursor() {
+    if (viewMode_ == VM_SELECTION && clipboard_.active_) {
+        copySelection();
+        isDirty_ = true;
+        return;
+    }
+    // B+LB with no move yet: copy just the cell
+    viewMode_ = VM_NORMAL;
+    canDeepClone_ = false;
+    clipboard_.active_ = false;
+    unsigned char *c = viewData_->GetCurrentSongPointer();
+    if (*c == 0xFF) {
+        View::SetNotification("Empty: nothing to copy");
+        return;
+    }
+    clipboard_.x_ = viewData_->songX_;
+    clipboard_.y_ = viewData_->songY_;
+    clipboard_.offset_ = viewData_->songOffset_;
+    fillClipboardData();
+    static char msg[40];
+    sprintf(msg, "Copied chain %2.2X", *c);
+    View::SetNotification(msg);
+}
+
+void SongView::PasteAtCursor(bool fresh) {
+    // A selection in progress ends; the paste goes to the cursor
+    viewMode_ = VM_NORMAL;
+    canDeepClone_ = false;
+    clipboard_.active_ = false;
+    if (!clipboard_.data_) {
+        duplicateBelow();
+        return;
+    }
+    int x = viewData_->songX_;
+    int row = viewData_->songY_ + viewData_->songOffset_;
+    int width = clipboard_.width_;
+    int height = clipboard_.height_;
+    if (x + width > SONG_CHANNEL_COUNT)
+        width = SONG_CHANNEL_COUNT - x;
+    if (row + height > SONG_ROW_COUNT)
+        height = SONG_ROW_COUNT - row;
+    pasteClipboard();
+    isDirty_ = true;
+    static char msg[40];
+    if (!fresh) {
+        if (width * height == 1) {
+            sprintf(msg, "Pasted chain %2.2X", clipboard_.data_[0]);
+        } else {
+            sprintf(msg, "Pasted %dx%d", width, height);
+        }
+        View::SetNotification(msg);
+        return;
+    }
+    // New copies: each chain pasted becomes a new chain with new phrases
+    // (the same chain pasted twice becomes the same new one)
+    Song *song = viewData_->song_;
+    unsigned char from[256];
+    unsigned char to[256];
+    int mapped = 0;
+    int first = -1, last = -1;
+    bool complete = true;
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+            unsigned char *cell = song->data_ + x + i + SONG_CHANNEL_COUNT * (row + j);
+            if (*cell == 0xFF)
+                continue;
+            int copy = -1;
+            for (int k = 0; k < mapped; k++) {
+                if (from[k] == *cell)
+                    copy = to[k];
+            }
+            if (copy < 0) {
+                bool whole;
+                unsigned short next = song->DeepCloneChain(*cell, &whole);
+                if (next == NO_MORE_CHAIN) {
+                    View::SetNotification("Pasted; no more chains!");
+                    return;
+                }
+                complete = complete && whole;
+                from[mapped] = *cell;
+                to[mapped] = (unsigned char)next;
+                mapped++;
+                copy = next;
+                if (first < 0)
+                    first = copy;
+                last = copy;
+            }
+            *cell = (unsigned char)copy;
+        }
+    }
+    if (mapped == 1) {
+        sprintf(msg, "New chain %2.2X = copy of %2.2X", to[0], from[0]);
+    } else if (mapped > 1) {
+        sprintf(msg, "New chains %2.2X-%2.2X", first, last);
+    } else {
+        sprintf(msg, "Pasted %dx%d", width, height);
+    }
+    View::SetNotification(complete ? msg : "Pasted; no more phrases!");
+}
+
+void SongView::duplicateBelow() {
+    unsigned char *c = viewData_->GetCurrentSongPointer();
+    if (*c == 0xFF) {
+        View::SetNotification("Nothing copied: X copies");
+        return;
+    }
+    Song *song = viewData_->song_;
+    int x = viewData_->songX_;
+    int row = viewData_->songY_ + viewData_->songOffset_;
+    int target = row + 1;
+    while (target < SONG_ROW_COUNT &&
+           song->data_[x + SONG_CHANNEL_COUNT * target] != 0xFF) {
+        target++;
+    }
+    if (target >= SONG_ROW_COUNT) {
+        View::SetNotification("No empty row below");
+        return;
+    }
+    unsigned char source = *c;
+    bool complete;
+    unsigned short next = song->DeepCloneChain(source, &complete);
+    if (next == NO_MORE_CHAIN) {
+        View::SetNotification("no more chains!");
+        return;
+    }
+    song->data_[x + SONG_CHANNEL_COUNT * target] = (unsigned char)next;
+    viewData_->UpdateSongCursor(0, target - row);
+    isDirty_ = true;
+    static char msg[40];
+    sprintf(msg, "New chain %2.2X = copy of %2.2X", next, source);
+    View::SetNotification(complete ? msg : "Copied; no more phrases!");
 }
 
 void SongView::unMuteAll() {

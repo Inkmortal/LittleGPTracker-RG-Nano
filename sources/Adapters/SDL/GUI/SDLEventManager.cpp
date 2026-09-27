@@ -860,8 +860,12 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (!command.arg2.empty() && command.arg2[0]==' ') command.arg2.erase(0,1);
 	} else if (command.op=="expect_sample_stats") {
 		iss >> command.arg >> command.arg2 >> command.value >> command.value2;
-	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command") {
+	} else if (command.op=="sim_set_phrase_command" || command.op=="sim_set_table_command" ||
+	           command.op=="expect_table_command") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2 >> command.arg3;
+	} else if (command.op=="expect_groove_step") {
+		// <groove> <step> <hex value, FF for empty>
+		iss >> command.value >> command.value2 >> command.arg;
 	} else if (command.op=="wait_player") {
 		iss >> command.arg >> command.value >> command.value2;
 	} else if (command.op=="expect_player") {
@@ -1400,6 +1404,16 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="sim_set_table_command") {
 		if (!SimSetTableCommand(command.value,command.value2,atoi(command.arg.c_str()),command.arg2,command.arg3)) {
 			FailSimScript("table command setup failed");
+			return;
+		}
+	} else if (command.op=="expect_table_command") {
+		if (!ExpectSimTableCommand(command.value,command.value2,atoi(command.arg.c_str()),command.arg2,command.arg3)) {
+			FailSimScript("table command assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_groove_step") {
+		if (!ExpectSimGrooveStep(command.value,command.value2,command.arg)) {
+			FailSimScript("groove step assertion failed");
 			return;
 		}
 	} else if (command.op=="sim_save_project") {
@@ -3054,6 +3068,37 @@ bool SDLEventManager::SimSetTableCommand(int tableIndex, int row, int slot, cons
 	TableHolder::GetInstance()->SetUsed(tableIndex);
 	Trace::Log("RGNANO_SIM","sim_set_table_command table=%02X row=%d slot=%d command=%s param=%04X",tableIndex,row,slot,commandName.c_str(),param);
 	return true;
+}
+
+bool SDLEventManager::ExpectSimTableCommand(int tableIndex, int row, int slot, const std::string &commandName, const std::string &paramText)
+{
+	FourCC command=I_CMD_NONE;
+	ushort param=0;
+	if (tableIndex<0 || tableIndex>=TABLE_COUNT || row<0 || row>=TABLE_STEPS || slot<1 || slot>3 ||
+		!ParseSimCommandName(commandName,&command) || !ParseSimHexWord(paramText,&param)) {
+		Trace::Error("RGNANO_SIM expect_table_command invalid args table=%d row=%d slot=%d command=%s param=%s",tableIndex,row,slot,commandName.c_str(),paramText.c_str());
+		return false;
+	}
+	Table &table=TableHolder::GetInstance()->GetTable(tableIndex);
+	FourCC *cmds[3]={table.cmd1_,table.cmd2_,table.cmd3_};
+	ushort *params[3]={table.param1_,table.param2_,table.param3_};
+	bool matches=cmds[slot-1][row]==command && params[slot-1][row]==param;
+	Trace::Log("RGNANO_SIM","expect_table_command table=%02X row=%d slot=%d param=%04X expected %s %04X => %s",
+	           tableIndex,row,slot,params[slot-1][row],commandName.c_str(),param,matches?"match":"mismatch");
+	return matches;
+}
+
+bool SDLEventManager::ExpectSimGrooveStep(int groove, int step, const std::string &expected)
+{
+	if (groove<0 || groove>=MAX_GROOVES || step<0 || step>=16) {
+		Trace::Error("RGNANO_SIM expect_groove_step invalid args groove=%d step=%d",groove,step);
+		return false;
+	}
+	unsigned char actual=Groove::GetInstance()->GetGrooveData(groove)[step];
+	bool matches=ParseSimExpectedByte(expected,actual);
+	Trace::Log("RGNANO_SIM","expect_groove_step groove=%02X step=%d actual=%02X expected=%s => %s",
+	           groove,step,actual,expected.c_str(),matches?"match":"mismatch");
+	return matches;
 }
 
 bool SDLEventManager::SimSaveProject()

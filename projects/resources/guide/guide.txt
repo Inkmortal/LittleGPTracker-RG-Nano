@@ -2317,16 +2317,34 @@
 *B + RB / A + RB
    mute / solo the track;
    RB + LB unmutes all
+*X
+   copy what's under the
+   cursor, or the selection.
+   See Copy and paste
+~6,14,controls,Copy and paste
+*Y
+   paste it. With nothing
+   copied (Song, Chain): a
+   new copy of the chain or
+   phrase under the cursor in
+   the next empty row
+*LB + Y
+   make new ones: paste new
+   copies instead of the same
+   chains/phrases again; on a
+   Phrase, Table, Groove or
+   Instrument, duplicate the
+   one you're in
 *B + LB
    start a selection; move to
    grow it, or hold LB and
    tap B to grow it to whole
    rows, then the whole
    block. In a selection B
-   copies, A + LB cuts,
-   A + D-pad changes every
-   selected value; without
-   one, A + LB pastes
+   (or X) copies, A + LB
+   cuts, A + D-pad changes
+   every selected value;
+   without one, A + LB pastes
 *Select
    this screen's special
    tool: command picker, Live
@@ -2350,9 +2368,11 @@
  
 >On the RG Nano, Select is
 >the FN button. LB/RB are the
->shoulder buttons. The
->Menu/Power button opens the
->app menu: Volume and
+>shoulder buttons. X and Y
+>are the left and top face
+>buttons (next to B and A).
+>The Menu/Power button opens
+>the app menu: Volume and
 >Brightness (Left/Right),
 >Save and quit, Quit, don't
 >save (asks first) and Debug
@@ -2496,6 +2516,96 @@
  RB + a direction moves one
  screen, however long you
  hold it.
+=Copy and paste
+ X copies, Y pastes, on every
+ screen that has something to
+ copy. Each screen keeps its
+ own copy, and the screen
+ says what happened (Copied
+ chain 03, New phrase 07 =
+ copy of 03). Every paste can
+ be undone with B + Select.
+ 
+ "The same" or "new": a Song
+ cell only points at a chain,
+ and a Chain row at a phrase.
+ Y pastes the pointer, so
+ both places play (and change
+ with) the same chain. LB + Y
+ makes new ones: fresh chains
+ and phrases with the same
+ notes, so you can edit the
+ copy and leave the original
+ alone.
+ 
+*Song
+   copies the chain (or
+   selection)
+   Y: paste it here, rows
+   below move down. Nothing
+   copied: a new copy of this
+   chain (with new phrases)
+   in the next empty row
+   below, and the cursor goes
+   there
+   LB + Y: paste new copies
+   (new chains with new
+   phrases)
+*Chain
+   copies the phrase or
+   transpose (or selection)
+   Y: paste it here. Nothing
+   copied: a new copy of this
+   row's phrase in the next
+   empty row below
+   LB + Y: paste new copies
+   (new phrases)
+*Phrase
+   copies the step (or
+   selection)
+   Y: paste it here
+   LB + Y: duplicate this
+   phrase into the chain's
+   next empty row and open it
+*Table
+   copies the step (or
+   selection)
+   Y: paste it here
+   LB + Y: duplicate this
+   table into a new one and
+   open it
+*Groove
+   copies the whole groove
+   Y: paste it into this
+   groove
+   LB + Y: duplicate this
+   groove into the next
+   unused one and open it
+*Instrument
+   copies the whole sound
+   Y: paste it into this slot
+   (its type changes if
+   needed)
+   LB + Y: duplicate this
+   sound into the next free
+   slot and open it
+ 
+ A variation in one press: on
+ the Chain, put the cursor on
+ a phrase and press Y. The
+ copy lands in the next empty
+ row, ready to edit with
+ RB + Right. On the Song, the
+ same makes a whole new
+ chain.
+ 
+ The older combos still work:
+ B + LB then A + LB clones
+ the chain or phrase under
+ the cursor (on the Song,
+ A + LB again also copies its
+ phrases), and in a selection
+ B copies, A + LB cuts.
 =Everywhere
 *Start
    play / stop (what plays
@@ -2524,6 +2634,12 @@
 *B + LB
    start a selection; B
    copies it, A + LB pastes
+*X / Y / LB + Y
+   copy / paste / paste new
+   copies (see Copy and
+~14,8,controls,Copy and paste
+   paste)
+~0,7,controls,Copy and paste
  
  The small label at the top
  right says what is playing:
@@ -2975,6 +3091,34 @@
  fast - that's how people
  write full albums on a Game
  Boy.
+=Variations: same or new
+ Because a row only points at
+ a phrase, there are two
+ kinds of copy:
+ 
+ - Y pastes the same one.
+   Both rows play phrase 03;
+   change it and both change.
+   Right for a drum bar that
+   repeats.
+ - LB + Y makes a new one.
+   You get phrase 07 with the
+   same notes as 03; change
+   07 and 03 stays as it was.
+   Right for "the same bar,
+   but the last hit is
+   different".
+ 
+ The quickest variation: on
+ the Chain, put the cursor on
+ phrase 03 and press Y with
+ nothing copied. A new copy
+ lands in the next empty row,
+ ready to change. The Song
+ does the same with whole
+ chains. The full table is in
+ Controls.
+~0,8,controls,Copy and paste
 =Numbers are hex
  Values count 00 01 02 ... 09
  0A 0B 0C 0D 0E 0F 10 ... FF.

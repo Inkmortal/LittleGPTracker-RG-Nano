@@ -11,6 +11,8 @@ class ChainView : public View {
     virtual void ProcessButtonMask(unsigned short mask, bool pressed);
     virtual void DrawView();
     virtual void OnFocus();
+    virtual void CopyAtCursor();
+    virtual void PasteAtCursor(bool fresh);
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int tick = 0);
 
   protected:
@@ -31,6 +33,9 @@ class ChainView : public View {
     void copySelection();
     void cutSelection();
     void pasteClipboard();
+    // Y with nothing copied: a new copy of this row's phrase in the next
+    // empty row below
+    void duplicateBelow();
 
     void unMuteAll();
     void toggleMute();

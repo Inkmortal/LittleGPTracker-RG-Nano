@@ -16,6 +16,9 @@
 	<KEY_START value="s" />
 	<!-- This RG Nano OS path reports physical FN/Select as KEY_O. -->
 	<KEY_SELECT value="o" />
+	<!-- X copies, Y pastes (LB+Y: paste new copies) -->
+	<KEY_X value="x" />
+	<KEY_Y value="y" />
 	<KEY_POWER value="q" />
 	<KEYDELAY value="250"/>  <!-- hold this long before a key repeats -->
 	<KEYREPEAT value="66"/>  <!-- then every 66 ms (about 15 per second) -->

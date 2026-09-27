@@ -326,6 +326,64 @@ void TableView::pasteClipboard() {
     }
 };
 
+/******************************************************
+ X / Y / LB+Y: copy, paste, duplicate the table
+ ******************************************************/
+
+void TableView::CopyAtCursor() {
+    static char msg[40];
+    if (viewMode_ == VM_SELECTION && clipboard_.active_) {
+        copySelection();
+        sprintf(msg, "Copied %d row%s", clipboard_.height_,
+                clipboard_.height_ == 1 ? "" : "s");
+        View::SetNotification(msg);
+        return;
+    }
+    viewMode_ = VM_NORMAL;
+    clipboard_.active_ = false;
+    clipboard_.col_ = col_;
+    clipboard_.row_ = row_;
+    fillClipboardData();
+    sprintf(msg, "Copied %s, row %X", (col_ % 2) ? "value" : "command", row_);
+    View::SetNotification(msg);
+}
+
+void TableView::PasteAtCursor(bool fresh) {
+    clipboard_.active_ = false;
+    viewMode_ = VM_NORMAL;
+    static char msg[40];
+    if (fresh) {
+        // A new table with these steps, opened for editing
+        int source = viewData_->currentTable_;
+        // (an empty table not marked used could be handed back as its
+        // own copy)
+        TableHolder::GetInstance()->SetUsed(source);
+        int next = TableHolder::GetInstance()->Clone(source);
+        if (next == NO_MORE_TABLE) {
+            View::SetNotification("no more tables!");
+            return;
+        }
+        viewData_->currentTable_ = next;
+        updateCursor(0, 0);
+        isDirty_ = true;
+        sprintf(msg, "Now in %2.2X = copy of %2.2X", next, source);
+        View::SetNotification(msg);
+        return;
+    }
+    if (clipboard_.width_ == 0) {
+        View::SetNotification("Nothing copied: X copies");
+        return;
+    }
+    int rows = clipboard_.height_;
+    pasteClipboard();
+    if (rows == 1 && clipboard_.width_ == 1) {
+        sprintf(msg, "Pasted 1 cell");
+    } else {
+        sprintf(msg, "Pasted %d row%s", rows, rows == 1 ? "" : "s");
+    }
+    View::SetNotification(msg);
+}
+
 void TableView::updateCursor(int dx, int dy) {
 
     col_ += dx;

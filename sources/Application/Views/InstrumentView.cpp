@@ -1095,6 +1095,56 @@ void InstrumentView::warpToNext(int offset) {
 	isDirty_=true ;
 } ;
 
+// X: keep a copy of the whole sound
+void InstrumentView::CopyAtCursor() {
+	InstrumentBank *bank=viewData_->project_->GetInstrumentBank() ;
+	int i=viewData_->currentInstrument_ ;
+	if (!bank->CopyToClipboard(i)) {
+		SetNotification("MIDI can't be copied") ;
+		return ;
+	}
+	static char msg[40] ;
+	sprintf(msg,"Copied instrument %2.2X",i) ;
+	SetNotification(msg) ;
+}
+
+// Y: the copied sound into this slot. LB+Y: this sound into the next free
+// slot, which opens
+void InstrumentView::PasteAtCursor(bool fresh) {
+	InstrumentBank *bank=viewData_->project_->GetInstrumentBank() ;
+	int i=viewData_->currentInstrument_ ;
+	static char msg[40] ;
+	if (fresh) {
+		if (bank->GetInstrument(i)->GetType()==IT_MIDI) {
+			SetNotification("MIDI can't be copied") ;
+			return ;
+		}
+		unsigned short next=bank->Clone(i) ;
+		if (next==NO_MORE_INSTRUMENT) {
+			SetNotification("No free instrument slot") ;
+			return ;
+		}
+		viewData_->currentInstrument_=next ;
+		sprintf(msg,"Now in %2.2X = copy of %2.2X",next,i) ;
+	} else {
+		if (!bank->HasClipboard()) {
+			SetNotification("Nothing copied: X copies") ;
+			return ;
+		}
+		if (i>=MAX_SAMPLEINSTRUMENT_COUNT) {
+			SetNotification("Can't paste onto MIDI") ;
+			return ;
+		}
+		// The slot may get a new object: stop watching the old one first
+		ForgetInstrument(current_) ;
+		bank->PasteClipboard(i) ;
+		sprintf(msg,"Pasted into instrument %2.2X",i) ;
+	}
+	onInstrumentChange() ;
+	isDirty_=true ;
+	SetNotification(msg) ;
+}
+
 void InstrumentView::switchLabPage(int offset) {
 	labPage_+=offset;
 	if (labPage_<0) {

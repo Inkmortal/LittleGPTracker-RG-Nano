@@ -55,8 +55,21 @@ InstrumentBank::InstrumentBank():Persistent("INSTRUMENTBANK") {
         s->SetChannel(i) ;
         instrument_[MAX_SAMPLEINSTRUMENT_COUNT+i]=s ;
     }
+    clipboard_=0 ;
     Status::Set("All instrument loaded") ;
 } ;
+
+// Every value of src into dst (same type): the whole sound
+static void copyValues(I_Instrument *src,I_Instrument *dst) {
+	IteratorPtr<Variable> it(src->GetIterator()) ;
+	for (it->Begin();!it->IsDone();it->Next()) {
+		Variable &srcV=it->CurrentItem() ;
+		Variable *dstV=dst->FindVariable(srcV.GetID()) ;
+		if (dstV) {
+			dstV->CopyFrom(srcV) ;
+		}
+	}
+}
 
 //
 // Assigns default instruments value for new project
@@ -103,7 +116,8 @@ bool InstrumentBank::SetInstrumentType(int i,InstrumentType type) {
 InstrumentBank::~InstrumentBank() {
 	for (int i=0;i<MAX_INSTRUMENT_COUNT;i++) {
 		delete instrument_[i] ;
-	}	
+	}
+	delete clipboard_ ;
 } ;
 
 I_Instrument *InstrumentBank::GetInstrument(int i) {
@@ -292,18 +306,37 @@ unsigned short InstrumentBank::Clone(unsigned short i) {
   
 	dst=createInstrument(src->GetType()) ;
 	instrument_[next]=dst ;
-	IteratorPtr<Variable> it(src->GetIterator()) ;
-	for (it->Begin();!it->IsDone();it->Next()) {
-		Variable &srcV=it->CurrentItem() ;
-		Variable *dstV=dst->FindVariable(srcV.GetID()) ;
-		if (dstV) {
-			dstV->CopyFrom(srcV) ;
-		}
-	}
+	copyValues(src,dst) ;
 	// A sample instrument picks up its sound from the copied sample index
 	dst->Init() ;
 	return next ;
 
+}
+
+bool InstrumentBank::CopyToClipboard(int i) {
+	I_Instrument *src=instrument_[i] ;
+	if (src->GetType()==IT_MIDI) return false ;
+	if (clipboard_ && clipboard_->GetType()!=src->GetType()) {
+		delete clipboard_ ;
+		clipboard_=0 ;
+	}
+	if (!clipboard_) {
+		clipboard_=createInstrument(src->GetType()) ;
+	}
+	copyValues(src,clipboard_) ;
+	return true ;
+}
+
+bool InstrumentBank::PasteClipboard(int i) {
+	if (!clipboard_ || i<0 || i>=MAX_SAMPLEINSTRUMENT_COUNT) return false ;
+	// A new object when the type differs, else the same one: either way
+	// nothing may still be playing the old sound
+	if (!SetInstrumentType(i,clipboard_->GetType())) return false ;
+	I_Instrument *dst=instrument_[i] ;
+	Player::GetInstance()->ForgetInstrument(dst) ;
+	copyValues(clipboard_,dst) ;
+	dst->Init() ;
+	return true ;
 }
 
 void InstrumentBank::OnStart() {

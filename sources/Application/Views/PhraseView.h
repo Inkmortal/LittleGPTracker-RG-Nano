@@ -17,6 +17,9 @@ class PhraseView : public View {
     virtual void DrawView();
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int tick = 0);
     virtual void OnFocus();
+    virtual void CopyAtCursor();
+    // Y pastes the copied steps; LB+Y duplicates this phrase instead
+    virtual void PasteAtCursor(bool fresh);
     void onCommandSelectorResult(ModalView &d);
     void onCommandSelectorPreview(ModalView &d);
 
@@ -41,6 +44,7 @@ class PhraseView : public View {
     void copySelection();
     void cutSelection();
     void pasteClipboard();
+    void duplicatePhrase();
 
     void unMuteAll();
     void toggleMute();

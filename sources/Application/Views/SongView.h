@@ -16,6 +16,8 @@ class SongView : public View {
     virtual void DrawView();
     virtual void OnPlayerUpdate(PlayerEventType, unsigned int tick = 0);
     virtual void OnFocus();
+    virtual void CopyAtCursor();
+    virtual void PasteAtCursor(bool fresh);
 
   protected:
     void processNormalButtonMask(unsigned int mask);
@@ -35,6 +37,9 @@ class SongView : public View {
     GUIRect getSelectionRect();
     void copySelection();
     void pasteClipboard();
+    // Y with nothing copied: a new copy of the chain under the cursor in
+    // the next empty row below it
+    void duplicateBelow();
     void cutSelection();
 
     void unMuteAll();

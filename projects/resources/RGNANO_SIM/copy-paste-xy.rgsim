@@ -1,0 +1,280 @@
+# X copies, Y pastes, LB+Y makes new copies, on every screen (real key
+# presses). Y with nothing copied on Song/Chain duplicates the item under
+# the cursor into the next empty row: one press makes a variation.
+route boot.new_project_random
+expect_view song
+# Chain 02 on track 1 row 00, holding phrase 05 whose first note is C 4
+# (instrument 00, the starter kit's KICK); table 00 starts with VOLM 40
+sim_set_song_chain 0 0 2
+sim_set_chain_phrase 2 0 5 0
+sim_set_phrase_note 5 0 60 0
+sim_set_table_command 0 0 1 VOLM 0040
+wait 100
+
+# --- Song ---
+# Y, nothing copied: chain 00 = a deep copy of 02 (its phrase 05 copied
+# as phrase 00) in the next empty row, and the cursor goes there
+press y 80
+wait 100
+expect_screen_text New chain 00 = copy of 02
+expect_song_chain 1 0 00
+expect_chain_phrase 0 0 00
+expect_phrase_note 0 0 60
+expect_chain_phrase 2 0 05
+# One undo step: B+Select takes it back, LB+Select brings it back
+down b
+press k 80
+up b
+wait 100
+expect_song_chain 1 0 FF
+down m
+press k 80
+up m
+wait 100
+expect_song_chain 1 0 00
+expect_chain_phrase 0 0 00
+# X copies chain 00; Y pastes it on the next row (the Song inserts)
+press x 80
+wait 100
+expect_screen_text Copied chain 00
+press d 80
+press y 80
+wait 100
+expect_screen_text Pasted chain 00
+expect_song_chain 2 0 00
+# LB+Y: a new copy of what was copied (chain 01, phrase 01)
+down m
+press y 80
+up m
+wait 100
+expect_screen_text New chain 01 = copy of 00
+expect_song_chain 3 0 01
+expect_chain_phrase 1 0 01
+expect_phrase_note 1 0 60
+expect_song_chain 0 0 02
+
+# --- Chain 02, opened from row 00 (the paste left the cursor on row 04) ---
+press u 80
+press u 80
+press u 80
+press u 80
+down n
+press r 80
+up n
+wait 150
+expect_view chain
+expect_screen_text Chain 02
+# Y, nothing copied: phrase 02 = copy of 05 in the next empty row
+press y 80
+wait 100
+expect_screen_text New phrase 02 = copy of 05
+expect_chain_phrase 2 1 02
+expect_phrase_note 2 0 60
+press x 80
+wait 100
+expect_screen_text Copied phrase 02
+press d 80
+press y 80
+wait 100
+expect_screen_text Pasted phrase 02
+expect_chain_phrase 2 2 02
+down m
+press y 80
+up m
+wait 100
+expect_screen_text New phrase 03 = copy of 02
+expect_chain_phrase 2 3 03
+# A selection: B+LB, Down, X copies both rows; Y pastes them at row 06
+press u 80
+press u 80
+press u 80
+press u 80
+down b
+press m 80
+up b
+press d 80
+press x 80
+wait 100
+expect_screen_text copied selection
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press y 80
+wait 100
+expect_screen_text Pasted 2 rows
+expect_chain_phrase 2 6 05
+expect_chain_phrase 2 7 02
+
+# --- Phrase 05, opened from chain row 00 ---
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+down n
+press r 80
+up n
+wait 150
+expect_view phrase
+press x 80
+wait 100
+expect_screen_text Copied note, row 0
+press d 80
+press y 80
+wait 100
+expect_screen_text Pasted 1 cell
+expect_phrase_note 5 1 60
+# LB+Y: phrase 04 = copy of 05 in the chain's next empty row, opened
+down m
+press y 80
+up m
+wait 150
+expect_view phrase
+expect_screen_text Now in 04 = copy of 05
+expect_chain_phrase 2 4 04
+expect_phrase_note 4 0 60
+expect_phrase_note 4 1 60
+
+# --- Groove 00 (Phrase RB+Up) ---
+down n
+press u 80
+up n
+wait 150
+expect_view groove
+# Step 0: 6 -> 7 ticks, then copy the groove
+down a
+press r 80
+up a
+wait 100
+expect_groove_step 0 0 07
+press x 80
+wait 100
+expect_screen_text Copied groove 00
+# LB+Y: groove 01 (unused) becomes a copy and opens
+down m
+press y 80
+up m
+wait 100
+expect_screen_text Now in 01 = copy of 00
+expect_groove_step 1 0 07
+expect_groove_step 1 1 06
+# The next groove, then Y pastes the copy into it
+down b
+press r 80
+up b
+wait 100
+press y 80
+wait 100
+expect_screen_text Pasted into groove 02
+expect_groove_step 2 0 07
+
+# --- Table 00 (Groove RB+Down = Phrase, Phrase RB+Down = Table) ---
+down n
+press d 80
+up n
+wait 150
+expect_view phrase
+down n
+press d 80
+up n
+wait 150
+expect_view table
+expect_screen_text Table 00
+press x 80
+wait 100
+expect_screen_text Copied command, row 0
+press d 80
+press y 80
+wait 100
+expect_screen_text Pasted 1 cell
+expect_table_command 0 1 1 VOLM 0000
+# LB+Y: table 01 = copy of 00, opened
+down m
+press y 80
+up m
+wait 100
+expect_screen_text Now in 01 = copy of 00
+expect_screen_text Table 01
+expect_table_command 1 0 1 VOLM 0040
+expect_table_command 1 1 1 VOLM 0000
+
+# --- Instrument 00 (Table RB+Up = Phrase, Phrase RB+Right = the note's) ---
+down n
+press u 80
+up n
+wait 150
+expect_view phrase
+# Phrase 04 again, cursor on row 02: up to the C 4 on row 00
+expect_screen_text Phrase 04
+press u 80
+press u 80
+down n
+press r 80
+up n
+wait 150
+expect_view instrument
+expect_screen_text Instrument 00
+press x 80
+wait 100
+expect_screen_text Copied instrument 00
+# B+Down: instrument 10, an empty sample slot; Y pastes the kick there
+down b
+press d 80
+up b
+wait 100
+expect_screen_text Instrument 10
+expect_instrument_type 16 Sample
+press y 80
+wait 150
+expect_screen_text Pasted into instrument 10
+expect_instrument_type 16 Synth
+expect_instrument_name 16 KICK
+# LB+Y: the next free slot becomes a copy and opens
+down m
+press y 80
+up m
+wait 150
+expect_screen_text Now in 11 = copy of 10
+expect_screen_text Instrument 11
+expect_instrument_type 17 Synth
+expect_instrument_name 17 KICK
+# The copy is a separate sound: the pasted slot is still there
+expect_instrument_name 16 KICK
+
+# --- A screen with nothing to copy (Mixer) says so ---
+down n
+press l 80
+up n
+wait 150
+expect_view phrase
+down n
+press l 80
+up n
+wait 150
+down n
+press l 80
+up n
+wait 150
+expect_view song
+down n
+press d 80
+up n
+wait 150
+expect_view mixer
+press x 80
+wait 100
+expect_screen_text Nothing to copy here
+press y 80
+wait 100
+expect_screen_text Nothing to paste here
+
+expect_no_error
+quit
