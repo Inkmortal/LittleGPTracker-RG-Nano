@@ -356,6 +356,11 @@ def build_page() -> str:
             out.append(f'<img src="images/walkthrough/{image_name(n)}" width="240" alt="{alt}">')
             out.append("")
             n += 1
+        # What you should hear / a checkpoint: one quoted paragraph each
+        for para in section.done.strip().split("\n\n"):
+            if para.strip():
+                out.append("> " + " ".join(para.split()))
+                out.append("")
     out.append(OUTRO.strip())
     return "\n".join(out) + "\n"
 

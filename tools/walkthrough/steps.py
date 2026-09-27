@@ -40,6 +40,9 @@ class Section:
     title: str
     text: str
     steps: list[Step]
+    # After the steps: what you should hear now, and a quick check that
+    # you're on track (a highlighted tip in the app's guide)
+    done: str = ""
 
 
 def S(keys: str, say: str, wait: int = 0, expect: str | list[str] | None = None) -> Step:
@@ -56,9 +59,16 @@ LISTEN = 2600  # ms of playback before the screenshot of a "listen" step
 INTRO = """
 # Your First Song
 
-You'll build **Afterglow**, a melodic house track in C minor at 128 BPM: punchy Macro Synth drums with swung 16th hats, a rolling bass, huge HyperSynth chords that pump with the kick, FM electric piano stabs, a trance lead with a hook that sticks, snare rolls and reversed cymbals into every drop, and a proper arrangement: intro, build, drop, break, build, drop, outro.
+You'll build **Afterglow**, a melodic house track in C minor at 128 BPM, about a minute and a half long: a deep Macro Synth kick with swung 16th hats, a bouncing offbeat bass, wide HyperSynth chords that pump with the kick, FM electric piano stabs, a trance lead with a hook that sticks, snare rolls and reversed cymbals into every drop, and a proper arrangement: intro, groove, build, drop, break, build, drop, outro.
 
-On the way you use nearly everything the app can do: the synth engines and the Macro Synth, a sample from the packs, commands, the fill and random tools, modulation, EQ and effects, resampling, undo, bookmarks, the mixer, Live mode and export. Plan on an hour or two; every chapter ends with something new to listen to.
+On the way you use nearly everything the app can do: the synth engines and the Macro Synth, a sample from the packs, commands, the fill and random tools, envelopes, modulation, EQ and effects, resampling, undo, bookmarks, the mixer, Live mode and export. Plan on an hour or two; every chapter ends with what you should hear and a quick checkpoint.
+
+**Four ideas make it sound good**, and they work in any song you make later:
+
+1. **Kick and bass take turns.** Both live in the low end: the kick plays on the beat, the bass in between, with short notes.
+2. **Everything else stays out of the low end.** The pad loses its sub and the lows in its EQ, so the bottom stays clean and punchy.
+3. **Sections are made by taking parts away.** The drop has everything; the intro, build and break leave things out, so the drop hits when they come back.
+4. **One thing in front.** The hook is the loudest melodic part; the pad sits behind it as a backdrop.
 
 Want to hear where you're going first? **Afterglow** is in the [Demo Songs](Demo-Songs): open it and press **Start**.
 
@@ -124,7 +134,9 @@ You'll make a new song and call it GLOW.
         S("RB+Select", "The **helper**. Its map shows where you are (`SONG`) and which screen **RB** + each direction takes you to. It works on every screen.",
           expect="MAP"),
         S("RB+Select", "The helper closes."),
-    ]),
+    ], done="""
+**Checkpoint:** the Song screen of your new song, titled `Song - GLOW`, all empty.
+"""),
     Section("2. Tempo and key", """
 The Project screen holds the song's settings. You'll set the tempo and the key. With a key set, editing a note only walks through the notes of that key, so a wrong note is hard to hit.
 """, [
@@ -140,7 +152,9 @@ The Project screen holds the song's settings. You'll set the tempo and the key. 
           expect="Aeolian"),
         S("RB+Left", "Back on Project."),
         S("RB+Down", "Back on the Song screen."),
-    ]),
+    ], done="""
+**Checkpoint:** Project shows `128 bpm`, `Key: C` and `Aeolian mode (minor)`. Nothing to hear yet.
+"""),
     # ------------------------------------------------------------------ drums
     Section("3. The kick", """
 A song is built from three kinds of blocks:
@@ -164,7 +178,11 @@ You'll start with a kick on every beat, in track 1.
         S("A", "Kick. Four on the floor."),
         S("Start", "The bar plays on a loop: `PLAY:PHR`, and a marker runs down the steps.", wait=LISTEN),
         S("Start", "Stop."),
-    ]),
+    ], done="""
+**You should hear:** a steady thump on every beat, looping.
+
+**Checkpoint:** phrase `00` has `C 3 I00` on steps `0`, `4`, `8` and `C`.
+"""),
     Section("4. A Macro Synth kick", """
 `I00` is a plain synth kick, from the kit every new song starts with. The **Macro Synth** has a much punchier one. Switching an instrument over is the same few moves for every sound in this song.
 """, [
@@ -180,7 +198,11 @@ You'll start with a kick on every beat, in track 1.
         S("RB+Left", "Back on chain `00`."),
         *rows_of("00", "00"),
         S("RB+Left", "Back on the Song screen."),
-    ]),
+    ], done="""
+**You should hear:** a deeper, rounder kick with real weight under it. On the RG Nano's little speaker the lowest part is hard to hear: headphones show what the song really sounds like.
+
+**Checkpoint:** chain `00` plays phrase `00` on all four rows.
+"""),
     Section("5. Snare, with reverb", """
 Track 2: a snare on beats 2 and 4. It needs its own chain and phrase: on an empty spot **A** reuses the last one, and **A** again makes a new one.
 
@@ -205,17 +227,21 @@ The Chain and Phrase screens keep the cursor where you left it, even in a new ch
         S("A+Right", "`type   macro`.", expect="MACRO"),
         S("Down", "The cursor is on `preset init`."),
         S("A+Right x16", "`preset snare`.", expect="snare"),
-        S("LB+Right x5", "**LB + Left/Right** flips through the instrument's pages. Page 6, **MIX**: volume, pan and the three effect sends.",
+        S("LB+Right x5", "**LB + Left/Right** flips through the instrument's pages. Page 6, **MIX**: volume, pan and the three effect sends. The cursor is on `volume C0`.",
           expect="MIX"),
+        S("A+Up x2", "`volume E0`: the snare a little louder, so it cracks through on beats 2 and 4. **A + Up/Down** moves in big steps.",
+          expect="E0"),
         S("Down x2", "The cursor is on `reverb 00`."),
-        S("A+Up x4", "`reverb 40`: the snare now sends a little of itself into the reverb. **A + Up/Down** moves in big steps.",
+        S("A+Up x4", "`reverb 40`: the snare now sends a little of itself into the reverb, a short tail after each hit.",
           expect="40"),
         S("LB+Left x5", "Back on page 1, so the next instrument you open starts there too."),
         S("RB+Left", "Back on phrase `01`."),
         S("RB+Left", "Back on chain `01`."),
         *rows_of("01", "01"),
         S("RB+Left", "Back on the Song screen."),
-    ]),
+    ], done="""
+**Checkpoint:** row `00` of the Song screen has chain `00` in track 1 and `01` in track 2. Chain `01` plays phrase `01`, a snare on steps `4` and `C`.
+"""),
     Section("6. Hats: fill and chance", """
 Track 3: a hi-hat on every 16th. You'll enter one and let the **fill** tool copy it down the bar. Then every 4th hat gets `CHNC 0080`: it plays only half the time, so the pattern never loops exactly the same.
 """, [
@@ -268,7 +294,9 @@ Track 3: a hi-hat on every 16th. You'll enter one and let the **fill** tool copy
         S("RB+Left", "Back on the Song screen."),
         S("Start", "The song plays from the cursor's row: kick, snare and hats.", wait=LISTEN),
         S("Start", "Stop."),
-    ]),
+    ], done="""
+**You should hear:** kick, snare, and a hi-hat ticking on every 16th, some of the quiet ones between the beats coming and going.
+"""),
     Section("7. Swing", """
 Straight 16ths sound stiff. A **groove** sets how long each step lasts, in ticks: `06 06` is even, `07 05` makes every second 16th a little late. That's swing.
 """, [
@@ -283,10 +311,18 @@ Straight 16ths sound stiff. A **groove** sets how long each step lasts, in ticks
         S("RB+Down", "Back on phrase `02`."),
         S("RB+Left", "Chain `02`."),
         S("RB+Left", "Song."),
-    ]),
+    ], done="""
+**You should hear:** the hats lean into a shuffle. Swing only moves the in-between steps, so the kick and snare stay exactly on the beat.
+"""),
     # --------------------------------------------------------------- harmony
     Section("8. Bass", """
-Track 4: a rolling bass, a note on every 8th: `C C C(high) C C C C(high) G`. Just the root, its octave and its 5th, so it fits every chord once the chain moves it around.
+Track 4: the bass. In house music the bass plays **between** the kicks, on the offbeats (steps `2`, `6`, `A`, `E`). Kick and bass both live in the low end: if they hit together they smear into one dull thud, if they take turns you hear both, and the groove bounces.
+
+The line is just the root `C`, one note an octave up (a little pop on step `7`) and the 5th `G` on the last step, leading back to the start. Roots, octaves and 5ths fit every chord, so it still works once the chain moves it around.
+
+| Step | 2 | 6 | 7 | A | E | F |
+| --- | --- | --- | --- | --- | --- | --- |
+| Note | `C 3` | `C 3` | `C 4` | `C 3` | `C 3` | `G 3` |
 """, [
         S("Right", "Track 4, row `00`."),
         S("A", "Chain `02` goes in."),
@@ -296,52 +332,62 @@ Track 4: a rolling bass, a note on every 8th: `C C C(high) C C C C(high) G`. Jus
         S("A", "A new phrase `03`.", expect="New phrase 03"),
         S("RB+Right", "Phrase `03`, empty. The cursor is on step `0`, in the command column, where you left the hats."),
         S("Left x2", "The note column."),
+        S("Down x2", "Step `2`, the first offbeat: halfway between the kicks on `0` and `4`."),
         S("A", "`C 3 I02`, a copy of the hat."),
         S("Right", "The cursor is on `I02`."),
         S("A+Right x3", "`I05`, the **BASS**: a saw and a sub, tuned two octaves down.", expect="BASS"),
         S("Left", "Back on the note."),
-        S("Down x2", "Step `2`."),
-        S("A", "`C 3`."),
-        S("Down x2", "Step `4`."),
+        S("Down x4", "Step `6`, the next offbeat."),
+        S("A", "`C 3`: **A** on an empty step copies the last note."),
+        S("Down", "Step `7`."),
         S("A", "`C 3`."),
         S("A+Up", "`C 4`: **A + Up** moves a note up an octave."),
-        S("Down x2", "Step `6`."),
+        S("Down x3", "Step `A`."),
         S("A", "`C 4`: a new note copies the last one, edit included."),
         S("A+Down", "`C 3`: an octave down."),
-        S("Down x2", "Step `8`."),
+        S("Down x4", "Step `E`."),
         S("A", "`C 3`."),
-        S("Down x2", "Step `A`."),
+        S("Down", "Step `F`, the last 16th of the bar."),
         S("A", "`C 3`."),
-        S("Down x2", "Step `C`."),
-        S("A", "`C 3`."),
-        S("A+Up", "`C 4`."),
-        S("Down x2", "Step `E`."),
-        S("A", "`C 4`."),
-        S("A+Left x3", "`G 3`. **A + Left/Right** walks through the notes of C minor: `A#3`, `G#3`, `G 3`."),
-        S("Start", "The bass line.", wait=LISTEN),
+        S("A+Right x4", "`G 3`. **A + Left/Right** walks through the notes of C minor: `D 3`, `D#3`, `F 3`, `G 3`."),
+        S("Start", "The bass line. It still hums on over the kicks: the next chapter fixes that.", wait=LISTEN),
         S("Start", "Stop."),
-    ]),
-    Section("9. Try a sound, then undo", """
+    ], done="""
+**You should hear:** the bass bouncing between the kick hits, a jump up on step `7`, and a lift on the last step that leads back to the start.
+"""),
+    Section("9. Shape the bass, try a sound, undo", """
 Every synth has presets to flip through. Try one, and if you don't like it, **B + Select** undoes it (**LB + Select** redoes). Undo works for every change, on every screen.
+
+Then the envelope: how a note's volume moves once it starts. The bass preset holds its notes (`sustain 90`), so each one is still humming when the next kick lands. With `sustain 00` every note dies away on its own: short, bouncy notes that leave the kick room to punch.
 """, [
         S("RB+Right", "Instrument `I05`, the BASS, cursor on `preset bass`.", expect="BASS"),
         S("A+Right", "`preset subbass`: a clean sine."),
         S("Start", "Deep, but too soft for this song.", wait=LISTEN),
         S("Start", "Stop."),
         S("B+Select", "Undo: `preset bass` is back, with all its settings.", expect="bass"),
+        S("LB+Right", "Page 2, **ENV**: the volume envelope, drawn as a curve. The cursor is on `attack`.", expect="ENV"),
+        S("Down x2", "The cursor is on `sustn 90`: how loud a held note stays."),
+        S("A+Down x9", "`sustn 00`: the curve now falls all the way to nothing."),
+        S("Start", "Short, bouncy notes that stop before each kick. Kick and bass take turns.", wait=LISTEN),
+        S("Start", "Stop."),
+        S("LB+Left", "Back on page 1."),
         S("RB+Left", "Back on phrase `03`."),
         S("RB+Left", "Back on chain `03`."),
         *rows_of("03", "03"),
-    ]),
+    ], done="""
+**You should hear:** short, plucky bass notes, each one gone before the next kick. Compare with how it sounded a minute ago: the low end is clearer, and the groove bounces.
+
+**Checkpoint:** `I05` still says `preset bass`; page 2 shows `sustn 00`.
+"""),
     Section("10. Four chords, one bar", """
 The second column of a chain **transposes** its row: every note of that bar moves up or down, in semitones. So one bar of bass plays four chords:
 
 | Row | Transpose | Chord |
 | --- | --- | --- |
 | 0 | `00` | C minor |
-| 1 | `FC` (4 down) | A♭ major |
-| 2 | `03` (3 up) | E♭ major |
-| 3 | `FE` (2 down) | B♭ major |
+| 1 | `FC` (4 down) | Ab major |
+| 2 | `03` (3 up) | Eb major |
+| 3 | `FE` (2 down) | Bb major |
 
 That's the song's chord progression. The pad and the keys use the same trick.
 """, [
@@ -349,11 +395,13 @@ That's the song's chord progression. The pad and the keys use the same trick.
         S("Start", "**Start** on a chain loops this track's chain: the bass walks through the four chords.", wait=2 * LISTEN),
         S("Start", "Stop."),
         S("RB+Left", "Back on the Song screen."),
-    ]),
+    ], done="""
+**You should hear:** the bass line moving through four chords, one per bar: C minor, Ab, Eb, Bb.
+"""),
     Section("11. The HyperSynth pad", """
-Track 5 gets the big chords. The **HyperSynth** engine plays a six-note chord from every note, and with its `scale` switch on, every chord stays in C minor whatever the transpose: a C makes C minor 9, an A♭ makes A♭ major 9.
+Track 5 gets the big chords. The **HyperSynth** engine plays a six-note chord from every note, and with its `scale` switch on, every chord stays in C minor whatever the transpose: a C makes C minor 9, an Ab makes Ab major 9.
 
-Two more things make it sit in the mix: a **MOD** slot that ducks it every time the kick hits (the "pumping" of house music), and its own **EQ** taking out the low end, which belongs to the kick and bass.
+A pad is the background: it should fill the space around the drums, bass and hook, not sit on top of them. So three things make it fit: its `sub` oscillator goes off and its own **EQ** takes out the low end (that belongs to the kick and bass; a pad with bass in it turns the whole mix to mud), and a **MOD** slot ducks it every time the kick hits, the "pumping" of house music.
 """, [
         S("Right", "Track 5, row `00`."),
         S("A", "Chain `03` goes in."),
@@ -363,8 +411,8 @@ Two more things make it sit in the mix: a **MOD** slot that ducks it every time 
         S("Up", "Row `0`."),
         S("A", "Phrase `03` goes in."),
         S("A", "A new phrase `04`.", expect="New phrase 04"),
-        S("RB+Right", "Phrase `04`, cursor on step `E`."),
-        S("Up x14", "Step `0`."),
+        S("RB+Right", "Phrase `04`, cursor on step `F`."),
+        S("Up x15", "Step `0`."),
         S("A", "`G 3 I05`, a copy of the last bass note."),
         S("A+Left x4", "`C 3`."),
         S("Right", "The cursor is on `I05`."),
@@ -377,8 +425,10 @@ Two more things make it sit in the mix: a **MOD** slot that ducks it every time 
         S("A+Right", "`preset hyper pad`: slow, wide and warm.", expect="hyper pad"),
         S("Down", "The cursor is on `chord min9`. The two rows under it are the six notes it plays."),
         S("A+Left", "`chord maj9`."),
-        S("Down x7", "The cursor is on `scale off`."),
-        S("A+Right", "`scale on`."),
+        S("Down x6", "The cursor is on `sub 30`: an extra oscillator an octave under the chord."),
+        S("A+Down x3", "`sub 00`: the low end stays free for the kick and bass."),
+        S("Down", "The cursor is on `scale off`."),
+        S("A+Right", "`scale on`: every chord now uses only the notes of C minor."),
         S("Start", "One lush chord.", wait=LISTEN),
         S("Start", "Stop."),
         S("LB+Right x4", "Page 5, **MOD**: four modulation slots, all off.", expect="MOD"),
@@ -399,7 +449,11 @@ Two more things make it sit in the mix: a **MOD** slot that ducks it every time 
         S("RB+Left", "Back on the Song screen."),
         S("Start", "Drums, bass and pumping chords.", wait=2 * LISTEN),
         S("Start", "Stop."),
-    ]),
+    ], done="""
+**You should hear:** a wide, warm chord that dips each time the kick hits and swells back up between them, behind the drums rather than on top.
+
+**Checkpoint:** chain `04` has the same transposes as chain `03`: `00 FC 03 FE`.
+"""),
     Section("12. FM keys and CHRD", """
 Track 6: an FM electric piano stabbing on the off-beats. The `CHRD` command turns one note into a chord: each digit of its value adds a note that many semitones up. `007E` adds 7 (the 5th) and `E` = 14 (the 9th): an open sound that fits all four chords.
 """, [
@@ -445,7 +499,9 @@ Track 6: an FM electric piano stabbing on the off-beats. The `CHRD` command turn
         *rows_of("05", "05"),
         *transposes(""),
         S("RB+Left", "Back on the Song screen."),
-    ]),
+    ], done="""
+**You should hear:** bright electric-piano chords on the offbeats, landing together with the bass: the two lock into one bouncing part.
+"""),
     # ------------------------------------------------------------------ hook
     Section("13. The hook", """
 Track 7: the lead. First let the app write a random melody, just to hear what it does, and undo it. Then enter the real hook, three bars (bars 1 and 3 are the same):
@@ -554,10 +610,27 @@ The same rhythm every bar with a new shape each time: that's what makes a hook s
         S("RB+Left", "Back on the Song screen."),
         S("Start", "Everything together: this is the drop.", wait=3 * LISTEN),
         S("Start", "Stop."),
-    ]),
+    ], done="""
+**You should hear:** everything at once, the hook on top: that's the drop.
+
+**Checkpoint:** row `00` has chains `00` to `06` in tracks 1 to 7; track 8 is still empty.
+"""),
     # ----------------------------------------------------------- arrangement
     Section("14. Copy the drop", """
-Row `00` is the whole drop. The arrangement is that row, copied and changed: parts drop out, fills lead into each drop. First, copy it to rows `01` to `03`.
+Row `00` now plays everything at once: that's the **drop**, the part of a dance track everyone waits for. The rest of the song is built around it, so it hits harder when it arrives:
+
+| Row | Section | What plays |
+| --- | --- | --- |
+| `00` | intro | kick, hats, keys |
+| `01` | groove | + snare and bass |
+| `02` | build | + pad, a snare roll, the kick drops out for the last bar |
+| `03` `04` | drop | everything, with the hook |
+| `05` | break | just the pad and the hook |
+| `06` | build | like `02`, with the hook |
+| `07` `08` | drop | everything again |
+| `09` `0A` | outro | the groove and the intro again, and out |
+
+Every section starts as a copy of the drop with parts taken out. First, copy row `00` to rows `01` to `04`.
 """, [
         S("Left x6", "Track 1."),
         S("B+LB", "A selection on the cell..."),
@@ -567,11 +640,16 @@ Row `00` is the whole drop. The arrangement is that row, copied and changed: par
         S("A+LB", "Pasted: row `01` plays the drop too. The cursor moves on to the next row."),
         S("A+LB", "Row `02`."),
         S("A+LB", "Row `03`."),
-    ]),
-    Section("15. A rest chain", """
+        S("A+LB", "Row `04`."),
+    ], done="""
+**Checkpoint:** rows `00` to `04` are the same: `00 01 02 03 04 05 06`, with track 8 empty.
+"""),
+    Section("15. A rest chain; intro and groove", """
 A track only goes quiet where it plays something silent: a chain whose phrase says `KILL` (stop the note). Chain `07` is that rest. You'll put it everywhere a part should drop out, and every track needs something on every row: a track that reaches an empty cell stops for the rest of the song.
+
+Then the rests carve the intro and the groove out of the drop. Taking parts **out** is what makes a section feel different; when they come back, you feel it.
 """, [
-        S("Up x4", "Row `00`: it becomes the intro, just hats, pad and keys."),
+        S("Up x5", "Row `00`."),
         S("Right x7", "Track 8, still empty."),
         S("A", "The last chain goes in..."),
         S("A", "...and **A** again: a new chain `07`.", expect="New chain 07"),
@@ -594,21 +672,38 @@ A track only goes quiet where it plays something silent: a chain whose phrase sa
         S("A", "`07`."),
         S("Down", "Row `03`."),
         S("A", "`07`."),
-        S("Up x3", "Row `00`."),
-        S("Left x7", "Track 1, the kick."),
-        S("A+Right x7", "`07`: **A + Right** counts the chain number up. No kick in the intro."),
-        S("Right", "Track 2."),
-        S("A+Right x6", "`07`."),
+        S("Down", "Row `04`."),
+        S("A", "`07`. Track 8 plays effects later; for now it rests."),
+        S("Up x4", "Row `00`: the intro."),
+        S("Left x6", "Track 2, the snare."),
+        S("A+Right x6", "`07`: **A + Right** counts the chain number up. No snare in the intro."),
         S("Right x2", "Track 4."),
-        S("A+Right x4", "`07`."),
-        S("Right x3", "Track 7."),
+        S("A+Right x4", "`07`: no bass yet."),
+        S("Right", "Track 5."),
+        S("A+Right x3", "`07`: no pad yet."),
+        S("Right x2", "Track 7."),
+        S("A+Right", "`07`: the hook waits for the drop. The intro is kick, hats and keys."),
+        S("Down", "Row `01`, the groove, track 7."),
         S("A+Right", "`07`."),
-        S("Down", "Row `01`, track 7."),
-        S("A+Right", "`07`: no lead before the first drop."),
-    ]),
-    Section("16. A snare roll", """
-Row `01` is the build before the drop. Its snare plays three bars of snare, then a roll: a new chain `08`. The roll is one note with two commands: `ROLL 0093` strikes it again every 3 ticks, each hit 8 louder, starting from `VOLM 0020`, quiet.
+        S("Left x2", "Track 5."),
+        S("A+Right x3", "`07`: the groove is the intro plus snare and bass."),
+        S("Down", "Row `02`, the build."),
+        S("Right x2", "Track 7."),
+        S("A+Right", "`07`: the pad comes in here, the hook still waits."),
+        S("Up x2", "Row `00`."),
+        S("Start", "Listen from the top: intro, groove, then the pad swells in.", wait=4 * LISTEN),
+        S("Start", "Stop."),
+    ], done="""
+**You should hear:** four bars of kick, hats and keys; then snare and bass join; then the pad swells in.
+
+**Checkpoint:** track 8 has `07` in rows `00` to `04`; row `00` reads `00 07 02 07 07 05 07 07`.
+"""),
+    Section("16. The build: snare roll, kick out", """
+The build before a drop pulls you in two ways: the snare speeds up into a roll, and the kick **drops out** for the last bar, so its return on the drop lands like a punch.
+
+The roll is one note with two commands: `ROLL 0093` strikes it again every 3 ticks, each hit 8 louder, starting from `VOLM 0020`, quiet. It goes in a new snare chain `08`: three bars of snare, then the roll. The kick gets a chain `09`: three bars of kick, then the rest phrase.
 """, [
+        S("Down x2", "Row `02`, the build, track 7."),
         S("Left x5", "Track 2."),
         S("A+Right x7", "`08`: a chain nobody uses yet, so it's new and empty."),
         S("RB+Right", "Chain `08`, cursor on row `3`."),
@@ -648,17 +743,33 @@ Row `01` is the build before the drop. Its snare plays three bars of snare, then
         S("Start", "Stop."),
         S("RB+Left", "Back on chain `08`."),
         S("RB+Left", "Back on the Song screen."),
-    ]),
+        S("Left", "Track 1, the kick."),
+        S("A+Right x9", "`09`, another new chain."),
+        S("RB+Right", "Chain `09`, cursor on row `3`."),
+        S("Up x3", "Row `0`."),
+        S("A+Left x10", "The last phrase (`0A`) counted down to `00`, the kick."),
+        S("Down", "Row `1`."),
+        S("A", "Phrase `00`."),
+        S("Down", "Row `2`."),
+        S("A", "Phrase `00`."),
+        S("Down", "Row `3`."),
+        S("A+Right x9", "Phrase `00` counted up to `09`, the rest: the kick's last bar is silent."),
+        S("RB+Left", "Back on the Song screen."),
+    ], done="""
+**You should hear (row `02`):** in the last bar the snare rolls faster and louder, and the kick stops.
+
+**Checkpoint:** row `02` starts `09 08`: the new kick and snare chains.
+"""),
     Section("17. Sample: reverse cymbal", """
 Track 8 plays effects. The first is a crash cymbal from the sample packs, played backwards: it swells up into the drop. Instrument `03` (the kit's open hat, unused) becomes a sample.
 
 The crash is 2.5 seconds long and a bar is 1.9. Played at `F 3`, five semitones up, it's faster and lasts exactly one bar.
 """, [
-        S("Right x6", "Track 8, row `01`."),
-        S("A+Right x2", "`09`, a new chain."),
-        S("RB+Right", "Chain `09`, cursor on row `3`."),
+        S("Right x7", "Track 8, row `02`."),
+        S("A+Right x3", "`0A`, a new chain."),
+        S("RB+Right", "Chain `0A`, cursor on row `3`."),
         S("Up x3", "Row `0`."),
-        S("A+Left", "The last phrase (`0A`) counted down to `09`, the rest."),
+        S("A", "The last phrase, `09`: the rest."),
         S("Down", "Row `1`."),
         S("A", "Phrase `09`."),
         S("Down", "Row `2`."),
@@ -689,13 +800,19 @@ The crash is 2.5 seconds long and a bar is 1.9. Played at `F 3`, five semitones 
         S("Start", "The phrase: a cymbal swelling up, one bar long.", wait=LISTEN),
         S("Start", "Stop."),
         S("RB+Left", "Back on phrase `0B`."),
-        S("RB+Left", "Back on chain `09`."),
+        S("RB+Left", "Back on chain `0A`."),
         S("RB+Left", "Back on the Song screen."),
-    ]),
+        S("Up x2", "Row `00`."),
+        S("Start", "Intro, groove, build... and the drop. Hear how the missing kick and the rising cymbal make it land.",
+          wait=5 * LISTEN),
+        S("Start", "Stop."),
+    ], done="""
+**You should hear:** the first half of the song: the cymbal rises out of the silence the kick leaves, and the drop hits when everything comes back at once.
+"""),
     Section("18. Resample: reverse pad", """
 **Render to sample** records a bar of your song into a new sample. You'll record one bar of the pad and play it backwards: a swell that pulls you out of the break.
 """, [
-        S("Up", "Row `00`."),
+        S("Down x2", "Row `02`."),
         S("Left x3", "Track 5, the pad."),
         S("RB+Right", "Chain `04`, cursor on row `3`."),
         S("Up x3", "Row `0`."),
@@ -707,26 +824,32 @@ The crash is 2.5 seconds long and a bar is 1.9. Played at `F 3`, five semitones 
         S("RB+Left", "Back on phrase `04`."),
         S("RB+Left", "Back on chain `04`."),
         S("RB+Left", "Back on the Song screen."),
-    ]),
+    ], done="""
+**Checkpoint:** instrument `10` plays `rs_01.wav`, set to `play reverse`. Your song hasn't changed yet: the next chapter uses it.
+"""),
     Section("19. The break", """
-Row `04` is the break: just the pad and the lead, and the reversed pad at the end. It starts as a copy of the intro.
+Row `05` is the break: the drums and bass stop, and the hook floats over the pad on its own. After a whole drop, the sudden space is what you notice; the reversed pad at the end sucks you back in. It starts as a copy of the drop.
 """, [
+        S("Down x2", "Row `04`, the drop."),
         S("Left x4", "Track 1."),
         S("B+LB", "Selection..."),
-        S("Right x7", "...the whole intro row."),
+        S("Right x7", "...the whole row."),
         S("B", "Copied."),
-        S("Down x4", "Row `04`."),
+        S("Down", "Row `05`."),
         S("A+LB", "Pasted."),
-        S("Up", "Back on row `04`."),
-        S("Right x2", "Track 3."),
-        S("A+Right x5", "`07`: no hats in the break."),
-        S("Right x3", "Track 6."),
+        S("Up", "Back on row `05`."),
+        S("A+Right x7", "`07`: no kick in the break."),
+        S("Right", "Track 2."),
+        S("A+Right x6", "`07`: no snare."),
+        S("Right", "Track 3."),
+        S("A+Right x5", "`07`: no hats."),
+        S("Right", "Track 4."),
+        S("A+Right x4", "`07`: no bass."),
+        S("Right x2", "Track 6."),
         S("A+Right x2", "`07`: no keys."),
-        S("Right", "Track 7."),
-        S("A+Left", "`06`: the hook comes in."),
-        S("Right", "Track 8."),
-        S("A+Right x3", "`0A`, a new chain."),
-        S("RB+Right", "Chain `0A`, cursor on row `0`."),
+        S("Right x2", "Track 8."),
+        S("A+Right x4", "`0B`, a new chain."),
+        S("RB+Right", "Chain `0B`, cursor on row `0`."),
         S("A+Left x2", "The last phrase (`0B`) counted down to `09`, the rest."),
         S("Down", "Row `1`."),
         S("A", "Phrase `09`."),
@@ -744,66 +867,83 @@ Row `04` is the break: just the pad and the lead, and the reversed pad at the en
         S("A+Left x3", "`I10`: the recorded pad.", expect="I10"),
         S("Start", "The pad, backwards.", wait=LISTEN),
         S("Start", "Stop."),
-        S("RB+Left", "Back on chain `0A`."),
+        S("RB+Left", "Back on chain `0B`."),
         S("RB+Left", "Back on the Song screen."),
-    ]),
-    Section("20. Build, drop, outro", """
-Three more rows: `05` is another build (like `01`, with the lead), `06` the last drop (like `02`), `07` the outro (like the intro).
+    ], done="""
+**You should hear (row `05`):** the drums and bass gone, the hook floating over the pad, then a reversed swell pulling into the next row.
+"""),
+    Section("20. Second build, drop, outro", """
+The second half repeats the first with one twist: the second build already has the hook in it, so the last drop feels like it has been coming for a while. Then the outro takes the parts away again in the order they came in, so a DJ (or you) can fade into the next song.
 """, [
-        S("Up x3", "Row `01`."),
+        S("Up x3", "Row `02`, the build."),
         S("Left x7", "Track 1."),
         S("B+LB", "Selection..."),
-        S("Right x7", "...row `01`."),
+        S("Right x7", "...the build."),
         S("B", "Copied."),
-        S("Down x4", "Row `05`."),
+        S("Down x4", "Row `06`."),
         S("A+LB", "Pasted."),
-        S("Up", "Back on row `05`."),
+        S("Up", "Back on row `06`."),
         S("Right x3", "Track 4."),
-        S("A+Right x4", "`07`: no bass while it builds."),
+        S("A+Right x4", "`07`: the bass rests while it builds."),
         S("Right x3", "Track 7."),
-        S("A+Left", "`06`: the lead plays this build."),
-        S("Up x3", "Row `02`."),
+        S("A+Left", "`06`: the hook plays this build."),
+        S("Up x2", "Row `04`, the drop."),
         S("Left x6", "Track 1."),
         S("B+LB", "Selection..."),
         S("Right x7", "...the drop."),
         S("B", "Copied."),
-        S("Down x4", "Row `06`."),
-        S("A+LB", "Pasted: the last drop."),
-        S("Up x7", "Row `00`."),
+        S("Down x3", "Row `07`."),
+        S("A+LB", "Pasted: the last drop..."),
+        S("A+LB", "...eight bars of it."),
+        S("Up x8", "Row `01`, the groove."),
+        S("B+LB", "Selection..."),
+        S("Right x7", "...the groove."),
+        S("B", "Copied."),
+        S("Down x8", "Row `09`."),
+        S("A+LB", "Pasted: the outro starts."),
+        S("Up x10", "Row `00`, the intro."),
         S("B+LB", "Selection..."),
         S("Right x7", "...the intro."),
         S("B", "Copied."),
-        S("Down x7", "Row `07`."),
-        S("A+LB", "Pasted: the outro. After it the song ends."),
-    ]),
+        S("Down x10", "Row `0A`."),
+        S("A+LB", "Pasted: the outro ends like the song began. After it, the song ends."),
+    ], done="""
+**Checkpoint:** eleven rows, `00` to `0A`, with a chain in every cell of every row.
+"""),
     Section("21. Bookmarks", """
 Bookmarks mark where the sections start, so you can jump around a long song.
 """, [
-        S("Up x8", "Row `00`, the intro."),
+        S("Up x11", "Row `00`, the intro."),
         S("A+Select", "**A + Select** bookmarks the row."),
-        S("Down", "Row `01`, the build."),
+        S("Down x2", "Row `02`, the build."),
         S("A+Select", "Bookmarked."),
-        S("Down", "Row `02`, the drop."),
+        S("Down", "Row `03`, the drop."),
         S("A+Select", "Bookmarked."),
-        S("Down x2", "Row `04`, the break."),
+        S("Down x2", "Row `05`, the break."),
         S("A+Select", "Bookmarked."),
-        S("Down x2", "Row `06`, the last drop."),
+        S("Down x2", "Row `07`, the last drop."),
         S("A+Select", "Bookmarked."),
-        S("LB+Up", "**LB + Up** jumps to the previous bookmark: row `04`."),
-        S("LB+Up x2", "Row `01`."),
-        S("Up", "Row `00`."),
+        S("LB+Up", "**LB + Up** jumps to the previous bookmark: row `05`."),
+        S("LB+Up x3", "Row `00`."),
         S("Start", "The whole song from the top.", wait=4 * LISTEN),
         S("Start", "Stop."),
-    ]),
+    ], done="""
+**You should hear:** the whole song, about a minute and a half, from the intro to the last kick.
+"""),
     # -------------------------------------------------------------------- mix
     Section("22. Mix", """
-The **Mixer** sets each track's level. The kick should hit hardest; the bass sits a little under it.
+The **Mixer** sets each track's level. Mixing is mostly deciding what's in front: here the kick and the hook, with the pad behind everything as a backdrop. A fader at `C0` plays a track as it is; lower is quieter.
 """, [
         S("RB+Down", "The **Mixer**: a fader per track, then the effect returns and the master.", expect="Mixer"),
-        S("A+Up x4", "Track 1, the kick, at `FF`: its loudest."),
-        S("Right x3", "Track 4, the bass."),
-        S("A+Down x3", "`90`: a bit down."),
-    ]),
+        S("Right x4", "Track 5, the pad."),
+        S("A+Down x3", "`90`: the pad steps back."),
+        S("Right", "Track 6, the keys."),
+        S("A+Down x2", "`A0`: a little back too."),
+        S("Right", "Track 7, the hook."),
+        S("A+Up x2", "`E0`: the hook in front, where the ear goes first."),
+    ], done="""
+**You should hear:** the hook clearer and the pad further back, as if it had moved to the back of the room.
+"""),
     Section("23. Effects, EQ, limiter", """
 The **FX** screen sets up the shared chorus, echo and reverb the instruments send to. **EQ** shapes the whole mix, **Limit** keeps it from clipping.
 """, [
@@ -821,7 +961,9 @@ The **FX** screen sets up the shared chorus, echo and reverb the instruments sen
         S("RB+Left", "FX."),
         S("RB+Up", "Mixer."),
         S("RB+Up", "Song."),
-    ]),
+    ], done="""
+**You should hear:** a slightly longer room on the snare and pad, a little more sparkle on top, and no crackle at the loudest moments.
+"""),
     # ------------------------------------------------------------------ finish
     Section("24. Headroom and save", """
 Eight tracks add up. The Project screen's `Drive` sets how hard the whole song goes into the mix: a little lower leaves room, and the limiter brings the level back without distortion.
@@ -832,7 +974,9 @@ Eight tracks add up. The Project screen's `Drive` sets how hard the whole song g
         S("Up x10", "The cursor is on `Save Song`."),
         S("A", "Saved: the song is written to the SD card.", wait=500),
         S("RB+Down", "Song."),
-    ]),
+    ], done="""
+**Checkpoint:** `Drive: 70` on the Project screen, and the song saved. It's safe to switch the RG Nano off now.
+"""),
     Section("25. Play it live", """
 **Live mode** turns the Song screen into a launcher: cue rows and cells while the song plays, M8 style. Nothing you do here changes the song.
 """, [
@@ -845,7 +989,9 @@ Eight tracks add up. The Project screen's `Drive` sets how hard the whole song g
         S("B+Start", "**B + Start** stops everything."),
         S("Select", "Back to Song mode.", expect="Song"),
         S("LB+Up x2", "Row `00`."),
-    ]),
+    ], done="""
+**You should hear:** each cued section starting exactly when the playing one ends, so the change always lands on a new bar.
+"""),
     Section("26. Export a WAV", """
 Finally, record the song into a WAV file you can share. It plays in real time while it records.
 """, [
@@ -853,10 +999,12 @@ Finally, record the song into a WAV file you can share. It plays in real time wh
         S("Down x4", "The cursor is on `Render: Off`."),
         S("A+Right", "`Render: Stereo`: the next play records `mixdown.wav` in the song's folder."),
         S("RB+Down", "Song."),
-        S("Start", "Recording... let it play to the end (about a minute).", wait=3 * LISTEN),
+        S("Start", "Recording... let it play to the end (about a minute and a half).", wait=3 * LISTEN),
         S("Start", "Stopped: the file is closed. (Here it's cut short; yours has the whole song.)"),
         S("RB+Up", "Project."),
         S("A+Left", "`Render: Off` again, for normal playing."),
         S("RB+Down", "Song. **Afterglow** is done: GLOW is your song now."),
-    ]),
+    ], done="""
+**Checkpoint:** a `mixdown.wav` in the song's folder on the SD card (`Tracks/lgpt_GLOW`): your first finished track.
+"""),
 ]

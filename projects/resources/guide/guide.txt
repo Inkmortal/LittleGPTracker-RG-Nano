@@ -2,19 +2,20 @@
 @first-song|Your First Song
  You'll build Afterglow, a
  melodic house track in C
- minor at 128 BPM: punchy
- Macro Synth drums with swung
- 16th hats, a rolling bass,
- huge HyperSynth chords that
- pump with the kick, FM
- electric piano stabs, a
- trance lead with a hook that
- sticks, snare rolls and
- reversed cymbals into every
- drop, and a proper
- arrangement: intro, build,
- drop, break, build, drop,
- outro.
+ minor at 128 BPM, about a
+ minute and a half long: a
+ deep Macro Synth kick with
+ swung 16th hats, a bouncing
+ offbeat bass, wide
+ HyperSynth chords that pump
+ with the kick, FM electric
+ piano stabs, a trance lead
+ with a hook that sticks,
+ snare rolls and reversed
+ cymbals into every drop, and
+ a proper arrangement: intro,
+ groove, build, drop, break,
+ build, drop, outro.
  
  On the way you use nearly
  everything the app can do:
@@ -22,12 +23,43 @@
  Macro Synth, a sample from
  the packs, commands, the
  fill and random tools,
- modulation, EQ and effects,
- resampling, undo, bookmarks,
- the mixer, Live mode and
- export. Plan on an hour or
- two; every chapter ends with
- something new to listen to.
+ envelopes, modulation, EQ
+ and effects, resampling,
+ undo, bookmarks, the mixer,
+ Live mode and export. Plan
+ on an hour or two; every
+ chapter ends with what you
+ should hear and a quick
+ checkpoint.
+ 
+ Four ideas make it sound
+ good, and they work in any
+ song you make later:
+ 
+ 1. Kick and bass take turns.
+    Both live in the low end:
+    the kick plays on the
+    beat, the bass in
+    between, with short
+    notes.
+ 2. Everything else stays out
+    of the low end. The pad
+    loses its sub and the
+    lows in its EQ, so the
+    bottom stays clean and
+    punchy.
+ 3. Sections are made by
+    taking parts away. The
+    drop has everything; the
+    intro, build and break
+    leave things out, so the
+    drop hits when they come
+    back.
+ 4. One thing in front. The
+    hook is the loudest
+    melodic part; the pad
+    sits behind it as a
+    backdrop.
  
  Want to hear where you're
  going first? Afterglow is in
@@ -66,67 +98,72 @@
    (steps 40-55)
  - 5. Snare, with reverb
 ~2,21,first-song,5. Snare, with reverb
-   (steps 56-87)
+   (steps 56-88)
  - 6. Hats: fill and chance
 ~2,24,first-song,6. Hats: fill and chance
-   (steps 88-140)
- - 7. Swing (steps 141-151)
+   (steps 89-141)
+ - 7. Swing (steps 142-152)
 ~2,8,first-song,7. Swing
- - 8. Bass (steps 152-183)
+ - 8. Bass (steps 153-180)
 ~2,7,first-song,8. Bass
- - 9. Try a sound, then undo
-~2,25,first-song,9. Try a sound, then undo
-   (steps 184-196)
+ - 9. Shape the bass, try a
+~2,24,first-song,9. Shape the bass, try a sound, undo
+   sound, undo (steps
+~0,13,first-song,9. Shape the bass, try a sound, undo
+   181-199)
  - 10. Four chords, one bar
 ~2,24,first-song,10. Four chords, one bar
-   (steps 197-205)
+   (steps 200-208)
  - 11. The HyperSynth pad
 ~2,22,first-song,11. The HyperSynth pad
-   (steps 206-258)
+   (steps 209-263)
  - 12. FM keys and CHRD
 ~2,20,first-song,12. FM keys and CHRD
-   (steps 259-310)
+   (steps 264-315)
  - 13. The hook (steps
 ~2,12,first-song,13. The hook
-   311-405)
+   316-410)
  - 14. Copy the drop (steps
 ~2,17,first-song,14. Copy the drop
-   406-413)
- - 15. A rest chain (steps
-~2,16,first-song,15. A rest chain
-   414-452)
- - 16. A snare roll (steps
-~2,16,first-song,16. A snare roll
-   453-491)
+   411-419)
+ - 15. A rest chain; intro
+~2,23,first-song,15. A rest chain; intro and groove
+   and groove (steps 420-468)
+~0,12,first-song,15. A rest chain; intro and groove
+ - 16. The build: snare roll,
+~2,26,first-song,16. The build: snare roll, kick out
+   kick out (steps 469-520)
+~0,10,first-song,16. The build: snare roll, kick out
  - 17. Sample: reverse cymbal
 ~2,26,first-song,17. Sample: reverse cymbal
-   (steps 492-528)
+   (steps 521-560)
  - 18. Resample: reverse pad
 ~2,25,first-song,18. Resample: reverse pad
-   (steps 529-540)
+   (steps 561-572)
  - 19. The break (steps
 ~2,13,first-song,19. The break
-   541-575)
- - 20. Build, drop, outro
-~2,22,first-song,20. Build, drop, outro
-   (steps 576-600)
+   573-611)
+ - 20. Second build, drop,
+~2,23,first-song,20. Second build, drop, outro
+   outro (steps 612-643)
+~0,7,first-song,20. Second build, drop, outro
  - 21. Bookmarks (steps
 ~2,13,first-song,21. Bookmarks
-   601-615)
- - 22. Mix (steps 616-619)
+   644-657)
+ - 22. Mix (steps 658-664)
 ~2,7,first-song,22. Mix
  - 23. Effects, EQ, limiter
 ~2,24,first-song,23. Effects, EQ, limiter
-   (steps 620-633)
+   (steps 665-678)
  - 24. Headroom and save
 ~2,21,first-song,24. Headroom and save
-   (steps 634-639)
+   (steps 679-684)
  - 25. Play it live (steps
 ~2,16,first-song,25. Play it live
-   640-648)
+   685-693)
  - 26. Export a WAV (steps
 ~2,16,first-song,26. Export a WAV
-   649-657)
+   694-702)
 =1. The start screen
  Launching the app shows Your
  Songs. Up/Down picks a song,
@@ -194,6 +231,10 @@
  
  16. RB + Select: The helper
  closes.
+ 
+>Checkpoint: the Song screen
+>of your new song, titled
+>Song - GLOW, all empty.
 =2. Tempo and key
  The Project screen holds the
  song's settings. You'll set
@@ -238,6 +279,11 @@
  
  26. RB + Down: Back on the
  Song screen.
+ 
+>Checkpoint: Project shows
+>128 bpm, Key: C and Aeolian
+>mode (minor). Nothing to
+>hear yet.
 =3. The kick
  A song is built from three
  kinds of blocks:
@@ -301,6 +347,14 @@
  marker runs down the steps.
  
  39. Start: Stop.
+ 
+>You should hear: a steady
+>thump on every beat,
+>looping.
+ 
+>Checkpoint: phrase 00 has
+>C 3 I00 on steps 0, 4, 8 and
+>C.
 =4. A Macro Synth kick
  I00 is a plain synth kick,
  from the kit every new song
@@ -358,6 +412,17 @@
  
  55. RB + Left: Back on the
  Song screen.
+ 
+>You should hear: a deeper,
+>rounder kick with real
+>weight under it. On the RG
+>Nano's little speaker the
+>lowest part is hard to hear:
+>headphones show what the
+>song really sounds like.
+ 
+>Checkpoint: chain 00 plays
+>phrase 00 on all four rows.
 =5. Snare, with reverb
  Track 2: a snare on beats 2
  and 4. It needs its own
@@ -433,43 +498,57 @@
  through the instrument's
  pages. Page 6, MIX: volume,
  pan and the three effect
- sends.
+ sends. The cursor is on
+ volume C0.
  
- 76. Down (2 times): The
+ 76. A + Up (2 times): volume
+ E0: the snare a little
+ louder, so it cracks through
+ on beats 2 and 4.
+ A + Up/Down moves in big
+ steps.
+ 
+ 77. Down (2 times): The
  cursor is on reverb 00.
  
- 77. A + Up (4 times): reverb
+ 78. A + Up (4 times): reverb
  40: the snare now sends a
  little of itself into the
- reverb. A + Up/Down moves in
- big steps.
+ reverb, a short tail after
+ each hit.
  
- 78. LB + Left (5 times):
+ 79. LB + Left (5 times):
  Back on page 1, so the next
  instrument you open starts
  there too.
  
- 79. RB + Left: Back on
+ 80. RB + Left: Back on
  phrase 01.
  
- 80. RB + Left: Back on chain
+ 81. RB + Left: Back on chain
  01.
  
- 81. Down: Row 1.
+ 82. Down: Row 1.
  
- 82. A: Phrase 01.
+ 83. A: Phrase 01.
  
- 83. Down: Row 2.
+ 84. Down: Row 2.
  
- 84. A: Phrase 01.
+ 85. A: Phrase 01.
  
- 85. Down: Row 3.
+ 86. Down: Row 3.
  
- 86. A: Phrase 01: four bars
+ 87. A: Phrase 01: four bars
  of chain 01.
  
- 87. RB + Left: Back on the
+ 88. RB + Left: Back on the
  Song screen.
+ 
+>Checkpoint: row 00 of the
+>Song screen has chain 00 in
+>track 1 and 01 in track 2.
+>Chain 01 plays phrase 01, a
+>snare on steps 4 and C.
 =6. Hats: fill and chance
  Track 3: a hi-hat on every
  16th. You'll enter one and
@@ -480,151 +559,158 @@
  pattern never loops exactly
  the same.
  
- 88. Right: Track 3, row 00.
+ 89. Right: Track 3, row 00.
  
- 89. A: Chain 01 goes in.
+ 90. A: Chain 01 goes in.
  
- 90. A: A new chain 02.
+ 91. A: A new chain 02.
  
- 91. RB + Right: Chain 02,
+ 92. RB + Right: Chain 02,
  cursor on row 3.
  
- 92. Up (3 times): Row 0.
+ 93. Up (3 times): Row 0.
  
- 93. A: Phrase 01 goes in.
+ 94. A: Phrase 01 goes in.
  
- 94. A: A new phrase 02.
+ 95. A: A new phrase 02.
  
- 95. RB + Right: Phrase 02,
+ 96. RB + Right: Phrase 02,
  empty, cursor on step 4.
  
- 96. Up (4 times): Step 0.
+ 97. Up (4 times): Step 0.
  
- 97. A: C 3 I01, a copy of
+ 98. A: C 3 I01, a copy of
  the snare.
  
- 98. Right: The cursor is on
+ 99. Right: The cursor is on
  I01.
  
- 99. A + Right: I02, the HAT.
+ 100. A + Right: I02, the
+ HAT.
  
- 100. Left: Back on the note.
+ 101. Left: Back on the note.
  
- 101. B + LB: B + LB starts a
+ 102. B + LB: B + LB starts a
  selection on step 0.
  
- 102. Down (15 times): The
+ 103. Down (15 times): The
  selection covers the whole
  bar.
  
- 103. LB + Left: LB + Left
+ 104. LB + Left: LB + Left
  fills: the first selected
  note on every step. (Again:
  every 2nd step, then every
  4th.)
  
- 104. B: B copies the
+ 105. B: B copies the
  selection and ends it; the
  cursor goes back to step 0.
  
- 105. Down (3 times): Step 3.
+ 106. Down (3 times): Step 3.
  
- 106. Right (2 times): The
+ 107. Right (2 times): The
  first command column.
  
- 107. Select: Select opens
+ 108. Select: Select opens
  the command list. The text
  under it explains the
  command under the cursor.
  
- 108. Right: CHNC: the chance
+ 109. Right: CHNC: the chance
  that the note plays.
  
- 109. A: CHNC 0000 goes into
+ 110. A: CHNC 0000 goes into
  step 3.
  
- 110. Right: The cursor is on
+ 111. Right: The cursor is on
  the value; its last digit is
  lit.
  
- 111. A + Left: Holding A,
+ 112. A + Left: Holding A,
  Left lights the next digit.
  
- 112. A + Up (8 times): 0080:
+ 113. A + Up (8 times): 0080:
  half the time (FF = always).
  
- 113. Left: Back on CHNC.
+ 114. Left: Back on CHNC.
  
- 114. B + LB: A selection on
+ 115. B + LB: A selection on
  the command.
  
- 115. Right: It grows over
+ 116. Right: It grows over
  the value too.
  
- 116. B: Copied.
+ 117. B: Copied.
  
- 117. Down (4 times): Step 7.
+ 118. Down (4 times): Step 7.
  
- 118. A + LB: A + LB pastes
+ 119. A + LB: A + LB pastes
  CHNC 0080 here, and the
  cursor moves on to step 8.
  
- 119. Down (3 times): Step B.
+ 120. Down (3 times): Step B.
  
- 120. A + LB: Pasted.
+ 121. A + LB: Pasted.
  
- 121. Down (3 times): Step F.
+ 122. Down (3 times): Step F.
  
- 122. A + LB: Pasted.
+ 123. A + LB: Pasted.
  
- 123. RB + Right: Instrument
+ 124. RB + Right: Instrument
  I02, the HAT.
  
- 124. Up (2 times): The
+ 125. Up (2 times): The
  cursor is on type.
  
- 125. A + Right: type
+ 126. A + Right: type
  macro.
  
- 126. Down: The cursor is on
+ 127. Down: The cursor is on
  preset init.
  
- 127. A + Right (17 times):
+ 128. A + Right (17 times):
  preset hat.
  
- 128. Start: Listen: some of
+ 129. Start: Listen: some of
  the quiet in-between hats
  come and go.
  
- 129. Start: Stop.
- 
- 130. RB + Left: Back on
- phrase 02.
+ 130. Start: Stop.
  
  131. RB + Left: Back on
+ phrase 02.
+ 
+ 132. RB + Left: Back on
  chain 02.
  
- 132. Down: Row 1.
+ 133. Down: Row 1.
  
- 133. A: Phrase 02.
+ 134. A: Phrase 02.
  
- 134. Down: Row 2.
+ 135. Down: Row 2.
  
- 135. A: Phrase 02.
+ 136. A: Phrase 02.
  
- 136. Down: Row 3.
+ 137. Down: Row 3.
  
- 137. A: Phrase 02: four bars
+ 138. A: Phrase 02: four bars
  of chain 02.
  
- 138. RB + Left: Back on the
+ 139. RB + Left: Back on the
  Song screen.
  
- 139. Start: The song plays
+ 140. Start: The song plays
  from the cursor's row: kick,
  snare and hats.
  
- 140. Start: Stop.
+ 141. Start: Stop.
+ 
+>You should hear: kick,
+>snare, and a hi-hat ticking
+>on every 16th, some of the
+>quiet ones between the beats
+>coming and going.
 =7. Swing
  Straight 16ths sound stiff.
  A groove sets how long each
@@ -633,121 +719,155 @@
  second 16th a little late.
  That's swing.
  
- 141. RB + Right: Chain 02.
+ 142. RB + Right: Chain 02.
  
- 142. RB + Right: Phrase 02.
+ 143. RB + Right: Phrase 02.
  
- 143. RB + Up: The Groove
+ 144. RB + Up: The Groove
  screen, above Phrase. The
  cursor is on the first 06.
  
- 144. A + Right: 07.
+ 145. A + Right: 07.
  
- 145. Down: The second 06.
+ 146. Down: The second 06.
  
- 146. A + Left: 05: 07 05,
+ 147. A + Left: 05: 07 05,
  swing.
  
- 147. Start: The hats now
+ 148. Start: The hats now
  shuffle.
  
- 148. Start: Stop.
+ 149. Start: Stop.
  
- 149. RB + Down: Back on
+ 150. RB + Down: Back on
  phrase 02.
  
- 150. RB + Left: Chain 02.
+ 151. RB + Left: Chain 02.
  
- 151. RB + Left: Song.
+ 152. RB + Left: Song.
+ 
+>You should hear: the hats
+>lean into a shuffle. Swing
+>only moves the in-between
+>steps, so the kick and snare
+>stay exactly on the beat.
 =8. Bass
- Track 4: a rolling bass, a
- note on every 8th: C C
- C(high) C C C C(high) G.
- Just the root, its octave
- and its 5th, so it fits
- every chord once the chain
- moves it around.
+ Track 4: the bass. In house
+ music the bass plays between
+ the kicks, on the offbeats
+ (steps 2, 6, A, E). Kick and
+ bass both live in the low
+ end: if they hit together
+ they smear into one dull
+ thud, if they take turns you
+ hear both, and the groove
+ bounces.
  
- 152. Right: Track 4, row 00.
+ The line is just the root C,
+ one note an octave up (a
+ little pop on step 7) and
+ the 5th G on the last step,
+ leading back to the start.
+ Roots, octaves and 5ths fit
+ every chord, so it still
+ works once the chain moves
+ it around.
  
- 153. A: Chain 02 goes in.
+*Note  C 3
+   6: C 3
+   7: C 4
+   A: C 3
+   E: C 3
+   F: G 3
  
- 154. A: A new chain 03.
+ 153. Right: Track 4, row 00.
  
- 155. RB + Right: Chain 03,
+ 154. A: Chain 02 goes in.
+ 
+ 155. A: A new chain 03.
+ 
+ 156. RB + Right: Chain 03,
  empty, cursor on row 0.
  
- 156. A: Phrase 02 goes in.
+ 157. A: Phrase 02 goes in.
  
- 157. A: A new phrase 03.
+ 158. A: A new phrase 03.
  
- 158. RB + Right: Phrase 03,
+ 159. RB + Right: Phrase 03,
  empty. The cursor is on step
  0, in the command column,
  where you left the hats.
  
- 159. Left (2 times): The
+ 160. Left (2 times): The
  note column.
  
- 160. A: C 3 I02, a copy of
+ 161. Down (2 times): Step 2,
+ the first offbeat: halfway
+ between the kicks on 0 and
+ 4.
+ 
+ 162. A: C 3 I02, a copy of
  the hat.
  
- 161. Right: The cursor is on
+ 163. Right: The cursor is on
  I02.
  
- 162. A + Right (3 times):
+ 164. A + Right (3 times):
  I05, the BASS: a saw and a
  sub, tuned two octaves down.
  
- 163. Left: Back on the note.
+ 165. Left: Back on the note.
  
- 164. Down (2 times): Step 2.
+ 166. Down (4 times): Step 6,
+ the next offbeat.
  
- 165. A: C 3.
+ 167. A: C 3: A on an empty
+ step copies the last note.
  
- 166. Down (2 times): Step 4.
+ 168. Down: Step 7.
  
- 167. A: C 3.
+ 169. A: C 3.
  
- 168. A + Up: C 4: A + Up
+ 170. A + Up: C 4: A + Up
  moves a note up an octave.
  
- 169. Down (2 times): Step 6.
+ 171. Down (3 times): Step A.
  
- 170. A: C 4: a new note
+ 172. A: C 4: a new note
  copies the last one, edit
  included.
  
- 171. A + Down: C 3: an
+ 173. A + Down: C 3: an
  octave down.
  
- 172. Down (2 times): Step 8.
- 
- 173. A: C 3.
- 
- 174. Down (2 times): Step A.
+ 174. Down (4 times): Step E.
  
  175. A: C 3.
  
- 176. Down (2 times): Step C.
+ 176. Down: Step F, the last
+ 16th of the bar.
  
  177. A: C 3.
  
- 178. A + Up: C 4.
- 
- 179. Down (2 times): Step E.
- 
- 180. A: C 4.
- 
- 181. A + Left (3 times):
+ 178. A + Right (4 times):
  G 3. A + Left/Right walks
  through the notes of C
- minor: A#3, G#3, G 3.
+ minor: D 3, D#3, F 3, G 3.
  
- 182. Start: The bass line.
+ 179. Start: The bass line.
+ It still hums on over the
+ kicks: the next chapter
+ fixes that.
  
- 183. Start: Stop.
-=9. Try a sound, then undo
+ 180. Start: Stop.
+ 
+>You should hear: the bass
+>bouncing between the kick
+>hits, a jump up on step 7,
+>and a lift on the last step
+>that leads back to the
+>start.
+=9. Shape the bass, try a sound, undo
  Every synth has presets to
  flip through. Try one, and
  if you don't like it,
@@ -756,40 +876,88 @@
  works for every change, on
  every screen.
  
- 184. RB + Right: Instrument
+ Then the envelope: how a
+ note's volume moves once it
+ starts. The bass preset
+ holds its notes (sustain
+ 90), so each one is still
+ humming when the next kick
+ lands. With sustain 00 every
+ note dies away on its own:
+ short, bouncy notes that
+ leave the kick room to
+ punch.
+ 
+ 181. RB + Right: Instrument
  I05, the BASS, cursor on
  preset bass.
  
- 185. A + Right: preset
+ 182. A + Right: preset
  subbass: a clean sine.
  
- 186. Start: Deep, but too
+ 183. Start: Deep, but too
  soft for this song.
  
- 187. Start: Stop.
+ 184. Start: Stop.
  
- 188. B + Select: Undo:
+ 185. B + Select: Undo:
  preset bass is back, with
  all its settings.
  
- 189. RB + Left: Back on
+ 186. LB + Right: Page 2,
+ ENV: the volume envelope,
+ drawn as a curve. The cursor
+ is on attack.
+ 
+ 187. Down (2 times): The
+ cursor is on sustn 90: how
+ loud a held note stays.
+ 
+ 188. A + Down (9 times):
+ sustn 00: the curve now
+ falls all the way to
+ nothing.
+ 
+ 189. Start: Short, bouncy
+ notes that stop before each
+ kick. Kick and bass take
+ turns.
+ 
+ 190. Start: Stop.
+ 
+ 191. LB + Left: Back on page
+ 1.
+ 
+ 192. RB + Left: Back on
  phrase 03.
  
- 190. RB + Left: Back on
+ 193. RB + Left: Back on
  chain 03.
  
- 191. Down: Row 1.
+ 194. Down: Row 1.
  
- 192. A: Phrase 03.
+ 195. A: Phrase 03.
  
- 193. Down: Row 2.
+ 196. Down: Row 2.
  
- 194. A: Phrase 03.
+ 197. A: Phrase 03.
  
- 195. Down: Row 3.
+ 198. Down: Row 3.
  
- 196. A: Phrase 03: four bars
+ 199. A: Phrase 03: four bars
  of chain 03.
+ 
+>You should hear: short,
+>plucky bass notes, each one
+>gone before the next kick.
+>Compare with how it sounded
+>a minute ago: the low end is
+>clearer, and the groove
+>bounces.
+ 
+>Checkpoint: I05 still says
+>preset bass; page 2 shows
+>sustn 00.
 =10. Four chords, one bar
  The second column of a chain
  transposes its row: every
@@ -813,31 +981,36 @@
  progression. The pad and the
  keys use the same trick.
  
- 197. Right: Row 3's
+ 200. Right: Row 3's
  transpose, 00.
  
- 198. A + Left (2 times): FE:
+ 201. A + Left (2 times): FE:
  two semitones down.
  
- 199. Up: Row 2's transpose.
+ 202. Up: Row 2's transpose.
  
- 200. A + Right (3 times):
+ 203. A + Right (3 times):
  03: three up.
  
- 201. Up: Row 1's transpose.
+ 204. Up: Row 1's transpose.
  
- 202. A + Left (4 times): FC:
+ 205. A + Left (4 times): FC:
  four down.
  
- 203. Start: Start on a chain
+ 206. Start: Start on a chain
  loops this track's chain:
  the bass walks through the
  four chords.
  
- 204. Start: Stop.
+ 207. Start: Stop.
  
- 205. RB + Left: Back on the
+ 208. RB + Left: Back on the
  Song screen.
+ 
+>You should hear: the bass
+>line moving through four
+>chords, one per bar: C
+>minor, Ab, Eb, Bb.
 =11. The HyperSynth pad
  Track 5 gets the big chords.
  The HyperSynth engine plays
@@ -848,170 +1021,198 @@
  transpose: a C makes C minor
  9, an Ab makes Ab major 9.
  
- Two more things make it sit
- in the mix: a MOD slot that
+ A pad is the background: it
+ should fill the space around
+ the drums, bass and hook,
+ not sit on top of them. So
+ three things make it fit:
+ its sub oscillator goes off
+ and its own EQ takes out the
+ low end (that belongs to the
+ kick and bass; a pad with
+ bass in it turns the whole
+ mix to mud), and a MOD slot
  ducks it every time the kick
- hits (the "pumping" of house
- music), and its own EQ
- taking out the low end,
- which belongs to the kick
- and bass.
+ hits, the "pumping" of house
+ music.
  
- 206. Right: Track 5, row 00.
+ 209. Right: Track 5, row 00.
  
- 207. A: Chain 03 goes in.
+ 210. A: Chain 03 goes in.
  
- 208. A: A new chain 04.
+ 211. A: A new chain 04.
  
- 209. RB + Right: Chain 04.
+ 212. RB + Right: Chain 04.
  The cursor is where you left
  chain 03: row 1, on the
  transpose.
  
- 210. Left: The phrase
+ 213. Left: The phrase
  column.
  
- 211. Up: Row 0.
+ 214. Up: Row 0.
  
- 212. A: Phrase 03 goes in.
+ 215. A: Phrase 03 goes in.
  
- 213. A: A new phrase 04.
+ 216. A: A new phrase 04.
  
- 214. RB + Right: Phrase 04,
- cursor on step E.
+ 217. RB + Right: Phrase 04,
+ cursor on step F.
  
- 215. Up (14 times): Step 0.
+ 218. Up (15 times): Step 0.
  
- 216. A: G 3 I05, a copy of
+ 219. A: G 3 I05, a copy of
  the last bass note.
  
- 217. A + Left (4 times):
+ 220. A + Left (4 times):
  C 3.
  
- 218. Right: The cursor is on
+ 221. Right: The cursor is on
  I05.
  
- 219. A + Right (2 times):
+ 222. A + Right (2 times):
  I07, the PAD.
  
- 220. Left: Back on the note.
+ 223. Left: Back on the note.
  One note for the whole bar:
  it holds until the next one.
  
- 221. RB + Right: Instrument
+ 224. RB + Right: Instrument
  I07, the PAD.
  
- 222. Up: The cursor is on
+ 225. Up: The cursor is on
  engine synth.
  
- 223. A + Right (2 times):
+ 226. A + Right (2 times):
  engine hyper: the
  HyperSynth, starting from
  its hyper init sound.
  
- 224. Down: The cursor is on
+ 227. Down: The cursor is on
  preset hyper init.
  
- 225. A + Right: preset hyper
+ 228. A + Right: preset hyper
  pad: slow, wide and warm.
  
- 226. Down: The cursor is on
+ 229. Down: The cursor is on
  chord min9. The two rows
  under it are the six notes
  it plays.
  
- 227. A + Left: chord maj9.
+ 230. A + Left: chord maj9.
  
- 228. Down (7 times): The
- cursor is on scale off.
+ 231. Down (6 times): The
+ cursor is on sub 30: an
+ extra oscillator an octave
+ under the chord.
  
- 229. A + Right: scale on.
+ 232. A + Down (3 times): sub
+ 00: the low end stays free
+ for the kick and bass.
  
- 230. Start: One lush chord.
+ 233. Down: The cursor is on
+ scale off.
  
- 231. Start: Stop.
+ 234. A + Right: scale on:
+ every chord now uses only
+ the notes of C minor.
  
- 232. LB + Right (4 times):
+ 235. Start: One lush chord.
+ 
+ 236. Start: Stop.
+ 
+ 237. LB + Right (4 times):
  Page 5, MOD: four modulation
  slots, all off.
  
- 233. Down: The cursor is on
+ 238. Down: The cursor is on
  slot 1's type off.
  
- 234. A + Right (5 times):
+ 239. A + Right (5 times):
  type trig: an envelope fired
  by the notes of another
  track, source track 1: the
  kick.
  
- 235. Down: The cursor is on
+ 240. Down: The cursor is on
  dest cutoff, what it moves.
  
- 236. A + Left: dest volume.
+ 241. A + Left: dest volume.
  
- 237. Down: The cursor is on
+ 242. Down: The cursor is on
  amount +64.
  
- 238. A + Down (8 times): A
+ 243. A + Down (8 times): A
  minus amount: every kick
  pushes the pad's volume
  down, and it swells back up.
  
- 239. LB + Right (2 times):
+ 244. LB + Right (2 times):
  Page 7, EQ: the pad's own
  three-band EQ.
  
- 240. A + Down (3 times):
+ 245. A + Down (3 times):
  l.gain 50: the lows cut, so
  the kick and bass have them
  to themselves.
  
- 241. LB + Left (6 times):
+ 246. LB + Left (6 times):
  Back on page 1.
  
- 242. RB + Left: Back on
+ 247. RB + Left: Back on
  phrase 04.
  
- 243. RB + Left: Back on
+ 248. RB + Left: Back on
  chain 04.
  
- 244. Down: Row 1.
+ 249. Down: Row 1.
  
- 245. A: Phrase 04.
+ 250. A: Phrase 04.
  
- 246. Down: Row 2.
+ 251. Down: Row 2.
  
- 247. A: Phrase 04.
+ 252. A: Phrase 04.
  
- 248. Down: Row 3.
+ 253. Down: Row 3.
  
- 249. A: Phrase 04: four bars
+ 254. A: Phrase 04: four bars
  of chain 04.
  
- 250. Right: Row 3's
+ 255. Right: Row 3's
  transpose, 00.
  
- 251. A + Left (2 times): FE:
+ 256. A + Left (2 times): FE:
  two semitones down.
  
- 252. Up: Row 2's transpose.
+ 257. Up: Row 2's transpose.
  
- 253. A + Right (3 times):
+ 258. A + Right (3 times):
  03: three up.
  
- 254. Up: Row 1's transpose.
+ 259. Up: Row 1's transpose.
  
- 255. A + Left (4 times): FC:
+ 260. A + Left (4 times): FC:
  four down. The same chords
  as the bass.
  
- 256. RB + Left: Back on the
+ 261. RB + Left: Back on the
  Song screen.
  
- 257. Start: Drums, bass and
+ 262. Start: Drums, bass and
  pumping chords.
  
- 258. Start: Stop.
+ 263. Start: Stop.
+ 
+>You should hear: a wide,
+>warm chord that dips each
+>time the kick hits and
+>swells back up between them,
+>behind the drums rather than
+>on top.
+ 
+>Checkpoint: chain 04 has the
+>same transposes as chain 03:
+>00 FC 03 FE.
 =12. FM keys and CHRD
  Track 6: an FM electric
  piano stabbing on the
@@ -1024,144 +1225,150 @@
  open sound that fits all
  four chords.
  
- 259. Right: Track 6, row 00.
+ 264. Right: Track 6, row 00.
  
- 260. A: Chain 04 goes in.
+ 265. A: Chain 04 goes in.
  
- 261. A: A new chain 05.
+ 266. A: A new chain 05.
  
- 262. RB + Right: Chain 05,
+ 267. RB + Right: Chain 05,
  cursor on row 0's transpose.
  
- 263. Left: The phrase
+ 268. Left: The phrase
  column.
  
- 264. A: Phrase 04 goes in.
+ 269. A: Phrase 04 goes in.
  
- 265. A: A new phrase 05.
+ 270. A: A new phrase 05.
  
- 266. RB + Right: Phrase 05,
+ 271. RB + Right: Phrase 05,
  cursor on step 0.
  
- 267. Down (2 times): Step 2.
+ 272. Down (2 times): Step 2.
  
- 268. A: C 3 I07.
+ 273. A: C 3 I07.
  
- 269. Right: The cursor is on
+ 274. Right: The cursor is on
  I07.
  
- 270. A + Right (2 times):
+ 275. A + Right (2 times):
  I09, the KEYS.
  
- 271. Right: The command
+ 276. Right: The command
  column.
  
- 272. Select: The command
+ 277. Select: The command
  list. It always opens on
  ARPG, top left.
  
- 273. Right (2 times): CHRD:
+ 278. Right (2 times): CHRD:
  "note picks chord".
  
- 274. A: CHRD 0000.
+ 279. A: CHRD 0000.
  
- 275. Right: The value. The
+ 280. Right: The value. The
  second digit is lit: the
  last one you edited.
  
- 276. A + Up (7 times): 0070.
+ 281. A + Up (7 times): 0070.
  
- 277. A + Right: Holding A,
+ 282. A + Right: Holding A,
  Right lights the last digit.
  
- 278. A + Up (14 times):
+ 283. A + Up (14 times):
  007E: after 9 come A to F.
  
- 279. Left (3 times): Back on
+ 284. Left (3 times): Back on
  the note of step 2.
  
- 280. B + LB: A selection on
+ 285. B + LB: A selection on
  the note...
  
- 281. Right (3 times):
+ 286. Right (3 times):
  ...grown over the
  instrument, command and
  value.
  
- 282. B: Copied.
+ 287. B: Copied.
  
- 283. Down (4 times): Step 6.
+ 288. Down (4 times): Step 6.
  
- 284. A + LB: Pasted: a
+ 289. A + LB: Pasted: a
  second stab. The cursor
  moves on to step 7.
  
- 285. Down (3 times): Step A.
+ 290. Down (3 times): Step A.
  
- 286. A + LB: A third.
+ 291. A + LB: A third.
  
- 287. Down (3 times): Step E.
+ 292. Down (3 times): Step E.
  
- 288. A + LB: And a fourth.
+ 293. A + LB: And a fourth.
  
- 289. RB + Right: Instrument
+ 294. RB + Right: Instrument
  I09, the KEYS.
  
- 290. Up: The cursor is on
+ 295. Up: The cursor is on
  engine synth.
  
- 291. A + Right: engine fm4:
+ 296. A + Right: engine fm4:
  four-operator FM, starting
  from fm init.
  
- 292. Down: The cursor is on
+ 297. Down: The cursor is on
  preset fm init.
  
- 293. A + Right: preset
+ 298. A + Right: preset
  epiano: a classic FM
  electric piano.
  
- 294. Start: The stabs.
+ 299. Start: The stabs.
  
- 295. Start: Stop.
+ 300. Start: Stop.
  
- 296. RB + Left: Back on
+ 301. RB + Left: Back on
  phrase 05.
  
- 297. RB + Left: Back on
+ 302. RB + Left: Back on
  chain 05.
  
- 298. Down: Row 1.
+ 303. Down: Row 1.
  
- 299. A: Phrase 05.
+ 304. A: Phrase 05.
  
- 300. Down: Row 2.
+ 305. Down: Row 2.
  
- 301. A: Phrase 05.
+ 306. A: Phrase 05.
  
- 302. Down: Row 3.
+ 307. Down: Row 3.
  
- 303. A: Phrase 05: four bars
+ 308. A: Phrase 05: four bars
  of chain 05.
  
- 304. Right: Row 3's
+ 309. Right: Row 3's
  transpose, 00.
  
- 305. A + Left (2 times): FE:
+ 310. A + Left (2 times): FE:
  two semitones down.
  
- 306. Up: Row 2's transpose.
+ 311. Up: Row 2's transpose.
  
- 307. A + Right (3 times):
+ 312. A + Right (3 times):
  03: three up.
  
- 308. Up: Row 1's transpose.
+ 313. Up: Row 1's transpose.
  
- 309. A + Left (4 times): FC:
+ 314. A + Left (4 times): FC:
  four down.
  
- 310. RB + Left: Back on the
+ 315. RB + Left: Back on the
  Song screen.
+ 
+>You should hear: bright
+>electric-piano chords on the
+>offbeats, landing together
+>with the bass: the two lock
+>into one bouncing part.
 =13. The hook
  Track 7: the lead. First let
  the app write a random
@@ -1195,271 +1402,318 @@
  that's what makes a hook
  stick.
  
- 311. Right: Track 7, row 00.
+ 316. Right: Track 7, row 00.
  
- 312. A: Chain 05 goes in.
+ 317. A: Chain 05 goes in.
  
- 313. A: A new chain 06.
+ 318. A: A new chain 06.
  
- 314. RB + Right: Chain 06,
+ 319. RB + Right: Chain 06,
  cursor on row 1's transpose.
  
- 315. Left: The phrase
+ 320. Left: The phrase
  column.
  
- 316. Up: Row 0.
+ 321. Up: Row 0.
  
- 317. A: Phrase 05 goes in.
+ 322. A: Phrase 05 goes in.
  
- 318. A: A new phrase 06.
+ 323. A: A new phrase 06.
  
- 319. RB + Right: Phrase 06,
+ 324. RB + Right: Phrase 06,
  cursor on step F.
  
- 320. Up (15 times): Step 0.
+ 325. Up (15 times): Step 0.
  
- 321. B + LB: A selection...
+ 326. B + LB: A selection...
  
- 322. Down (15 times):
+ 327. Down (15 times):
  ...over the whole bar.
  
- 323. LB + Right: LB + Right:
+ 328. LB + Right: LB + Right:
  random notes in C minor on
  random steps.
  
- 324. Start: A melody out of
+ 329. Start: A melody out of
  nowhere. Press LB + Right
  again for another.
  
- 325. Start: Stop.
+ 330. Start: Stop.
  
- 326. B + Select: Undo: the
+ 331. B + Select: Undo: the
  phrase is empty again, and
  the selection is gone.
  You'll write this one
  yourself.
  
- 327. A: C 3 I09.
+ 332. A: C 3 I09.
  
- 328. Right: The cursor is on
+ 333. Right: The cursor is on
  I09.
  
- 329. A + Left (3 times):
+ 334. A + Left (3 times):
  I06, the LEAD.
  
- 330. Left: Back on the note.
+ 335. Left: Back on the note.
  
- 331. A + Up: C 4.
+ 336. A + Up: C 4.
  
- 332. A + Right (4 times):
+ 337. A + Right (4 times):
  G 4, through D 4, D#4 and
  F 4.
  
- 333. Down (3 times): Step 3.
+ 338. Down (3 times): Step 3.
  
- 334. A: G 4.
+ 339. A: G 4.
  
- 335. Down (3 times): Step 6.
+ 340. Down (3 times): Step 6.
  
- 336. A: G 4.
+ 341. A: G 4.
  
- 337. A + Right (2 times):
+ 342. A + Right (2 times):
  A#4.
  
- 338. Down (4 times): Step A.
+ 343. Down (4 times): Step A.
  
- 339. A: A#4.
+ 344. A: A#4.
  
- 340. A + Left (2 times):
+ 345. A + Left (2 times):
  G 4.
  
- 341. Down (2 times): Step C.
+ 346. Down (2 times): Step C.
  
- 342. A: G 4.
+ 347. A: G 4.
  
- 343. A + Left: F 4.
+ 348. A + Left: F 4.
  
- 344. Down (2 times): Step E.
+ 349. Down (2 times): Step E.
  
- 345. A: F 4.
+ 350. A: F 4.
  
- 346. A + Left: D#4.
+ 351. A + Left: D#4.
  
- 347. RB + Right: Instrument
+ 352. RB + Right: Instrument
  I06, the LEAD.
  
- 348. Up: The cursor is on
+ 353. Up: The cursor is on
  engine synth.
  
- 349. A + Right (2 times):
+ 354. A + Right (2 times):
  engine hyper.
  
- 350. Down: The cursor is on
+ 355. Down: The cursor is on
  preset hyper init.
  
- 351. A + Right (2 times):
+ 356. A + Right (2 times):
  preset trance lead: detuned
  saws, with echo and reverb
  already dialled in.
  
- 352. Start: Bar 1 of the
+ 357. Start: Bar 1 of the
  hook.
  
- 353. Start: Stop.
+ 358. Start: Stop.
  
- 354. RB + Left: Back on
+ 359. RB + Left: Back on
  phrase 06.
  
- 355. RB + Left: Back on
+ 360. RB + Left: Back on
  chain 06.
  
- 356. Down (2 times): Row 2:
+ 361. Down (2 times): Row 2:
  bar 3 is bar 1 again.
  
- 357. A: Phrase 06.
+ 362. A: Phrase 06.
  
- 358. Up: Row 1.
+ 363. Up: Row 1.
  
- 359. A: Phrase 06...
+ 364. A: Phrase 06...
  
- 360. A: ...and A again: a
+ 365. A: ...and A again: a
  new phrase 07 for bar 2.
  
- 361. RB + Right: Phrase 07,
+ 366. RB + Right: Phrase 07,
  cursor on step E.
  
- 362. Up (14 times): Step 0.
+ 367. Up (14 times): Step 0.
  
- 363. A: D#4 I06: the last
+ 368. A: D#4 I06: the last
  note you entered, and its
  instrument.
  
- 364. Down (3 times): Step 3.
+ 369. Down (3 times): Step 3.
  
- 365. A: D#4.
+ 370. A: D#4.
  
- 366. Down (3 times): Step 6.
+ 371. Down (3 times): Step 6.
  
- 367. A: D#4.
+ 372. A: D#4.
  
- 368. A + Right (2 times):
+ 373. A + Right (2 times):
  G 4.
  
- 369. Down (4 times): Step A.
+ 374. Down (4 times): Step A.
  
- 370. A: G 4.
+ 375. A: G 4.
  
- 371. A + Left: F 4.
+ 376. A + Left: F 4.
  
- 372. Down (2 times): Step C.
+ 377. Down (2 times): Step C.
  
- 373. A: F 4.
+ 378. A: F 4.
  
- 374. A + Left: D#4.
+ 379. A + Left: D#4.
  
- 375. Down (2 times): Step E.
+ 380. Down (2 times): Step E.
  
- 376. A: D#4.
+ 381. A: D#4.
  
- 377. A + Left (2 times):
+ 382. A + Left (2 times):
  C 4.
  
- 378. RB + Left: Back on
+ 383. RB + Left: Back on
  chain 06.
  
- 379. Down (2 times): Row 3.
+ 384. Down (2 times): Row 3.
  
- 380. A: Phrase 07...
+ 385. A: Phrase 07...
  
- 381. A: ...and a new phrase
+ 386. A: ...and a new phrase
  08 for bar 4.
  
- 382. RB + Right: Phrase 08,
+ 387. RB + Right: Phrase 08,
  cursor on step E.
  
- 383. Up (14 times): Step 0.
+ 388. Up (14 times): Step 0.
  
- 384. A: C 4 I06.
- 
- 385. A + Right (3 times):
- F 4.
- 
- 386. Down (3 times): Step 3.
- 
- 387. A: F 4.
- 
- 388. Down (3 times): Step 6.
- 
- 389. A: F 4.
+ 389. A: C 4 I06.
  
  390. A + Right (3 times):
- A#4.
- 
- 391. Down (4 times): Step A.
- 
- 392. A: A#4.
- 
- 393. A + Right: C 5: the top
- of the hook.
- 
- 394. Down (2 times): Step C.
- 
- 395. A: C 5.
- 
- 396. A + Left: A#4.
- 
- 397. Down (2 times): Step E.
- 
- 398. A: A#4.
- 
- 399. A + Left (3 times):
  F 4.
  
- 400. RB + Left: Back on
+ 391. Down (3 times): Step 3.
+ 
+ 392. A: F 4.
+ 
+ 393. Down (3 times): Step 6.
+ 
+ 394. A: F 4.
+ 
+ 395. A + Right (3 times):
+ A#4.
+ 
+ 396. Down (4 times): Step A.
+ 
+ 397. A: A#4.
+ 
+ 398. A + Right: C 5: the top
+ of the hook.
+ 
+ 399. Down (2 times): Step C.
+ 
+ 400. A: C 5.
+ 
+ 401. A + Left: A#4.
+ 
+ 402. Down (2 times): Step E.
+ 
+ 403. A: A#4.
+ 
+ 404. A + Left (3 times):
+ F 4.
+ 
+ 405. RB + Left: Back on
  chain 06.
  
- 401. Start: The whole hook,
+ 406. Start: The whole hook,
  four bars.
  
- 402. Start: Stop.
+ 407. Start: Stop.
  
- 403. RB + Left: Back on the
+ 408. RB + Left: Back on the
  Song screen.
  
- 404. Start: Everything
+ 409. Start: Everything
  together: this is the drop.
  
- 405. Start: Stop.
-=14. Copy the drop
- Row 00 is the whole drop.
- The arrangement is that row,
- copied and changed: parts
- drop out, fills lead into
- each drop. First, copy it to
- rows 01 to 03.
+ 410. Start: Stop.
  
- 406. Left (6 times): Track
+>You should hear: everything
+>at once, the hook on top:
+>that's the drop.
+ 
+>Checkpoint: row 00 has
+>chains 00 to 06 in tracks 1
+>to 7; track 8 is still
+>empty.
+=14. Copy the drop
+ Row 00 now plays everything
+ at once: that's the drop,
+ the part of a dance track
+ everyone waits for. The rest
+ of the song is built around
+ it, so it hits harder when
+ it arrives:
+ 
+*00  intro
+   What plays: kick, hats,
+   keys
+*01  groove
+   What plays: + snare and
+   bass
+*02  build
+   What plays: + pad, a snare
+   roll, the kick drops out
+   for the last bar
+*03 04  drop
+   What plays: everything,
+   with the hook
+*05  break
+   What plays: just the pad
+   and the hook
+*06  build
+   What plays: like 02, with
+   the hook
+*07 08  drop
+   What plays: everything
+   again
+*09 0A  outro
+   What plays: the groove and
+   the intro again, and out
+ 
+ Every section starts as a
+ copy of the drop with parts
+ taken out. First, copy row
+ 00 to rows 01 to 04.
+ 
+ 411. Left (6 times): Track
  1.
  
- 407. B + LB: A selection on
+ 412. B + LB: A selection on
  the cell...
  
- 408. Right (7 times):
+ 413. Right (7 times):
  ...over the whole row.
  
- 409. B: Copied.
+ 414. B: Copied.
  
- 410. Down: Row 01.
+ 415. Down: Row 01.
  
- 411. A + LB: Pasted: row 01
+ 416. A + LB: Pasted: row 01
  plays the drop too. The
  cursor moves on to the next
  row.
  
- 412. A + LB: Row 02.
+ 417. A + LB: Row 02.
  
- 413. A + LB: Row 03.
-=15. A rest chain
+ 418. A + LB: Row 03.
+ 
+ 419. A + LB: Row 04.
+ 
+>Checkpoint: rows 00 to 04
+>are the same: 00 01 02 03 04
+>05 06, with track 8 empty.
+=15. A rest chain; intro and groove
  A track only goes quiet
  where it plays something
  silent: a chain whose phrase
@@ -1472,226 +1726,331 @@
  reaches an empty cell stops
  for the rest of the song.
  
- 414. Up (4 times): Row 00:
- it becomes the intro, just
- hats, pad and keys.
+ Then the rests carve the
+ intro and the groove out of
+ the drop. Taking parts out
+ is what makes a section feel
+ different; when they come
+ back, you feel it.
  
- 415. Right (7 times): Track
+ 420. Up (5 times): Row 00.
+ 
+ 421. Right (7 times): Track
  8, still empty.
  
- 416. A: The last chain goes
+ 422. A: The last chain goes
  in...
  
- 417. A: ...and A again: a
+ 423. A: ...and A again: a
  new chain 07.
  
- 418. RB + Right: Chain 07,
+ 424. RB + Right: Chain 07,
  empty.
  
- 419. A: Phrase 08 goes in.
+ 425. A: Phrase 08 goes in.
  
- 420. A: A new phrase 09.
+ 426. A: A new phrase 09.
  
- 421. RB + Right: Phrase 09,
+ 427. RB + Right: Phrase 09,
  cursor on step E.
  
- 422. Up (14 times): Step 0.
+ 428. Up (14 times): Step 0.
  
- 423. Right (2 times): The
+ 429. Right (2 times): The
  command column.
  
- 424. Select: The command
+ 430. Select: The command
  list.
  
- 425. Down (2 times): Down
+ 431. Down (2 times): Down
  two rows...
  
- 426. Right (4 times):
+ 432. Right (4 times):
  ...KILL: stop the note.
  
- 427. A: KILL 0000: whatever
+ 433. A: KILL 0000: whatever
  this track plays stops right
  here.
  
- 428. RB + Left: Back on
+ 434. RB + Left: Back on
  chain 07.
  
- 429. Down: Row 1.
+ 435. Down: Row 1.
  
- 430. A: Phrase 09.
+ 436. A: Phrase 09.
  
- 431. Down: Row 2.
+ 437. Down: Row 2.
  
- 432. A: Phrase 09.
+ 438. A: Phrase 09.
  
- 433. Down: Row 3.
+ 439. Down: Row 3.
  
- 434. A: Phrase 09: four bars
+ 440. A: Phrase 09: four bars
  of chain 07.
  
- 435. RB + Left: Back on the
+ 441. RB + Left: Back on the
  Song screen.
  
- 436. Down: Row 01, track 8.
+ 442. Down: Row 01, track 8.
  
- 437. A: 07: rest.
+ 443. A: 07: rest.
  
- 438. Down: Row 02.
+ 444. Down: Row 02.
  
- 439. A: 07.
+ 445. A: 07.
  
- 440. Down: Row 03.
+ 446. Down: Row 03.
  
- 441. A: 07.
+ 447. A: 07.
  
- 442. Up (3 times): Row 00.
+ 448. Down: Row 04.
  
- 443. Left (7 times): Track
- 1, the kick.
+ 449. A: 07. Track 8 plays
+ effects later; for now it
+ rests.
  
- 444. A + Right (7 times):
- 07: A + Right counts the
- chain number up. No kick in
+ 450. Up (4 times): Row 00:
  the intro.
  
- 445. Right: Track 2.
+ 451. Left (6 times): Track
+ 2, the snare.
  
- 446. A + Right (6 times):
- 07.
+ 452. A + Right (6 times):
+ 07: A + Right counts the
+ chain number up. No snare in
+ the intro.
  
- 447. Right (2 times): Track
+ 453. Right (2 times): Track
  4.
  
- 448. A + Right (4 times):
- 07.
+ 454. A + Right (4 times):
+ 07: no bass yet.
  
- 449. Right (3 times): Track
+ 455. Right: Track 5.
+ 
+ 456. A + Right (3 times):
+ 07: no pad yet.
+ 
+ 457. Right (2 times): Track
  7.
  
- 450. A + Right: 07.
+ 458. A + Right: 07: the hook
+ waits for the drop. The
+ intro is kick, hats and
+ keys.
  
- 451. Down: Row 01, track 7.
+ 459. Down: Row 01, the
+ groove, track 7.
  
- 452. A + Right: 07: no lead
- before the first drop.
-=16. A snare roll
- Row 01 is the build before
- the drop. Its snare plays
- three bars of snare, then a
- roll: a new chain 08. The
- roll is one note with two
- commands: ROLL 0093 strikes
- it again every 3 ticks, each
- hit 8 louder, starting from
- VOLM 0020, quiet.
+ 460. A + Right: 07.
  
- 453. Left (5 times): Track
+ 461. Left (2 times): Track
+ 5.
+ 
+ 462. A + Right (3 times):
+ 07: the groove is the intro
+ plus snare and bass.
+ 
+ 463. Down: Row 02, the
+ build.
+ 
+ 464. Right (2 times): Track
+ 7.
+ 
+ 465. A + Right: 07: the pad
+ comes in here, the hook
+ still waits.
+ 
+ 466. Up (2 times): Row 00.
+ 
+ 467. Start: Listen from the
+ top: intro, groove, then the
+ pad swells in.
+ 
+ 468. Start: Stop.
+ 
+>You should hear: four bars
+>of kick, hats and keys; then
+>snare and bass join; then
+>the pad swells in.
+ 
+>Checkpoint: track 8 has 07
+>in rows 00 to 04; row 00
+>reads 00 07 02 07 07 05 07
+>07.
+=16. The build: snare roll, kick out
+ The build before a drop
+ pulls you in two ways: the
+ snare speeds up into a roll,
+ and the kick drops out for
+ the last bar, so its return
+ on the drop lands like a
+ punch.
+ 
+ The roll is one note with
+ two commands: ROLL 0093
+ strikes it again every 3
+ ticks, each hit 8 louder,
+ starting from VOLM 0020,
+ quiet. It goes in a new
+ snare chain 08: three bars
+ of snare, then the roll. The
+ kick gets a chain 09: three
+ bars of kick, then the rest
+ phrase.
+ 
+ 469. Down (2 times): Row 02,
+ the build, track 7.
+ 
+ 470. Left (5 times): Track
  2.
  
- 454. A + Right (7 times):
+ 471. A + Right (7 times):
  08: a chain nobody uses yet,
  so it's new and empty.
  
- 455. RB + Right: Chain 08,
+ 472. RB + Right: Chain 08,
  cursor on row 3.
  
- 456. Up (3 times): Row 0.
+ 473. Up (3 times): Row 0.
  
- 457. A + Left (8 times): A
+ 474. A + Left (8 times): A
  puts the last phrase (09)
  in, Left counts it down to
  01, the snare.
  
- 458. Down: Row 1.
+ 475. Down: Row 1.
  
- 459. A: Phrase 01.
+ 476. A: Phrase 01.
  
- 460. Down: Row 2.
+ 477. Down: Row 2.
  
- 461. A: Phrase 01.
+ 478. A: Phrase 01.
  
- 462. Down: Row 3.
+ 479. Down: Row 3.
  
- 463. A: Phrase 01...
+ 480. A: Phrase 01...
  
- 464. A: ...and a new phrase
+ 481. A: ...and a new phrase
  0A for the roll.
  
- 465. RB + Right: Phrase 0A,
+ 482. RB + Right: Phrase 0A,
  cursor on step 0, in the
  command column.
  
- 466. Left (2 times): The
+ 483. Left (2 times): The
  note column.
  
- 467. A: F 4 I06, the last
+ 484. A: F 4 I06, the last
  note you entered.
  
- 468. A + Down: F 3.
+ 485. A + Down: F 3.
  
- 469. A + Left (3 times):
+ 486. A + Left (3 times):
  C 3.
  
- 470. Right: The instrument.
+ 487. Right: The instrument.
  
- 471. A + Left (5 times):
+ 488. A + Left (5 times):
  I01, the SNARE.
  
- 472. Right: The command
+ 489. Right: The command
  column.
  
- 473. Select: The command
+ 490. Select: The command
  list.
  
- 474. Down (5 times): Down
+ 491. Down (5 times): Down
  five rows...
  
- 475. Right (2 times):
+ 492. Right (2 times):
  ...ROLL.
  
- 476. A: ROLL 0000.
+ 493. A: ROLL 0000.
  
- 477. Right: The value. The
+ 494. Right: The value. The
  last digit is lit.
  
- 478. A + Up (3 times): 0003:
+ 495. A + Up (3 times): 0003:
  a hit every 3 ticks.
  
- 479. A + Left: The next
+ 496. A + Left: The next
  digit.
  
- 480. A + Up (9 times): 0093:
+ 497. A + Up (9 times): 0093:
  9 = each hit 8 louder.
  
- 481. Right: The second
+ 498. Right: The second
  command column.
  
- 482. Select: The command
+ 499. Select: The command
  list.
  
- 483. Down (7 times): The
+ 500. Down (7 times): The
  bottom row...
  
- 484. Right (4 times):
+ 501. Right (4 times):
  ...VOLM, volume.
  
- 485. A: VOLM 0000.
+ 502. A: VOLM 0000.
  
- 486. Right: The value, its
+ 503. Right: The value, its
  second digit lit.
  
- 487. A + Up (2 times): 0020:
+ 504. A + Up (2 times): 0020:
  the roll starts quiet.
  
- 488. Start: The roll swells.
+ 505. Start: The roll swells.
  
- 489. Start: Stop.
+ 506. Start: Stop.
  
- 490. RB + Left: Back on
+ 507. RB + Left: Back on
  chain 08.
  
- 491. RB + Left: Back on the
+ 508. RB + Left: Back on the
  Song screen.
+ 
+ 509. Left: Track 1, the
+ kick.
+ 
+ 510. A + Right (9 times):
+ 09, another new chain.
+ 
+ 511. RB + Right: Chain 09,
+ cursor on row 3.
+ 
+ 512. Up (3 times): Row 0.
+ 
+ 513. A + Left (10 times):
+ The last phrase (0A) counted
+ down to 00, the kick.
+ 
+ 514. Down: Row 1.
+ 
+ 515. A: Phrase 00.
+ 
+ 516. Down: Row 2.
+ 
+ 517. A: Phrase 00.
+ 
+ 518. Down: Row 3.
+ 
+ 519. A + Right (9 times):
+ Phrase 00 counted up to 09,
+ the rest: the kick's last
+ bar is silent.
+ 
+ 520. RB + Left: Back on the
+ Song screen.
+ 
+>You should hear (row 02): in
+>the last bar the snare rolls
+>faster and louder, and the
+>kick stops.
+ 
+>Checkpoint: row 02 starts 09
+>08: the new kick and snare
+>chains.
 =17. Sample: reverse cymbal
  Track 8 plays effects. The
  first is a crash cymbal from
@@ -1707,112 +2066,127 @@
  semitones up, it's faster
  and lasts exactly one bar.
  
- 492. Right (6 times): Track
- 8, row 01.
+ 521. Right (7 times): Track
+ 8, row 02.
  
- 493. A + Right (2 times):
- 09, a new chain.
+ 522. A + Right (3 times):
+ 0A, a new chain.
  
- 494. RB + Right: Chain 09,
+ 523. RB + Right: Chain 0A,
  cursor on row 3.
  
- 495. Up (3 times): Row 0.
+ 524. Up (3 times): Row 0.
  
- 496. A + Left: The last
- phrase (0A) counted down to
- 09, the rest.
+ 525. A: The last phrase, 09:
+ the rest.
  
- 497. Down: Row 1.
+ 526. Down: Row 1.
  
- 498. A: Phrase 09.
+ 527. A: Phrase 09.
  
- 499. Down: Row 2.
+ 528. Down: Row 2.
  
- 500. A: Phrase 09.
+ 529. A: Phrase 09.
  
- 501. Down: Row 3.
+ 530. Down: Row 3.
  
- 502. A: Phrase 09...
+ 531. A: Phrase 09...
  
- 503. A: ...and a new phrase
+ 532. A: ...and a new phrase
  0B.
  
- 504. RB + Right: Phrase 0B,
+ 533. RB + Right: Phrase 0B,
  cursor on step 0, second
  command column.
  
- 505. Left (5 times): The
+ 534. Left (5 times): The
  note column.
  
- 506. A: C 3 I01.
+ 535. A: C 3 I01.
  
- 507. A + Right (3 times):
+ 536. A + Right (3 times):
  F 3.
  
- 508. Right: The instrument.
+ 537. Right: The instrument.
  
- 509. A + Right (2 times):
+ 538. A + Right (2 times):
  I03, the OPENHAT.
  
- 510. RB + Right: Instrument
+ 539. RB + Right: Instrument
  I03.
  
- 511. Up (2 times): The
+ 540. Up (2 times): The
  cursor is on type.
  
- 512. A + Left: type sample:
+ 541. A + Left: type sample:
  an empty sampler.
  
- 513. Down: The cursor is on
+ 542. Down: The cursor is on
  sample none.
  
- 514. Select: Select opens
+ 543. Select: Select opens
  the sample browser:
  Applications/Samples, one
  folder per pack.
  
- 515. Down (6 times):
+ 544. Down (6 times):
  [drums-909].
  
- 516. A: Inside the folder.
+ 545. A: Inside the folder.
  
- 517. Down (2 times):
+ 546. Down (2 times):
  crash.wav. Listen would play
  it.
  
- 518. Right: Import is lit.
+ 547. Right: Import is lit.
  
- 519. A: Imported: the crash
+ 548. A: Imported: the crash
  is copied into your song.
  
- 520. Right (2 times): Exit
+ 549. Right (2 times): Exit
  is lit.
  
- 521. A: Back on the
+ 550. A: Back on the
  instrument: the waveform of
  the crash, loudest at the
  start.
  
- 522. Down: The cursor is on
+ 551. Down: The cursor is on
  play forward.
  
- 523. A + Right: play
+ 552. A + Right: play
  reverse: end to start.
  
- 524. Start: The phrase: a
+ 553. Start: The phrase: a
  cymbal swelling up, one bar
  long.
  
- 525. Start: Stop.
+ 554. Start: Stop.
  
- 526. RB + Left: Back on
+ 555. RB + Left: Back on
  phrase 0B.
  
- 527. RB + Left: Back on
- chain 09.
+ 556. RB + Left: Back on
+ chain 0A.
  
- 528. RB + Left: Back on the
+ 557. RB + Left: Back on the
  Song screen.
+ 
+ 558. Up (2 times): Row 00.
+ 
+ 559. Start: Intro, groove,
+ build... and the drop. Hear
+ how the missing kick and the
+ rising cymbal make it land.
+ 
+ 560. Start: Stop.
+ 
+>You should hear: the first
+>half of the song: the cymbal
+>rises out of the silence the
+>kick leaves, and the drop
+>hits when everything comes
+>back at once.
 =18. Resample: reverse pad
  Render to sample records a
  bar of your song into a new
@@ -1821,267 +2195,348 @@
  backwards: a swell that
  pulls you out of the break.
  
- 529. Up: Row 00.
+ 561. Down (2 times): Row 02.
  
- 530. Left (3 times): Track
+ 562. Left (3 times): Track
  5, the pad.
  
- 531. RB + Right: Chain 04,
+ 563. RB + Right: Chain 04,
  cursor on row 3.
  
- 532. Up (3 times): Row 0.
+ 564. Up (3 times): Row 0.
  
- 533. RB + Right: Phrase 04.
+ 565. RB + Right: Phrase 04.
  
- 534. LB + Start: LB + Start:
+ 566. LB + Start: LB + Start:
  the bar plays once and is
  recorded.
  
- 535. Done: rs_01.wav is
+ 567. Done: rs_01.wav is
  saved in instrument 10.
  
- 536. A: Instrument 10: the
+ 568. A: Instrument 10: the
  recorded bar. The cursor is
  on play forward.
  
- 537. A + Right: play
+ 569. A + Right: play
  reverse.
  
- 538. RB + Left: Back on
+ 570. RB + Left: Back on
  phrase 04.
  
- 539. RB + Left: Back on
+ 571. RB + Left: Back on
  chain 04.
  
- 540. RB + Left: Back on the
+ 572. RB + Left: Back on the
  Song screen.
-=19. The break
- Row 04 is the break: just
- the pad and the lead, and
- the reversed pad at the end.
- It starts as a copy of the
- intro.
  
- 541. Left (4 times): Track
+>Checkpoint: instrument 10
+>plays rs_01.wav, set to play
+>reverse. Your song hasn't
+>changed yet: the next
+>chapter uses it.
+=19. The break
+ Row 05 is the break: the
+ drums and bass stop, and the
+ hook floats over the pad on
+ its own. After a whole drop,
+ the sudden space is what you
+ notice; the reversed pad at
+ the end sucks you back in.
+ It starts as a copy of the
+ drop.
+ 
+ 573. Down (2 times): Row 04,
+ the drop.
+ 
+ 574. Left (4 times): Track
  1.
  
- 542. B + LB: Selection...
+ 575. B + LB: Selection...
  
- 543. Right (7 times): ...the
- whole intro row.
+ 576. Right (7 times): ...the
+ whole row.
  
- 544. B: Copied.
+ 577. B: Copied.
  
- 545. Down (4 times): Row 04.
+ 578. Down: Row 05.
  
- 546. A + LB: Pasted.
+ 579. A + LB: Pasted.
  
- 547. Up: Back on row 04.
+ 580. Up: Back on row 05.
  
- 548. Right (2 times): Track
- 3.
+ 581. A + Right (7 times):
+ 07: no kick in the break.
  
- 549. A + Right (5 times):
- 07: no hats in the break.
+ 582. Right: Track 2.
  
- 550. Right (3 times): Track
+ 583. A + Right (6 times):
+ 07: no snare.
+ 
+ 584. Right: Track 3.
+ 
+ 585. A + Right (5 times):
+ 07: no hats.
+ 
+ 586. Right: Track 4.
+ 
+ 587. A + Right (4 times):
+ 07: no bass.
+ 
+ 588. Right (2 times): Track
  6.
  
- 551. A + Right (2 times):
+ 589. A + Right (2 times):
  07: no keys.
  
- 552. Right: Track 7.
+ 590. Right (2 times): Track
+ 8.
  
- 553. A + Left: 06: the hook
- comes in.
+ 591. A + Right (4 times):
+ 0B, a new chain.
  
- 554. Right: Track 8.
- 
- 555. A + Right (3 times):
- 0A, a new chain.
- 
- 556. RB + Right: Chain 0A,
+ 592. RB + Right: Chain 0B,
  cursor on row 0.
  
- 557. A + Left (2 times): The
+ 593. A + Left (2 times): The
  last phrase (0B) counted
  down to 09, the rest.
  
- 558. Down: Row 1.
+ 594. Down: Row 1.
  
- 559. A: Phrase 09.
+ 595. A: Phrase 09.
  
- 560. Down: Row 2.
+ 596. Down: Row 2.
  
- 561. A: Phrase 09.
+ 597. A: Phrase 09.
  
- 562. Down: Row 3.
+ 598. Down: Row 3.
  
- 563. A: Phrase 09...
+ 599. A: Phrase 09...
  
- 564. A: ...and a new phrase
+ 600. A: ...and a new phrase
  0C.
  
- 565. RB + Right: Phrase 0C,
+ 601. RB + Right: Phrase 0C,
  cursor on step 0, on the
  instrument column.
  
- 566. Left: The note column.
+ 602. Left: The note column.
  
- 567. A: F 3 I03.
+ 603. A: F 3 I03.
  
- 568. A + Left (3 times):
+ 604. A + Left (3 times):
  C 3.
  
- 569. Right: The instrument.
+ 605. Right: The instrument.
  
- 570. A + Up: A + Up: 16 up,
+ 606. A + Up: A + Up: 16 up,
  I13.
  
- 571. A + Left (3 times):
+ 607. A + Left (3 times):
  I10: the recorded pad.
  
- 572. Start: The pad,
+ 608. Start: The pad,
  backwards.
  
- 573. Start: Stop.
+ 609. Start: Stop.
  
- 574. RB + Left: Back on
- chain 0A.
+ 610. RB + Left: Back on
+ chain 0B.
  
- 575. RB + Left: Back on the
+ 611. RB + Left: Back on the
  Song screen.
-=20. Build, drop, outro
- Three more rows: 05 is
- another build (like 01, with
- the lead), 06 the last drop
- (like 02), 07 the outro
- (like the intro).
  
- 576. Up (3 times): Row 01.
+>You should hear (row 05):
+>the drums and bass gone, the
+>hook floating over the pad,
+>then a reversed swell
+>pulling into the next row.
+=20. Second build, drop, outro
+ The second half repeats the
+ first with one twist: the
+ second build already has the
+ hook in it, so the last drop
+ feels like it has been
+ coming for a while. Then the
+ outro takes the parts away
+ again in the order they came
+ in, so a DJ (or you) can
+ fade into the next song.
  
- 577. Left (7 times): Track
+ 612. Up (3 times): Row 02,
+ the build.
+ 
+ 613. Left (7 times): Track
  1.
  
- 578. B + LB: Selection...
+ 614. B + LB: Selection...
  
- 579. Right (7 times): ...row
- 01.
+ 615. Right (7 times): ...the
+ build.
  
- 580. B: Copied.
+ 616. B: Copied.
  
- 581. Down (4 times): Row 05.
+ 617. Down (4 times): Row 06.
  
- 582. A + LB: Pasted.
+ 618. A + LB: Pasted.
  
- 583. Up: Back on row 05.
+ 619. Up: Back on row 06.
  
- 584. Right (3 times): Track
+ 620. Right (3 times): Track
  4.
  
- 585. A + Right (4 times):
- 07: no bass while it builds.
+ 621. A + Right (4 times):
+ 07: the bass rests while it
+ builds.
  
- 586. Right (3 times): Track
+ 622. Right (3 times): Track
  7.
  
- 587. A + Left: 06: the lead
+ 623. A + Left: 06: the hook
  plays this build.
  
- 588. Up (3 times): Row 02.
+ 624. Up (2 times): Row 04,
+ the drop.
  
- 589. Left (6 times): Track
+ 625. Left (6 times): Track
  1.
  
- 590. B + LB: Selection...
+ 626. B + LB: Selection...
  
- 591. Right (7 times): ...the
+ 627. Right (7 times): ...the
  drop.
  
- 592. B: Copied.
+ 628. B: Copied.
  
- 593. Down (4 times): Row 06.
+ 629. Down (3 times): Row 07.
  
- 594. A + LB: Pasted: the
- last drop.
+ 630. A + LB: Pasted: the
+ last drop...
  
- 595. Up (7 times): Row 00.
+ 631. A + LB: ...eight bars
+ of it.
  
- 596. B + LB: Selection...
+ 632. Up (8 times): Row 01,
+ the groove.
  
- 597. Right (7 times): ...the
+ 633. B + LB: Selection...
+ 
+ 634. Right (7 times): ...the
+ groove.
+ 
+ 635. B: Copied.
+ 
+ 636. Down (8 times): Row 09.
+ 
+ 637. A + LB: Pasted: the
+ outro starts.
+ 
+ 638. Up (10 times): Row 00,
+ the intro.
+ 
+ 639. B + LB: Selection...
+ 
+ 640. Right (7 times): ...the
  intro.
  
- 598. B: Copied.
+ 641. B: Copied.
  
- 599. Down (7 times): Row 07.
+ 642. Down (10 times): Row
+ 0A.
  
- 600. A + LB: Pasted: the
- outro. After it the song
+ 643. A + LB: Pasted: the
+ outro ends like the song
+ began. After it, the song
  ends.
+ 
+>Checkpoint: eleven rows, 00
+>to 0A, with a chain in every
+>cell of every row.
 =21. Bookmarks
  Bookmarks mark where the
  sections start, so you can
  jump around a long song.
  
- 601. Up (8 times): Row 00,
+ 644. Up (11 times): Row 00,
  the intro.
  
- 602. A + Select: A + Select
+ 645. A + Select: A + Select
  bookmarks the row.
  
- 603. Down: Row 01, the
- build.
+ 646. Down (2 times): Row 02,
+ the build.
  
- 604. A + Select: Bookmarked.
+ 647. A + Select: Bookmarked.
  
- 605. Down: Row 02, the drop.
+ 648. Down: Row 03, the drop.
  
- 606. A + Select: Bookmarked.
+ 649. A + Select: Bookmarked.
  
- 607. Down (2 times): Row 04,
+ 650. Down (2 times): Row 05,
  the break.
  
- 608. A + Select: Bookmarked.
+ 651. A + Select: Bookmarked.
  
- 609. Down (2 times): Row 06,
+ 652. Down (2 times): Row 07,
  the last drop.
  
- 610. A + Select: Bookmarked.
+ 653. A + Select: Bookmarked.
  
- 611. LB + Up: LB + Up jumps
+ 654. LB + Up: LB + Up jumps
  to the previous bookmark:
- row 04.
+ row 05.
  
- 612. LB + Up (2 times): Row
- 01.
+ 655. LB + Up (3 times): Row
+ 00.
  
- 613. Up: Row 00.
- 
- 614. Start: The whole song
+ 656. Start: The whole song
  from the top.
  
- 615. Start: Stop.
+ 657. Start: Stop.
+ 
+>You should hear: the whole
+>song, about a minute and a
+>half, from the intro to the
+>last kick.
 =22. Mix
  The Mixer sets each track's
- level. The kick should hit
- hardest; the bass sits a
- little under it.
+ level. Mixing is mostly
+ deciding what's in front:
+ here the kick and the hook,
+ with the pad behind
+ everything as a backdrop. A
+ fader at C0 plays a track as
+ it is; lower is quieter.
  
- 616. RB + Down: The Mixer: a
+ 658. RB + Down: The Mixer: a
  fader per track, then the
  effect returns and the
  master.
  
- 617. A + Up (4 times): Track
- 1, the kick, at FF: its
- loudest.
+ 659. Right (4 times): Track
+ 5, the pad.
  
- 618. Right (3 times): Track
- 4, the bass.
+ 660. A + Down (3 times): 90:
+ the pad steps back.
  
- 619. A + Down (3 times): 90:
- a bit down.
+ 661. Right: Track 6, the
+ keys.
+ 
+ 662. A + Down (2 times): A0:
+ a little back too.
+ 
+ 663. Right: Track 7, the
+ hook.
+ 
+ 664. A + Up (2 times): E0:
+ the hook in front, where the
+ ear goes first.
+ 
+>You should hear: the hook
+>clearer and the pad further
+>back, as if it had moved to
+>the back of the room.
 =23. Effects, EQ, limiter
  The FX screen sets up the
  shared chorus, echo and
@@ -2090,50 +2545,56 @@
  Limit keeps it from
  clipping.
  
- 620. RB + Down: The FX
+ 665. RB + Down: The FX
  screen.
  
- 621. Down (4 times): The
+ 666. Down (4 times): The
  cursor is on the reverb's
  size 90.
  
- 622. A + Up (2 times): size
+ 667. A + Up (2 times): size
  B0: a bigger room, a longer
  tail.
  
- 623. RB + Right: The EQ
+ 668. RB + Right: The EQ
  screen: low, mid and high
  for the whole mix.
  
- 624. Down (4 times): The
+ 669. Down (4 times): The
  cursor is on the high gain
  80.
  
- 625. A + Up: gain 90: a
+ 670. A + Up: gain 90: a
  little air on top.
  
- 626. RB + Right: The Limit
+ 671. RB + Right: The Limit
  screen, cursor on drive 00
  (off).
  
- 627. A + Up: drive 10: the
+ 672. A + Up: drive 10: the
  mix goes into the limiter a
  little hotter, and every
  peak is caught before it can
  crackle.
  
- 628. Start: Listen: GR shows
+ 673. Start: Listen: GR shows
  how much it's catching.
  
- 629. Start: Stop.
+ 674. Start: Stop.
  
- 630. RB + Left: EQ.
+ 675. RB + Left: EQ.
  
- 631. RB + Left: FX.
+ 676. RB + Left: FX.
  
- 632. RB + Up: Mixer.
+ 677. RB + Up: Mixer.
  
- 633. RB + Up: Song.
+ 678. RB + Up: Song.
+ 
+>You should hear: a slightly
+>longer room on the snare and
+>pad, a little more sparkle
+>on top, and no crackle at
+>the loudest moments.
 =24. Headroom and save
  Eight tracks add up. The
  Project screen's Drive sets
@@ -2143,22 +2604,27 @@
  brings the level back
  without distortion.
  
- 634. RB + Up: Project,
+ 679. RB + Up: Project,
  cursor on Scale.
  
- 635. Down (4 times): The
+ 680. Down (4 times): The
  cursor is on Drive: 100.
  
- 636. A + Down (3 times):
+ 681. A + Down (3 times):
  Drive: 70.
  
- 637. Up (10 times): The
+ 682. Up (10 times): The
  cursor is on Save Song.
  
- 638. A: Saved: the song is
+ 683. A: Saved: the song is
  written to the SD card.
  
- 639. RB + Down: Song.
+ 684. RB + Down: Song.
+ 
+>Checkpoint: Drive: 70 on the
+>Project screen, and the song
+>saved. It's safe to switch
+>the RG Nano off now.
 =25. Play it live
  Live mode turns the Song
  screen into a launcher: cue
@@ -2167,69 +2633,80 @@
  Nothing you do here changes
  the song.
  
- 640. Select: Select: Live
+ 685. Select: Select: Live
  mode. The title says Live.
  
- 641. LB + Start: LB + Start
+ 686. LB + Start: LB + Start
  launches row 00: the intro
  loops.
  
- 642. LB + Down: LB + Down:
+ 687. LB + Down: LB + Down:
  the next bookmark, the
  build.
  
- 643. LB + Start: Cued: it
+ 688. LB + Start: Cued: it
  starts when the intro's
  chains end, and loops.
  
- 644. LB + Down: The drop.
+ 689. LB + Down: The drop.
  
- 645. LB + Start: Cued. Drop
+ 690. LB + Start: Cued. Drop
  it!
  
- 646. B + Start: B + Start
+ 691. B + Start: B + Start
  stops everything.
  
- 647. Select: Back to Song
+ 692. Select: Back to Song
  mode.
  
- 648. LB + Up (2 times): Row
+ 693. LB + Up (2 times): Row
  00.
+ 
+>You should hear: each cued
+>section starting exactly
+>when the playing one ends,
+>so the change always lands
+>on a new bar.
 =26. Export a WAV
  Finally, record the song
  into a WAV file you can
  share. It plays in real time
  while it records.
  
- 649. RB + Up: Project.
+ 694. RB + Up: Project.
  
- 650. Down (4 times): The
+ 695. Down (4 times): The
  cursor is on Render: Off.
  
- 651. A + Right: Render:
+ 696. A + Right: Render:
  Stereo: the next play
  records mixdown.wav in the
  song's folder.
  
- 652. RB + Down: Song.
+ 697. RB + Down: Song.
  
- 653. Start: Recording... let
+ 698. Start: Recording... let
  it play to the end (about a
- minute).
+ minute and a half).
  
- 654. Start: Stopped: the
+ 699. Start: Stopped: the
  file is closed. (Here it's
  cut short; yours has the
  whole song.)
  
- 655. RB + Up: Project.
+ 700. RB + Up: Project.
  
- 656. A + Left: Render: Off
+ 701. A + Left: Render: Off
  again, for normal playing.
  
- 657. RB + Down: Song.
+ 702. RB + Down: Song.
  Afterglow is done: GLOW is
  your song now.
+ 
+>Checkpoint: a mixdown.wav in
+>the song's folder on the SD
+>card (Tracks/lgpt_GLOW):
+>your first finished track.
 =Where next
  - Make it yours: change a
    note of the hook
@@ -6031,7 +6508,7 @@
  somewhere in here.
 =Afterglow - the walkthrough song
  lgpt_Afterglow  C minor  128
- BPM with swing  1:00
+ BPM with swing  1:23
  
  The melodic house track Your
 ~24,4,first-song,
@@ -6045,7 +6522,9 @@
  
 *1
    Macro Synth kick, four on
-   the floor
+   the floor; it drops out
+   for the last bar of each
+   build
 *2
    Macro Synth snare with a
    reverb send; a ROLL + VOLM
@@ -6055,17 +6534,20 @@
    made with the fill tool,
    every 4th one CHNC 0080
 *4
-   rolling 8th-note bass (the
-   starter kit's bass)
+   offbeat bass between the
+   kicks (the starter kit's
+   bass, sustain 00 for short
+   notes)
 *5
    HyperSynth hyper pad,
    chord maj9 with scale on,
-   ducked by the kick (MOD
-   trig), lows cut with its
-   EQ
+   sub 00 and lows cut with
+   its EQ, ducked by the kick
+   (MOD trig)
 *6
    FM4 epiano stabs on the
-   off-beats, CHRD 007E
+   offbeats with the bass,
+   CHRD 007E
 *7
    HyperSynth trance lead:
    the hook
@@ -6082,12 +6564,23 @@
    times with transposes 00
    FC 03 FE: Cm9, Abmaj9,
    Ebmaj9, Bb9.
- - Song rows 00-07 - intro,
-   build, drop, drop, break,
-   build, drop, outro. Chain
-   07 is the rest (a KILL),
-   on every cell where a part
+ - Song rows 00-0A - intro,
+   groove, build, drop, drop,
+   break, build, drop, drop,
+   outro, outro. Every
+   section is the drop with
+   parts taken out: chain 07
+   is the rest (a KILL), on
+   every cell where a part
    drops out.
+ - The low end - the kick
+   plays on the beat, the
+   bass only between the
+   kicks with short notes,
+   and nothing else has any
+   bass in it: that's why the
+   drop is punchy instead of
+   muddy.
  - The Groove - 07 05 swings
    the 16ths.
  - Mix - Mixer (kick up, bass

@@ -97,8 +97,9 @@ def run_render(name: str, render_mode: int, wait_ms: int, audible: bool) -> int:
     return proc.returncode
 
 
-def stem_levels(sim_folder: Path, seconds: float) -> list[dict]:
-    """Per-track peak and loud-section RMS from the app's own stem renders."""
+def stem_levels(sim_folder: Path, seconds: float, keep: Path | None = None) -> list[dict]:
+    """Per-track peak and loud-section RMS from the app's own stem renders
+    (with `keep`, each stem is moved there as <song>-track<N>.wav)."""
     rows = []
     for ch in range(8):
         wav = sim_folder / f"channel{ch}.wav"
@@ -114,13 +115,17 @@ def stem_levels(sim_folder: Path, seconds: float) -> list[dict]:
         peak = float(np.abs(data).max()) if data.size else 0.0
         rows.append({"track": ch, "peak_db": round(audio_report.db(peak), 1),
                      "loud_rms_db": round(audio_report.db(loud), 1),
-                     "active_seconds": round(len(active) * 0.5, 1)})
+                     "active_seconds": round(len(active) * 0.5, 1),
+                     "bands": audio_report.analyze(wav).get("band_energy_db")})
+        if keep:
+            keep.mkdir(parents=True, exist_ok=True)
+            trim_wav(wav, keep / f"{sim_folder.name}-track{ch + 1}.wav", seconds)
         wav.unlink()
     return rows
 
 
 def render(name: str, project: lgpt_composer.Project, artifacts: Path, tail: float,
-           audible: bool = False, stems: bool = False) -> dict:
+           audible: bool = False, stems: bool = False, keep_stems: bool = False) -> dict:
     folder = project.save(DEMO_OUT)
     sim_folder = SIM_TRACKS / folder.name
     if sim_folder.exists():
@@ -150,7 +155,7 @@ def render(name: str, project: lgpt_composer.Project, artifacts: Path, tail: flo
         code = run_render(name, 2, wait_ms, audible)
         if code != 0:
             raise RuntimeError(f"{name}: stem render failed (exit {code}); see {LOG}")
-        report["stems"] = stem_levels(sim_folder, seconds)
+        report["stems"] = stem_levels(sim_folder, seconds, artifacts / "stems" if keep_stems else None)
     (artifacts / f"{folder.name}.json").write_text(json.dumps(report, indent=2))
     return report
 
@@ -162,6 +167,7 @@ def main() -> int:
     parser.add_argument("--artifacts", type=Path, default=ROOT / "sim-artifacts-demos")
     parser.add_argument("--audible", action="store_true", help="play the render through the speakers")
     parser.add_argument("--stems", action="store_true", help="also bounce per-track stems and print levels")
+    parser.add_argument("--keep-stems", action="store_true", help="with --stems: keep the stem WAVs in <artifacts>/stems")
     parser.add_argument("--tail", type=float, default=3.0, help="seconds kept after one pass")
     args = parser.parse_args()
 
@@ -178,13 +184,14 @@ def main() -> int:
                 continue
             project = module.build()  # type: ignore[attr-defined]
             print(project.stats(), flush=True)
-            report = render(name, project, args.artifacts, args.tail, args.audible, args.stems)
+            report = render(name, project, args.artifacts, args.tail, args.audible, args.stems or args.keep_stems,
+                            args.keep_stems)
             print(f"  peak {report['peak_db']} dB, rms {report['rms_db']} dB, crest {report['crest_db']} dB, "
                   f"clipped {report['clipped_ratio']:.4%}, silent {report['silent_seconds']}s", flush=True)
             print(f"  bands {report['band_energy_db']}", flush=True)
             for st in report.get("stems", []):
                 print(f"  track {st['track']}: peak {st['peak_db']:6.1f} dB  loud rms {st['loud_rms_db']:6.1f} dB  "
-                      f"active {st['active_seconds']}s", flush=True)
+                      f"active {st['active_seconds']}s  bands {st['bands']}", flush=True)
             if report["clipped_ratio"] > 0.001:
                 failures.append(f"{name} clips")
     finally:

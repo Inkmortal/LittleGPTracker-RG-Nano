@@ -162,7 +162,8 @@ struct MacroPreset {
 #define MEND {0,0}
 
 // Every preset starts from INIT, then applies its own values. Drums are
-// tuned so C 3 sounds right, basses two octaves down (like the synth kit).
+// tuned so C 3 sounds right (the kick's body near 60 Hz, the snare's
+// near 220 Hz), basses two octaves down (like the synth kit).
 static const MacroPreset macroPresets[]={
 	{"init",{
 		MV(MCP_SHAPE,MS_CSAW),MV(MCP_TIMBRE,0x80),MV(MCP_COLOR,0x80),
@@ -243,11 +244,11 @@ static const MacroPreset macroPresets[]={
 		MV(SYP_DECAY,0xA0),MV(SYP_SUSTAIN,0x80),MV(SYP_RELEASE,0x60),MV(SYP_GLIDE,0x60),
 		MV(SYP_DRIVE,0x50),MV(SYP_VOLUME,0x70),MEND}},
 	{"kick",{
-		MV(MCP_SHAPE,MS_KICK),MV(MCP_TIMBRE,0x90),MV(MCP_COLOR,0x50),MV(SYP_TUNE,-15),
+		MV(MCP_SHAPE,MS_KICK),MV(MCP_TIMBRE,0x70),MV(MCP_COLOR,0x90),MV(SYP_TUNE,-27),
 		MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x80),
 		MV(SYP_DRIVE,0x20),MV(SYP_VOLUME,0xC0),MEND}},
 	{"snare",{
-		MV(MCP_SHAPE,MS_SNARE),MV(MCP_TIMBRE,0x80),MV(MCP_COLOR,0xA0),MV(SYP_TUNE,7),
+		MV(MCP_SHAPE,MS_SNARE),MV(MCP_TIMBRE,0x80),MV(MCP_COLOR,0x80),MV(SYP_TUNE,-3),
 		MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x70),
 		MV(SYP_VOLUME,0xC0),MEND}},
 	{"hat",{
