@@ -33,7 +33,7 @@ The orchestral recordings come from the Versilian Studios Community Edition (CC0
 1. Open an instrument (**RB + Right** from a phrase).
 2. On the first page, set `type` to **sample** (cursor on `type`, **A + Left**).
 3. Move to `sample` and press **Select**: the sample browser opens.
-4. Highlight a file. `Listen` previews it, `Import` copies it into the song and assigns it. **Start + Up/Down** browses while previewing, **Start + Right** imports.
+4. Highlight a file. `Listen` previews it, `Import` copies it into the song and assigns it. **Start + Up/Down** browses while previewing, **Start + Right** imports. **A** on a folder opens it and **B** goes back up a folder; **B** in the top folder closes the browser.
 
 Imported samples live inside the song folder (`lgpt_<name>/samples/`), so the song keeps working even if you tidy up `Applications/Samples`.
 

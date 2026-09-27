@@ -85,6 +85,8 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     std::string GetSimDebugSummary() const;
     std::string GetSimScreenDump() const;
     std::string GetSimSelectionSummary() const;
+    // "instrument>SAMPLES>RECORD": the screen, then each layer open over it
+    std::string GetOpenLayers() const;
     void LogDebugState(const char *label, bool includeScreen) const;
     // Text a view drew as pixels this frame (the guide draws its own text):
     // the simulator's screen checks see it like character text

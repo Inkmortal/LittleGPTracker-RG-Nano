@@ -216,9 +216,7 @@ void SampleEditDialog::audition() {
 void SampleEditDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
     if (!pressed)
         return;
-    if (mask == EPBM_B) {
-        EndModal(0);
-    } else if (mask == EPBM_UP || mask == EPBM_DOWN) {
+    if (mask == EPBM_UP || mask == EPBM_DOWN) {
         op_ = (op_ + (mask == EPBM_DOWN ? 1 : SEO_COUNT - 1)) % SEO_COUNT;
         status_.clear();
         made_.clear();

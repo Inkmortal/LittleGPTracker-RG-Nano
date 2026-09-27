@@ -238,14 +238,25 @@ void ImportSampleDialog::import(Path &element) {
 	isDirty_=true ;
 } ;
 
+bool ImportSampleDialog::Back() {
+	// A opened the folder, so B leaves it (the cursor lands back on it);
+	// from the top folder B closes the browser
+	if (isSampleLibRoot()) {
+		endPreview() ;
+		EndModal(0) ;
+	} else {
+		Path parent=currentPath_.GetParent() ;
+		setCurrentFolder(&parent) ;
+		isDirty_=true ;
+	}
+	return true ;
+}
+
 void ImportSampleDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
 
 	if (!pressed) return ;
 
-	if (mask==EPBM_B) {  // leave right away, like every dialog
-		endPreview() ;
-		EndModal(0) ;
-	} else if (mask&EPBM_L) {  // LB+Up/Down: a page (Left/Right pick the button)
+	if (mask&EPBM_L) {  // LB+Up/Down: a page (Left/Right pick the button)
 		if (mask&EPBM_UP) warpToNextSample(-LIST_SIZE) ;
 		if (mask&EPBM_DOWN) warpToNextSample(LIST_SIZE) ;
 	} else if (mask==EPBM_A) {

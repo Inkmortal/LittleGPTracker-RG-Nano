@@ -263,6 +263,12 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    # B backs out one layer from every dialog, menu and overlay
+    Name = "back-out-everywhere"
+    Script = "back-out-everywhere.rgsim"
+    Args = @("-ResetLastProject", "-SeedSamplePacks", "-NameSeed=7")
+  },
+  @{
     Name = "chain-warp"
     Script = "chain-warp.rgsim"
     Args = @("-ResetLastProject")

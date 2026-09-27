@@ -166,6 +166,10 @@ class View : public Observable {
     // RB+Select goes to ProcessButtonMask instead of opening the helper
     // (the guide: it is the help, so the combo that opened it closes it)
     virtual bool HandlesHelperCombo() { return false; }
+    // B pressed alone: back out one step (see ModalView::Back). Screens
+    // return false: there B is a modifier (B+A, B+D-pad) handled by
+    // ProcessButtonMask.
+    virtual bool Back() { return false; }
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,
                                          const char *&edit, const char *&field,
                                          const char *&cmd1, const char *&cmd2,
@@ -183,6 +187,10 @@ class View : public Observable {
     void renderToSample(int mode);
 public:
     void ShowInstrument(int instrument);
+    // What is open over this screen, innermost last: ">SAMPLES>RECORD",
+    // ">helper" (dialogs are named by their helper title). The sim's
+    // expect_open checks it, so a B press can be proved to close one layer.
+    std::string GetLayerStack();
 protected:
     void drawPhraseRoll(int phrase, int x, int y, int w, int h, int playStep,
                         bool active, int cursorStep = -1);

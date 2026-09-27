@@ -395,8 +395,6 @@ void InstrumentListDialog::ProcessButtonMask(unsigned short mask,
         move(LIST_ROWS);
     } else if (mask == EPBM_A) {
         EndModal(1);
-    } else if (mask == EPBM_B) {
-        EndModal(0);
     } else if (mask == EPBM_START) {
         audition();
     } else if (mask == EPBM_SELECT) {

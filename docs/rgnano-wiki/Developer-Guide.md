@@ -43,7 +43,7 @@ instrument 0A          # B+D-pad to an instrument slot
 
 Each goal logs `=> reached in N steps` and fails with a clear message if an input changes nothing.
 
-Assertions: `expect_view`, `expect_screen_text`, `expect_selected_text`, `expect_player_running`, `expect_play_mode`, `expect_audio_activity`, `expect_song_chain`, `expect_phrase_row_count`, `expect_instrument_type/name/param`, `expect_audio_peak_max`, `expect_limiter_gr`, `expect_size 240 240`, `expect_no_error`, and more — see `docs/RGNANO_SIM.md`.
+Assertions: `expect_view`, `expect_open song>menu>confirm` (exactly which layers are open), `expect_screen_text`, `expect_selected_text`, `expect_player_running`, `expect_play_mode`, `expect_audio_activity`, `expect_song_chain`, `expect_phrase_row_count`, `expect_instrument_type/name/param`, `expect_audio_peak_max`, `expect_limiter_gr`, `expect_size 240 240`, `expect_no_error`, and more — see `docs/RGNANO_SIM.md`.
 
 State setup for long scenarios: `sim_set_synth`, `sim_set_instrument_param`, `sim_set_song_chain`, `sim_set_chain_phrase`, `sim_set_phrase_note`, `sim_set_phrase_command`, `sim_set_tempo`.
 
@@ -96,7 +96,7 @@ Every screen follows the key grammar in [Controls](Controls). When adding a comb
 - **Cost matches frequency.** Move, add a note, play: one button. Copy, jump, big steps: one modifier + one button. Never three buttons for something routine.
 - **One meaning per combo per screen**, and the same meaning on every screen. A combo never fires two actions.
 - **No timing tricks.** No double-tap windows; live cues wait for the bar, not for a precise press.
-- **B is always the way out** of a dialog, without side effects.
+- **B goes back one step**, without side effects: out of a dialog, question (cancel, never "No"), helper, menu or folder. Dialogs get this from `ModalView::Back()` (routed by `View::ProcessButton`; B alone never reaches `ProcessButtonMask`); a dialog with steps inside (folders, a recording take, typed letters) overrides `Back()` to undo one of them first. The sim's `expect_open` (e.g. `instrument>SAMPLES>RECORD`) proves each B closes exactly one layer (`back-out-everywhere`).
 - **Everything is undoable.** `UndoHistory` snapshots the song, chains, phrases, tables, grooves, mixer, project settings and the current instrument before every press and keeps it if the press changed something (one A-hold = one step, 32 steps). New editing code needs nothing extra; new data outside those needs adding to `UndoHistory::Capture`.
 - **Show the mode** (Song/Live, selection, playing) on screen; the helper (RB + Select) lists every combo of the current screen.
 - **Key repeat**: 250 ms before repeating, then 66 ms (`KEYDELAY`, `KEYREPEAT` in `config.xml`); holding A + a direction speeds up to 40 ms after 6 repeats (`KEYREPEATFAST`) for long value sweeps. The cursor itself never accelerates, so it doesn't overshoot.

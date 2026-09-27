@@ -39,6 +39,10 @@ press k 80
 up n
 wait 80
 expect_selected_text debug=Audio Input Monitor
+# B backs out one step: to the menu Debug was opened from, then closed
+press b 80
+wait 80
+expect_selected_text powerMenu=Debug tools
 press b 80
 wait 80
 expect_view song

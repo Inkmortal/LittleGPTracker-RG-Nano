@@ -984,6 +984,14 @@ void AppWindow::NotePixelText(const char *text, bool selected) {
     }
 }
 
+std::string AppWindow::GetOpenLayers() const {
+    std::string layers = GetCurrentViewName();
+    if (_currentView) {
+        layers += _currentView->GetLayerStack();
+    }
+    return layers;
+}
+
 std::string AppWindow::GetSimSelectionSummary() const {
     std::ostringstream out;
     bool any = false;

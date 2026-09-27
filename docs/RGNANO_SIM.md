@@ -261,6 +261,12 @@ expect_screen_text 1######
 # fail unless the currently inverted/highlighted screen text contains a phrase
 expect_selected_text Import
 
+# fail unless exactly these layers are open: the view, then each dialog
+# (named by its helper title) or overlay over it, innermost last; the power
+# menu's layers are menu, confirm, debug; the helper is helper
+expect_open instrument>SAMPLES>RECORD
+expect_open song>menu>debug>helper
+
 # fail unless LGPT's native player/preview state matches the intended workflow
 expect_player_running yes
 expect_player_running no

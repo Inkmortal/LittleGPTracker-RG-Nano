@@ -53,8 +53,8 @@ press s 80
 wait 80
 expect_screen_text YOUR SONGS
 
-# New opens on OK with a free name; B is a backspace (one letter),
-# CANCEL leaves
+# New opens on OK with a free name. Nothing typed yet (only the
+# suggestion), so B leaves at once; CANCEL leaves too
 press l 80
 press l 80
 expect_selected_text ="New"
@@ -63,9 +63,14 @@ wait 80
 screenshot_app start-new-song.bmp
 expect_screen_text NEW SONG
 expect_screen_text type to replace
+expect_screen_text B back
 expect_selected_text ="DONE"
 press b 80
-wait 60
+wait 80
+expect_screen_text YOUR SONGS
+expect_selected_text ="New"
+press a 80
+wait 80
 expect_screen_text NEW SONG
 expect_selected_text ="DONE"
 press l 80

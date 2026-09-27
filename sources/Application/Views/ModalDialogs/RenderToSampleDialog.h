@@ -18,6 +18,8 @@ public:
   virtual void OnPlayerUpdate(PlayerEventType, unsigned int currentTick);
   virtual void OnFocus();
   virtual void ProcessButtonMask(unsigned short mask, bool pressed);
+  // B stops a render in progress and closes
+  virtual bool Back();
   virtual void GetGuideTopic(const char *&page, const char *&section);
 
   // The instrument that got the new sample (-1 if none)

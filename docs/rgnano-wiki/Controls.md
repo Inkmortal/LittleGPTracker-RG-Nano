@@ -10,7 +10,7 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 | **B + A** | delete it, or put a knob back to its default |
 | **A + Start** | hear the instrument (on a phrase, **A** on a note already previews it) |
 | **B + D-pad** | jump to the neighbouring item that way (chain, phrase, instrument, table, groove; 16 rows on the Song) |
-| **B** | back / close, in dialogs (right away); on a Yes/No question it answers **No** (so "Save your work?" then **B** leaves without saving) |
+| **B** | back one step: closes whatever is open (dialog, list, menu, question, helper, folder), right away and without changing anything. See [Backing out](#backing-out) |
 | **Left/Right** in a list | a page at a time (where Left/Right pick a button instead: **LB + Up/Down**) |
 | **RB + D-pad** | go to the screen that way on the map |
 | **Start** | play / stop what this screen shows |
@@ -27,6 +27,23 @@ The RG Nano has few buttons, so the same few combos mean the same thing on every
 Nothing is mapped twice on a screen, and a combo never fires two actions at once.
 
 > On the RG Nano, **Select** is the `FN` button. **LB/RB** are the shoulder buttons. The Menu/Power button opens the app menu: **Volume** and **Brightness** (Left/Right), **Save and quit**, **Quit, don't save** (asks first) and **Debug tools**. Holding power to switch off saves your song first.
+
+## Backing out
+
+One rule for leaving anything: **B goes back one step.** Whatever you opened (a dialog, a list, a menu, a question, the helper, a folder), **B** closes it and puts you back exactly where you were, the moment you press it. It never saves, deletes, quits or changes anything on the way out; press it again to go back another step.
+
+| Where | B does |
+| --- | --- |
+| Any dialog (instrument list, command picker, sample editor, render) | closes it; the command picker puts back the command you had |
+| A question (`Save your work?`, `Delete ... ?`, `Purge ...?`) | closes it with no answer: nothing is saved, deleted or left. To answer **No**, pick `No` and press **A** |
+| The helper (**RB + Select**) | closes it (so does **RB + Select** again) |
+| A folder (sample browser, song list) | back up one folder; in the sample browser's top folder, closes it. The song list is the first screen, so there **B** just reminds you that Power quits |
+| Power menu | its question → the menu → closed; **Debug tools** → the menu. **Power** closes the whole menu from anywhere |
+| Recording | a take (recording or recorded) is dropped for another try; then the device list; then closed |
+| Naming a song or sound | the one place **B** is a backspace: it erases the last letter you typed. With nothing typed (or only the suggested name) it leaves |
+| The full guide | back through the pages you came through; **RB + Select** closes it from anywhere |
+
+On the editing screens (Song, Chain, Phrase, Instrument ...) nothing is open to close, so **B** alone does nothing there: it is the modifier for **B + A** (delete), **B + D-pad** (jump) and **B + LB** (select). In a selection, **B** copies it and ends it.
 
 ## Moving between screens
 
@@ -59,7 +76,7 @@ If a cell is empty, RB + Right tells you to press **A** first. Holding RB + a di
 | --- | --- |
 | **Start** | play / stop (what plays depends on the screen, see below) |
 | **RB + Start** | play / stop the whole song from a Chain, Phrase, Table, Groove or Instrument screen |
-| **RB + Select** | helper: **Down/Up** flips map → commands → how-to, **A** opens the full guide, **RB + Select** closes |
+| **RB + Select** | helper: **Down/Up** flips map → commands → how-to, **A** opens the full guide, **B** (or **RB + Select**) closes |
 | **B + Select** / **LB + Select** | undo / redo (32 steps; one A-hold of edits is one step) |
 | **A + RB** | solo the track (Song, Chain, Phrase, Mixer) |
 | **B + RB** | mute the track (Song, Chain, Phrase, Mixer) |
@@ -214,7 +231,7 @@ The letters are in alphabetical order (not QWERTY), so the next letter is always
 | D-pad | move over the keys and the `abc RANDOM CANCEL DONE` row (Down from the buttons wraps to the top letters) |
 | **A** on `abc` / `ABC`, or **Select** | switch the keys to lowercase / uppercase |
 | **A** | type the letter / run the button |
-| **B** | erase a letter; on an empty name, leave without making a song |
+| **B** | erase the last letter you typed; with nothing typed (empty, or only the suggested name) leave without making a song |
 | **LB / RB** | move the cursor inside the name |
 | **Start** or `DONE` | create the song |
 

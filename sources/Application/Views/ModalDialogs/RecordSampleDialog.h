@@ -23,6 +23,9 @@ public:
     virtual void OnPlayerUpdate(PlayerEventType type, unsigned int currentTick);
     virtual void OnFocus();
     virtual void ProcessButtonMask(unsigned short mask, bool pressed);
+    // B steps back: a take (recording or recorded) is dropped for another
+    // try, ready goes back to the device list, which closes the dialog
+    virtual bool Back();
     virtual void CustomizeContextOverlay(const char *&name, const char *&where,
                                          const char *&edit, const char *&field,
                                          const char *&cmd1, const char *&cmd2,

@@ -15,6 +15,8 @@ public:
 	virtual void OnPlayerUpdate(PlayerEventType ,unsigned int currentTick) ;
 	virtual void OnFocus() ;
 	virtual void ProcessButtonMask(unsigned short mask,bool pressed) ;
+	// B goes up a folder; in the top folder it closes the browser
+	virtual bool Back() ;
 	virtual void GetGuideTopic(const char *&page,const char *&section) {
 		page="samples" ; section="Turn a slot into a sampler" ;
 	}

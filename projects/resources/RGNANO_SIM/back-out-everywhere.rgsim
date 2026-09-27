@@ -1,0 +1,202 @@
+# B backs out exactly one step, on press, from every dialog, menu and
+# overlay, and changes nothing on the way out. expect_open names every layer
+# open (the screen first), so each B press is proved to close one layer:
+# not zero, not two.
+wait 1200
+expect_open null>PROJECTS
+
+# Song list: B at the top has nothing behind it and stays
+press b 80
+wait 100
+expect_open null>PROJECTS
+# The helper: B closes it
+down n
+press k 80
+up n
+wait 100
+expect_open null>PROJECTS>helper
+press b 80
+wait 100
+expect_open null>PROJECTS
+
+# Naming a new song: only the suggested name, so B leaves at once
+press r 80
+expect_selected_text ="New"
+press a 80
+wait 100
+expect_open null>PROJECTS>NEW SONG
+press b 80
+wait 100
+expect_open null>PROJECTS
+# A typed letter: B erases it (still naming), then B leaves
+press a 80
+wait 100
+press u 80
+press a 80
+wait 60
+expect_open null>PROJECTS>NEW SONG
+press b 80
+wait 60
+expect_open null>PROJECTS>NEW SONG
+press b 80
+wait 100
+expect_open null>PROJECTS
+# Make the song: New, then Start takes the suggested name
+press a 80
+wait 100
+press s 80
+wait 1200
+expect_open song
+
+# The helper
+down n
+press k 80
+up n
+wait 100
+expect_open song>helper
+press d 80
+wait 60
+expect_open song>helper
+press b 80
+wait 100
+expect_open song
+
+# Power menu, its question, Debug and its helper: one step each
+press p 80
+wait 100
+expect_open song>menu
+press b 80
+wait 100
+expect_open song
+press p 80
+wait 100
+press d 80
+press d 80
+press d 80
+expect_selected_text powerMenu=Song List
+press a 80
+wait 100
+expect_open song>menu>confirm
+press b 80
+wait 100
+expect_open song>menu
+press u 80
+press u 80
+press u 80
+press u 80
+expect_selected_text powerMenu=Debug tools
+press a 80
+wait 100
+expect_open song>menu>debug
+down n
+press k 80
+up n
+wait 100
+expect_open song>menu>debug>helper
+press b 80
+wait 100
+expect_open song>menu>debug
+press b 80
+wait 100
+expect_open song>menu
+press b 80
+wait 100
+expect_open song
+
+# Phrase: the command picker. B cancels and leaves the command as it was
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+wait 60
+expect_phrase_command 0 0 1 ----
+press r 80
+press r 80
+press k 80
+wait 150
+expect_open phrase>COMMAND
+press r 80
+press d 80
+wait 60
+press b 80
+wait 100
+expect_open phrase
+expect_phrase_command 0 0 1 ----
+
+# Render to sample (LB+Start): B stops it and closes
+down m
+press s 80
+up m
+wait 200
+expect_open phrase>dialog
+press b 80
+wait 200
+expect_open phrase
+expect_player_running no
+
+# Instrument list (RB+Up), renaming inside it (Select): one step each
+goto instrument
+down n
+press u 80
+up n
+wait 150
+expect_open instrument>INSTRUMENTS
+press k 80
+wait 100
+expect_open instrument>INSTRUMENTS>NAME THIS SOUND
+press b 80
+wait 100
+expect_open instrument>INSTRUMENTS
+press b 80
+wait 100
+expect_open instrument
+
+# Sample browser: A opens a folder, B leaves it, B at the top closes it
+set type sample
+page SHAPE
+press k 80
+wait 300
+expect_open instrument>SAMPLES
+expect_screen_text Listen
+# (-SeedSamplePacks: the top folder lists [..] then the packs, bass first)
+press d 80
+expect_selected_text [bass]
+press a 80
+wait 150
+expect_screen_text finger
+press b 80
+wait 150
+expect_open instrument>SAMPLES
+expect_screen_text drums-808
+press b 80
+wait 150
+expect_open instrument
+# The recorder inside the browser: B from its device list goes back to it
+press k 80
+wait 300
+expect_open instrument>SAMPLES
+press r 80
+press r 80
+press a 80
+wait 200
+expect_open instrument>SAMPLES>RECORD
+press b 80
+wait 150
+expect_open instrument>SAMPLES
+press b 80
+wait 150
+expect_open instrument
+
+# Project: "Save your work?" B stays in the song, nothing asked again
+goto project
+focus song list
+press a 80
+wait 120
+expect_open project>CONFIRM
+press b 80
+wait 150
+expect_open project
+expect_view project
+expect_no_error
+quit

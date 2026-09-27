@@ -150,7 +150,7 @@ void NewProjectDialog::DrawView() {
     props.invert_ = false;
 
     SetColor(CD_MUTE);
-    DrawString(1, LEGEND_Y, name_.empty() ? "B back     SEL abc/ABC"
+    DrawString(1, LEGEND_Y, (name_.empty() || suggested_) ? "B back     SEL abc/ABC"
                                           : "B erase    SEL abc/ABC", props);
     DrawString(1, LEGEND_Y + 1, "LB/RB cursor  START done", props);
     SetColor(CD_NORMAL);
@@ -238,7 +238,7 @@ void NewProjectDialog::CustomizeContextOverlay(
 	field=renaming_?"Rename":"Name a new song";
 	cmd1="Dpad pick a key";
 	cmd2="A type the key";
-	cmd3="B erase, empty=back";
+	cmd3="B erase; untyped=back";
 	cmd4="LB/RB move in name";
 	cmd5="SELECT abc/ABC";
 	cmd6="START or DONE create";
@@ -309,6 +309,19 @@ void NewProjectDialog::activate() {
     }
 }
 
+bool NewProjectDialog::Back() {
+    // A text field's one exception: B is backspace while there are letters
+    // you typed. The suggested name isn't typed (the first letter replaces
+    // it), so B on it leaves at once instead of erasing it letter by letter.
+    if (name_.empty() || suggested_) {
+        EndModal(0);
+    } else {
+        erase();
+        isDirty_ = true;
+    }
+    return true;
+}
+
 void NewProjectDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
 
     if (!pressed)
@@ -317,13 +330,6 @@ void NewProjectDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
     switch (mask) {
     case EPBM_A:
         activate();
-        break;
-    case EPBM_B:
-        if (name_.empty()) {
-            EndModal(0);
-            return;
-        }
-        erase();
         break;
     case EPBM_SELECT:
         lower_ = !lower_;
