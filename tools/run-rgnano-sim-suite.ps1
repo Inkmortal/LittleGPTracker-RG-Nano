@@ -274,6 +274,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "picked-instrument"
+    Script = "picked-instrument.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
     Args = @("-OpenDemo=Afterglow")

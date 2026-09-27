@@ -78,6 +78,8 @@ InstrumentType InstrumentView::getInstrumentType() {
 void InstrumentView::onInstrumentChange() {
 
 	ClearFocus() ;
+	// The sound on screen is the one the next new phrase note gets
+	viewData_->instrumentPicked_=true ;
 
 	I_Instrument *old=current_ ;
 

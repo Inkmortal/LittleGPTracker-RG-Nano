@@ -877,8 +877,8 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 	} else if (command.op=="expect_bookmark" || command.op=="expect_track_muted") {
 		// <row or channel> yes|no
 		iss >> command.value >> command.arg;
-	} else if (command.op=="expect_phrase_note") {
-		// <phrase> <row> <midi note, or -- for none>
+	} else if (command.op=="expect_phrase_note" || command.op=="expect_phrase_instrument") {
+		// <phrase> <row> <midi note / hex instrument, or -- for none>
 		iss >> command.value >> command.value2 >> command.arg;
 	} else if (command.op=="expect_phrase_in_scale") {
 		// <phrase> <minimum number of notes>: every note fits the Key/Scale
@@ -1386,7 +1386,8 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_player" || command.op=="expect_notes_repeat" ||
 	           command.op=="expect_project_param" || command.op=="sim_set_project_param" ||
 	           command.op=="expect_bookmark" || command.op=="expect_track_muted" ||
-	           command.op=="expect_phrase_note" || command.op=="expect_mixer_level" ||
+	           command.op=="expect_phrase_note" || command.op=="expect_phrase_instrument" ||
+	           command.op=="expect_mixer_level" ||
 	           command.op=="sim_set_mixer_level" || command.op=="expect_phrase_in_scale") {
 		if (!RunSimSequencerCheck(command.op,command.arg,command.arg2,command.value,command.value2)) {
 			FailSimScript("sequencer check failed");
@@ -2975,6 +2976,14 @@ bool SDLEventManager::RunSimSequencerCheck(const std::string &op, const std::str
 		int expected=(arg=="--")?0xFF:atoi(arg.c_str());
 		bool ok=(actual==expected);
 		Trace::Log("RGNANO_SIM","expect_phrase_note phrase=%02X row=%d actual=%d expected=%d => %s",value,value2,actual,expected,ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_phrase_instrument") {
+		if (value<0 || value>=PHRASE_COUNT || value2<0 || value2>=16) return false;
+		int actual=viewData->song_->phrase_->instr_[16*value+value2];
+		int expected=(arg=="--")?0xFF:(int)strtol(arg.c_str(),0,16);
+		bool ok=(actual==expected);
+		Trace::Log("RGNANO_SIM","expect_phrase_instrument phrase=%02X row=%d actual=%02X expected=%02X => %s",value,value2,actual,expected,ok?"match":"mismatch");
 		return ok;
 	}
 	if (op=="expect_phrase_in_scale") {
