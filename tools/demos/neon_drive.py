@@ -44,9 +44,9 @@ def build() -> Project:
 
     # --- drums: the DRUM engine ------------------------------------------
     p.synth(KICK, "909 kick", tune=-26, drum_decay=0x90, volume=0xB0)
-    p.synth(SNARE, "909 snare", reverb=0xA8, volume=0x60)
-    p.synth(HAT, "808 hat", volume=0x48)
-    p.synth(OPEN, "808 open", volume=0x3C)
+    p.synth(SNARE, "909 snare", reverb=0xA8, volume=0xF0)
+    p.synth(HAT, "808 hat", volume=0x70)
+    p.synth(OPEN, "808 open", volume=0x60)
     p.synth(TOM, "808 tom", reverb=0x60, volume=0xB0)
     p.synth(CRASH, "openhat", decay=0xC8, release=0xC0, cutoff=0xB8, reverb=0x70, volume=0x70)
 
@@ -70,7 +70,7 @@ def build() -> Project:
     kick_drop = Phrase.drums("x...x...x.......", KICK)
     snare = Phrase.drums("....x.......x...", SNARE)
     snare_fill = Phrase.drums("....x.......x.oX", SNARE, accent=0xE0, ghost=0x60)
-    hats8 = Phrase.drums("x.x.x.x.x.x.x.x.", HAT, normal=0x90)
+    hats8 = Phrase.drums("x.x.x.x.x.x.x.x.", HAT, normal=0xC0)
     hats16 = Phrase.drums("xoXoxoXoxoXoxoXo", HAT, accent=0xE0, ghost=0x50)
     # Open hat on the offbeats (its own instrument, same track as the hats)
     hats_open = Phrase.merge(Phrase.drums("xo.oxo.oxo.oxo.o", HAT, ghost=0x50),
@@ -89,6 +89,7 @@ def build() -> Project:
     roll4 = crescendo("xxxxxxxxxxxx....", SNARE, 0xA8, 0xE0)
     for i in range(8, 12):
         roll4.command(i, "RTRG", 0x0003)  # 32nd-note stutter on the last beat
+    roll4.set(12, cmd1="KILL", param1=0)  # ...and silence: RTRG would run on into the drop
     build_snare = p.chain([snare, Phrase.drums("x.x.x.x.x.x.x.x.", SNARE, normal=0x70), roll3, roll4])
 
     # Toms into the second chorus, a crash on each chorus downbeat
