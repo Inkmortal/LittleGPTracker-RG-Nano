@@ -14,7 +14,10 @@ PREFIX :=
 CFLAGS	:= -mthreads -g -O3 -msse2 -mfpmath=sse -Wall $(INCLUDES) $(DEFINES) -I$(PWD)/../sources -I$(PWD)/../sources/Externals
 CXXFLAGS:= $(CFLAGS) -std=gnu++03
 # GUI subsystem: never opens a console window (which would steal focus)
-LDFLAGS := -L../../libs/Wsdl-mingw -mwindows
+# Heap accounting (RGNanoSimMemory.cpp): every malloc/free goes through
+# wrappers, and the C++ runtime is linked in so new/delete do too
+LDFLAGS := -L../../libs/Wsdl-mingw -mwindows -static-libstdc++ -static-libgcc \
+	-Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc,--wrap=free
 LIBS     :=  -lmingw32 -lSDL -luser32 -lgdi32 -lwinmm -ldxguid
 OUTPUT   := ../lgpt-rgnano-sim
 EXTENSION:= exe

@@ -25,6 +25,7 @@
 #include "SDLGUIWindowImp.h"
 #include "Application/Model/Config.h"
 #include "System/Console/Trace.h"
+#include "System/Console/CrashLog.h"
 #include "System/System/System.h"
 #include "Application/Views/BaseClasses/ViewEvent.h"
 #include "Application/Views/ModalDialogs/SelectProjectDialog.h"
@@ -254,10 +255,32 @@ static void logSessionStart() {
 			}
 		}
 	}
+	// The RAM the app can really get: the simulator's heap limit
+	// (RGNANOSIM_DEVICE_PROCESS_KB, docs/RGNANO_SIM.md) is set from this
+	std::string memory;
+	I_File *meminfo=FileSystem::GetInstance()->Open("/proc/meminfo",(char *)"r");
+	if (meminfo) {
+		char text[2048];
+		int n=meminfo->Read(text,1,sizeof(text)-1);
+		meminfo->Close();
+		delete meminfo;
+		text[n>0 ? n : 0]=0;
+		const char *keys[]={"MemTotal:","MemFree:","MemAvailable:","Cached:","SwapTotal:"};
+		for (unsigned int i=0;i<sizeof(keys)/sizeof(keys[0]);i++) {
+			const char *found=strstr(text,keys[i]);
+			if (!found) continue;
+			long kb=atol(found+strlen(keys[i]));
+			char part[48];
+			snprintf(part,sizeof(part),"%s %ldKB ",keys[i],kb);
+			memory+=part;
+		}
+	}
+	Trace::Log("RGNANO","memory at start: %sapp RSS %dKB",memory.c_str(),CrashLog::MemoryKB());
 	Path log=Path("root:").Descend("lgpt-perf.log");
 	I_File *f=FileSystem::GetInstance()->Open(log.GetPath().c_str(),(char *)"a");
 	if (!f) return;
 	f->Printf("=== app start, build %s ===\n",build.c_str());
+	f->Printf("memory at start: %sapp RSS %dKB\n",memory.c_str(),CrashLog::MemoryKB());
 	f->Close();
 	delete f;
 }
@@ -372,6 +395,22 @@ void SDLEventManager::RefreshOverlays(bool wasOpen)
 	appWindow->RepaintNow(wasOpen && !open);
 }
 
+#ifdef PLATFORM_RGNANO_SIM
+#include "Adapters/RGNANO_SIM/System/RGNanoSimMemory.h"
+
+// Allocations the device's RAM could not have backed (RGNanoSimMemory):
+// an error line, so expect_no_error fails. Logged here on the UI thread,
+// not inside malloc.
+static void reportSimAllocationFailures() {
+	unsigned int largestKB=0,liveKB=0;
+	unsigned int count=RGNanoSimMemory::TakeFailures(largestKB,liveKB);
+	if (count) {
+		Trace::Error("RGNANO_SIM_OOM %u allocation(s) refused, largest %uKB with %uKB in use (limit %uKB)",
+		             count,largestKB,liveKB,RGNanoSimMemory::LimitKB());
+	}
+}
+#endif
+
 int SDLEventManager::MainLoop()
 {
 	GUIWindow *appWindow=Application::GetInstance()->GetWindow() ;
@@ -384,18 +423,23 @@ int SDLEventManager::MainLoop()
 	while (!finished_)
 	{
 		SDL_Event event;
-#if defined(PLATFORM_RGNANO_SIM)
-		bool hasEvent = (SDL_PollEvent(&event) != 0);
-#elif defined(PLATFORM_RGNANO)
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 		// Same 10 ms wait SDL_WaitEvent uses, but a shutdown signal can
-		// interrupt it
+		// interrupt it. Pending events are all handled back to back; the
+		// sim runs its script only in the idle wait, as the device would
+		// see the keys.
 		bool hasEvent = false;
 		while (!finished_ && !(hasEvent = (SDL_PollEvent(&event) != 0))) {
+#ifdef PLATFORM_RGNANO
 			if (shutdownRequested_) {
 				HandleShutdownRequest();
 				break;
 			}
 			logAudioLoad();
+#else
+			reportSimAllocationFailures();
+			ProcessSimScript(sdlWindow);
+#endif
 			SDL_Delay(10);
 		}
 #else
@@ -579,12 +623,13 @@ int SDLEventManager::MainLoop()
 					break ;
 			}
 		}
-#ifdef PLATFORM_RGNANO_SIM
-		ProcessSimScript(sdlWindow);
-		SDL_Delay(10);
-#endif
 	}
 #ifdef PLATFORM_RGNANO_SIM
+	reportSimAllocationFailures();
+	// Read by run-rgnano-sim-suite.ps1 for the per-case summary
+	Trace::Log("RGNANO_SIM","memory peak %uKB device RSS (heap peak %uKB, limit %uKB)",
+	           RGNanoSimMemory::PeakKB()+RGNANOSIM_DEVICE_NONHEAP_KB,
+	           RGNanoSimMemory::PeakKB(),RGNanoSimMemory::LimitKB());
 	return simScriptFailed_ ? 1 : 0;
 #else
 	return 0 ;
@@ -766,6 +811,8 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 			command.arg2.erase(0,1);
 		}
 	} else if (command.op=="expect_no_error" || command.op=="expect_skin_frame_clean" || command.op=="reset_audio_stats" || command.op=="end_audio_capture" || command.op=="sim_save_project" || command.op=="quit") {
+	} else if (command.op=="expect_memory_below") {
+		iss >> command.value;
 	} else if (command.op=="expect_colors" || command.op=="expect_audio_activity" || command.op=="expect_audio_silence" || command.op=="expect_audio_peak_max" || command.op=="expect_audio_capture_bytes" || command.op=="expect_tempo" || command.op=="expect_render_mode" || command.op=="sim_set_tempo" || command.op=="sim_set_render_mode" || command.op=="sim_set_scale" || command.op=="sim_set_key") {
 		iss >> command.value;
 	} else if (command.op=="expect_project_file_bytes") {
@@ -1189,6 +1236,16 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_phrase_row_count") {
 		if (!ExpectSimPhraseRowCount(command.value,command.value2)) {
 			FailSimScript("phrase row count assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_memory_below") {
+		// The most the app has held so far, as the device's RSS would show
+		unsigned int peak=RGNanoSimMemory::PeakKB()+RGNANOSIM_DEVICE_NONHEAP_KB;
+		bool below=peak<(unsigned int)command.value;
+		Trace::Log("RGNANO_SIM","expect_memory_below %dKB: peak %uKB (heap %uKB now) => %s",
+		           command.value,peak,RGNanoSimMemory::LiveKB(),below?"ok":"over");
+		if (!below) {
+			FailSimScript("memory assertion failed");
 			return;
 		}
 	} else if (command.op=="expect_tempo") {

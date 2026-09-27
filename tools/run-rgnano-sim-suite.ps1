@@ -355,6 +355,11 @@ $suite = @(
     Name = "wuxia-lofi-studio"
     Script = "wuxia-lofi-studio.rgsim"
     Args = @("-ResetLastProject", "-SeedLofiFixture", "-Skin")
+  },
+  @{
+    Name = "sample-too-long"
+    Script = "sample-too-long.rgsim"
+    Args = @("-ResetLastProject", "-SeedLongSample")
   }
 )
 
@@ -395,10 +400,21 @@ foreach ($case in $suite) {
   Get-ChildItem -LiteralPath $root -File -ErrorAction SilentlyContinue |
     Where-Object { $_.Extension -in ".bmp", ".wav" -and $_.LastWriteTime -ge $caseStarted } |
     Remove-Item -Force
+  # Most the case held, as the RG Nano's RSS would show (RGNanoSimMemory)
+  $memoryPeakKB = $null
+  $caseLog = Join-Path $caseArtifacts "rgnano-sim.log"
+  if (Test-Path -LiteralPath $caseLog) {
+    $peakLine = Select-String -LiteralPath $caseLog -Pattern "memory peak (\d+)KB device RSS" | Select-Object -Last 1
+    if ($peakLine) {
+      $memoryPeakKB = [int]$peakLine.Matches[0].Groups[1].Value
+      Write-Host "    memory peak $memoryPeakKB KB"
+    }
+  }
   $results += [pscustomobject]@{
     name = $case.Name
     script = $case.Script
     exitCode = $exitCode
+    memoryPeakKB = $memoryPeakKB
     startedAt = $caseStarted.ToString("o")
     durationSeconds = [math]::Round(($caseEnded - $caseStarted).TotalSeconds, 2)
     artifacts = (Resolve-Path -LiteralPath $caseArtifacts -ErrorAction SilentlyContinue).Path
@@ -420,6 +436,11 @@ $summary = [pscustomobject]@{
   passed = @($results | Where-Object { $_.exitCode -eq 0 }).Count
   failed = @($results | Where-Object { $_.exitCode -ne 0 }).Count
   results = $results
+}
+
+$heaviest = $results | Where-Object { $_.memoryPeakKB } | Sort-Object memoryPeakKB -Descending | Select-Object -First 5
+if ($heaviest) {
+  Write-Host "Heaviest cases (device RSS KB): $(($heaviest | ForEach-Object { "$($_.name) $($_.memoryPeakKB)" }) -join ', ')"
 }
 
 $summaryPath = Join-Path $ArtifactsRoot "suite-summary.json"

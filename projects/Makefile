@@ -485,23 +485,23 @@ RGNANO_SIMDIRS := \
 	../sources/Adapters/RGNANO_SIM/Main \
 	../sources/Adapters/RGNANO_SIM/System \
 	../sources/Adapters/W32FileSystem \
-	../sources/Adapters/W32/Process \
-	../sources/Adapters/W32/Audio \
-	../sources/Adapters/W32/Timer \
+	../sources/Adapters/SDL/Process \
+	../sources/Adapters/SDL/Timer \
 	../sources/Adapters/Dummy/Midi \
 	../sources/Adapters/SDL/Audio \
 	../sources/Adapters/RGNANO_SIM/Audio \
 	../sources/Adapters/SDL/GUI \
 	../sources/System/Process
 
+# The device's audio driver, timer and threads (SDL), not the Windows ones
 RGNANO_SIMFILES := \
 	RGNanoSimMain.o \
 	RGNanoSimSystem.o \
+	RGNanoSimMemory.o \
 	W32FileSystem.o \
-	W32Process.o \
-	W32AudioDriver.o \
-	W32Audio.o \
-	W32Timer.o \
+	SDLProcess.o \
+	SDLTimer.o \
+	SDLAudio.o \
 	DummyMidi.o \
 	SDLAudioDriver.o \
 	ALSAAudioCapture.o \

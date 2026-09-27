@@ -2,9 +2,11 @@
 #include "Adapters/Dummy/Midi/DummyMidi.h"
 #include "Adapters/SDL/GUI/GUIFactory.h"
 #include "Adapters/SDL/GUI/SDLEventManager.h"
-#include "Adapters/W32/Audio/W32Audio.h"
-#include "Adapters/W32/Process/W32Process.h"
-#include "Adapters/W32/Timer/W32Timer.h"
+#include "Adapters/SDL/Audio/SDLAudio.h"
+#include "Adapters/SDL/Process/SDLProcess.h"
+#include "Adapters/SDL/Timer/SDLTimer.h"
+#include "RGNanoSimMemory.h"
+#include "System/Console/CrashLog.h"
 #include "Adapters/W32FileSystem/W32FileSystem.h"
 #include "Application/Model/Config.h"
 #include "Services/Audio/Audio.h"
@@ -29,6 +31,12 @@ static HWND createHiddenHostWindow() {
 	RegisterClassA(&wc) ;
 	return CreateWindowExA(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,"RGNanoSimHeadless","rgnano-sim",
 	                       WS_POPUP,0,0,1,1,NULL,NULL,wc.hInstance,NULL) ;
+}
+
+// Heartbeat "mem": the heap plus the device's non-heap part, i.e. what the
+// RG Nano would report as the app's RSS for the same work
+static int deviceEquivalentKB() {
+	return (int)(RGNanoSimMemory::LiveKB()+RGNANOSIM_DEVICE_NONHEAP_KB) ;
 }
 
 int RGNanoSimSystem::MainLoop() {
@@ -69,18 +77,32 @@ void RGNanoSimSystem::Boot(int argc,char **argv) {
 	Config *config=Config::GetInstance() ;
 	config->ProcessArguments(argc,argv) ;
 
-	I_GUIWindowFactory::Install(new GUIFactory()) ;
-	TimerService::GetInstance()->Install(new W32TimerService()) ;
+	// The device's heap budget (docs/RGNANO_SIM.md): allocations past it
+	// fail here as they do on the RG Nano
+	unsigned int deviceKB=RGNANOSIM_DEVICE_PROCESS_KB ;
+	const char *budget=config->GetValue("RGNANOSIM_DEVICE_PROCESS_KB") ;
+	if (budget) {
+		deviceKB=(unsigned int)atoi(budget) ;
+	}
+	RGNanoSimMemory::SetDeviceBudget(deviceKB,RGNANOSIM_DEVICE_NONHEAP_KB) ;
+	CrashLog::SetMemoryProbe(deviceEquivalentKB) ;
+	Trace::Log("RGNANO_SIM","heap limit %uKB (device process %uKB, non-heap %uKB), in use at boot %uKB",
+	           RGNanoSimMemory::LimitKB(),deviceKB,RGNANOSIM_DEVICE_NONHEAP_KB,RGNanoSimMemory::LiveKB()) ;
 
-	AudioSettings hints ;
-	hints.audioAPI_="MMSYSTEM" ;
-	hints.audioDevice_="" ;
-	hints.bufferSize_=512 ;
-	hints.preBufferCount_=10;
-	Audio::Install(new W32Audio(hints)) ;
+	// The device's timer, audio driver and threads (RGNANOSystem.cpp), so
+	// the sim runs the same threads: SDL timer thread for key repeat, SDL
+	// audio callback plus the render thread it wakes, player updates
+	// queued from that thread to the UI thread
+	I_GUIWindowFactory::Install(new GUIFactory()) ;
+	TimerService::GetInstance()->Install(new SDLTimerService()) ;
+
+	AudioSettings hint ;
+	hint.bufferSize_=1024 ;
+	hint.preBufferCount_=8 ;
+	Audio::Install(new SDLAudio(hint)) ;
 
 	MidiService::Install(new DummyMidi()) ;
-	SysProcessFactory::Install(new W32ProcessFactory()) ;
+	SysProcessFactory::Install(new SDLProcessFactory()) ;
 
 	const char *headless=config->GetValue("RGNANOSIM_HEADLESS") ;
 	if (dummyRequested || (headless && !strcmp(headless,"YES"))) {

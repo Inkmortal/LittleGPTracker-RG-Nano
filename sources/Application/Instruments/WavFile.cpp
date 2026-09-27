@@ -263,17 +263,14 @@ long WavFile::readBlock(long start,long size) {
 	if (size>readBufferSize_) {
 		SAFE_FREE(readBuffer_) ;
 		readBuffer_=SYS_MALLOC(size) ;
-		readBufferSize_=size ;
+		readBufferSize_=readBuffer_ ? size : 0 ;
 	}
-  if (!readBuffer_)
-  {
-    Trace::Error("Failed to allocate read buffer of size %d",size);
-  } 
-  else 
-  {
-  	file_->Seek(start,SEEK_SET) ;
-    file_->Read(readBuffer_,size,1) ;
-  }
+	if (!readBuffer_) {
+		Trace::Error("Failed to allocate read buffer of size %d",size);
+		return 0 ;
+	}
+	file_->Seek(start,SEEK_SET) ;
+	file_->Read(readBuffer_,size,1) ;
 	return size ;
 } ;
 
@@ -287,13 +284,14 @@ bool WavFile::GetBuffer(long start,long size) {
 	if (sampleBufferSize>sampleBufferSize_) {
 		SAFE_FREE(samples_) ;
 		samples_=(short *)SYS_MALLOC(sampleBufferSize) ;
-		sampleBufferSize_=sampleBufferSize ;
+		sampleBufferSize_=samples_ ? sampleBufferSize : 0 ;
 	}
 
-  if (!samples_)
-  {
-    Trace::Error("Failed to allocate %d samples",sampleBufferSize);
-  }
+	// Not enough RAM for the whole sample (on the RG Nano: a long WAV)
+	if (!samples_) {
+		Trace::Error("Failed to allocate %d bytes for %d samples",sampleBufferSize,size);
+		return false ;
+	}
 
 	// compute the file buffer size we need to read
 
@@ -313,7 +311,9 @@ bool WavFile::GetBuffer(long start,long size) {
 
 	while (count>0) {
 		readSize=(count>readSize)?readSize:count ;
-		readBlock(bufferStart,readSize) ;
+		if (readBlock(bufferStart,readSize)!=readSize) {
+			return false ;
+		}
 		memcpy(ptr+offset,readBuffer_,readSize) ;
 		bufferStart+=readSize ;
 		count-=readSize ;

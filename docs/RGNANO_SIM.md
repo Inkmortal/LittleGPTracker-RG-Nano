@@ -127,6 +127,55 @@ Scripted runs never open a window and never play through your speakers:
 
 The simulator surface is exactly 240x240, the RG Nano's 1.54-inch panel resolution; `expect_size 240 240` asserts it.
 
+## Same Memory and Threads as the Device
+
+The sim runs the device's code paths, so bugs that only the RG Nano would
+hit show up here too.
+
+**Threads.** It uses the device's SDL audio driver (the SDL audio callback
+plus the render thread it wakes, `SDLAudioDriver`), the SDL timer (key
+repeat on the timer thread) and SDL threads, not the Windows ones. Player
+position updates arrive on the render thread and are queued for the UI
+thread (`AppWindow::queuePlayerUpdate` / `drawPendingPlayerUpdates`), as on
+the device. The main loop is the device's: every pending event is handled
+back to back, and the 10 ms idle wait is where the device checks for
+shutdown and the sim runs its script.
+
+**Memory.** Every `malloc`/`calloc`/`realloc`/`free` in the exe goes through
+counting wrappers (`RGNanoSimMemory.cpp`, linker `--wrap`), and the C++
+runtime is linked in statically so `new`/`delete` do too. The heap is held
+to what the app can get on the device:
+
+| | KB | where it comes from |
+|---|---|---|
+| RAM for the app process | 45056 | `RGNANOSIM_DEVICE_PROCESS_KB` |
+| Non-heap part of its RSS | 4096 | `RGNANOSIM_DEVICE_NONHEAP_KB` |
+| Heap limit in the sim | 40960 | the difference |
+
+- The V3s has 64 MB of DDR2 in the package. A V3s kernel reports about
+  54000 KB usable (`Memory: 54004K/65536K available` in its boot log).
+  The rest of FunKey OS stays resident while the app runs: init, the
+  launcher shell, the kernel's slab and page cache for the binary and for
+  sample files. That leaves roughly 44 MB for the app. The device logs the
+  real figures at every launch (`memory at start: MemTotal ... MemAvailable
+  ... SwapTotal ... app RSS` in `lgpt-rgnano.log` and `lgpt-perf.log`):
+  set `RGNANOSIM_DEVICE_PROCESS_KB` from MemAvailable once a log has it.
+- Non-heap: the device's RSS at launch, before a song loads, was 4120 KB
+  (heartbeat `up 1s ... view null`). The sim's heap at that point is about
+  60 KB, so code, libraries, stacks and SDL's buffers take about 4 MB.
+
+Past the limit an allocation fails the way it does on the device: `malloc`
+returns NULL and `new` throws (which ends the app). Each refusal logs
+`RGNANO_SIM_OOM`, so `expect_no_error` fails. Heartbeat `mem` lines report
+heap + non-heap, the number the device's heartbeat shows as RSS.
+`-RGNANOSIM_DEVICE_PROCESS_KB=<kb>` overrides the budget (0 = count only).
+
+- `expect_memory_below <kb>`: the peak so far, as device RSS, is below kb.
+- Every run ends with `memory peak <kb>KB device RSS`; the suite prints each
+  case's peak and the five heaviest.
+- `sample-too-long.rgsim` (`-SeedLongSample`) imports a 44 MB WAV: the load
+  must fail cleanly ("too long: no memory") and the app keep working.
+
 ## Goal Commands (say what you want, not which keys)
 
 Instead of counting button presses, scripts can state a goal. The simulator reads the live screen after every input and keeps pressing the right combo until the goal is met, failing with a clear log line if an input changes nothing:

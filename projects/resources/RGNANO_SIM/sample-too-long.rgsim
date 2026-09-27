@@ -1,0 +1,37 @@
+# A sample longer than the RG Nano's RAM: the import fails cleanly (the
+# browser says why, nothing crashes, nothing is half loaded) instead of the
+# device reading a NULL buffer. The sim holds the heap to the device's RAM
+# (RGNanoSimMemory), so the allocation fails here as it does on the Nano.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+goto instrument
+set type sample
+page SOURCE
+route instrument.make_sample
+route instrument.open_sample_import
+route sample_import.to_first_file
+expect_screen_text aaa-long-take
+route sample_import.quick_import_selected
+wait 500
+expect_log RGNANO_SIM_OOM
+expect_log doesn't fit in memory
+expect_screen_text too long: no memory
+# The refused buffer was never held: the heap stays small
+expect_memory_below 20000
+# Still responsive: B closes the browser, the song plays
+press b 80
+wait 200
+expect_view instrument
+goto phrase
+press s 80
+wait 400
+expect_player_running yes
+press s 80
+wait 300
+expect_player_running no
+quit

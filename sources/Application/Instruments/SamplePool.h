@@ -41,7 +41,10 @@ public:
     int Reassign(std::string name, bool imported);
     void PurgeSample(int i) ;
 	const char *GetSampleLib() ;
+	// The last failed load ran out of RAM (the sample is too long); clears it
+	bool TakeLoadTooBig() ;
 protected:
+  bool lastLoadTooBig_;
   void unload(int i);
   // showStatus: the full-screen "Loading" line, for song loading only
   bool loadSample(const char *path, bool showStatus = true);

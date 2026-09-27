@@ -45,7 +45,14 @@ void CrashLog::Note(const char *fmt, ...) {
 	Trace::Log("TRAIL", "%s", text);
 }
 
+static int (*memoryProbe_)() = 0;
+
+void CrashLog::SetMemoryProbe(int (*probe)()) {
+	memoryProbe_ = probe;
+}
+
 int CrashLog::MemoryKB() {
+	if (memoryProbe_) return memoryProbe_();
 #ifdef _WIN32
 	// K32GetProcessMemoryInfo lives in kernel32 (no psapi link needed)
 	typedef struct {

@@ -71,7 +71,12 @@ bool AudioFileStreamer::Render(fixed *buffer,int samplecount) {
 		mode_=AFSM_STOPPED ;
 		memset(buffer,0,2*samplecount*sizeof(fixed)) ;
 	}
-	wav_->GetBuffer(position_,count) ;
+	if (!wav_->GetBuffer(position_,count)) {
+		// No RAM for this block: stop instead of reading a NULL buffer
+		mode_=AFSM_STOPPED ;
+		memset(buffer,0,2*samplecount*sizeof(fixed)) ;
+		return true ;
+	}
 	fixed *dst=buffer ;
 	short *src=(short *)wav_->GetSampleBuffer(-1) ;
 	int channel=wav_->GetChannelCount(-1) ;
