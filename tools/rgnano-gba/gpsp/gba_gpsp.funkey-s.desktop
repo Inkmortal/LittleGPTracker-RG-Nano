@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=GBA gpSP
+Comment=Game Boy Advance (gpSP, fastest)
+Icon=gba
+Exec=gba_launch_gpsp.sh %f
+Categories=emulators
+SelectorDir=/mnt/Game Boy Advance
+SelectorFilter=gba,bin,agb,gbz,u1,zip
