@@ -1,0 +1,67 @@
+# Joyride, the funk / city pop demo (tools/demos/joyride.py), opens and
+# plays. Every engine it shows off is where the Demo Songs page says, and
+# the SCAL on the last choruses moves the song to D (the HyperSynth chords
+# follow the key); the intro puts it back in C.
+wait 1500
+expect_view song
+expect_screen_text Joyride
+expect_project_param scaleKey 0
+expect_project_param tempo 112
+expect_instrument_param 0 engine drum
+expect_instrument_param 5 engine fm4
+expect_instrument_param 6 engine hyper
+expect_instrument_param 7 engine fm4
+expect_instrument_param 8 engine wav
+expect_instrument_param 9 engine phys
+expect_instrument_sample 10 brass-trumpet.wav
+expect_instrument_sample 11 textures-riser.wav
+# The first chorus (row 04): drums, bass, pad, keys, lead and horns
+press d 80
+press d 80
+press d 80
+press d 80
+wait 100
+reset_audio_stats
+press s 80
+wait 2500
+expect_audio_activity 1000
+expect_screen_text PLAY:SONG
+press s 80
+wait 400
+# The last choruses (row 0C): the key goes up to D
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+wait 100
+press s 80
+wait 1200
+expect_project_param scaleKey 2
+expect_audio_activity 1000
+press s 80
+wait 400
+# From the top: the intro sets C again
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+wait 100
+press s 80
+wait 800
+expect_project_param scaleKey 0
+press s 80
+wait 400
+expect_no_error
+quit
