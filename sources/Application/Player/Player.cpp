@@ -436,6 +436,13 @@ int Player::GetChannelTailIndex(int channel) {
 	return instrumentIndexOf(project_,mixer_->GetTailInstrument(channel)) ;
 }
 
+bool Player::IsAuditionSounding() {
+	if (!isRunning_ || viewData_->playMode_!=PM_AUDITION) return false ;
+	int channel=viewData_->songX_ ;
+	if (channel<0 || channel>=SONG_CHANNEL_COUNT) channel=0 ;
+	return mixer_->IsChannelSounding(channel) ;
+}
+
 bool Player::IsChannelPlaying(int channel) {
 	return mixer_->IsChannelPlaying(channel) ;
 } ;

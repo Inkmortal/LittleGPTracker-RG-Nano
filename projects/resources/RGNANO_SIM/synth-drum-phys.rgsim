@@ -36,9 +36,14 @@ wait 2500
 reset_audio_stats
 wait 500
 expect_audio_silence 0
+# ...so A+Start plays it again rather than stopping a silent preview
+reset_audio_stats
 down a
 press s 80
 up a
+wait 400
+expect_audio_activity 64
+wait 2500
 
 # The preset list steps through the drum kit
 focus preset

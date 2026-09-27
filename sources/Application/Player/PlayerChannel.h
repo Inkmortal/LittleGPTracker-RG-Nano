@@ -20,6 +20,8 @@ public:
 	I_Instrument *GetTail() { return tail_ ; } ;
 	void SetMute(bool muted) ;
 	bool IsMuted() ;
+	// Did the last Render() produce sound (a voice may end on its own)
+	bool IsSounding() ;
 	void SetMixBus(int i) ;
 	void Reset() ;
 	void ForgetInstrument(I_Instrument *instr) ;
@@ -28,6 +30,7 @@ private:
 	I_Instrument *instr_ ;
 	I_Instrument *tail_ ;   // stopped instrument still playing its release
 	bool muted_ ;
+	volatile bool sounding_ ;
 	int busIndex_ ;
 	MixBus *mixBus_ ;
 } ;

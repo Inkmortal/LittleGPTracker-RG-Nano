@@ -1132,12 +1132,13 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 		}
 	}
 
-	// A+Start: hear this instrument (again: stop), like the M8's EDIT+PLAY.
+	// A+Start: hear this instrument (again while it sounds: stop), like the
+	// M8's EDIT+PLAY. Once a drum hit or one-shot has died away it plays again.
 	// RB+A+Left/Right hear it an octave down / up.
 	if (mask==(EPBM_A|EPBM_START) &&
 	    (isSynthLike(getInstrumentType()) || getInstrumentType()==IT_SAMPLE)) {
 		Player *player=Player::GetInstance();
-		if (player->IsRunning() && viewData_->playMode_==PM_AUDITION) {
+		if (player->IsAuditionSounding()) {
 			player->Stop();
 			isDirty_=true;
 		} else if (isSynthLike(getInstrumentType())) {

@@ -44,6 +44,8 @@ public:
 	void StopChannelQuickly(int channel) ;
 
 	bool IsChannelPlaying(int channel) ;
+	// Started and its voice has not ended by itself yet
+	bool IsChannelSounding(int channel) ;
 	
 	void StartStreaming(const Path &) ;
 	void StopStreaming()  ;

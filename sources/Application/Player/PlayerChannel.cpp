@@ -15,6 +15,7 @@ PlayerChannel::PlayerChannel(int index) {
     instr_=0 ;
     tail_=0 ;
     muted_=false ;
+    sounding_=false ;
 	mixBus_=0 ;
 	busIndex_=-1 ;
 	// The audio profiler charges this track's instruments to their own slot
@@ -97,7 +98,12 @@ bool PlayerChannel::Render(fixed *buffer,int samplecount) {
        tail_=0 ;
      }
    }
+   sounding_=status ;
    return ((status)&&(!muted_)) ;
+} ;
+
+bool PlayerChannel::IsSounding() {
+   return sounding_ ;
 } ;
 
 I_Instrument *PlayerChannel::GetInstrument() {

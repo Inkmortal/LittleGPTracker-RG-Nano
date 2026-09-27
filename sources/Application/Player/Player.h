@@ -97,6 +97,9 @@ public:
 	// Channel data
 	
 	bool IsChannelPlaying(int channel) ;
+	// An audition whose sound has ended by itself (a drum hit, a one-shot
+	// sample) is over even though the player still runs
+	bool IsAuditionSounding() ;
 	// Debug: instrument number still attached to a channel (-1 none), and
 	// the one whose release tail is still rendering
 	int GetChannelInstrumentIndex(int channel) ;

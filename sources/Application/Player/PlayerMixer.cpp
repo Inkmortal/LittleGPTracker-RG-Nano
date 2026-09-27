@@ -99,6 +99,10 @@ bool PlayerMixer::IsChannelPlaying(int channel) {
 	return isChannelPlaying_[channel] ;
 } ;
 
+bool PlayerMixer::IsChannelSounding(int channel) {
+	return isChannelPlaying_[channel] && channel_[channel]->IsSounding() ;
+} ;
+
 I_Instrument *PlayerMixer::GetLastInstrument(int channel) {
 	return lastInstrument_[channel] ;
 } ;
