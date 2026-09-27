@@ -20,10 +20,38 @@ CI (`.github/workflows/build-rgnano.yml`) builds the ELF, the OPK and a zip with
 .\tools\run-rgnano-sim.ps1                    # interactive, with the device skin
 .\tools\run-rgnano-sim.ps1 -Script x.rgsim    # headless: hidden window, no focus stealing
 .\tools\run-rgnano-sim.ps1 -Script x.rgsim -Mute -Visible
-.\tools\run-rgnano-sim-suite.ps1              # every regression case, muted and headless
+.\tools\run-rgnano-sim-suite.ps1 -Tier quick  # a few minutes: golden audio, key workflows, every single key
+.\tools\run-rgnano-sim-suite.ps1              # full tier: every case, every two-key combo, every screen
 ```
 
 Scripted runs render into a window that is never shown, so nothing appears on screen. Screenshots, screen-text checks and audio capture still work. `-Mute` sends silence to the sound card while still measuring and capturing the real output.
+
+### Test tiers, golden audio, exact key sweep
+
+Full details: `docs/RGNANO_SIM.md` ("Key Sweep", "Golden Audio", "Tiers and
+Running in Parallel"). Summary:
+
+- **`-Tier quick`** (a few minutes): every preset/sample/demo song rendered
+  on the device's own ARM code under `qemu-arm` and fingerprint-compared
+  against `tests/golden/audio.json` (`tools/golden_audio.py`); the key
+  workflow cases; and `sweep-quick-<screen>.rgsim` — every single key on
+  every screen, asserting the *exact* end state (screen text, cursor,
+  view/layer, what plays, every song-model line that changed), not just
+  "something happened".
+- **`-Tier full`** (the default): everything in quick, plus every two-key
+  combo (`sweep-<screen>.rgsim`, from `tools/sweep/table.py`) and
+  `first-song-walkthrough`.
+- **`-Jobs N`** caps simulators running at once (default: half the cores,
+  less if that would use more than half the free RAM — each run records
+  its own real memory peak so the next run's cap adapts). Each simulator
+  gets its own sandbox (data dir, log, exe copy) under `build\sim-par`, so
+  they never collide. Outside the suite, run at most one simulator at a
+  time — they'd share the top-level `rgnano-sim-data`/log/`last_project`.
+- **`-UpdateGoldens`** accepts the current sounds and the current exact-key
+  results as the new goldens, after you've listened to / read the diff and
+  confirmed the change is intended (`python tools\golden_audio.py --update`,
+  `python tools\sweep\states.py <artifacts> --update` do the same for just
+  one of the two).
 
 ### Script language
 

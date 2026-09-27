@@ -139,7 +139,7 @@ Jam with your song: loop sections, bring parts in and out, switch sections on th
 | **B + Start** | stop everything now |
 | **B + RB** / **A + RB** | mute / solo a track while it plays |
 
-A cued cell blinks in green until it starts. A track keeps looping its chain until you cue something else, so you can leave the drums on the verse while the bass moves to the chorus. **LB + Start** also switches to Live by itself. The Mixer, and Start on any other screen, work as usual.
+A cued cell blinks in green until it starts. A track keeps looping its chain until you cue something else, so you can leave the drums on the verse while the bass moves to the chorus. **LB + Start** also switches to Live by itself. The Mixer, and Start on any other screen, work as usual. Live also keeps the Song screen's **RB + Left/Right/Up/Down** (the [Rack](#rack), the chain under the cursor, Project, Mixer), the same as [Moving between screens](#moving-between-screens) — they aren't repeated here because they don't touch what's playing.
 
 ## Chain
 
