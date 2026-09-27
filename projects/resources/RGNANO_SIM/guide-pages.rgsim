@@ -13,6 +13,7 @@ wait 60
 press u 80
 press u 80
 press u 80
+press u 80
 wait 60
 expect_selected_text Your First Song
 press a 80

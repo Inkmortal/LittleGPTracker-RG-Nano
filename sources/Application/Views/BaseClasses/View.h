@@ -224,6 +224,12 @@ protected:
     uint16_t NOTIFICATION_TIMEOUT;
     std::string displayNotification_;
     int notiDistY_;
+    // The line notifications use; a screen whose labels sit on the default
+    // line moves them to a free one
+    virtual int NotificationRow() { return notiDistY_; }
+    // This frame's DrawView placed the notification itself (in its own
+    // layout); otherwise Redraw puts it on top
+    bool notificationDrawn_;
     static bool initPrivate_;
     ModalView *modalView_;
     ModalViewCallback modalViewCallback_;

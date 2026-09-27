@@ -37,14 +37,14 @@ Lost? **RB + Select** opens the helper on any screen, and **B + Select** undoes 
 - [16. The build: snare roll, kick out](#16-the-build-snare-roll-kick-out) (steps 469-520)
 - [17. Sample: reverse cymbal](#17-sample-reverse-cymbal) (steps 521-560)
 - [18. Resample: reverse pad](#18-resample-reverse-pad) (steps 561-572)
-- [19. The break](#19-the-break) (steps 573-611)
-- [20. Second build, drop, outro](#20-second-build-drop-outro) (steps 612-643)
-- [21. Bookmarks](#21-bookmarks) (steps 644-657)
-- [22. Mix](#22-mix) (steps 658-664)
-- [23. Effects, EQ, limiter](#23-effects-eq-limiter) (steps 665-678)
-- [24. Headroom and save](#24-headroom-and-save) (steps 679-684)
-- [25. Play it live](#25-play-it-live) (steps 685-693)
-- [26. Export a WAV](#26-export-a-wav) (steps 694-702)
+- [19. The break](#19-the-break) (steps 573-608)
+- [20. Second build, drop, outro](#20-second-build-drop-outro) (steps 609-640)
+- [21. Bookmarks](#21-bookmarks) (steps 641-654)
+- [22. Mix](#22-mix) (steps 655-661)
+- [23. Effects, EQ, limiter](#23-effects-eq-limiter) (steps 662-675)
+- [24. Headroom and save](#24-headroom-and-save) (steps 676-681)
+- [25. Play it live](#25-play-it-live) (steps 682-690)
+- [26. Export a WAV](#26-export-a-wav) (steps 691-699)
 
 ## 1. The start screen
 
@@ -2640,41 +2640,29 @@ Row `05` is the break: the drums and bass stop, and the hook floats over the pad
 
 <img src="images/walkthrough/602.png" width="240" alt="Left - The note column.">
 
-**603.** **A**: `F 3 I03`.
+**603.** **A**: `F 3 I10`: a new note uses the sound you made last, the recorded pad.
 
-<img src="images/walkthrough/603.png" width="240" alt="A - F 3 I03.">
+<img src="images/walkthrough/603.png" width="240" alt="A - F 3 I10: a new note uses the sound you made last, the recorded pad.">
 
 **604.** **A + Left (3 times)**: `C 3`.
 
 <img src="images/walkthrough/604.png" width="240" alt="A + Left (3 times) - C 3.">
 
-**605.** **Right**: The instrument.
+**605.** **Start**: The pad, backwards.
 
-<img src="images/walkthrough/605.png" width="240" alt="Right - The instrument.">
+<img src="images/walkthrough/605.png" width="240" alt="Start - The pad, backwards.">
 
-**606.** **A + Up**: **A + Up**: 16 up, `I13`.
+**606.** **Start**: Stop.
 
-<img src="images/walkthrough/606.png" width="240" alt="A + Up - A + Up: 16 up, I13.">
+<img src="images/walkthrough/606.png" width="240" alt="Start - Stop.">
 
-**607.** **A + Left (3 times)**: `I10`: the recorded pad.
+**607.** **RB + Left**: Back on chain `0B`.
 
-<img src="images/walkthrough/607.png" width="240" alt="A + Left (3 times) - I10: the recorded pad.">
+<img src="images/walkthrough/607.png" width="240" alt="RB + Left - Back on chain 0B.">
 
-**608.** **Start**: The pad, backwards.
+**608.** **RB + Left**: Back on the Song screen.
 
-<img src="images/walkthrough/608.png" width="240" alt="Start - The pad, backwards.">
-
-**609.** **Start**: Stop.
-
-<img src="images/walkthrough/609.png" width="240" alt="Start - Stop.">
-
-**610.** **RB + Left**: Back on chain `0B`.
-
-<img src="images/walkthrough/610.png" width="240" alt="RB + Left - Back on chain 0B.">
-
-**611.** **RB + Left**: Back on the Song screen.
-
-<img src="images/walkthrough/611.png" width="240" alt="RB + Left - Back on the Song screen.">
+<img src="images/walkthrough/608.png" width="240" alt="RB + Left - Back on the Song screen.">
 
 > **You should hear (row `05`):** the drums and bass gone, the hook floating over the pad, then a reversed swell pulling into the next row.
 
@@ -2682,133 +2670,133 @@ Row `05` is the break: the drums and bass stop, and the hook floats over the pad
 
 The second half repeats the first with one twist: the second build already has the hook in it, so the last drop feels like it has been coming for a while. Then the outro takes the parts away again in the order they came in, so a DJ (or you) can fade into the next song.
 
-**612.** **Up (3 times)**: Row `02`, the build.
+**609.** **Up (3 times)**: Row `02`, the build.
 
-<img src="images/walkthrough/612.png" width="240" alt="Up (3 times) - Row 02, the build.">
+<img src="images/walkthrough/609.png" width="240" alt="Up (3 times) - Row 02, the build.">
 
-**613.** **Left (7 times)**: Track 1.
+**610.** **Left (7 times)**: Track 1.
 
-<img src="images/walkthrough/613.png" width="240" alt="Left (7 times) - Track 1.">
+<img src="images/walkthrough/610.png" width="240" alt="Left (7 times) - Track 1.">
 
-**614.** **B + LB**: Selection...
+**611.** **B + LB**: Selection...
 
-<img src="images/walkthrough/614.png" width="240" alt="B + LB - Selection...">
+<img src="images/walkthrough/611.png" width="240" alt="B + LB - Selection...">
 
-**615.** **Right (7 times)**: ...the build.
+**612.** **Right (7 times)**: ...the build.
 
-<img src="images/walkthrough/615.png" width="240" alt="Right (7 times) - ...the build.">
+<img src="images/walkthrough/612.png" width="240" alt="Right (7 times) - ...the build.">
 
-**616.** **B**: Copied.
+**613.** **B**: Copied.
 
-<img src="images/walkthrough/616.png" width="240" alt="B - Copied.">
+<img src="images/walkthrough/613.png" width="240" alt="B - Copied.">
 
-**617.** **Down (4 times)**: Row `06`.
+**614.** **Down (4 times)**: Row `06`.
 
-<img src="images/walkthrough/617.png" width="240" alt="Down (4 times) - Row 06.">
+<img src="images/walkthrough/614.png" width="240" alt="Down (4 times) - Row 06.">
 
-**618.** **A + LB**: Pasted.
+**615.** **A + LB**: Pasted.
 
-<img src="images/walkthrough/618.png" width="240" alt="A + LB - Pasted.">
+<img src="images/walkthrough/615.png" width="240" alt="A + LB - Pasted.">
 
-**619.** **Up**: Back on row `06`.
+**616.** **Up**: Back on row `06`.
 
-<img src="images/walkthrough/619.png" width="240" alt="Up - Back on row 06.">
+<img src="images/walkthrough/616.png" width="240" alt="Up - Back on row 06.">
 
-**620.** **Right (3 times)**: Track 4.
+**617.** **Right (3 times)**: Track 4.
 
-<img src="images/walkthrough/620.png" width="240" alt="Right (3 times) - Track 4.">
+<img src="images/walkthrough/617.png" width="240" alt="Right (3 times) - Track 4.">
 
-**621.** **A + Right (4 times)**: `07`: the bass rests while it builds.
+**618.** **A + Right (4 times)**: `07`: the bass rests while it builds.
 
-<img src="images/walkthrough/621.png" width="240" alt="A + Right (4 times) - 07: the bass rests while it builds.">
+<img src="images/walkthrough/618.png" width="240" alt="A + Right (4 times) - 07: the bass rests while it builds.">
 
-**622.** **Right (3 times)**: Track 7.
+**619.** **Right (3 times)**: Track 7.
 
-<img src="images/walkthrough/622.png" width="240" alt="Right (3 times) - Track 7.">
+<img src="images/walkthrough/619.png" width="240" alt="Right (3 times) - Track 7.">
 
-**623.** **A + Left**: `06`: the hook plays this build.
+**620.** **A + Left**: `06`: the hook plays this build.
 
-<img src="images/walkthrough/623.png" width="240" alt="A + Left - 06: the hook plays this build.">
+<img src="images/walkthrough/620.png" width="240" alt="A + Left - 06: the hook plays this build.">
 
-**624.** **Up (2 times)**: Row `04`, the drop.
+**621.** **Up (2 times)**: Row `04`, the drop.
 
-<img src="images/walkthrough/624.png" width="240" alt="Up (2 times) - Row 04, the drop.">
+<img src="images/walkthrough/621.png" width="240" alt="Up (2 times) - Row 04, the drop.">
 
-**625.** **Left (6 times)**: Track 1.
+**622.** **Left (6 times)**: Track 1.
 
-<img src="images/walkthrough/625.png" width="240" alt="Left (6 times) - Track 1.">
+<img src="images/walkthrough/622.png" width="240" alt="Left (6 times) - Track 1.">
 
-**626.** **B + LB**: Selection...
+**623.** **B + LB**: Selection...
 
-<img src="images/walkthrough/626.png" width="240" alt="B + LB - Selection...">
+<img src="images/walkthrough/623.png" width="240" alt="B + LB - Selection...">
 
-**627.** **Right (7 times)**: ...the drop.
+**624.** **Right (7 times)**: ...the drop.
 
-<img src="images/walkthrough/627.png" width="240" alt="Right (7 times) - ...the drop.">
+<img src="images/walkthrough/624.png" width="240" alt="Right (7 times) - ...the drop.">
 
-**628.** **B**: Copied.
+**625.** **B**: Copied.
 
-<img src="images/walkthrough/628.png" width="240" alt="B - Copied.">
+<img src="images/walkthrough/625.png" width="240" alt="B - Copied.">
 
-**629.** **Down (3 times)**: Row `07`.
+**626.** **Down (3 times)**: Row `07`.
 
-<img src="images/walkthrough/629.png" width="240" alt="Down (3 times) - Row 07.">
+<img src="images/walkthrough/626.png" width="240" alt="Down (3 times) - Row 07.">
 
-**630.** **A + LB**: Pasted: the last drop...
+**627.** **A + LB**: Pasted: the last drop...
 
-<img src="images/walkthrough/630.png" width="240" alt="A + LB - Pasted: the last drop...">
+<img src="images/walkthrough/627.png" width="240" alt="A + LB - Pasted: the last drop...">
 
-**631.** **A + LB**: ...eight bars of it.
+**628.** **A + LB**: ...eight bars of it.
 
-<img src="images/walkthrough/631.png" width="240" alt="A + LB - ...eight bars of it.">
+<img src="images/walkthrough/628.png" width="240" alt="A + LB - ...eight bars of it.">
 
-**632.** **Up (8 times)**: Row `01`, the groove.
+**629.** **Up (8 times)**: Row `01`, the groove.
 
-<img src="images/walkthrough/632.png" width="240" alt="Up (8 times) - Row 01, the groove.">
+<img src="images/walkthrough/629.png" width="240" alt="Up (8 times) - Row 01, the groove.">
 
-**633.** **B + LB**: Selection...
+**630.** **B + LB**: Selection...
 
-<img src="images/walkthrough/633.png" width="240" alt="B + LB - Selection...">
+<img src="images/walkthrough/630.png" width="240" alt="B + LB - Selection...">
 
-**634.** **Right (7 times)**: ...the groove.
+**631.** **Right (7 times)**: ...the groove.
 
-<img src="images/walkthrough/634.png" width="240" alt="Right (7 times) - ...the groove.">
+<img src="images/walkthrough/631.png" width="240" alt="Right (7 times) - ...the groove.">
 
-**635.** **B**: Copied.
+**632.** **B**: Copied.
 
-<img src="images/walkthrough/635.png" width="240" alt="B - Copied.">
+<img src="images/walkthrough/632.png" width="240" alt="B - Copied.">
 
-**636.** **Down (8 times)**: Row `09`.
+**633.** **Down (8 times)**: Row `09`.
 
-<img src="images/walkthrough/636.png" width="240" alt="Down (8 times) - Row 09.">
+<img src="images/walkthrough/633.png" width="240" alt="Down (8 times) - Row 09.">
 
-**637.** **A + LB**: Pasted: the outro starts.
+**634.** **A + LB**: Pasted: the outro starts.
 
-<img src="images/walkthrough/637.png" width="240" alt="A + LB - Pasted: the outro starts.">
+<img src="images/walkthrough/634.png" width="240" alt="A + LB - Pasted: the outro starts.">
 
-**638.** **Up (10 times)**: Row `00`, the intro.
+**635.** **Up (10 times)**: Row `00`, the intro.
 
-<img src="images/walkthrough/638.png" width="240" alt="Up (10 times) - Row 00, the intro.">
+<img src="images/walkthrough/635.png" width="240" alt="Up (10 times) - Row 00, the intro.">
 
-**639.** **B + LB**: Selection...
+**636.** **B + LB**: Selection...
 
-<img src="images/walkthrough/639.png" width="240" alt="B + LB - Selection...">
+<img src="images/walkthrough/636.png" width="240" alt="B + LB - Selection...">
 
-**640.** **Right (7 times)**: ...the intro.
+**637.** **Right (7 times)**: ...the intro.
 
-<img src="images/walkthrough/640.png" width="240" alt="Right (7 times) - ...the intro.">
+<img src="images/walkthrough/637.png" width="240" alt="Right (7 times) - ...the intro.">
 
-**641.** **B**: Copied.
+**638.** **B**: Copied.
 
-<img src="images/walkthrough/641.png" width="240" alt="B - Copied.">
+<img src="images/walkthrough/638.png" width="240" alt="B - Copied.">
 
-**642.** **Down (10 times)**: Row `0A`.
+**639.** **Down (10 times)**: Row `0A`.
 
-<img src="images/walkthrough/642.png" width="240" alt="Down (10 times) - Row 0A.">
+<img src="images/walkthrough/639.png" width="240" alt="Down (10 times) - Row 0A.">
 
-**643.** **A + LB**: Pasted: the outro ends like the song began. After it, the song ends.
+**640.** **A + LB**: Pasted: the outro ends like the song began. After it, the song ends.
 
-<img src="images/walkthrough/643.png" width="240" alt="A + LB - Pasted: the outro ends like the song began. After it, the song ends.">
+<img src="images/walkthrough/640.png" width="240" alt="A + LB - Pasted: the outro ends like the song began. After it, the song ends.">
 
 > **Checkpoint:** eleven rows, `00` to `0A`, with a chain in every cell of every row.
 
@@ -2816,61 +2804,61 @@ The second half repeats the first with one twist: the second build already has t
 
 Bookmarks mark where the sections start, so you can jump around a long song.
 
-**644.** **Up (11 times)**: Row `00`, the intro.
+**641.** **Up (11 times)**: Row `00`, the intro.
 
-<img src="images/walkthrough/644.png" width="240" alt="Up (11 times) - Row 00, the intro.">
+<img src="images/walkthrough/641.png" width="240" alt="Up (11 times) - Row 00, the intro.">
 
-**645.** **A + Select**: **A + Select** bookmarks the row.
+**642.** **A + Select**: **A + Select** bookmarks the row.
 
-<img src="images/walkthrough/645.png" width="240" alt="A + Select - A + Select bookmarks the row.">
+<img src="images/walkthrough/642.png" width="240" alt="A + Select - A + Select bookmarks the row.">
 
-**646.** **Down (2 times)**: Row `02`, the build.
+**643.** **Down (2 times)**: Row `02`, the build.
 
-<img src="images/walkthrough/646.png" width="240" alt="Down (2 times) - Row 02, the build.">
+<img src="images/walkthrough/643.png" width="240" alt="Down (2 times) - Row 02, the build.">
 
-**647.** **A + Select**: Bookmarked.
+**644.** **A + Select**: Bookmarked.
 
-<img src="images/walkthrough/647.png" width="240" alt="A + Select - Bookmarked.">
+<img src="images/walkthrough/644.png" width="240" alt="A + Select - Bookmarked.">
 
-**648.** **Down**: Row `03`, the drop.
+**645.** **Down**: Row `03`, the drop.
 
-<img src="images/walkthrough/648.png" width="240" alt="Down - Row 03, the drop.">
+<img src="images/walkthrough/645.png" width="240" alt="Down - Row 03, the drop.">
 
-**649.** **A + Select**: Bookmarked.
+**646.** **A + Select**: Bookmarked.
 
-<img src="images/walkthrough/649.png" width="240" alt="A + Select - Bookmarked.">
+<img src="images/walkthrough/646.png" width="240" alt="A + Select - Bookmarked.">
 
-**650.** **Down (2 times)**: Row `05`, the break.
+**647.** **Down (2 times)**: Row `05`, the break.
 
-<img src="images/walkthrough/650.png" width="240" alt="Down (2 times) - Row 05, the break.">
+<img src="images/walkthrough/647.png" width="240" alt="Down (2 times) - Row 05, the break.">
 
-**651.** **A + Select**: Bookmarked.
+**648.** **A + Select**: Bookmarked.
 
-<img src="images/walkthrough/651.png" width="240" alt="A + Select - Bookmarked.">
+<img src="images/walkthrough/648.png" width="240" alt="A + Select - Bookmarked.">
 
-**652.** **Down (2 times)**: Row `07`, the last drop.
+**649.** **Down (2 times)**: Row `07`, the last drop.
 
-<img src="images/walkthrough/652.png" width="240" alt="Down (2 times) - Row 07, the last drop.">
+<img src="images/walkthrough/649.png" width="240" alt="Down (2 times) - Row 07, the last drop.">
 
-**653.** **A + Select**: Bookmarked.
+**650.** **A + Select**: Bookmarked.
 
-<img src="images/walkthrough/653.png" width="240" alt="A + Select - Bookmarked.">
+<img src="images/walkthrough/650.png" width="240" alt="A + Select - Bookmarked.">
 
-**654.** **LB + Up**: **LB + Up** jumps to the previous bookmark: row `05`.
+**651.** **LB + Up**: **LB + Up** jumps to the previous bookmark: row `05`.
 
-<img src="images/walkthrough/654.png" width="240" alt="LB + Up - LB + Up jumps to the previous bookmark: row 05.">
+<img src="images/walkthrough/651.png" width="240" alt="LB + Up - LB + Up jumps to the previous bookmark: row 05.">
 
-**655.** **LB + Up (3 times)**: Row `00`.
+**652.** **LB + Up (3 times)**: Row `00`.
 
-<img src="images/walkthrough/655.png" width="240" alt="LB + Up (3 times) - Row 00.">
+<img src="images/walkthrough/652.png" width="240" alt="LB + Up (3 times) - Row 00.">
 
-**656.** **Start**: The whole song from the top.
+**653.** **Start**: The whole song from the top.
 
-<img src="images/walkthrough/656.png" width="240" alt="Start - The whole song from the top.">
+<img src="images/walkthrough/653.png" width="240" alt="Start - The whole song from the top.">
 
-**657.** **Start**: Stop.
+**654.** **Start**: Stop.
 
-<img src="images/walkthrough/657.png" width="240" alt="Start - Stop.">
+<img src="images/walkthrough/654.png" width="240" alt="Start - Stop.">
 
 > **You should hear:** the whole song, about a minute and a half, from the intro to the last kick.
 
@@ -2878,33 +2866,33 @@ Bookmarks mark where the sections start, so you can jump around a long song.
 
 The **Mixer** sets each track's level. Mixing is mostly deciding what's in front: here the kick and the hook, with the pad behind everything as a backdrop. A fader at `C0` plays a track as it is; lower is quieter.
 
-**658.** **RB + Down**: The **Mixer**: a fader per track, then the effect returns and the master.
+**655.** **RB + Down**: The **Mixer**: a fader per track, then the effect returns and the master.
 
-<img src="images/walkthrough/658.png" width="240" alt="RB + Down - The Mixer: a fader per track, then the effect returns and the master.">
+<img src="images/walkthrough/655.png" width="240" alt="RB + Down - The Mixer: a fader per track, then the effect returns and the master.">
 
-**659.** **Right (4 times)**: Track 5, the pad.
+**656.** **Right (4 times)**: Track 5, the pad.
 
-<img src="images/walkthrough/659.png" width="240" alt="Right (4 times) - Track 5, the pad.">
+<img src="images/walkthrough/656.png" width="240" alt="Right (4 times) - Track 5, the pad.">
 
-**660.** **A + Down (3 times)**: `90`: the pad steps back.
+**657.** **A + Down (3 times)**: `90`: the pad steps back.
 
-<img src="images/walkthrough/660.png" width="240" alt="A + Down (3 times) - 90: the pad steps back.">
+<img src="images/walkthrough/657.png" width="240" alt="A + Down (3 times) - 90: the pad steps back.">
 
-**661.** **Right**: Track 6, the keys.
+**658.** **Right**: Track 6, the keys.
 
-<img src="images/walkthrough/661.png" width="240" alt="Right - Track 6, the keys.">
+<img src="images/walkthrough/658.png" width="240" alt="Right - Track 6, the keys.">
 
-**662.** **A + Down (2 times)**: `A0`: a little back too.
+**659.** **A + Down (2 times)**: `A0`: a little back too.
 
-<img src="images/walkthrough/662.png" width="240" alt="A + Down (2 times) - A0: a little back too.">
+<img src="images/walkthrough/659.png" width="240" alt="A + Down (2 times) - A0: a little back too.">
 
-**663.** **Right**: Track 7, the hook.
+**660.** **Right**: Track 7, the hook.
 
-<img src="images/walkthrough/663.png" width="240" alt="Right - Track 7, the hook.">
+<img src="images/walkthrough/660.png" width="240" alt="Right - Track 7, the hook.">
 
-**664.** **A + Up (2 times)**: `E0`: the hook in front, where the ear goes first.
+**661.** **A + Up (2 times)**: `E0`: the hook in front, where the ear goes first.
 
-<img src="images/walkthrough/664.png" width="240" alt="A + Up (2 times) - E0: the hook in front, where the ear goes first.">
+<img src="images/walkthrough/661.png" width="240" alt="A + Up (2 times) - E0: the hook in front, where the ear goes first.">
 
 > **You should hear:** the hook clearer and the pad further back, as if it had moved to the back of the room.
 
@@ -2912,61 +2900,61 @@ The **Mixer** sets each track's level. Mixing is mostly deciding what's in front
 
 The **FX** screen sets up the shared chorus, echo and reverb the instruments send to. **EQ** shapes the whole mix, **Limit** keeps it from clipping.
 
-**665.** **RB + Down**: The **FX** screen.
+**662.** **RB + Down**: The **FX** screen.
 
-<img src="images/walkthrough/665.png" width="240" alt="RB + Down - The FX screen.">
+<img src="images/walkthrough/662.png" width="240" alt="RB + Down - The FX screen.">
 
-**666.** **Down (4 times)**: The cursor is on the reverb's `size 90`.
+**663.** **Down (4 times)**: The cursor is on the reverb's `size 90`.
 
-<img src="images/walkthrough/666.png" width="240" alt="Down (4 times) - The cursor is on the reverb's size 90.">
+<img src="images/walkthrough/663.png" width="240" alt="Down (4 times) - The cursor is on the reverb's size 90.">
 
-**667.** **A + Up (2 times)**: `size B0`: a bigger room, a longer tail.
+**664.** **A + Up (2 times)**: `size B0`: a bigger room, a longer tail.
 
-<img src="images/walkthrough/667.png" width="240" alt="A + Up (2 times) - size B0: a bigger room, a longer tail.">
+<img src="images/walkthrough/664.png" width="240" alt="A + Up (2 times) - size B0: a bigger room, a longer tail.">
 
-**668.** **RB + Right**: The **EQ** screen: low, mid and high for the whole mix.
+**665.** **RB + Right**: The **EQ** screen: low, mid and high for the whole mix.
 
-<img src="images/walkthrough/668.png" width="240" alt="RB + Right - The EQ screen: low, mid and high for the whole mix.">
+<img src="images/walkthrough/665.png" width="240" alt="RB + Right - The EQ screen: low, mid and high for the whole mix.">
 
-**669.** **Down (4 times)**: The cursor is on the high `gain 80`.
+**666.** **Down (4 times)**: The cursor is on the high `gain 80`.
 
-<img src="images/walkthrough/669.png" width="240" alt="Down (4 times) - The cursor is on the high gain 80.">
+<img src="images/walkthrough/666.png" width="240" alt="Down (4 times) - The cursor is on the high gain 80.">
 
-**670.** **A + Up**: `gain 90`: a little air on top.
+**667.** **A + Up**: `gain 90`: a little air on top.
 
-<img src="images/walkthrough/670.png" width="240" alt="A + Up - gain 90: a little air on top.">
+<img src="images/walkthrough/667.png" width="240" alt="A + Up - gain 90: a little air on top.">
 
-**671.** **RB + Right**: The **Limit** screen, cursor on `drive 00` (off).
+**668.** **RB + Right**: The **Limit** screen, cursor on `drive 00` (off).
 
-<img src="images/walkthrough/671.png" width="240" alt="RB + Right - The Limit screen, cursor on drive 00 (off).">
+<img src="images/walkthrough/668.png" width="240" alt="RB + Right - The Limit screen, cursor on drive 00 (off).">
 
-**672.** **A + Up**: `drive 10`: the mix goes into the limiter a little hotter, and every peak is caught before it can crackle.
+**669.** **A + Up**: `drive 10`: the mix goes into the limiter a little hotter, and every peak is caught before it can crackle.
 
-<img src="images/walkthrough/672.png" width="240" alt="A + Up - drive 10: the mix goes into the limiter a little hotter, and every peak is caught before it can crackle.">
+<img src="images/walkthrough/669.png" width="240" alt="A + Up - drive 10: the mix goes into the limiter a little hotter, and every peak is caught before it can crackle.">
 
-**673.** **Start**: Listen: `GR` shows how much it's catching.
+**670.** **Start**: Listen: `GR` shows how much it's catching.
 
-<img src="images/walkthrough/673.png" width="240" alt="Start - Listen: GR shows how much it's catching.">
+<img src="images/walkthrough/670.png" width="240" alt="Start - Listen: GR shows how much it's catching.">
 
-**674.** **Start**: Stop.
+**671.** **Start**: Stop.
 
-<img src="images/walkthrough/674.png" width="240" alt="Start - Stop.">
+<img src="images/walkthrough/671.png" width="240" alt="Start - Stop.">
 
-**675.** **RB + Left**: EQ.
+**672.** **RB + Left**: EQ.
 
-<img src="images/walkthrough/675.png" width="240" alt="RB + Left - EQ.">
+<img src="images/walkthrough/672.png" width="240" alt="RB + Left - EQ.">
 
-**676.** **RB + Left**: FX.
+**673.** **RB + Left**: FX.
 
-<img src="images/walkthrough/676.png" width="240" alt="RB + Left - FX.">
+<img src="images/walkthrough/673.png" width="240" alt="RB + Left - FX.">
 
-**677.** **RB + Up**: Mixer.
+**674.** **RB + Up**: Mixer.
 
-<img src="images/walkthrough/677.png" width="240" alt="RB + Up - Mixer.">
+<img src="images/walkthrough/674.png" width="240" alt="RB + Up - Mixer.">
 
-**678.** **RB + Up**: Song.
+**675.** **RB + Up**: Song.
 
-<img src="images/walkthrough/678.png" width="240" alt="RB + Up - Song.">
+<img src="images/walkthrough/675.png" width="240" alt="RB + Up - Song.">
 
 > **You should hear:** a slightly longer room on the snare and pad, a little more sparkle on top, and no crackle at the loudest moments.
 
@@ -2974,29 +2962,29 @@ The **FX** screen sets up the shared chorus, echo and reverb the instruments sen
 
 Eight tracks add up. The Project screen's `Drive` sets how hard the whole song goes into the mix: a little lower leaves room, and the limiter brings the level back without distortion.
 
-**679.** **RB + Up**: Project, cursor on `Scale`.
+**676.** **RB + Up**: Project, cursor on `Scale`.
 
-<img src="images/walkthrough/679.png" width="240" alt="RB + Up - Project, cursor on Scale.">
+<img src="images/walkthrough/676.png" width="240" alt="RB + Up - Project, cursor on Scale.">
 
-**680.** **Down (4 times)**: The cursor is on `Drive: 100`.
+**677.** **Down (4 times)**: The cursor is on `Drive: 100`.
 
-<img src="images/walkthrough/680.png" width="240" alt="Down (4 times) - The cursor is on Drive: 100.">
+<img src="images/walkthrough/677.png" width="240" alt="Down (4 times) - The cursor is on Drive: 100.">
 
-**681.** **A + Down (3 times)**: `Drive: 70`.
+**678.** **A + Down (3 times)**: `Drive: 70`.
 
-<img src="images/walkthrough/681.png" width="240" alt="A + Down (3 times) - Drive: 70.">
+<img src="images/walkthrough/678.png" width="240" alt="A + Down (3 times) - Drive: 70.">
 
-**682.** **Up (10 times)**: The cursor is on `Save Song`.
+**679.** **Up (10 times)**: The cursor is on `Save Song`.
 
-<img src="images/walkthrough/682.png" width="240" alt="Up (10 times) - The cursor is on Save Song.">
+<img src="images/walkthrough/679.png" width="240" alt="Up (10 times) - The cursor is on Save Song.">
 
-**683.** **A**: Saved: the song is written to the SD card.
+**680.** **A**: Saved: the song is written to the SD card.
 
-<img src="images/walkthrough/683.png" width="240" alt="A - Saved: the song is written to the SD card.">
+<img src="images/walkthrough/680.png" width="240" alt="A - Saved: the song is written to the SD card.">
 
-**684.** **RB + Down**: Song.
+**681.** **RB + Down**: Song.
 
-<img src="images/walkthrough/684.png" width="240" alt="RB + Down - Song.">
+<img src="images/walkthrough/681.png" width="240" alt="RB + Down - Song.">
 
 > **Checkpoint:** `Drive: 70` on the Project screen, and the song saved. It's safe to switch the RG Nano off now.
 
@@ -3004,41 +2992,41 @@ Eight tracks add up. The Project screen's `Drive` sets how hard the whole song g
 
 **Live mode** turns the Song screen into a launcher: cue rows and cells while the song plays, M8 style. Nothing you do here changes the song.
 
-**685.** **Select**: **Select**: Live mode. The title says `Live`.
+**682.** **Select**: **Select**: Live mode. The title says `Live`.
 
-<img src="images/walkthrough/685.png" width="240" alt="Select - Select: Live mode. The title says Live.">
+<img src="images/walkthrough/682.png" width="240" alt="Select - Select: Live mode. The title says Live.">
 
-**686.** **LB + Start**: **LB + Start** launches row `00`: the intro loops.
+**683.** **LB + Start**: **LB + Start** launches row `00`: the intro loops.
 
-<img src="images/walkthrough/686.png" width="240" alt="LB + Start - LB + Start launches row 00: the intro loops.">
+<img src="images/walkthrough/683.png" width="240" alt="LB + Start - LB + Start launches row 00: the intro loops.">
 
-**687.** **LB + Down**: **LB + Down**: the next bookmark, the build.
+**684.** **LB + Down**: **LB + Down**: the next bookmark, the build.
 
-<img src="images/walkthrough/687.png" width="240" alt="LB + Down - LB + Down: the next bookmark, the build.">
+<img src="images/walkthrough/684.png" width="240" alt="LB + Down - LB + Down: the next bookmark, the build.">
 
-**688.** **LB + Start**: Cued: it starts when the intro's chains end, and loops.
+**685.** **LB + Start**: Cued: it starts when the intro's chains end, and loops.
 
-<img src="images/walkthrough/688.png" width="240" alt="LB + Start - Cued: it starts when the intro's chains end, and loops.">
+<img src="images/walkthrough/685.png" width="240" alt="LB + Start - Cued: it starts when the intro's chains end, and loops.">
 
-**689.** **LB + Down**: The drop.
+**686.** **LB + Down**: The drop.
 
-<img src="images/walkthrough/689.png" width="240" alt="LB + Down - The drop.">
+<img src="images/walkthrough/686.png" width="240" alt="LB + Down - The drop.">
 
-**690.** **LB + Start**: Cued. Drop it!
+**687.** **LB + Start**: Cued. Drop it!
 
-<img src="images/walkthrough/690.png" width="240" alt="LB + Start - Cued. Drop it!">
+<img src="images/walkthrough/687.png" width="240" alt="LB + Start - Cued. Drop it!">
 
-**691.** **B + Start**: **B + Start** stops everything.
+**688.** **B + Start**: **B + Start** stops everything.
 
-<img src="images/walkthrough/691.png" width="240" alt="B + Start - B + Start stops everything.">
+<img src="images/walkthrough/688.png" width="240" alt="B + Start - B + Start stops everything.">
 
-**692.** **Select**: Back to Song mode.
+**689.** **Select**: Back to Song mode.
 
-<img src="images/walkthrough/692.png" width="240" alt="Select - Back to Song mode.">
+<img src="images/walkthrough/689.png" width="240" alt="Select - Back to Song mode.">
 
-**693.** **LB + Up (2 times)**: Row `00`.
+**690.** **LB + Up (2 times)**: Row `00`.
 
-<img src="images/walkthrough/693.png" width="240" alt="LB + Up (2 times) - Row 00.">
+<img src="images/walkthrough/690.png" width="240" alt="LB + Up (2 times) - Row 00.">
 
 > **You should hear:** each cued section starting exactly when the playing one ends, so the change always lands on a new bar.
 
@@ -3046,41 +3034,41 @@ Eight tracks add up. The Project screen's `Drive` sets how hard the whole song g
 
 Finally, record the song into a WAV file you can share. It plays in real time while it records.
 
-**694.** **RB + Up**: Project.
+**691.** **RB + Up**: Project.
 
-<img src="images/walkthrough/694.png" width="240" alt="RB + Up - Project.">
+<img src="images/walkthrough/691.png" width="240" alt="RB + Up - Project.">
 
-**695.** **Down (4 times)**: The cursor is on `Render: Off`.
+**692.** **Down (4 times)**: The cursor is on `Render: Off`.
 
-<img src="images/walkthrough/695.png" width="240" alt="Down (4 times) - The cursor is on Render: Off.">
+<img src="images/walkthrough/692.png" width="240" alt="Down (4 times) - The cursor is on Render: Off.">
 
-**696.** **A + Right**: `Render: Stereo`: the next play records `mixdown.wav` in the song's folder.
+**693.** **A + Right**: `Render: Stereo`: the next play records `mixdown.wav` in the song's folder.
 
-<img src="images/walkthrough/696.png" width="240" alt="A + Right - Render: Stereo: the next play records mixdown.wav in the song's folder.">
+<img src="images/walkthrough/693.png" width="240" alt="A + Right - Render: Stereo: the next play records mixdown.wav in the song's folder.">
 
-**697.** **RB + Down**: Song.
+**694.** **RB + Down**: Song.
 
-<img src="images/walkthrough/697.png" width="240" alt="RB + Down - Song.">
+<img src="images/walkthrough/694.png" width="240" alt="RB + Down - Song.">
 
-**698.** **Start**: Recording... let it play to the end (about a minute and a half).
+**695.** **Start**: Recording... let it play to the end (about a minute and a half).
 
-<img src="images/walkthrough/698.png" width="240" alt="Start - Recording... let it play to the end (about a minute and a half).">
+<img src="images/walkthrough/695.png" width="240" alt="Start - Recording... let it play to the end (about a minute and a half).">
 
-**699.** **Start**: Stopped: the file is closed. (Here it's cut short; yours has the whole song.)
+**696.** **Start**: Stopped: the file is closed. (Here it's cut short; yours has the whole song.)
 
-<img src="images/walkthrough/699.png" width="240" alt="Start - Stopped: the file is closed. (Here it's cut short; yours has the whole song.)">
+<img src="images/walkthrough/696.png" width="240" alt="Start - Stopped: the file is closed. (Here it's cut short; yours has the whole song.)">
 
-**700.** **RB + Up**: Project.
+**697.** **RB + Up**: Project.
 
-<img src="images/walkthrough/700.png" width="240" alt="RB + Up - Project.">
+<img src="images/walkthrough/697.png" width="240" alt="RB + Up - Project.">
 
-**701.** **A + Left**: `Render: Off` again, for normal playing.
+**698.** **A + Left**: `Render: Off` again, for normal playing.
 
-<img src="images/walkthrough/701.png" width="240" alt="A + Left - Render: Off again, for normal playing.">
+<img src="images/walkthrough/698.png" width="240" alt="A + Left - Render: Off again, for normal playing.">
 
-**702.** **RB + Down**: Song. **Afterglow** is done: GLOW is your song now.
+**699.** **RB + Down**: Song. **Afterglow** is done: GLOW is your song now.
 
-<img src="images/walkthrough/702.png" width="240" alt="RB + Down - Song. Afterglow is done: GLOW is your song now.">
+<img src="images/walkthrough/699.png" width="240" alt="RB + Down - Song. Afterglow is done: GLOW is your song now.">
 
 > **Checkpoint:** a `mixdown.wav` in the song's folder on the SD card (`Tracks/lgpt_GLOW`): your first finished track.
 

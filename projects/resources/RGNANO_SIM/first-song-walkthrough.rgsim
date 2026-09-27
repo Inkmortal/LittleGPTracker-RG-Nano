@@ -2872,6 +2872,7 @@ wait 150
 # 603 [19. The break] A
 press a 80
 wait 150
+expect_screen_text I10
 # 604 [19. The break] A + Left (3 times)
 down a
 press l 80
@@ -2879,44 +2880,28 @@ press l 80
 press l 80
 up a
 wait 150
-# 605 [19. The break] Right
-press r 80
-wait 150
-# 606 [19. The break] A + Up
-down a
-press u 80
-up a
-wait 150
-# 607 [19. The break] A + Left (3 times)
-down a
-press l 80
-press l 80
-press l 80
-up a
-wait 150
-expect_screen_text I10
-# 608 [19. The break] Start
+# 605 [19. The break] Start
 press s 80
 wait 800
-# 609 [19. The break] Start
+# 606 [19. The break] Start
 press s 80
 wait 150
-# 610 [19. The break] RB + Left
+# 607 [19. The break] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 611 [19. The break] RB + Left
+# 608 [19. The break] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 612 [20. Second build, drop, outro] Up (3 times)
+# 609 [20. Second build, drop, outro] Up (3 times)
 press u 80
 press u 80
 press u 80
 wait 150
-# 613 [20. Second build, drop, outro] Left (7 times)
+# 610 [20. Second build, drop, outro] Left (7 times)
 press l 80
 press l 80
 press l 80
@@ -2925,12 +2910,12 @@ press l 80
 press l 80
 press l 80
 wait 150
-# 614 [20. Second build, drop, outro] B + LB
+# 611 [20. Second build, drop, outro] B + LB
 down b
 press m 80
 up b
 wait 150
-# 615 [20. Second build, drop, outro] Right (7 times)
+# 612 [20. Second build, drop, outro] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -2939,29 +2924,29 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 616 [20. Second build, drop, outro] B
+# 613 [20. Second build, drop, outro] B
 press b 80
 wait 150
-# 617 [20. Second build, drop, outro] Down (4 times)
+# 614 [20. Second build, drop, outro] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 618 [20. Second build, drop, outro] A + LB
+# 615 [20. Second build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 619 [20. Second build, drop, outro] Up
+# 616 [20. Second build, drop, outro] Up
 press u 80
 wait 150
-# 620 [20. Second build, drop, outro] Right (3 times)
+# 617 [20. Second build, drop, outro] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 621 [20. Second build, drop, outro] A + Right (4 times)
+# 618 [20. Second build, drop, outro] A + Right (4 times)
 down a
 press r 80
 press r 80
@@ -2969,21 +2954,21 @@ press r 80
 press r 80
 up a
 wait 150
-# 622 [20. Second build, drop, outro] Right (3 times)
+# 619 [20. Second build, drop, outro] Right (3 times)
 press r 80
 press r 80
 press r 80
 wait 150
-# 623 [20. Second build, drop, outro] A + Left
+# 620 [20. Second build, drop, outro] A + Left
 down a
 press l 80
 up a
 wait 150
-# 624 [20. Second build, drop, outro] Up (2 times)
+# 621 [20. Second build, drop, outro] Up (2 times)
 press u 80
 press u 80
 wait 150
-# 625 [20. Second build, drop, outro] Left (6 times)
+# 622 [20. Second build, drop, outro] Left (6 times)
 press l 80
 press l 80
 press l 80
@@ -2991,12 +2976,12 @@ press l 80
 press l 80
 press l 80
 wait 150
-# 626 [20. Second build, drop, outro] B + LB
+# 623 [20. Second build, drop, outro] B + LB
 down b
 press m 80
 up b
 wait 150
-# 627 [20. Second build, drop, outro] Right (7 times)
+# 624 [20. Second build, drop, outro] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -3005,25 +2990,25 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 628 [20. Second build, drop, outro] B
+# 625 [20. Second build, drop, outro] B
 press b 80
 wait 150
-# 629 [20. Second build, drop, outro] Down (3 times)
+# 626 [20. Second build, drop, outro] Down (3 times)
 press d 80
 press d 80
 press d 80
 wait 150
-# 630 [20. Second build, drop, outro] A + LB
+# 627 [20. Second build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 631 [20. Second build, drop, outro] A + LB
+# 628 [20. Second build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 632 [20. Second build, drop, outro] Up (8 times)
+# 629 [20. Second build, drop, outro] Up (8 times)
 press u 80
 press u 80
 press u 80
@@ -3033,12 +3018,12 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 633 [20. Second build, drop, outro] B + LB
+# 630 [20. Second build, drop, outro] B + LB
 down b
 press m 80
 up b
 wait 150
-# 634 [20. Second build, drop, outro] Right (7 times)
+# 631 [20. Second build, drop, outro] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -3047,10 +3032,10 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 635 [20. Second build, drop, outro] B
+# 632 [20. Second build, drop, outro] B
 press b 80
 wait 150
-# 636 [20. Second build, drop, outro] Down (8 times)
+# 633 [20. Second build, drop, outro] Down (8 times)
 press d 80
 press d 80
 press d 80
@@ -3060,12 +3045,12 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 637 [20. Second build, drop, outro] A + LB
+# 634 [20. Second build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 638 [20. Second build, drop, outro] Up (10 times)
+# 635 [20. Second build, drop, outro] Up (10 times)
 press u 80
 press u 80
 press u 80
@@ -3077,12 +3062,12 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 639 [20. Second build, drop, outro] B + LB
+# 636 [20. Second build, drop, outro] B + LB
 down b
 press m 80
 up b
 wait 150
-# 640 [20. Second build, drop, outro] Right (7 times)
+# 637 [20. Second build, drop, outro] Right (7 times)
 press r 80
 press r 80
 press r 80
@@ -3091,10 +3076,10 @@ press r 80
 press r 80
 press r 80
 wait 150
-# 641 [20. Second build, drop, outro] B
+# 638 [20. Second build, drop, outro] B
 press b 80
 wait 150
-# 642 [20. Second build, drop, outro] Down (10 times)
+# 639 [20. Second build, drop, outro] Down (10 times)
 press d 80
 press d 80
 press d 80
@@ -3106,12 +3091,12 @@ press d 80
 press d 80
 press d 80
 wait 150
-# 643 [20. Second build, drop, outro] A + LB
+# 640 [20. Second build, drop, outro] A + LB
 down a
 press m 80
 up a
 wait 150
-# 644 [21. Bookmarks] Up (11 times)
+# 641 [21. Bookmarks] Up (11 times)
 press u 80
 press u 80
 press u 80
@@ -3124,116 +3109,133 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 645 [21. Bookmarks] A + Select
+# 642 [21. Bookmarks] A + Select
 down a
 press k 80
 up a
 wait 150
-# 646 [21. Bookmarks] Down (2 times)
+# 643 [21. Bookmarks] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 647 [21. Bookmarks] A + Select
+# 644 [21. Bookmarks] A + Select
 down a
 press k 80
 up a
 wait 150
-# 648 [21. Bookmarks] Down
+# 645 [21. Bookmarks] Down
 press d 80
 wait 150
-# 649 [21. Bookmarks] A + Select
+# 646 [21. Bookmarks] A + Select
 down a
 press k 80
 up a
 wait 150
-# 650 [21. Bookmarks] Down (2 times)
+# 647 [21. Bookmarks] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 651 [21. Bookmarks] A + Select
+# 648 [21. Bookmarks] A + Select
 down a
 press k 80
 up a
 wait 150
-# 652 [21. Bookmarks] Down (2 times)
+# 649 [21. Bookmarks] Down (2 times)
 press d 80
 press d 80
 wait 150
-# 653 [21. Bookmarks] A + Select
+# 650 [21. Bookmarks] A + Select
 down a
 press k 80
 up a
 wait 150
-# 654 [21. Bookmarks] LB + Up
+# 651 [21. Bookmarks] LB + Up
 down m
 press u 80
 up m
 wait 150
-# 655 [21. Bookmarks] LB + Up (3 times)
+# 652 [21. Bookmarks] LB + Up (3 times)
 down m
 press u 80
 press u 80
 press u 80
 up m
 wait 150
-# 656 [21. Bookmarks] Start
+# 653 [21. Bookmarks] Start
 press s 80
 wait 800
-# 657 [21. Bookmarks] Start
+# 654 [21. Bookmarks] Start
 press s 80
 wait 150
-# 658 [22. Mix] RB + Down
+# 655 [22. Mix] RB + Down
 down n
 press d 80
 up n
 wait 150
 expect_screen_text Mixer
-# 659 [22. Mix] Right (4 times)
+# 656 [22. Mix] Right (4 times)
 press r 80
 press r 80
 press r 80
 press r 80
 wait 150
-# 660 [22. Mix] A + Down (3 times)
+# 657 [22. Mix] A + Down (3 times)
 down a
 press d 80
 press d 80
 press d 80
 up a
 wait 150
-# 661 [22. Mix] Right
+# 658 [22. Mix] Right
 press r 80
 wait 150
-# 662 [22. Mix] A + Down (2 times)
+# 659 [22. Mix] A + Down (2 times)
 down a
 press d 80
 press d 80
 up a
 wait 150
-# 663 [22. Mix] Right
+# 660 [22. Mix] Right
 press r 80
 wait 150
-# 664 [22. Mix] A + Up (2 times)
+# 661 [22. Mix] A + Up (2 times)
 down a
 press u 80
 press u 80
 up a
 wait 150
-# 665 [23. Effects, EQ, limiter] RB + Down
+# 662 [23. Effects, EQ, limiter] RB + Down
 down n
 press d 80
 up n
 wait 150
 expect_screen_text REVERB
+# 663 [23. Effects, EQ, limiter] Down (4 times)
+press d 80
+press d 80
+press d 80
+press d 80
+wait 150
+# 664 [23. Effects, EQ, limiter] A + Up (2 times)
+down a
+press u 80
+press u 80
+up a
+wait 150
+# 665 [23. Effects, EQ, limiter] RB + Right
+down n
+press r 80
+up n
+wait 150
+expect_screen_text LOW
 # 666 [23. Effects, EQ, limiter] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 667 [23. Effects, EQ, limiter] A + Up (2 times)
+# 667 [23. Effects, EQ, limiter] A + Up
 down a
-press u 80
 press u 80
 up a
 wait 150
@@ -3242,74 +3244,57 @@ down n
 press r 80
 up n
 wait 150
-expect_screen_text LOW
-# 669 [23. Effects, EQ, limiter] Down (4 times)
-press d 80
-press d 80
-press d 80
-press d 80
-wait 150
-# 670 [23. Effects, EQ, limiter] A + Up
-down a
-press u 80
-up a
-wait 150
-# 671 [23. Effects, EQ, limiter] RB + Right
-down n
-press r 80
-up n
-wait 150
 expect_screen_text LIMITER
-# 672 [23. Effects, EQ, limiter] A + Up
+# 669 [23. Effects, EQ, limiter] A + Up
 down a
 press u 80
 up a
 wait 150
-# 673 [23. Effects, EQ, limiter] Start
+# 670 [23. Effects, EQ, limiter] Start
 press s 80
 wait 800
-# 674 [23. Effects, EQ, limiter] Start
+# 671 [23. Effects, EQ, limiter] Start
 press s 80
 wait 150
-# 675 [23. Effects, EQ, limiter] RB + Left
+# 672 [23. Effects, EQ, limiter] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 676 [23. Effects, EQ, limiter] RB + Left
+# 673 [23. Effects, EQ, limiter] RB + Left
 down n
 press l 80
 up n
 wait 150
-# 677 [23. Effects, EQ, limiter] RB + Up
+# 674 [23. Effects, EQ, limiter] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 678 [23. Effects, EQ, limiter] RB + Up
+# 675 [23. Effects, EQ, limiter] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 679 [24. Headroom and save] RB + Up
+# 676 [24. Headroom and save] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 680 [24. Headroom and save] Down (4 times)
+# 677 [24. Headroom and save] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 681 [24. Headroom and save] A + Down (3 times)
+# 678 [24. Headroom and save] A + Down (3 times)
 down a
 press d 80
 press d 80
 press d 80
 up a
 wait 150
-# 682 [24. Headroom and save] Up (10 times)
+# 679 [24. Headroom and save] Up (10 times)
 press u 80
 press u 80
 press u 80
@@ -3321,96 +3306,96 @@ press u 80
 press u 80
 press u 80
 wait 150
-# 683 [24. Headroom and save] A
+# 680 [24. Headroom and save] A
 press a 80
 wait 500
-# 684 [24. Headroom and save] RB + Down
+# 681 [24. Headroom and save] RB + Down
 down n
 press d 80
 up n
 wait 150
-# 685 [25. Play it live] Select
+# 682 [25. Play it live] Select
 press k 80
 wait 150
 expect_screen_text Live
-# 686 [25. Play it live] LB + Start
+# 683 [25. Play it live] LB + Start
 down m
 press s 80
 up m
 wait 800
-# 687 [25. Play it live] LB + Down
+# 684 [25. Play it live] LB + Down
 down m
 press d 80
 up m
 wait 150
-# 688 [25. Play it live] LB + Start
+# 685 [25. Play it live] LB + Start
 down m
 press s 80
 up m
 wait 800
-# 689 [25. Play it live] LB + Down
+# 686 [25. Play it live] LB + Down
 down m
 press d 80
 up m
 wait 150
-# 690 [25. Play it live] LB + Start
+# 687 [25. Play it live] LB + Start
 down m
 press s 80
 up m
 wait 800
-# 691 [25. Play it live] B + Start
+# 688 [25. Play it live] B + Start
 down b
 press s 80
 up b
 wait 150
-# 692 [25. Play it live] Select
+# 689 [25. Play it live] Select
 press k 80
 wait 150
 expect_screen_text Song
-# 693 [25. Play it live] LB + Up (2 times)
+# 690 [25. Play it live] LB + Up (2 times)
 down m
 press u 80
 press u 80
 up m
 wait 150
-# 694 [26. Export a WAV] RB + Up
+# 691 [26. Export a WAV] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 695 [26. Export a WAV] Down (4 times)
+# 692 [26. Export a WAV] Down (4 times)
 press d 80
 press d 80
 press d 80
 press d 80
 wait 150
-# 696 [26. Export a WAV] A + Right
+# 693 [26. Export a WAV] A + Right
 down a
 press r 80
 up a
 wait 150
-# 697 [26. Export a WAV] RB + Down
+# 694 [26. Export a WAV] RB + Down
 down n
 press d 80
 up n
 wait 150
-# 698 [26. Export a WAV] Start
+# 695 [26. Export a WAV] Start
 press s 80
 wait 800
-# 699 [26. Export a WAV] Start
+# 696 [26. Export a WAV] Start
 press s 80
 wait 150
-# 700 [26. Export a WAV] RB + Up
+# 697 [26. Export a WAV] RB + Up
 down n
 press u 80
 up n
 wait 150
-# 701 [26. Export a WAV] A + Left
+# 698 [26. Export a WAV] A + Left
 down a
 press l 80
 up a
 wait 150
-# 702 [26. Export a WAV] RB + Down
+# 699 [26. Export a WAV] RB + Down
 down n
 press d 80
 up n

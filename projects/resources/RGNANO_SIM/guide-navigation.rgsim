@@ -86,6 +86,7 @@ press u 80
 press u 80
 press u 80
 press u 80
+press u 80
 wait 60
 expect_selected_text Index: keys, commands
 press a 80

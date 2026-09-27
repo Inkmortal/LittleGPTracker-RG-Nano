@@ -36,6 +36,9 @@ wait 60
 expect_screen_text Moving between screens
 press r 80
 wait 60
+expect_screen_text Copy and paste
+press r 80
+wait 60
 expect_screen_text Everywhere
 press b 80
 wait 60

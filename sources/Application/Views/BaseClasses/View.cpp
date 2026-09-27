@@ -34,6 +34,7 @@ View::View(GUIWindow &w,ViewData *viewData):
 	hasFocus_(false)
 {
 	suppressPlaybackScope_=false;
+	notificationDrawn_=false;
   if (!initPrivate_)
   {
 	   GUIRect rect=w.GetRect() ;
@@ -1181,10 +1182,13 @@ void View::Redraw() {
 		}
 		modalView_->Redraw() ;
 	} else {
+		notificationDrawn_=false ;
 		DrawView() ;
-		// On top of the screen, so a grid starting on its line can't hide
-		// it (Table, Groove, Mixer ... never showed their messages)
-		EnableNotification() ;
+		// Screens that don't place it themselves (Table, Groove, Mixer ...)
+		// get it on top, so their grid can't hide it
+		if (!notificationDrawn_) {
+			EnableNotification() ;
+		}
 		if (!suppressPlaybackScope_) {
 			drawPlaybackScope();
 		}
@@ -1406,11 +1410,12 @@ void View::DrawString(int x,int y,const char *txt,GUITextProperties &props) {
 	Displays the saved notification for 1 second
 */
 void View::EnableNotification() {
+	notificationDrawn_=true ;
 	if ((SDL_GetTicks() - notificationTime_) <= NOTIFICATION_TIMEOUT) {
 		SetColor(CD_NORMAL);
 		GUITextProperties props;
         int xOffset = 4;
-        DrawString(xOffset, notiDistY_, displayNotification_.c_str(), props);
+        DrawString(xOffset, NotificationRow(), displayNotification_.c_str(), props);
     } else {
 		displayNotification_ = "";
 	}

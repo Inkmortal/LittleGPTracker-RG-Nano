@@ -26,6 +26,8 @@ public:
 
 	virtual void ProcessButtonMask(unsigned short mask,bool pressed) ;
 	virtual void DrawView() ;
+	// Line 2 holds the page tabs; line 1 is free
+	virtual int NotificationRow() { return 1; }
 	// Passes updates on to an open dialog (the instrument list shows what
 	// is playing)
 	virtual void OnPlayerUpdate(PlayerEventType type,unsigned int tick) {
