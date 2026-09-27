@@ -9,9 +9,9 @@ commands, copy logs or inspect anything. Ask only for normal use, e.g. "plug in 
 - Branch `feature/sample-workstation-ui`, pushed to `origin` and mirrored to `main`.
   Push without changing the active gh account:
   `TOKEN=$(gh auth token -u Inkmortal); B64=$(printf "x-access-token:%s" "$TOKEN" | base64 -w0); git -c credential.helper= -c "http.extraheader=Authorization: Basic $B64" push -q origin HEAD HEAD:main && git branch -f main HEAD`
-- **The Nano runs f72fba4.** Not yet installed: 7ba119c (Select on sample pages), 102c545 (A on
-  `sample none` opens the browser), 0833548 (helper overlay fix). Install when the card is mounted
-  as `D:`: `powershell -File tools/install-rgnano.ps1` (builds, runs ARM checks, archives the ELF). Don't eject the card afterwards.
+- **The Nano runs a0e4606** (installed 2026-09-26): Select on sample pages, A on `sample none`,
+  the helper overlay fix, the Chain freeze fix and the hang watchdog. None confirmed on the device yet.
+  Install when the card is mounted as `D:`: `powershell -File tools/install-rgnano.ps1` (builds, runs ARM checks, archives the ELF). Don't eject the card afterwards.
 - Build the sim with `powershell -File tools/build-rgnano-sim.ps1` (`make` isn't on PATH in Git Bash).
   Run one script: `tools/run-rgnano-sim.ps1 -Script <rgsim> -Mute [-ResetLastProject | -OpenDemo=Name]`.
   Full suite: `tools/run-rgnano-sim-suite.ps1` (~20 min). Run it in the background, and never run two sim jobs at once (they share the exe and the log).
