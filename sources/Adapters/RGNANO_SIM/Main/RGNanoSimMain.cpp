@@ -20,6 +20,8 @@
 // A vectored handler sees faults on every thread (audio included), before
 // any other handler can swallow them.
 static volatile LONG crashing_=0 ;
+// Set when the hang watchdog, not a fault, wrote the report
+static char hangLine_[96]="" ;
 
 static void writeCrash(EXCEPTION_POINTERS *info)
 {
@@ -40,6 +42,9 @@ static void writeCrash(EXCEPTION_POINTERS *info)
 		fprintf(f,"RGNANO_SIM_CRASH code=0x%08lX address=%p base=%p thread=%lu\n",
 		        info->ExceptionRecord->ExceptionCode,
 		        info->ExceptionRecord->ExceptionAddress,(void *)base,GetCurrentThreadId()) ;
+		if (hangLine_[0]) {
+			fprintf(f,"%s\n",hangLine_) ;
+		}
 #ifdef _X86_
 		CONTEXT *ctx=info->ContextRecord ;
 		fprintf(f,"frame 0 %p\n",(void *)ctx->Eip) ;
@@ -98,11 +103,41 @@ static LONG WINAPI simCrashHandler(EXCEPTION_POINTERS *info)
 	return EXCEPTION_EXECUTE_HANDLER ;
 }
 
+// The hang watchdog found a thread stuck in one key press: freeze it, write
+// its registers and stack like a crash, and exit so a scripted run fails
+// instead of hanging forever
+static void simHangHandler(unsigned long threadId,const char *what,unsigned int seconds)
+{
+	snprintf(hangLine_,sizeof(hangLine_),"RGNANO_SIM_HANG stuck %us in %s",seconds,what) ;
+	HANDLE thread=OpenThread(THREAD_SUSPEND_RESUME|THREAD_GET_CONTEXT,FALSE,(DWORD)threadId) ;
+	CONTEXT ctx ;
+	memset(&ctx,0,sizeof(ctx)) ;
+	ctx.ContextFlags=CONTEXT_FULL ;
+	if (thread) {
+		SuspendThread(thread) ;
+		GetThreadContext(thread,&ctx) ;
+	}
+	EXCEPTION_RECORD record ;
+	memset(&record,0,sizeof(record)) ;
+	record.ExceptionCode=0xE0000001 ;
+#ifdef _X86_
+	record.ExceptionAddress=(void *)ctx.Eip ;
+#endif
+	EXCEPTION_POINTERS info={&record,&ctx} ;
+	if (InterlockedExchange(&crashing_,1)==0) {
+		writeCrash(&info) ;
+	}
+	// No Trace here: the stuck thread may hold the logger
+	TerminateProcess(GetCurrentProcess(),3) ;
+}
+
 int main(int argc,char *argv[])
 {
 	AddVectoredExceptionHandler(1,simVectoredHandler) ;
 	SetUnhandledExceptionFilter(simCrashHandler) ;
 	RGNanoSimSystem::Boot(argc,argv) ;
+	CrashLog::SetHangHandler(simHangHandler) ;
+	CrashLog::StartWatchdog(HANG_LIMIT_SECONDS) ;
 
 	SDLCreateWindowParams params ;
 	params.title="LittleGPTracker RG Nano Simulator" ;

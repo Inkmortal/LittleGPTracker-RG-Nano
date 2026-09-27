@@ -21,6 +21,22 @@ public:
 	static void InstallSignalHandlers(const char *path);
 	// Which build crashed (the commit, so the report can be symbolized)
 	static void SetBuild(const char *build);
+
+	// Hang watchdog. Busy()/Idle() bracket work the user waits on (a key
+	// press). If one Busy() lasts longer than the limit, the app is stuck
+	// (an endless loop, a deadlock): the watchdog writes a crash report
+	// with the stuck thread's stack and ends the app instead of leaving
+	// the device frozen. Busy() records the calling thread as the one to
+	// report.
+	static void StartWatchdog(unsigned int limitSeconds);
+#define HANG_LIMIT_SECONDS 30
+	static void Busy(const char *what);
+	static void Idle();
+	// Platforms without signals (the Windows sim) report the stuck thread
+	// themselves. Called on the watchdog thread; must not return.
+	typedef void (*HangHandler)(unsigned long threadId, const char *what,
+	                            unsigned int seconds);
+	static void SetHangHandler(HangHandler handler);
 };
 
 #endif

@@ -40,7 +40,7 @@ def report(text: str) -> None:
         commit = build.group(1) if build else "unknown"
         print("=== CRASH ===")
         for line in block.splitlines():
-            if line.startswith(("signal", "uptime", "fault", "build")):
+            if line.startswith(("hang", "signal", "uptime", "fault", "build")):
                 print(line)
         elf = ROOT / "build" / "elf" / f"{commit}.elf"
         if not elf.exists():

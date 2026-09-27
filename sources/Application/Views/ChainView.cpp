@@ -98,23 +98,21 @@ void ChainView::updateSelectionValue(int offset) { // HERE
 }
 
 void ChainView::warpInColumn(int offset) {
-    // save current data
-    int saveY = viewData_->songY_;
-    int saveOffset = viewData_->songOffset_;
-
-    // Jumping more than the rows displayed on screen causes infinite loop
-    while (viewData_->songY_ >= 0 && viewData_->songY_ < 21) {
-        viewData_->UpdateSongCursor(0, offset);
-        unsigned char *data = viewData_->GetCurrentSongPointer();
-        if (*data != 0xFF) {
-            viewData_->currentChain_ = *data;
+    // The next chain up or down this song column; none: stay put. (The
+    // old loop moved the song cursor until it found one, and the cursor
+    // stops at the first and last song row, so it never ended.)
+    int current = viewData_->songOffset_ + viewData_->songY_;
+    unsigned char *column = viewData_->song_->data_ + viewData_->songX_;
+    for (int row = current + offset; row >= 0 && row < SONG_ROW_COUNT;
+         row += offset) {
+        unsigned char chain = column[SONG_CHANNEL_COUNT * row];
+        if (chain != 0xFF) {
+            viewData_->UpdateSongCursor(0, row - current);
+            viewData_->currentChain_ = chain;
             isDirty_ = true;
             return;
         }
     }
-    // restore old position
-    viewData_->songY_ = saveY;
-    viewData_->songOffset_ = saveOffset;
 };
 
 void ChainView::warpToNeighbour(int offset) {

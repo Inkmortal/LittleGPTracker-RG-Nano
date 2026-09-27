@@ -83,6 +83,8 @@ void GPSDLSystem::Boot(int argc,char **argv) {
         CrashLog::SetBuild(build);
         Trace::Log("RGNANO", "commit %s", build);
     }
+    // A key press stuck this long is a hang: report it and quit
+    CrashLog::StartWatchdog(HANG_LIMIT_SECONDS);
 
     Config::GetInstance() -> ProcessArguments(argc,argv);
 

@@ -772,6 +772,9 @@ bool AppWindow::onEvent(GUIEvent &event) {
 
     unsigned short v = 1 << event.GetValue();
 
+    // A key press that never finishes (endless loop, deadlock) is reported
+    // by the hang watchdog instead of freezing the device
+    CrashLog::Busy("key press");
     MixerService *sm = MixerService::GetInstance();
     sm->Lock();
 
@@ -810,6 +813,7 @@ bool AppWindow::onEvent(GUIEvent &event) {
         break;
     }
     sm->Unlock();
+    CrashLog::Idle();
 
     if (_shouldQuit) {
         onQuitApp();
@@ -823,12 +827,14 @@ bool AppWindow::onEvent(GUIEvent &event) {
         _isDirty = true;
         LoadProject(_newProjectToLoad.c_str());
     }
+    CrashLog::Busy("redraw after key");
 #ifdef _SHOW_GP2X_
     Redraw();
 #else
     if (_isDirty)
         Redraw();
 #endif
+    CrashLog::Idle();
     return false;
 };
 

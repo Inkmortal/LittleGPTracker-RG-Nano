@@ -248,6 +248,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "chain-warp"
+    Script = "chain-warp.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
     Args = @("-OpenDemo=Afterglow")

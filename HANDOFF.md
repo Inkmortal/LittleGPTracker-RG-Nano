@@ -19,26 +19,23 @@ commands, copy logs or inspect anything. Ask only for normal use, e.g. "plug in 
 ## Open bugs the user reported (device, f72fba4)
 
 1. **Select on `sample none` does nothing** (Instrument screen after setting type to sample by hand).
-   In the sim, the same code opens the sample browser, both by hand and in the tests
-   `sample-type-by-hand` and `sample-select`. So the device differs.
-   - The user thinks the modal may open but not show. Check the device log: `View.cpp` writes a
-     `TRAIL keys %04X view N` line per press and `TRAIL dialog open over view N` when a modal opens.
-     That tells you whether Select (EPBM_SELECT = 0x0200) arrived and whether a dialog opened.
-   - Possibly related: views draw their own play-position updates even while a modal is open
-     (`View::OnPlayerUpdate` forwards to the modal, then subclasses paint their meters or markers). If a
-     song is playing, the view may paint over the dialog. Verify with an `expect_screens_same` check
-     while a dialog is open during playback.
+   The sim opens the sample browser (tests `sample-type-by-hand`, `sample-select`). The two device
+   logs from f72fba4 contain no Select-alone press (`keys 0200`) at all, so they can't confirm it;
+   an older device log shows Select alone does reach views (`view-button mask=0x0200`). Fixes
+   7ba119c/102c545 target this; re-test on the device after installing.
 2. **Meters drawn over the RB+Select helper.** Root cause found and fixed in 0833548: since
    5fc8f14, audio-thread player updates are queued and drawn by `AppWindow::drawPendingPlayerUpdates`,
    which skipped the helper check. The sim took the unqueued path, so the old test missed it. Now both paths go
    through `drawPlayerUpdate`. `helper-over-playback` uses `expect_screens_same` and was
    verified to fail on the old code. **Not yet confirmed on the device.**
-3. **Crashes after a while of use; the latest was on the Chain screen.** Read the report on the card:
-   `python tools/nano_crash_report.py` (symbolizes with `build/elf/<commit>.elf`), plus
-   `Applications/lgpt-rgnano.log` / `.prev` (the TRAIL breadcrumbs show the last actions). Suspect
-   races introduced by the queued player updates in 5fc8f14: the queue drains on the UI thread under
-   `drawMutex_`, and the view may change or be deleted between queueing and drawing. Also check
-   `UndoHistory` / instrument type changes (dangling Variable pointers were an earlier crash class).
+3. **Chain-screen "crash" was a freeze: fixed.** The log ended on `keys 0028 view 1` (B+Up on
+   Chain) with no crash report. `ChainView::warpInColumn` moved the song cursor until it found a
+   chain, and the cursor stops at the first/last song row, so with no chain that way it looped
+   forever while holding the mixer lock. Now it scans the column once (`chain-warp` test).
+   New: a hang watchdog (`CrashLog::StartWatchdog`, 30 s). A key press or its redraw that doesn't
+   finish writes a crash report with a `hang` line and the stuck thread's stack, then quits
+   (device: SIGQUIT to the stuck thread; sim: `RGNANO_SIM_HANG` in rgnano-sim-crash.txt, exit 3),
+   so hangs show in `nano_crash_report.py` and fail sim tests instead of blocking them.
 4. "A bunch of other stuff like that." The user will log more when back home.
 
 ## The user's main criticism: tests are too weak

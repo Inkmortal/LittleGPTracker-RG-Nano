@@ -93,6 +93,21 @@ static void writeText(int fd, const char *text) {
 	crashWrite(fd, text, strlen(text));
 }
 
+// Hang watchdog state, shared with the watchdog thread
+static volatile int busyDepth_ = 0;
+static volatile unsigned long busySince_ = 0;  // ms
+static const char *volatile busyWhat_ = "";
+static volatile unsigned long busyThread_ = 0;
+static unsigned int hangLimitMs_ = 0;
+static CrashLog::HangHandler hangHandler_ = 0;
+// Set once the watchdog fires: the crash handler labels the report a hang
+static const char *volatile hangWhat_ = 0;
+static volatile unsigned int hangSeconds_ = 0;
+
+void CrashLog::SetHangHandler(HangHandler handler) {
+	hangHandler_ = handler;
+}
+
 void CrashLog::Dump(int fd) {
 	writeText(fd, "last actions (oldest first):\n");
 	unsigned int end = next_;
@@ -149,6 +164,13 @@ static void onCrash(int sig, siginfo_t *info, void *context) {
 		writeText(fd, "=== CRASH ===\nbuild ");
 		writeText(fd, build_);
 		writeText(fd, "\n");
+		if (hangWhat_) {
+			// The watchdog stopped a stuck thread: pc/stack show where
+			writeNumber(fd, "hang stuck s ", hangSeconds_);
+			writeText(fd, "hang in ");
+			writeText(fd, hangWhat_);
+			writeText(fd, "\n");
+		}
 		writeNumber(fd, "signal ", (unsigned long)sig);
 		writeNumber(fd, "uptime s ", CrashLog::UptimeSeconds());
 		writeHex(fd, "fault addr ", (unsigned long)(info ? info->si_addr : 0));
@@ -188,7 +210,8 @@ void CrashLog::InstallSignalHandlers(const char *path) {
 	sa.sa_sigaction = onCrash;
 	sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
 	sigemptyset(&sa.sa_mask);
-	int signals[] = {SIGSEGV, SIGBUS, SIGILL, SIGFPE, SIGABRT};
+	// SIGQUIT: sent by the hang watchdog to the stuck thread
+	int signals[] = {SIGSEGV, SIGBUS, SIGILL, SIGFPE, SIGABRT, SIGQUIT};
 	for (unsigned int i = 0; i < sizeof(signals) / sizeof(int); i++) {
 		sigaction(signals[i], &sa, 0);
 	}
@@ -196,3 +219,95 @@ void CrashLog::InstallSignalHandlers(const char *path) {
 #else
 void CrashLog::InstallSignalHandlers(const char *) {}
 #endif
+
+// Hang watchdog
+
+#ifdef _WIN32
+static unsigned long nowMs() {
+	return GetTickCount();
+}
+static unsigned long currentThread() {
+	return GetCurrentThreadId();
+}
+#else
+#include <pthread.h>
+static unsigned long nowMs() {
+	struct timespec ts;
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	return (unsigned long)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+}
+static unsigned long currentThread() {
+	return (unsigned long)pthread_self();
+}
+#endif
+
+void CrashLog::Busy(const char *what) {
+	// Nested or overlapping work keeps the oldest start time
+	if (busyDepth_ == 0) {
+		busyWhat_ = what;
+		busyThread_ = currentThread();
+		busySince_ = nowMs();
+	}
+	__sync_fetch_and_add(&busyDepth_, 1);
+}
+
+void CrashLog::Idle() {
+	if (__sync_sub_and_fetch(&busyDepth_, 1) < 0) {
+		busyDepth_ = 0;
+	}
+}
+
+static void fireHang(unsigned int seconds) {
+	hangSeconds_ = seconds;
+	hangWhat_ = busyWhat_;
+	if (hangHandler_) {
+		hangHandler_(busyThread_, busyWhat_, seconds);
+		return;
+	}
+#if !defined(_WIN32)
+	// The crash handler runs on the stuck thread, so its pc and stack
+	// show the loop; then the default action ends the app
+	pthread_kill((pthread_t)busyThread_, SIGQUIT);
+#endif
+}
+
+static void watchdogLoop() {
+	for (;;) {
+#ifdef _WIN32
+		Sleep(500);
+#else
+		usleep(500 * 1000);
+#endif
+		if (busyDepth_ > 0 && !hangWhat_) {
+			unsigned long elapsed = nowMs() - busySince_;
+			if (elapsed > hangLimitMs_) {
+				fireHang((unsigned int)(elapsed / 1000));
+			}
+		}
+	}
+}
+
+#ifdef _WIN32
+static DWORD WINAPI watchdogThread(LPVOID) {
+	watchdogLoop();
+	return 0;
+}
+#else
+static void *watchdogThread(void *) {
+	watchdogLoop();
+	return 0;
+}
+#endif
+
+void CrashLog::StartWatchdog(unsigned int limitSeconds) {
+	if (hangLimitMs_) return;
+	hangLimitMs_ = limitSeconds * 1000;
+#ifdef _WIN32
+	CloseHandle(CreateThread(0, 0, watchdogThread, 0, 0, 0));
+#else
+	pthread_t thread;
+	if (pthread_create(&thread, 0, watchdogThread, 0) == 0) {
+		pthread_detach(thread);
+	}
+#endif
+}

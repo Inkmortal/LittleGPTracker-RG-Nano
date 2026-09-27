@@ -1,0 +1,53 @@
+# Chain screen: B+Up / B+Down jump to the chain above / below in the same
+# song column. With no chain that way they leave you where you are. The
+# device froze here (an endless loop) when B+Up found no chain above.
+route boot.new_project_random
+expect_view song
+expect_song_chain 0 0 FF
+sim_set_song_chain 3 0 2
+sim_set_song_chain 6 0 5
+# Open chain 02 from song row 3 with real keys
+press d 80
+press d 80
+press d 80
+down n
+press r 80
+up n
+wait 150
+expect_view chain
+expect_screen_text Chain 02
+# Nothing above row 3: B+Up stays on chain 02
+down b
+press u 80
+up b
+wait 150
+expect_view chain
+expect_screen_text Chain 02
+# B+Down finds chain 05 three rows below
+down b
+press d 80
+up b
+wait 150
+expect_screen_text Chain 05
+# Nothing below it, down to the last song row: stays on chain 05
+down b
+press d 80
+up b
+wait 150
+expect_view chain
+expect_screen_text Chain 05
+# B+Up goes back to chain 02
+down b
+press u 80
+up b
+wait 150
+expect_screen_text Chain 02
+# RB+Left returns to the song on the row of the chain it shows
+down n
+press l 80
+up n
+wait 150
+expect_view song
+expect_selected_text 02
+expect_no_error
+quit
