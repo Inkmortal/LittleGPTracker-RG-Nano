@@ -61,6 +61,7 @@ COMMONDIRS := \
 	../sources/Externals/Compression \
 	../sources/Externals/Soundfont \
 	../sources/Externals/Braids \
+	../sources/Externals/Plaits \
 	../sources/Externals/TinyXML
 
 #---------------------------------------------------------------------------------
@@ -271,7 +272,7 @@ COMMONFILES := \
 	char.o n_assert.o fixed.o wildcard.o RecentSongs.o UndoHistory.o\
 	SyncMaster.o TablePlayback.o Player.o \
 	Table.o TableView.o\
-	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SampleProcessor.o SynthInstrument.o SynthEngines.o MacroInstrument.o ModSources.o InstrumentEQ.o SamplePool.o CommandList.o FxPrinter.o \
+	InstrumentBank.o WavFileWriter.o WavFile.o MidiInstrument.o Filters.o SampleVariable.o SampleInstrument.o SampleProcessor.o SynthInstrument.o SynthEngines.o SynthPlaits.o MacroInstrument.o ModSources.o InstrumentEQ.o SamplePool.o CommandList.o FxPrinter.o \
 	PersistencyService.o Persistent.o \
 	Observable.o SingletonRegistry.o \
 	Audio.o AudioMixer.o AudioOutDriver.o AudioDriver.o AudioProfiler.o \
@@ -285,6 +286,7 @@ COMMONFILES := \
 	ENAB.o HYDRA.o OMEGA.o RIFF.o SFDETECT.o SFLOOKUP.o SFNAV.o SFREADER.o WIN_MEM.o \
 	HexBuffers.o lz.o \
 	BraidsMacroOscillator.o BraidsAnalogOscillator.o BraidsDigitalOscillator.o BraidsResources.o BraidsRandom.o \
+	PlaitsModalVoice.o PlaitsResonator.o PlaitsString.o PlaitsStringVoice.o PlaitsResources.o PlaitsUnits.o PlaitsRandom.o \
 	tinyxmlparser.o tinyxml.o tinyxmlerror.o tinystr.o Tiny2NosStub.o
 
 #---------------------------------------------------------------------------------

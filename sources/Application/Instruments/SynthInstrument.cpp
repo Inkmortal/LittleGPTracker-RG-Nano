@@ -1,4 +1,5 @@
 #include "SynthInstrument.h"
+#include "SynthPlaits.h"
 #include "VoiceOutput.h"
 #include "CommandList.h"
 #include "Application/Player/SyncMaster.h"
@@ -376,7 +377,89 @@ static const SynthPreset synthPresets[]={
 		PV(WVP_SHAPE,WVS_NOISE),PV(SYP_TUNE,24),
 		PV(SYP_DECAY,0x70),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x50),
 		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xB0),PV(SYP_RESO,0x20),
-		PV(SYP_VOLUME,0xB0),PV(SYP_PAN,0x70),PEND}}
+		PV(SYP_VOLUME,0xB0),PV(SYP_PAN,0x70),PEND}},
+
+	// DRUM: the model makes its own decay, so the amp envelope stays open
+	// and the filter off; a voice ends when the model falls silent. Tuned
+	// so C 3 sounds right.
+	{"drum init",SE_DRUM,{
+		PV(DRP_MODEL,SDM_KICK808),PV(DRP_TONE,0x60),PV(DRP_DECAY,0x80),
+		PV(DRP_SNAP,0x40),PV(DRP_ACCENT,0xC0),PV(SYP_TUNE,-24),
+		PV(SYP_ATTACK,0),PV(SYP_DECAY,0xFF),PV(SYP_SUSTAIN,0xFF),PV(SYP_RELEASE,0x90),
+		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xA0),PEND}},
+	// Volumes: kicks peak near 0.4, snares 0.35, hats 0.2 (measured)
+	{"808 kick",SE_DRUM,{
+		PV(DRP_TONE,0x48),PV(DRP_DECAY,0xA0),PV(DRP_SNAP,0x30),PV(SYP_TUNE,-26),
+		PV(SYP_VOLUME,0xB0),PEND}},
+	{"909 kick",SE_DRUM,{
+		PV(DRP_MODEL,SDM_KICK909),PV(DRP_TONE,0x70),PV(DRP_DECAY,0x78),
+		PV(DRP_SNAP,0x98),PV(SYP_TUNE,-24),PV(SYP_VOLUME,0x6C),PEND}},
+	{"boom kick",SE_DRUM,{
+		PV(DRP_TONE,0x40),PV(DRP_DECAY,0xE0),PV(DRP_SNAP,0x10),PV(SYP_TUNE,-29),
+		PV(SYP_VOLUME,0xFF),PEND}},
+	{"808 snare",SE_DRUM,{
+		PV(DRP_MODEL,SDM_SNARE808),PV(DRP_TONE,0x70),PV(DRP_DECAY,0x68),
+		PV(DRP_SNAP,0xA8),PV(SYP_TUNE,-5),PV(SYP_VOLUME,0x46),PEND}},
+	{"909 snare",SE_DRUM,{
+		PV(DRP_MODEL,SDM_SNARE909),PV(DRP_TONE,0x90),PV(DRP_DECAY,0x60),
+		PV(DRP_SNAP,0xC0),PV(SYP_TUNE,-5),PV(SYP_VOLUME,0x50),PEND}},
+	{"rim",SE_DRUM,{
+		PV(DRP_MODEL,SDM_SNARE808),PV(DRP_TONE,0xE0),PV(DRP_DECAY,0x10),
+		PV(DRP_SNAP,0x08),PV(SYP_TUNE,7),PV(SYP_VOLUME,0x4E),PEND}},
+	{"808 hat",SE_DRUM,{
+		PV(DRP_MODEL,SDM_HAT808),PV(DRP_TONE,0xA0),PV(DRP_DECAY,0x30),
+		PV(DRP_SNAP,0x40),PV(SYP_TUNE,0),PV(SYP_PAN,0x90),PV(SYP_VOLUME,0x43),PEND}},
+	{"808 open",SE_DRUM,{
+		PV(DRP_MODEL,SDM_HAT808),PV(DRP_TONE,0xA0),PV(DRP_DECAY,0xA0),
+		PV(DRP_SNAP,0x40),PV(SYP_TUNE,0),PV(SYP_PAN,0x90),PV(SYP_VOLUME,0x40),PEND}},
+	{"ring hat",SE_DRUM,{
+		PV(DRP_MODEL,SDM_HATRING),PV(DRP_TONE,0xB0),PV(DRP_DECAY,0x40),
+		PV(DRP_SNAP,0x20),PV(SYP_TUNE,0),PV(SYP_PAN,0x70),PV(SYP_VOLUME,0x2B),PEND}},
+	{"808 tom",SE_DRUM,{
+		PV(DRP_TONE,0x90),PV(DRP_DECAY,0x80),PV(DRP_SNAP,0x10),PV(SYP_TUNE,-12),
+		PV(SYP_VOLUME,0xE8),PEND}},
+
+	// PHYS: struck and plucked models, pitched like any synth
+	{"phys init",SE_PHYS,{
+		PV(PHP_MODEL,SPM_MODAL),PV(PHP_MATERIAL,0x80),PV(PHP_BRIGHT,0x80),
+		PV(PHP_DECAY,0x80),PV(PHP_STRIKE,0xA0),
+		PV(SYP_ATTACK,0),PV(SYP_DECAY,0xFF),PV(SYP_SUSTAIN,0xFF),PV(SYP_RELEASE,0xA0),
+		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x90),PEND}},
+	// material: 00-3F partials squeezed together (drums, gongs), 40 in
+	// tune (strings, pipes), up to C0 stretched like a bar, E0+ a bell
+	{"wood bar",SE_PHYS,{
+		PV(PHP_MATERIAL,0xC0),PV(PHP_BRIGHT,0x40),PV(PHP_DECAY,0x60),
+		PV(SYP_VOLUME,0xFF),PEND}},
+	{"vibes",SE_PHYS,{
+		PV(PHP_MATERIAL,0xC4),PV(PHP_BRIGHT,0x60),PV(PHP_DECAY,0xA0),
+		PV(SYP_LFODEST,SLD_VOLUME),PV(SYP_LFORATE,0xA0),PV(SYP_LFOAMT,0x30),
+		PV(SYP_REVERB,0x60),PV(SYP_VOLUME,0xFF),PEND}},
+	{"temple bell",SE_PHYS,{
+		PV(PHP_MATERIAL,0xF0),PV(PHP_BRIGHT,0x90),PV(PHP_DECAY,0xB8),
+		PV(SYP_REVERB,0x80),PV(SYP_VOLUME,0xE0),PEND}},
+	{"kalimba",SE_PHYS,{
+		PV(PHP_MATERIAL,0xD4),PV(PHP_BRIGHT,0x38),PV(PHP_DECAY,0x78),PV(SYP_TUNE,12),
+		PV(SYP_VOLUME,0xFF),PEND}},
+	{"hand drum",SE_PHYS,{
+		PV(PHP_MATERIAL,0x00),PV(PHP_BRIGHT,0x30),PV(PHP_DECAY,0x50),PV(SYP_TUNE,-12),
+		PV(SYP_VOLUME,0xB0),PEND}},
+	// string material: below 40 a buzzing bridge (sitar), 40 a plain
+	// string, above it stiffer and more metallic
+	{"guzheng",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x40),PV(PHP_BRIGHT,0xB0),
+		PV(PHP_DECAY,0x90),PV(SYP_DELAY,0x30),PV(SYP_VOLUME,0x70),PEND}},
+	{"nylon",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x40),PV(PHP_BRIGHT,0x60),
+		PV(PHP_DECAY,0x98),PV(SYP_VOLUME,0xB0),PEND}},
+	{"sitar",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x08),PV(PHP_BRIGHT,0xC0),
+		PV(PHP_DECAY,0x98),PV(SYP_VOLUME,0x78),PEND}},
+	{"steel",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x70),PV(PHP_BRIGHT,0xA0),
+		PV(PHP_DECAY,0x98),PV(SYP_VOLUME,0x8C),PEND}},
+	{"pluck bass",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x40),PV(PHP_BRIGHT,0x90),
+		PV(PHP_DECAY,0x60),PV(PHP_STRIKE,0xFF),PV(SYP_TUNE,-24),PV(SYP_VOLUME,0xFF),PEND}}
 } ;
 
 #define SYNTH_PRESET_COUNT ((int)(sizeof(synthPresets)/sizeof(SynthPreset)))
@@ -399,7 +482,7 @@ int SynthInstrument::GetPresetCount() {
 }
 
 static const char *synthEngineNames[SE_LAST]={
-	"synth","fm4","hyper","wav"
+	"synth","fm4","hyper","wav","drum","phys"
 } ;
 
 const char *SynthInstrument::GetEngineName(int engine) {
@@ -822,6 +905,24 @@ SynthInstrument::SynthInstrument() {
 		engineVars_.push_back(wavVars[k]) ;
 	}
 
+	// DRUM and PHYS (defaults = "drum init" / "phys init")
+	drumModel_=new Variable("drum model",DRP_MODEL,synthDrumModelNames,SDM_LAST,SDM_KICK808) ;
+	drumTone_=new Variable("drum tone",DRP_TONE,0x60,0) ;
+	drumDecay_=new Variable("drum decay",DRP_DECAY,0x80,0) ;
+	drumSnap_=new Variable("drum snap",DRP_SNAP,0x40,0) ;
+	drumAccent_=new Variable("drum accent",DRP_ACCENT,0xC0,0) ;
+	physModel_=new Variable("phys model",PHP_MODEL,synthPhysModelNames,SPM_LAST,SPM_MODAL) ;
+	physMaterial_=new Variable("phys material",PHP_MATERIAL,0x80,0) ;
+	physBright_=new Variable("phys bright",PHP_BRIGHT,0x80,0) ;
+	physDecay_=new Variable("phys decay",PHP_DECAY,0x80,0) ;
+	physStrike_=new Variable("phys strike",PHP_STRIKE,0xA0,0) ;
+	Variable *plaitsVars[10]={drumModel_,drumTone_,drumDecay_,drumSnap_,drumAccent_,
+	                          physModel_,physMaterial_,physBright_,physDecay_,physStrike_} ;
+	for (int k=0;k<10;k++) {
+		Insert(plaitsVars[k]) ;
+		engineVars_.push_back(plaitsVars[k]) ;
+	}
+
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		SynthVoice &v=voices_[i] ;
 		v.active_=false ;
@@ -864,6 +965,9 @@ SynthInstrument::SynthInstrument() {
 			v.hyperRatio_[n]=1.0f ;
 		}
 		v.hyperKey_=-1 ;
+		v.plaits_=0 ;
+		v.strike_=false ;
+		v.quietSamples_=0 ;
 		v.pitchCacheValid_=false ;
 		v.baseVolume_=v.volume_=i2fp(0x80) ;
 		v.basePan_=v.pan_=i2fp(0x7F) ;
@@ -898,6 +1002,9 @@ SynthInstrument::SynthInstrument() {
 }
 
 SynthInstrument::~SynthInstrument() {
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		if (voices_[i].plaits_) SynthPlaitsDelete(voices_[i].plaits_) ;
+	}
 }
 
 bool SynthInstrument::Init() {
@@ -992,6 +1099,10 @@ const char *SynthInstrument::GetName() {
 		sprintf(name,"hyper %s",hyperChord_->GetString()) ;
 	} else if (preset_->GetInt()==first && engine==SE_WAV) {
 		sprintf(name,"wav %s",wavShape_->GetString()) ;
+	} else if (preset_->GetInt()==first && engine==SE_DRUM) {
+		sprintf(name,"%s",drumModel_->GetString()) ;
+	} else if (preset_->GetInt()==first && engine==SE_PHYS) {
+		sprintf(name,"phys %s",physModel_->GetString()) ;
 	} else {
 		sprintf(name,"%s",preset) ;
 	}
@@ -1156,6 +1267,13 @@ void SynthInstrument::startVoice(int channel,unsigned char note,bool cleanStart)
 			break ;
 		case SE_WAV:
 			for (int p=0;p<SYNTH_MAX_PARTIALS;p++) WavStart(v.wav_[p],seed+p) ;
+			break ;
+		case SE_DRUM:
+		case SE_PHYS:
+			// The models are made the first time this voice plays one
+			if (!v.plaits_) v.plaits_=SynthPlaitsCreate() ;
+			v.strike_=true ;
+			v.quietSamples_=0 ;
 			break ;
 		default:
 			break ;
@@ -1681,6 +1799,11 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 						for (int op=0;op<FM4_OPS;op++) v.fm_[p].stage_[op]=0 ;
 					}
 				}
+				// RTRG hits the drum / physical model again (rolls)
+				if ((engine==SE_DRUM || engine==SE_PHYS) && v.plaits_) {
+					v.strike_=true ;
+					v.quietSamples_=0 ;
+				}
 				// each re-strike restarts the MOD envelopes too
 				for (int m=0;m<MOD_SLOT_COUNT;m++) {
 					if (v.mods_[m].Enabled()) v.mods_[m].Retrigger() ;
@@ -1737,6 +1860,27 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 		WavSetup(wvp,wavShape,wavSize,wavMult,wavWarp,wavMirror) ;
 	}
 	bool stereo=(engine==SE_HYPER) ;
+	// DRUM / PHYS knobs (0..1); the LFO "shape" and a MOD slot on shape
+	// move tone (drum) or bright (phys) per control block
+	bool plaitsEngine=(engine==SE_DRUM || engine==SE_PHYS) ;
+	int plaitsModel=0 ;
+	float plaitsA=0.0f,plaitsB=0.0f,plaitsC=0.0f,plaitsAccent=0.0f ;
+	if (engine==SE_DRUM) {
+		plaitsModel=drumModel_->GetInt() ;
+		plaitsA=drumTone_->GetInt()/255.0f ;
+		plaitsB=drumDecay_->GetInt()/255.0f ;
+		plaitsC=drumSnap_->GetInt()/255.0f ;
+		plaitsAccent=drumAccent_->GetInt()/255.0f ;
+	} else if (engine==SE_PHYS) {
+		plaitsModel=physModel_->GetInt() ;
+		plaitsA=physBright_->GetInt()/255.0f ;
+		plaitsB=physDecay_->GetInt()/255.0f ;
+		plaitsC=physMaterial_->GetInt()/255.0f ;
+		plaitsAccent=physStrike_->GetInt()/255.0f ;
+	}
+	float plaitsAMod=plaitsA ;
+	// A model silent this long ends the voice
+	const int plaitsQuietLimit=(int)(0.1f*sampleRate) ;
 
 	float inc[SYNTH_MAX_PARTIALS] ;
 	float subInc=0.0f ;
@@ -1834,6 +1978,11 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 					if (shapeLfo!=0.0f) {
 						WavSetup(wvp,wavShape,wavSize,wavMult,wavWarp,wavMirror+(int)(shapeLfo*127.0f)) ;
 					}
+					break ;
+				case SE_DRUM:
+				case SE_PHYS:
+					// LFO "shape": tone (drum) / bright (phys)
+					plaitsAMod=modClamp01(plaitsA+shapeLfo*0.5f) ;
 					break ;
 				default:
 					break ;
@@ -1976,6 +2125,42 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 				case SE_HYPER:
 					hyperRender(v.hyper_,hyp,sig,sigR,n) ;
 					break ;
+				case SE_DRUM:
+				case SE_PHYS: {
+					// One model per voice (CHRD does not apply): the note's
+					// pitch, struck at the note start and by RTRG
+					float peak=0.0f ;
+					if (v.plaits_) {
+						if (engine==SE_DRUM) {
+							SynthDrumRender(v.plaits_,plaitsModel,v.strike_,inc[0],
+							                plaitsAMod,plaitsB,plaitsC,plaitsAccent,sig,n) ;
+						} else {
+							SynthPhysRender(v.plaits_,plaitsModel,v.strike_,inc[0],
+							                plaitsC,plaitsAMod,plaitsB,plaitsAccent,sig,n) ;
+						}
+						v.strike_=false ;
+						for (int k=0;k<n;k++) {
+							float a=sig[k]<0.0f?-sig[k]:sig[k] ;
+							if (a>peak) peak=a ;
+						}
+					} else {
+						// switched to this engine while a note played: no
+						// hit yet, so the model is silent until the next note
+						for (int k=0;k<n;k++) sig[k]=0.0f ;
+					}
+					for (int k=0;k<n;k++) sigR[k]=0.0f ;
+					// The model decays by itself: once it has been silent
+					// (-80 dB) for 100 ms the voice ends
+					if (peak<0.0001f) v.quietSamples_+=n ;
+					else v.quietSamples_=0 ;
+					// (not while fading out for the next note: that one
+					// starts after the fade)
+					if (v.quietSamples_>=plaitsQuietLimit && v.stage_!=SS_FADE) {
+						v.stage_=SS_OFF ;
+						v.level_=0.0f ;
+					}
+					break ;
+				}
 				case SE_WAV:
 					for (int k=0;k<n;k++) {
 						float s=0.0f ;
@@ -2249,6 +2434,46 @@ void SynthInstrument::RenderPreview(float *out,int count,float cycles) {
 			if (drive>0) s=synthLimit(limit,s*driveGain) ;
 			out[i]=s ;
 		}
+	} else if (engine==SE_DRUM || engine==SE_PHYS) {
+		// A hit: the first 150 ms (drum) or 600 ms (phys) after a C 3 with
+		// the current knobs and tune, each column its loudest sample
+		static SynthPlaitsVoice *preview=0 ;
+		if (!preview) preview=SynthPlaitsCreate() ;
+		float seconds=(engine==SE_DRUM)?0.15f:0.6f ;
+		int total=(int)(seconds*44100.0f) ;
+		float note=60.0f+tune_->GetInt()+fine_->GetInt()/100.0f ;
+		float f0=440.0f*(float)pow(2.0,(note-69.0f)/12.0f)/44100.0f ;
+		if (f0>0.45f) f0=0.45f ;
+		float block[SYNTH_PLAITS_MAX_BLOCK] ;
+		for (int i=0;i<count;i++) out[i]=0.0f ;
+		// From rest, so every picture of the same knobs is the same
+		SynthPlaitsReset(preview) ;
+		int done=0 ;
+		bool strike=true ;
+		while (done<total) {
+			int n=total-done ;
+			if (n>SYNTH_PLAITS_MAX_BLOCK) n=SYNTH_PLAITS_MAX_BLOCK ;
+			if (engine==SE_DRUM) {
+				SynthDrumRender(preview,drumModel_->GetInt(),strike,f0,
+				                drumTone_->GetInt()/255.0f,drumDecay_->GetInt()/255.0f,
+				                drumSnap_->GetInt()/255.0f,drumAccent_->GetInt()/255.0f,block,n) ;
+			} else {
+				SynthPhysRender(preview,physModel_->GetInt(),strike,f0,
+				                physMaterial_->GetInt()/255.0f,physBright_->GetInt()/255.0f,
+				                physDecay_->GetInt()/255.0f,physStrike_->GetInt()/255.0f,block,n) ;
+			}
+			strike=false ;
+			for (int k=0;k<n;k++) {
+				int x=(int)((long long)(done+k)*count/total) ;
+				if (x>=count) x=count-1 ;
+				float a=(float)fabs(block[k]) ;
+				if (a>out[x]) out[x]=a ;
+			}
+			done+=n ;
+		}
+		// The loudness of each column, drawn up and down in turn: the hit's
+		// envelope, filled (single samples would alias against the pitch)
+		for (int i=1;i<count;i+=2) out[i]=-out[i] ;
 	} else if (engine==SE_HYPER) {
 		HyperOsc o ;
 		HyperParams p ;

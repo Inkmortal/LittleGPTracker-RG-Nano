@@ -1,11 +1,13 @@
-// SOUND page of the synth engines FM4, HYPER and WAV (the ENV, FILTER, LFO,
-// MOD and MIX pages are shared with the original synth). Each page draws
-// what the engine does: FM4 its operator routing and the resulting wave,
-// HYPER the swarm of detuned saws across the stereo field, WAV its shape.
+// SOUND page of the synth engines FM4, HYPER, WAV, DRUM and PHYS (the ENV,
+// FILTER, LFO, MOD and MIX pages are shared with the original synth). Each
+// page draws what the engine does: FM4 its operator routing and the
+// resulting wave, HYPER the swarm of detuned saws across the stereo field,
+// WAV its shape, DRUM and PHYS the first moments of a hit.
 
 #include "Application/AppWindow.h"
 #include "InstrumentView.h"
 #include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/SynthPlaits.h"
 #include "BaseClasses/UIIntVarField.h"
 #include "Foundation/Variables/Variable.h"
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
@@ -177,6 +179,25 @@ void InstrumentView::fillEngineSoundPage(SynthInstrument *s, GUIPoint position, 
 			ENGINE_FIELD(SYP_TUNE,"tune   %+d",-48,48,1,12);
 			break;
 		}
+		case SE_DRUM: {
+			ENGINE_FIELD(DRP_MODEL,"model  %s",0,SDM_LAST-1,1,1);
+			ENGINE_FIELD(DRP_TONE,"tone   %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(DRP_DECAY,"decay  %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(DRP_SNAP,"snap   %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(DRP_ACCENT,"accent %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(SYP_DRIVE,"drive  %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(SYP_TUNE,"tune   %+d",-48,48,1,12);
+			break;
+		}
+		case SE_PHYS: {
+			ENGINE_FIELD(PHP_MODEL,"model  %s",0,SPM_LAST-1,1,1);
+			ENGINE_FIELD(PHP_MATERIAL,"matter %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(PHP_BRIGHT,"bright %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(PHP_DECAY,"decay  %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(PHP_STRIKE,"strike %2.2X",0,0xFF,1,0x10);
+			ENGINE_FIELD(SYP_TUNE,"tune   %+d",-48,48,1,12);
+			break;
+		}
 		default: {
 			ENGINE_FIELD(WVP_SHAPE,"wave   %s",0,WVS_LAST-1,1,1);
 			ENGINE_FIELD(WVP_SIZE,"size   %2.2X",0,0xFF,1,0x10);
@@ -220,6 +241,8 @@ const char *InstrumentView::getEngineGuideSection() {
 		case SE_FM4: return "FM4 engine";
 		case SE_HYPER: return "HYPER engine";
 		case SE_WAV: return "WAV engine";
+		case SE_DRUM: return "DRUM engine";
+		case SE_PHYS: return "PHYS engine";
 		default: return "";
 	}
 }
@@ -383,6 +406,102 @@ bool InstrumentView::getEngineFieldHelp(FourCC id, I_Instrument *instr, char *li
 			strcpy(line1,"what drive does when loud:");
 			strcpy(line2,"soft/clip/sin/fold/wrap");
 			return true;
+		case DRP_MODEL:
+			strcpy(line1,"808: analog circuits");
+			strcpy(line2,"909: sine + FM, punchier");
+			switch(x) {
+				case SDM_KICK808: strcpy(value,"pinged filter"); break;
+				case SDM_KICK909: strcpy(value,"sine, pitch sweep"); break;
+				case SDM_SNARE808: strcpy(value,"2 modes + noise"); break;
+				case SDM_SNARE909: strcpy(value,"FM body + noise"); break;
+				case SDM_HAT808: strcpy(value,"6 squares, BPF"); break;
+				default: strcpy(value,"ring-mod pairs"); break;
+			}
+			return true;
+		case DRP_TONE:
+			switch(engineInt(instr,DRP_MODEL)) {
+				case SDM_KICK808:
+				case SDM_KICK909:
+					strcpy(line1,"brightness of the thump:");
+					strcpy(line2,"low round, high clicky");
+					break;
+				case SDM_SNARE808:
+					strcpy(line1,"balance of the 2 drum");
+					strcpy(line2,"modes: low = deep body");
+					break;
+				case SDM_SNARE909:
+					strcpy(line1,"FM on the body: low sine,");
+					strcpy(line2,"high = metallic ring");
+					break;
+				default:
+					strcpy(line1,"filter: low = dark,");
+					strcpy(line2,"high = bright, sizzly");
+					break;
+			}
+			sprintf(value,"%d%%",(x*100+127)/255);
+			return true;
+		case DRP_DECAY:
+			strcpy(line1,"how long it rings");
+			strcpy(line2,"00 = tight, FF = long");
+			sprintf(value,"%d%%",(x*100+127)/255);
+			return true;
+		case DRP_SNAP:
+			switch(engineInt(instr,DRP_MODEL)) {
+				case SDM_KICK808:
+					strcpy(line1,"punch: click and FM,");
+					strcpy(line2,"overdrive from 80 up");
+					break;
+				case SDM_KICK909:
+					strcpy(line1,"click: pitch sweep depth,");
+					strcpy(line2,"then its length");
+					break;
+				case SDM_SNARE808:
+				case SDM_SNARE909:
+					strcpy(line1,"snares: body vs noise,");
+					strcpy(line2,"high = crisp, rattly");
+					break;
+				default:
+					strcpy(line1,"metal vs noise: 00 metal,");
+					strcpy(line2,"FF = mostly white noise");
+					break;
+			}
+			sprintf(value,"%d%%",(x*100+127)/255);
+			return true;
+		case DRP_ACCENT:
+			strcpy(line1,"how hard it is hit:");
+			strcpy(line2,"louder and brighter");
+			sprintf(value,"%d%%",(x*100+127)/255);
+			return true;
+		case PHP_MODEL:
+			strcpy(line1,"modal: struck bar/bell/drum");
+			strcpy(line2,"string: plucked string");
+			return true;
+		case PHP_MATERIAL:
+			if (engineInt(instr,PHP_MODEL)==SPM_STRING) {
+				strcpy(line1,"<40 buzzing bridge (sitar)");
+				strcpy(line2,"40 plain, above: metallic");
+				strcpy(value,x<0x3D?"buzz":(x<=0x42?"plain":"stiff"));
+			} else {
+				strcpy(line1,"<40 drum, 40 string/pipe,");
+				strcpy(line2,"C0 wood bar, E0+ bell");
+				strcpy(value,x<0x40?"drum":(x<0x50?"string":(x<0xB0?"stiff":(x<0xE0?"bar":"bell"))));
+			}
+			return true;
+		case PHP_BRIGHT:
+			strcpy(line1,"the mallet or pick: 00 soft");
+			strcpy(line2,"felt, FF hard and bright");
+			sprintf(value,"%d%%",(x*100+127)/255);
+			return true;
+		case PHP_DECAY:
+			strcpy(line1,"how long it rings");
+			strcpy(line2,"00 = muted, FF = forever");
+			sprintf(value,"%d%%",(x*100+127)/255);
+			return true;
+		case PHP_STRIKE:
+			strcpy(line1,"how hard it is hit: louder,");
+			strcpy(line2,"brighter, rings longer");
+			sprintf(value,"%d%%",(x*100+127)/255);
+			return true;
 		default:
 			return false;
 	}
@@ -405,6 +524,20 @@ void InstrumentView::customizeEngineOverlay(int engine, const char *&name, const
 			cmd1="chord fills the 6 notes";
 			cmd2="shift: notes 1-3 to 4-6";
 			cmd3="swarm/width: thick, wide";
+			break;
+		case SE_DRUM:
+			name="DRUM SOUND";
+			field="808/909 circuit models";
+			cmd1="model: kick snare hat";
+			cmd2="tone decay snap: shape it";
+			cmd3="RTRG = rolls, tune = pitch";
+			break;
+		case SE_PHYS:
+			name="PHYS SOUND";
+			field="struck bar, plucked string";
+			cmd1="matter: drum-string-bell";
+			cmd2="bright: soft or hard hit";
+			cmd3="decay: muted to ringing";
 			break;
 		default:
 			name="WAV SOUND";

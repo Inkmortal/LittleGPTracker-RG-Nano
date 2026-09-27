@@ -32,6 +32,8 @@ enum SynthEngine {
 	SE_FM4,
 	SE_HYPER,
 	SE_WAV,
+	SE_DRUM,   // Plaits drum models (SynthPlaits.h)
+	SE_PHYS,   // Plaits modal resonator and string (SynthPlaits.h)
 	SE_LAST
 } ;
 
