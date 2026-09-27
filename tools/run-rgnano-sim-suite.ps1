@@ -337,6 +337,20 @@ $suite = @(
   }
 )
 
+# The key sweep: every key and combo on every screen (tools/sweep), one
+# case per screen, regenerated from the table each run
+& python (Join-Path $PSScriptRoot "sweep\make_sweep.py") | Out-Null
+if ($LASTEXITCODE -ne 0) {
+  throw "key sweep generation failed"
+}
+Get-ChildItem -LiteralPath $scriptRoot -Filter "sweep-*.rgsim" | Sort-Object Name | ForEach-Object {
+  $suite += @{
+    Name = $_.BaseName
+    Script = $_.Name
+    Args = @("-OpenDemo=Afterglow")
+  }
+}
+
 $results = @()
 $started = Get-Date
 

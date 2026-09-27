@@ -100,7 +100,9 @@ void EventDispatcher::Execute(FourCC id,float value) {
 		if (value>0.5) {
 			eventMask_|=(1<<mapping) ;
 		} else {
-			eventMask_^=(1<<mapping) ;
+			// Clear, not toggle: a release without its press (a key held
+			// through a menu or at launch) must not leave a phantom held key
+			eventMask_&=~(1<<mapping) ;
 		}
 
 		// Dispatch event to window

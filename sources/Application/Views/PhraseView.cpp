@@ -934,6 +934,7 @@ void PhraseView::unMuteAll() {
 
     UIController *controller = UIController::GetInstance();
     controller->UnMuteAll();
+    isDirty_ = true; // the track strip shows who is muted
 };
 
 void PhraseView::toggleMute() {
@@ -941,6 +942,7 @@ void PhraseView::toggleMute() {
     UIController *controller = UIController::GetInstance();
     controller->ToggleMute(viewData_->songX_, viewData_->songX_);
     viewMode_ = (viewMode_ != VM_MUTEON) ? VM_MUTEON : VM_NORMAL;
+    isDirty_ = true; // the track strip shows who is muted
 };
 
 void PhraseView::switchSoloMode() {

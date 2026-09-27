@@ -206,6 +206,42 @@ This target is intended for automated UI, project, sample, and audio-output smok
 
 The controls are documented in the guide ([Controls](rgnano-wiki/Controls.md)) and guarded by the `key-grammar` sim test. Use them as the authority for simulator workflows: LGPT handles held button masks, so tests should use real combos instead of treating buttons as isolated clicks.
 
+## Key Sweep (every key on every screen)
+
+`tools/sweep/table.py` lists, for every screen, dialog and overlay (Song,
+Chain, Phrase, Instrument, Table, Groove, Project, Scale, Mixer, FX, EQ,
+Limit, Live mode, track moving, the helper, the guide, the power menu, the
+instrument list), what every key and two-key combo must do: nothing, change
+the screen, go to another screen, open something (and how to close it), or
+play. A key the table doesn't list must do nothing visible.
+`tools/sweep/make_sweep.py` turns it into `sweep-<screen>.rgsim` scripts
+(the suite regenerates them each run), one case per key, each starting from
+the Afterglow demo reloaded and reached with real key presses. Besides the
+promised effect, every case checks: no text cut off at the screen edge, a
+cursor on screen, nothing left playing after a stop (the sound must die
+away), and a way back out of whatever opened. `sweep-playback` opens the
+helper, power menu, guide and instrument list while the song plays and
+checks nothing draws over them. A hang fails the case through the hang
+watchdog.
+
+```powershell
+python tools/sweep/make_sweep.py
+.\tools\run-rgnano-sim.ps1 -Script .\projects\resources\RGNANO_SIM\sweep-song.rgsim -Mute -OpenDemo Afterglow -ArtifactsDir .\sim-artifacts-sweep\sweep-song
+python tools/sweep/report.py -v    # failures with the screen text
+```
+
+A failed case doesn't stop the run: it is written to `sweep-results.txt`
+(with the screen text) plus `sweep-fail-<case>.bmp` and, for "nothing
+changed"/"the screen changed" failures, `sweep-fail-<case>-before.bmp`.
+To cover a new key or screen, add it to the table.
+
+Sweep script commands: `case <name>`, `soft_fail on`,
+`expect_no_soft_failures`, `sim_reload_project` (the open song as saved,
+nothing open), `wait_stable <max ms>` (until the screen holds still),
+`snap <name>` / `expect_changed <name>` / `expect_unchanged <name>`
+(pixel compare, no files), `expect_layer none|helper|power|power+help|confirm|debug|modal|modal:<Dialog>`,
+`expect_cursor`, `expect_no_clipping`.
+
 ## Scripted Smoke Tests
 
 Pass a script with:

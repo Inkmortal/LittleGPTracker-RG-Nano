@@ -121,6 +121,12 @@ void ScaleView::setNote(int note,bool in) {
 
 void ScaleView::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (!pressed) return ;
+	// Start, and RB+Start as on every screen: play / stop the song
+	if (mask==EPBM_START || mask==(EPBM_R|EPBM_START)) {
+		Player::GetInstance()->OnStartButton(PM_SONG,viewData_->songX_,false,viewData_->songX_) ;
+		isDirty_=true ;
+		return ;
+	}
 	if (mask&EPBM_R) {
 		if (mask==(EPBM_R|EPBM_LEFT)) {
 			ViewType vt=VT_PROJECT ;
@@ -128,11 +134,6 @@ void ScaleView::ProcessButtonMask(unsigned short mask,bool pressed) {
 			SetChanged() ;
 			NotifyObservers(&ve) ;
 		}
-		return ;
-	}
-	if (mask==EPBM_START) {
-		Player::GetInstance()->OnStartButton(PM_SONG,viewData_->songX_,false,viewData_->songX_) ;
-		isDirty_=true ;
 		return ;
 	}
 	UIField *fields[2]={0,0} ;

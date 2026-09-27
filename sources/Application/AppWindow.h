@@ -60,6 +60,16 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     void LoadProject(const Path &path);
     void SaveLastProject(const Path &p);
     void CloseProject();
+#ifdef PLATFORM_RGNANO_SIM
+    // Test isolation: the open song again, as saved on disk
+    bool ReloadProjectForSim();
+    // Dialog open over the current screen ("GuideDialog", nested ones
+    // joined with '>'), "" when none
+    std::string GetSimModalName() const;
+    // Text DrawString cut off at the screen edge since the last reset
+    static void ResetSimClipping();
+    static std::string GetSimClipping();
+#endif
     // Close the song and show the song list (Menu/Power > Song List)
     void ReturnToSongList();
 
@@ -113,6 +123,9 @@ class AppWindow : public GUIWindow, I_Observer, Status {
 
 
     void onQuitApp();
+    // Stop the player, drop the song's views and data (CloseProject then
+    // shows the song list)
+    void unloadProject();
 
   private:
     View *_currentView;

@@ -171,6 +171,9 @@ void MixerView::processNormalButtonMask(unsigned int mask) {
 					controller->UnMuteAll() ;  // RB+LB, as on the other screens
 					isDirty_=true ;
 				}
+				if (mask==(EPBM_R|EPBM_START)) {
+					onStart() ;  // RB+Start, as on every screen: the song
+				}
 				if (mask&EPBM_UP) {
 					ViewType vt=VT_SONG;
 					ViewEvent ve(VET_SWITCH_VIEW,&vt) ;

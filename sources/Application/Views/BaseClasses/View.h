@@ -198,6 +198,9 @@ protected:
     bool hasFocus_;
     bool suppressPlaybackScope_;
     bool hasModal() { return modalView_ != 0; }
+  public:
+    ModalView *GetModal() const { return modalView_; }
+  protected:
 
   private:
     unsigned short mask_;

@@ -9,6 +9,8 @@
 #include "Services/Controllers/KeyboardControllerSource.h"
 #include <SDL/SDL.h>
 
+#include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -167,6 +169,25 @@ private:
 	int CountSurfaceColors(SDL_Surface *surface, int maxColors);
 	Uint32 ReadSurfacePixel(SDL_Surface *surface, int x, int y);
 	void LogSimState(const char *label, bool includeScreen);
+	// Key sweep support (tools/sweep): a script is a list of cases; with
+	// soft_fail on, a failed check logs [SWEEP_FAIL], releases the keys
+	// and skips to the next case instead of ending the run
+	std::string simCaseName_;
+	bool simSoftFail_;
+	int simSoftFailures_;
+	int simCases_;
+	std::set<int> simHeldKeys_;
+	std::map<std::string, std::vector<Uint8> > simSnaps_;
+	std::vector<Uint8> simStableLast_;
+	int simStableCount_;
+	unsigned long simStableStart_;
+	bool CaptureSimScreen(SDLGUIWindowImp *window, std::vector<Uint8> &out);
+	void SaveSimPixels(SDLGUIWindowImp *window, const std::vector<Uint8> &pixels, const std::string &path);
+	bool ExpectSimScreenChanged(SDLGUIWindowImp *window, const std::string &name, bool wantChanged);
+	std::string GetSimLayer();
+	bool ExpectSimLayer(const std::string &layer);
+	void SkipSimCase(SDLGUIWindowImp *window);
+	void ResetSimOverlays();
 #endif
 } ;
 #endif

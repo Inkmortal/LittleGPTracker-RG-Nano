@@ -1,6 +1,7 @@
 #include "Application/Utils/UndoHistory.h"
 #include "System/Console/CrashLog.h"
 #include "AppWindow.h"
+#include "Views/BaseClasses/ModalView.h"
 #include "Application/Utils/RecentSongs.h"
 #include "Views/BaseClasses/FieldView.h"
 #include "Views/BaseClasses/UIIntVarField.h"
@@ -24,6 +25,7 @@
 #include "Views/UIController.h"
 #include <sstream>
 #include <string.h>
+#include <typeinfo>
 
 AppWindow *instance = 0;
 
@@ -370,6 +372,32 @@ int AppWindow::GetVisibleRows() const {
     return rows;
 }
 
+#ifdef PLATFORM_RGNANO_SIM
+static std::string simClipping_;
+
+void AppWindow::ResetSimClipping() { simClipping_.clear(); }
+
+std::string AppWindow::GetSimClipping() { return simClipping_; }
+
+// Text that doesn't fit is cut off silently; remember any visible part
+// that was lost (trailing spaces used to clear a row don't count)
+static void noteSimClipping(const char *string, int x, int y, int from,
+                            int to) {
+    for (int i = from; i < to; i++) {
+        if (string[i] != ' ') {
+            if (simClipping_.size() < 400) {
+                char where[24];
+                sprintf(where, "%s(%d,%d) ", simClipping_.empty() ? "" : "; ",
+                        x, y);
+                simClipping_ += where;
+                simClipping_ += string;
+            }
+            return;
+        }
+    }
+}
+#endif
+
 void AppWindow::DrawString(const char *string, GUIPoint &pos,
                            GUITextProperties &props, bool force) {
 
@@ -378,12 +406,24 @@ void AppWindow::DrawString(const char *string, GUIPoint &pos,
 
     char buffer[41];
     if ((pos._y < 0) || (pos._y >= visibleRows) || (pos._x >= visibleColumns)) {
+#ifdef PLATFORM_RGNANO_SIM
+        noteSimClipping(string, pos._x, pos._y, 0, strlen(string));
+#endif
         return;
     }
     int len = strlen(string);
     int offset = (pos._x < 0) ? -pos._x : 0;
+#ifdef PLATFORM_RGNANO_SIM
+    noteSimClipping(string, pos._x, pos._y, 0, MIN(offset, len));
+#endif
     len -= offset;
     int available = visibleColumns - ((pos._x < 0) ? 0 : pos._x);
+#ifdef PLATFORM_RGNANO_SIM
+    if (len > available) {
+        noteSimClipping(string, pos._x, pos._y, offset + available,
+                        offset + len);
+    }
+#endif
     len = MIN(len, available);
     if (len <= 0) {
         return;
@@ -699,6 +739,46 @@ void AppWindow::ReturnToSongList() {
 }
 
 void AppWindow::CloseProject() {
+    unloadProject();
+    _currentView = _nullView;
+    _nullView->SetDirty(true);
+
+    SelectProjectDialog *spd = new SelectProjectDialog(*_currentView);
+    _currentView->DoModal(spd, ProjectSelectCallback);
+};
+
+#ifdef PLATFORM_RGNANO_SIM
+bool AppWindow::ReloadProjectForSim() {
+    if (!_viewData) {
+        return false;
+    }
+    Path song = _root;
+    unloadProject();
+    // As at launch: the player (a singleton) keeps Live mode otherwise
+    Player::GetInstance()->SetSequencerMode(SM_SONG);
+    LoadProject(song);
+    return _viewData != 0;
+}
+
+std::string AppWindow::GetSimModalName() const {
+    std::string name;
+    View *view = _currentView;
+    while (view && view->GetModal()) {
+        view = view->GetModal();
+        const char *type = typeid(*view).name();
+        while (*type >= '0' && *type <= '9') {
+            type++; // mangled length prefix
+        }
+        if (!name.empty()) {
+            name += ">";
+        }
+        name += type;
+    }
+    return name;
+}
+#endif
+
+void AppWindow::unloadProject() {
 
     _closeProject = false;
     Player *player = Player::GetInstance();
@@ -721,18 +801,20 @@ void AppWindow::CloseProject() {
     SAFE_DELETE(_projectView);
     SAFE_DELETE(_instrumentView);
     SAFE_DELETE(_tableView);
+    // LoadProject makes these anew for every song too
+    SAFE_DELETE(_grooveView);
+    SAFE_DELETE(_mixerView);
+    SAFE_DELETE(_fxView);
+    SAFE_DELETE(_eqView);
+    SAFE_DELETE(_limiterView);
+    SAFE_DELETE(_scaleView);
 
     UIController *controller = UIController::GetInstance();
     controller->Reset();
 
     SAFE_DELETE(_viewData);
-
     _currentView = _nullView;
-    _nullView->SetDirty(true);
-
-    SelectProjectDialog *spd = new SelectProjectDialog(*_currentView);
-    _currentView->DoModal(spd, ProjectSelectCallback);
-};
+}
 
 AppWindow *AppWindow::Create(GUICreateWindowParams &params) {
     I_GUIWindowImp &imp =
@@ -889,9 +971,10 @@ void AppWindow::drawPendingPlayerUpdates() {
 
 // Caller holds drawMutex_
 void AppWindow::drawPlayerUpdate(PlayerEventType type, unsigned int tick) {
-    if (View::contextOverlay_) {
-        // The helper covers the screen: the view's live drawing
-        // (meters, play markers) would paint over it. An open
+    ModalView *modal = _currentView->GetModal();
+    if (View::contextOverlay_ || (modal && !modal->LetsViewDrawAround())) {
+        // The helper or a dialog covers the screen: the view's live
+        // drawing (meters, play markers) would paint over it. The
         // dialog still hears the tick (e.g. render to sample).
         _currentView->View::OnPlayerUpdate(type, tick);
     } else {
