@@ -7,10 +7,12 @@ in docs/rgnano-wiki/images/.
 
 Usage:
     python tools/capture_wiki_screens.py
+    python tools/capture_wiki_screens.py --demo NeonDrive   # only that demo's screens
 """
 
 from __future__ import annotations
 
+import argparse
 import shutil
 import subprocess
 import sys
@@ -54,10 +56,33 @@ def run_demo(name: str, script: Path) -> None:
             last.write_text(saved)
 
 
+DEMO_SCRIPTS = {"NeonDrive": "wiki-shots-demo.rgsim", "Afterglow": "wiki-shots-afterglow.rgsim"}
+
+
+def convert() -> int:
+    """Every wiki-*.bmp capture -> a crisp 2x PNG in the wiki's images."""
+    count = 0
+    for bmp in sorted(ROOT.glob("wiki-*.bmp")):
+        img = Image.open(bmp).convert("RGB")
+        img = img.resize((img.width * 2, img.height * 2), Image.NEAREST)
+        img.save(IMAGES / (bmp.stem.replace("wiki-", "") + ".png"), optimize=True)
+        bmp.unlink()
+        count += 1
+    print(f"wrote {count} screenshots to {IMAGES}")
+    return count
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--demo", choices=sorted(DEMO_SCRIPTS),
+                        help="only re-shoot this demo song's screens (after changing the song)")
+    args = parser.parse_args()
     IMAGES.mkdir(parents=True, exist_ok=True)
     for old in ROOT.glob("wiki-*.bmp"):
         old.unlink()
+    if args.demo:
+        run_demo(args.demo, SCRIPTS / DEMO_SCRIPTS[args.demo])
+        return 0 if convert() else 1
 
     # Shoot the start screen with only the demo songs listed, not the
     # throwaway projects earlier sim runs leave behind
@@ -79,18 +104,9 @@ def main() -> int:
             parked.rename(tracks)
 
     # Demo screens: open each demo through AUTO_LOAD_LAST
-    for demo_name, script in (("NeonDrive", "wiki-shots-demo.rgsim"), ("Afterglow", "wiki-shots-afterglow.rgsim")):
+    for demo_name, script in DEMO_SCRIPTS.items():
         run_demo(demo_name, SCRIPTS / script)
-
-    count = 0
-    for bmp in sorted(ROOT.glob("wiki-*.bmp")):
-        img = Image.open(bmp).convert("RGB")
-        img = img.resize((img.width * 2, img.height * 2), Image.NEAREST)
-        img.save(IMAGES / (bmp.stem.replace("wiki-", "") + ".png"), optimize=True)
-        bmp.unlink()
-        count += 1
-    print(f"wrote {count} screenshots to {IMAGES}")
-    return 0 if count else 1
+    return 0 if convert() else 1
 
 
 if __name__ == "__main__":

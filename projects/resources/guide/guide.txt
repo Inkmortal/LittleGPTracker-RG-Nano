@@ -7230,35 +7230,61 @@
  lgpt_NeonDrive  A minor  100
  BPM  1:55
  
+ A night drive: an 80s drum
+ machine with a huge snare, a
+ pumping octave bass, a
+ glassy arpeggio and a
+ singing lead.
+ 
 *1
-   kick (half-time verses,
-   four-on-the-floor
-   choruses)
+   DRUM engine 909 kick
+   (half-time verses, four on
+   the floor in the choruses)
 *2
-   snare with reverb, fill at
-   the end of every 4 bars
+   DRUM engine 909 snare with
+   a big reverb send, a fill
+   every 4 bars
 *3
-   hats, accented 16ths in
-   the chorus
+   DRUM engine 808 hat, 8ths
+   in the verses; accented
+   16ths and 808 open
+   offbeats in the choruses
 *4
    octave-jumping 8th-note
-   bass
+   bass, ducked by the kick
+   (MOD trig, source 1)
 *5
    pad chords, one
-   note + CHRD per bar
+   note + CHRD per bar,
+   voiced around A3 with its
+   lows cut (EQ)
 *6
-   pluck arpeggio
+   pluck arpeggio above the
+   pad (every other 16th in
+   the verses)
 *7
-   lead melody (a bell takes
-   it in the break)
+   lead melody, an octave up
+   for the choruses (a bell
+   takes it in the break and
+   doubles it in the last
+   chorus)
 *8
-   crash and tom fills
+   crash, tom fills and the
+   bell
  
  Look at:
  - Song rows 00-0B - each row
    is a section: intro,
    verse, chorus, break,
-   build, outro.
+   build, chorus, outro.
+ - The sidechain pump -
+   instrument 03's MOD page:
+   a trig slot on volume,
+   amount -90, fired by track
+   1. The bass plays on the
+   kicks but dips out of
+   their way, so the low end
+   stays clear.
  - Track 6 in the intro -
    only the first note has an
    instrument number, so the
@@ -7266,14 +7292,22 @@
    keeps opening across four
    bars.
  - Track 5 - chords are
-   voiced as inversions
-   (C 3 + CHRD 0059), so they
-   move smoothly instead of
+   voiced as inversions (one
+   note + CHRD), so they move
+   smoothly instead of
    jumping.
+ - The lead - LEGA slides
+   into the verse notes, VIBR
+   makes the long ones sing.
  - The build - a snare
    crescendo with VOLM, then
    RTRG 0003 for a 32nd-note
    roll into the drop.
+ - The mixer, master EQ and
+   limiter are untouched: the
+   whole balance is
+   instrument volumes and
+   sends.
 =Jade Sword - wuxia / donghua
  lgpt_JadeSword  A minor
  pentatonic  92 BPM  2:05
@@ -7298,18 +7332,24 @@
    second chorus
 *4
    sub bass on the chord
-   roots (synth)
+   roots (synth), kept under
+   the drum
 *5
-   soft string pad (synth)
+   soft string pad (synth),
+   lows cut with its EQ
 *6
    guzheng - flowing broken
-   chords and glissandos
+   chords from the chord root
+   up, and glissandos
 *7
    erhu - the chorus melody
 *8
-   dizi flute in the verses,
-   the big opera gong on
-   section starts
+   dizi flute in the verses
+   and a high counter-melody
+   in the last chorus; the
+   opera gong and a PHYS
+   temple bell in the intro,
+   break and ending
  
  Look at:
  - Every melody uses only A C
@@ -7324,6 +7364,13 @@
    recordings each (low and
    high) so no note is
    stretched too far.
+ - The temple bell is not a
+   recording - instrument 0F
+   is the PHYS engine's
+   struck model with material
+   near metal: turn material
+   down and it becomes wood,
+   glass or a drum skin.
  - Grace notes - a quick step
    into a melody note (D4 E4
    at the start of a bar) is
@@ -7353,23 +7400,72 @@
  folder lists every author.
 =Pixel Quest - chiptune
  lgpt_PixelQuest  C major
- 140 BPM  1:02
+ 140 BPM  1:15
+ 
+ An 8-bit adventure theme:
+ title screen, verse, chorus,
+ a minor-key bridge, a key
+ change and a "stage clear"
+ jingle. Every sound is the
+ WAV engine.
+ 
+*1
+   WAV zap: a sine with a
+   pitch drop, the chip kick
+*2
+   WAV noise snare, a VOLM
+   crescendo and RTRG stutter
+   in the build
+*3
+   WAV noise hat, ghost 16ths
+   with CHNC in the choruses
+*4
+   WAV chip bass (triangle):
+   the root on the downbeat,
+   octave jumps between the
+   kicks
+*5
+   WAV chip lead (25% pulse),
+   VIBR on long notes
+*6
+   the arpeggio, played by
+   tables
+*7
+   the lead again, a 16th
+   late (DLAY 0003) on a 50%
+   pulse, panned right
+*8
+   WAV lofi bell: the bridge
+   melody
  
  Look at:
- - ARPG 0047 / 0037 - one
-   held note becomes a
-   buzzing 8-bit chord.
- - Drums from basic waves - a
-   triangle with a pitch drop
-   for the kick, crunchy
-   noise for snare and hats.
- - Echo lead - track 7 plays
-   the same melody with DLAY
-   0003 and a delay send: a
-   cheap stereo double.
+ - Tables 00 and 01 - a
+   custom arpeggio: PTCH 0,
+   +4, +7, +12, +7, +4, then
+   HOP back, one row every 3
+   ticks (TICK 0003 in the
+   table). Table 01 is the
+   minor one (+3). Each arp
+   bar holds one note and
+   starts a table with TABL.
+ - ARPG 0047 - the title
+   fanfare and the ending use
+   the classic one-note chord
+   on the lead instead.
+ - The key change - TRSP 0002
+   in row 08 lifts the last
+   choruses a whole tone; the
+   very first step of the
+   song has TRSP 0000, so
+   every play starts in C
+   again.
+ - Mix - Mixer levels (tune
+   on top, arp behind),
+   master EQ and a light
+   limiter.
 =Engine Room - the stress test
  lgpt_EngineRoom  A minor
- 100 BPM  0:38 loop
+ 100 BPM  0:58 loop
  
  Every heavy sound at once,
  on all 8 tracks the whole
@@ -7388,14 +7484,53 @@
  [HEARTBEAT] lines show the
  audio engine's load peak
  while it plays.
-=Sunset Club - house
- lgpt_SunsetClub  A minor
- 124 BPM  1:02
  
- Played on the sample packs:
-~14,12,samples,Sample packs
- 909 drums, piano chords and
- a finger bass.
+ It's mixed like a real track
+ even so: two sections (Am F
+ C G, then F G Em Am with the
+ lead an octave up) with
+ turnaround fills, the bass
+ between the kicks, and the
+ pad and piano with their
+ lows cut so the low end
+ stays with the kick and
+ bass.
+=Sunset Club - disco house
+ lgpt_SunsetClub  A minor
+ 124 BPM with swing  1:48
+ 
+ Played entirely on the
+ sample packs: 909 drums,
+~0,12,samples,Sample packs
+ congas and a shaker, piano
+ and string chords, a finger
+ bass and a trumpet.
+ 
+*1
+   909 kick, four on the
+   floor
+*2
+   909 clap on 2 and 4, a
+   ROLL into the drop
+*3
+   909 hats, swung 16ths
+*4
+   open hat on the offbeats,
+   shaker, congas; the riser
+   and crash
+*5
+   finger bass on the
+   offbeats, its EQ lifting
+   the lows
+*6
+   house piano stabs (min7 /
+   maj7 one-shots)
+*7
+   string chords, ducked by
+   the kick
+*8
+   the trumpet hook, call and
+   response
  
  Look at:
  - Four on the floor - the
@@ -7403,6 +7538,11 @@
    0 4 8 C), the clap on 2
    and 4, the open hat on
    every offbeat (2 6 A E).
+ - Swing - Groove 00 is 07
+   05: every second 16th
+   lands late, which makes
+   the hats and congas
+   bounce.
  - House piano - one-shot
    min7/maj7 chords chopped
    into syncopated stabs,
@@ -7410,7 +7550,23 @@
  - The bass between the kicks
    - it plays the offbeats,
    so bass and kick never
-   fight.
+   fight. Its EQ page boosts
+   the lows the recording is
+   thin on.
+ - Sidechain on a sample -
+   the string chords have a
+   MOD trig slot fired by
+   track 1: they dip on every
+   kick, the house pump.
+ - Room for everyone - the
+   piano and strings cut
+   their lows with the
+   instrument EQ.
+ - Song rows 00-0D - intro,
+   groove, bass, piano, horn,
+   breakdown, build, drop x3,
+   a DJ break with just kick,
+   bass and congas, outro.
 =Make them yours
  - Change the tempo on the
    Project screen.
@@ -7516,7 +7672,7 @@
  project. Each folder's
  CREDITS.md has the details.
  Sunset Club and Jade Sword
-~0,11,demos,Sunset Club - house
+~0,11,demos,Sunset Club - disco house
 ~16,10,demos,Jade Sword - wuxia / donghua
  show them in songs.
 =Turn a slot into a sampler
