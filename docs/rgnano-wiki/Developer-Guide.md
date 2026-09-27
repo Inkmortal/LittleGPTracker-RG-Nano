@@ -143,6 +143,20 @@ The check writes the mix to `projects/buildRGNANO/harness/engine_room.wav`; `com
 
 Rules that paid off in the DSP code: work a control block (16 samples) at a time and stage by stage, not every stage per sample; keep per-sample libm calls (`sin`, `pow`, `exp`), divisions and double-precision maths out of inner loops (tables, cached values, multiplies by a reciprocal); copy members used in a loop to locals (a store through a `float *` can alias them); NEON four samples at a time where the samples do not depend on each other (resampler, FM operators without feedback, saw ramps, buses, voice output). Where a change keeps the arithmetic, the render must stay bit-identical; where it changes it (HyperSynth's integer saw phase), `hyper_saw_check.cpp` shows the sound is the same.
 
+### Preset levels
+
+Every synth and Macro preset has to sound about as loud as the others in its role, or it is "barely audible" next to them. `tools/dsp-harness/preset_level_check.cpp` plays each one (C 4, its own envelope, volume and pan, dry) and measures its loudness over the loudest 100 ms (K-weighted, in LUFS) and its peak. The check fails when a preset leaves its role's window:
+
+| Role | Window (LUFS, 100 ms) |
+|---|---|
+| kicks, snares, toms, claps | -18 to -8 |
+| hats, rims, small percussion | -22 to -11 |
+| basses | -19 to -9 |
+| keys, leads, plucks, bells | -19 to -8 |
+| pads, wide chords | -22 to -9 |
+
+A single voice may not peak above -3 dBFS. When a preset fails, the check prints the volume that would put it in the middle of its window. If that volume would have to go over FF, the engine or model itself is too quiet: raise its output gain instead (`macroShapeGain` in `MacroInstrument.cpp`, `SYNTH_DRUM_GAIN` / `SYNTH_PHYS_PRE_GAIN` in `SynthPlaits.cpp`). `MODEL_SWEEP=1` measures every Braids shape at the same settings.
+
 ## Code map
 
 | Area | Where |

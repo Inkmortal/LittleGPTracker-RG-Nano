@@ -176,11 +176,11 @@ static const MacroPreset macroPresets[]={
 	{"pluck",{
 		MV(MCP_SHAPE,MS_PLUCK),MV(MCP_TIMBRE,0x70),MV(MCP_COLOR,0x40),
 		MV(SYP_DECAY,0xD0),MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x98),
-		MV(SYP_DELAY,0x30),MV(SYP_VOLUME,0xF0),MEND}},
+		MV(SYP_DELAY,0x30),MV(SYP_VOLUME,0xB8),MEND}},
 	{"bell",{
 		MV(MCP_SHAPE,MS_BELL),MV(MCP_TIMBRE,0x60),MV(MCP_COLOR,0x38),
 		MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0xC0),
-		MV(SYP_REVERB,0x60),MV(SYP_VOLUME,0xE8),MEND}},
+		MV(SYP_REVERB,0x60),MV(SYP_VOLUME,0xB0),MEND}},
 	{"vowels",{
 		MV(MCP_SHAPE,MS_VOWEL),MV(MCP_TIMBRE,0x20),MV(MCP_COLOR,0x70),
 		MV(SYP_ATTACK,0x30),MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x90),
@@ -190,7 +190,7 @@ static const MacroPreset macroPresets[]={
 		MV(MCP_SHAPE,MS_VFOF),MV(MCP_TIMBRE,0x30),MV(MCP_COLOR,0x68),
 		MV(SYP_ATTACK,0xA0),MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0xB8),
 		MV(MCP_LFODEST,MLD_PITCH),MV(SYP_LFORATE,0xA8),MV(SYP_LFOAMT,0x10),
-		MV(SYP_CHORUS,0x70),MV(SYP_REVERB,0x80),MV(SYP_VOLUME,0xC0),MEND}},
+		MV(SYP_CHORUS,0x70),MV(SYP_REVERB,0x80),MV(SYP_VOLUME,0x80),MEND}},
 	{"flute",{
 		MV(MCP_SHAPE,MS_FLUTE),MV(MCP_TIMBRE,0x98),MV(MCP_COLOR,0x70),
 		MV(SYP_ATTACK,0x58),MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x88),
@@ -200,7 +200,7 @@ static const MacroPreset macroPresets[]={
 		MV(MCP_SHAPE,MS_BOWED),MV(MCP_TIMBRE,0x80),MV(MCP_COLOR,0x60),
 		MV(SYP_ATTACK,0x88),MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0xA8),
 		MV(MCP_LFODEST,MLD_PITCH),MV(SYP_LFORATE,0xB0),MV(SYP_LFOAMT,0x10),
-		MV(SYP_REVERB,0x60),MV(SYP_VOLUME,0xA0),MEND}},
+		MV(SYP_REVERB,0x60),MV(SYP_VOLUME,0x80),MEND}},
 	{"organ",{
 		MV(MCP_SHAPE,MS_HARMONICS),MV(MCP_TIMBRE,0x30),MV(MCP_COLOR,0x50),
 		MV(SYP_ATTACK,0x10),MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x60),
@@ -246,7 +246,7 @@ static const MacroPreset macroPresets[]={
 	{"kick",{
 		MV(MCP_SHAPE,MS_KICK),MV(MCP_TIMBRE,0x70),MV(MCP_COLOR,0x90),MV(SYP_TUNE,-27),
 		MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x80),
-		MV(SYP_DRIVE,0x20),MV(SYP_VOLUME,0xC0),MEND}},
+		MV(SYP_DRIVE,0x20),MV(SYP_VOLUME,0x90),MEND}},
 	{"snare",{
 		MV(MCP_SHAPE,MS_SNARE),MV(MCP_TIMBRE,0x80),MV(MCP_COLOR,0x80),MV(SYP_TUNE,-3),
 		MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x70),
@@ -259,7 +259,7 @@ static const MacroPreset macroPresets[]={
 	{"metaltom",{
 		MV(MCP_SHAPE,MS_DRUM),MV(MCP_TIMBRE,0x70),MV(MCP_COLOR,0x60),MV(SYP_TUNE,-5),
 		MV(SYP_SUSTAIN,0xFF),MV(SYP_RELEASE,0x90),
-		MV(SYP_REVERB,0x30),MV(SYP_VOLUME,0xD0),MEND}},
+		MV(SYP_REVERB,0x30),MV(SYP_VOLUME,0xB0),MEND}},
 	{"toy",{
 		MV(MCP_SHAPE,MS_TOY),MV(MCP_TIMBRE,0x90),MV(MCP_COLOR,0x28),
 		MV(SYP_DECAY,0x98),MV(SYP_SUSTAIN,0x80),MV(SYP_RELEASE,0x60),
@@ -1125,6 +1125,22 @@ void MacroInstrument::updateFilter(MacroVoice &v,float cutoff,float reso,float s
 	v.fa3_=g*v.fa2_ ;
 }
 
+// Output gain per shape. Braids' models come out as loud as the module
+// makes them: from SQR x3 down to BELL there are 23 dB at the same
+// settings, so a bell at full volume was still barely audible next to a
+// saw. Each quiet model is lifted toward the others (-13 LUFS over 100 ms
+// at timbre/color 80, C 4, volume 80), but only as far as its peak at
+// volume 80 stays at -6 dBFS, so no model can clip at volume FF.
+// Measured with tools/dsp-harness/preset_level_check.cpp (MODEL_SWEEP=1).
+static const float macroShapeGain[MACRO_SHAPE_COUNT]={
+	1.0f,1.0f,1.46f,1.0f,1.0f,1.0f,1.0f,1.0f,       // CSAW MORPH SAW/SQR(+3.3) FOLD BUZZ SQR SUB SAW SUB SQR SYNC
+	1.0f,1.0f,1.0f,1.0f,1.0f,1.88f,1.35f,1.0f,      // SAW SYNC SAW x3 SQR x3 TRI x3 SIN x3 RING(+5.5) SWARM(+2.6) COMB
+	1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,2.82f,       // TOY ZLPF ZPKF ZBPF ZHPF VOSIM VOWEL VFOF(+9.0)
+	1.55f,1.0f,1.0f,1.0f,1.80f,2.79f,1.0f,1.0f,     // HARM(+3.8) FM FBFM CHAOFM PLUCK(+5.1) BOWED(+8.9) BLOWN FLUTE
+	2.95f,1.84f,1.82f,2.07f,1.0f,1.0f,1.0f,1.0f,    // BELL(+9.4) DRUM(+5.3) KICK(+5.2) CYMBAL(+6.3) SNARE WTBL WMAP WLINE
+	2.26f,4.47f,1.0f,1.0f,1.57f,2.14f,1.0f          // WTx4(+7.1) NOISE(+13) TWINQ CLKN CLOUD(+3.9) PARTCL(+6.6) QPSK
+} ;
+
 // One 24-sample block from the model at 96 kHz, through degrade and redux,
 // onto the voice's resampler input
 void MacroInstrument::fillBlock(MacroVoice &v) {
@@ -1140,7 +1156,8 @@ void MacroInstrument::fillBlock(MacroVoice &v) {
 	// moves at most 12 samples per output even at an 8 kHz mixer rate)
 	typedef char fifo_room_check[(MACRO_FIFO_SIZE>=MACRO_FIFO_COMPACT+12+MACRO_TAPS+MACRO_OSC_BLOCK)?1:-1] __attribute__((unused)) ;
 	float *out=v.fifo_+v.fifoCount_ ;
-	const float scale=1.0f/32768.0f ;
+	int shape=(v.shape_>=0 && v.shape_<MACRO_SHAPE_COUNT)?v.shape_:0 ;
+	const float scale=macroShapeGain[shape]/32768.0f ;
 	if (v.holdInc_>=65536) {
 		for (int i=0;i<MACRO_OSC_BLOCK;i++) {
 			out[i]=(short)(block[i]&v.bitMask_)*scale ;

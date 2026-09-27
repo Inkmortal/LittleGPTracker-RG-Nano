@@ -25,9 +25,24 @@ const char *synthPhysModelNames[SPM_LAST]={
 // quarter of that again
 #define PLAITS_STRING_FLOATS (plaits::kDelayLineSize+plaits::kDelayLineSize/4)
 
-// Output levels (measured with tools/dsp-harness/plaits_engines_check.cpp)
-#define SYNTH_DRUM_GAIN 1.6f
+// Output levels, matched by loudness to the other engines at the same
+// volume (tools/dsp-harness/preset_level_check.cpp). PHYS goes into the
+// module's limiter with this pre-gain: struck and plucked sounds are short,
+// so they need more level to sound as loud, and the limiter keeps their
+// peaks under full scale.
+#define SYNTH_DRUM_GAIN 2.2f
 #define SYNTH_STRING_GAIN 2.5f
+#define SYNTH_PHYS_PRE_GAIN 2.0f
+
+// -80 dB under each engine's level before these gains were raised (drum
+// 1.6, phys 1.0 into the limiter): voices end as they did then
+float SynthDrumSilence() {
+	return 0.0001f*SYNTH_DRUM_GAIN/1.6f ;
+}
+
+float SynthPhysSilence() {
+	return 0.0001f*SYNTH_PHYS_PRE_GAIN ;
+}
 
 // One voice of every model. The models keep ringing into the next hit the
 // way the module's do (the synth fades the old note out first).
@@ -141,8 +156,8 @@ void SynthDrumRender(SynthPlaitsVoice *v,int model,bool strike,float f0,
 			v->hatRing_.Render(false,strike,accent,f0,tone,decay,snap,v->temp1_,v->temp2_,out,n) ;
 			break ;
 	}
-	// Twice Plaits' output gain for its drum engines (0.8): the synth's
-	// other engines peak about that loud at the same volume
+	// Plaits' drum output is quiet next to the synth's other engines: lifted
+	// so a kick at volume 80 hits about as hard as the synth kick
 	for (int i=0;i<n;i++) out[i]*=SYNTH_DRUM_GAIN ;
 }
 
@@ -183,5 +198,5 @@ void SynthPhysRender(SynthPlaitsVoice *v,int model,bool strike,float f0,
 		// A plucked string comes out far quieter than a struck bar
 		for (int i=0;i<n;i++) out[i]*=SYNTH_STRING_GAIN ;
 	}
-	v->limiter_.Process(1.0f,out,n) ;
+	v->limiter_.Process(SYNTH_PHYS_PRE_GAIN,out,n) ;
 }

@@ -152,7 +152,7 @@ static const SynthPreset synthPresets[]={
 		PV(SYP_DECAY,0x68),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x50),
 		PV(SYP_PITCHENV,0x20),PV(SYP_PITCHDEC,0x40),
 		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0x70),PV(SYP_RESO,0x10),
-		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x90),PEND}},
+		PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xFF),PEND}},
 	{"bass",SE_SYNTH,{
 		PV(SYP_WAVE,SW_SAW),PV(SYP_SUB,0x70),PV(SYP_TUNE,-24),
 		PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0x90),PV(SYP_RELEASE,0x60),
@@ -286,7 +286,7 @@ static const SynthPreset synthPresets[]={
 		OP(2,F4S_SIN,700,0x50,0,0,0x60,0),OP(3,F4S_SIN,300,0x70,0,0,0x98,0),
 		PV(SYP_DECAY,0xA8),PV(SYP_SUSTAIN,0x40),PV(SYP_RELEASE,0x60),
 		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0x50),PV(SYP_RESO,0),
-		PV(SYP_VOLUME,0x68),PEND}},
+		PV(SYP_VOLUME,0xC0),PEND}},
 
 	// HYPER. Chords: 1 unison 2 octaves 3 5th 4 major 5 minor 6 sus2 7 sus4
 	// 8 maj7 9 min7 10 dom7 11 maj9 12 min9 13 add9 14 min11 15 quartal
@@ -377,7 +377,7 @@ static const SynthPreset synthPresets[]={
 		PV(WVP_SHAPE,WVS_NOISE),PV(SYP_TUNE,24),
 		PV(SYP_DECAY,0x70),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0x50),
 		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0xB0),PV(SYP_RESO,0x20),
-		PV(SYP_VOLUME,0xB0),PV(SYP_PAN,0x70),PEND}},
+		PV(SYP_VOLUME,0x88),PV(SYP_PAN,0x70),PEND}},
 
 	// DRUM: the model makes its own decay, so the amp envelope stays open
 	// and the filter off; a voice ends when the model falls silent. Tuned
@@ -387,7 +387,8 @@ static const SynthPreset synthPresets[]={
 		PV(DRP_SNAP,0x40),PV(DRP_ACCENT,0xC0),PV(SYP_TUNE,-24),
 		PV(SYP_ATTACK,0),PV(SYP_DECAY,0xFF),PV(SYP_SUSTAIN,0xFF),PV(SYP_RELEASE,0x90),
 		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0xA0),PEND}},
-	// Volumes: kicks peak near 0.4, snares 0.35, hats 0.2 (measured)
+	// Volumes set by loudness, not peak (a hat peaking like a kick still
+	// sounds far quieter): tools/dsp-harness/preset_level_check.cpp
 	{"808 kick",SE_DRUM,{
 		PV(DRP_TONE,0x48),PV(DRP_DECAY,0xA0),PV(DRP_SNAP,0x30),PV(SYP_TUNE,-26),
 		PV(SYP_VOLUME,0xB0),PEND}},
@@ -405,10 +406,10 @@ static const SynthPreset synthPresets[]={
 		PV(DRP_SNAP,0xC0),PV(SYP_TUNE,-5),PV(SYP_VOLUME,0x50),PEND}},
 	{"rim",SE_DRUM,{
 		PV(DRP_MODEL,SDM_SNARE808),PV(DRP_TONE,0xE0),PV(DRP_DECAY,0x10),
-		PV(DRP_SNAP,0x08),PV(SYP_TUNE,7),PV(SYP_VOLUME,0x4E),PEND}},
+		PV(DRP_SNAP,0x08),PV(SYP_TUNE,7),PV(SYP_VOLUME,0xA0),PEND}},
 	{"808 hat",SE_DRUM,{
 		PV(DRP_MODEL,SDM_HAT808),PV(DRP_TONE,0xA0),PV(DRP_DECAY,0x30),
-		PV(DRP_SNAP,0x40),PV(SYP_TUNE,0),PV(SYP_PAN,0x90),PV(SYP_VOLUME,0x43),PEND}},
+		PV(DRP_SNAP,0x40),PV(SYP_TUNE,0),PV(SYP_PAN,0x90),PV(SYP_VOLUME,0xA0),PEND}},
 	{"808 open",SE_DRUM,{
 		PV(DRP_MODEL,SDM_HAT808),PV(DRP_TONE,0xA0),PV(DRP_DECAY,0xA0),
 		PV(DRP_SNAP,0x40),PV(SYP_TUNE,0),PV(SYP_PAN,0x90),PV(SYP_VOLUME,0x40),PEND}},
@@ -429,17 +430,17 @@ static const SynthPreset synthPresets[]={
 	// tune (strings, pipes), up to C0 stretched like a bar, E0+ a bell
 	{"wood bar",SE_PHYS,{
 		PV(PHP_MATERIAL,0xC0),PV(PHP_BRIGHT,0x40),PV(PHP_DECAY,0x60),
-		PV(SYP_VOLUME,0xFF),PEND}},
+		PV(SYP_VOLUME,0xD0),PEND}},
 	{"vibes",SE_PHYS,{
 		PV(PHP_MATERIAL,0xC4),PV(PHP_BRIGHT,0x60),PV(PHP_DECAY,0xA0),
 		PV(SYP_LFODEST,SLD_VOLUME),PV(SYP_LFORATE,0xA0),PV(SYP_LFOAMT,0x30),
-		PV(SYP_REVERB,0x60),PV(SYP_VOLUME,0xFF),PEND}},
+		PV(SYP_REVERB,0x60),PV(SYP_VOLUME,0xC8),PEND}},
 	{"temple bell",SE_PHYS,{
 		PV(PHP_MATERIAL,0xF0),PV(PHP_BRIGHT,0x90),PV(PHP_DECAY,0xB8),
-		PV(SYP_REVERB,0x80),PV(SYP_VOLUME,0xE0),PEND}},
+		PV(SYP_REVERB,0x80),PV(SYP_VOLUME,0xB0),PEND}},
 	{"kalimba",SE_PHYS,{
 		PV(PHP_MATERIAL,0xD4),PV(PHP_BRIGHT,0x38),PV(PHP_DECAY,0x78),PV(SYP_TUNE,12),
-		PV(SYP_VOLUME,0xFF),PEND}},
+		PV(SYP_VOLUME,0xD0),PEND}},
 	{"hand drum",SE_PHYS,{
 		PV(PHP_MATERIAL,0x00),PV(PHP_BRIGHT,0x30),PV(PHP_DECAY,0x50),PV(SYP_TUNE,-12),
 		PV(SYP_VOLUME,0xB0),PEND}},
@@ -447,7 +448,7 @@ static const SynthPreset synthPresets[]={
 	// string, above it stiffer and more metallic
 	{"guzheng",SE_PHYS,{
 		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x40),PV(PHP_BRIGHT,0xB0),
-		PV(PHP_DECAY,0x90),PV(SYP_DELAY,0x30),PV(SYP_VOLUME,0x70),PEND}},
+		PV(PHP_DECAY,0x90),PV(SYP_DELAY,0x30),PV(SYP_VOLUME,0xB0),PEND}},
 	{"nylon",SE_PHYS,{
 		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x40),PV(PHP_BRIGHT,0x60),
 		PV(PHP_DECAY,0x98),PV(SYP_VOLUME,0xB0),PEND}},
@@ -1698,7 +1699,9 @@ void SynthInstrument::setupFm4(Fm4Params &p,float sampleRate) {
 		p.sustain_[op]=fmOp_[op][6]->GetInt()/255.0f ;
 	}
 	p.modScale_=1.0f ;
-	p.carrierNorm_=1.0f/(float)Fm4CarrierCount(algo) ;
+	// Carriers share full scale by how loud they are, not how many there
+	// are: one full carrier plus two faint ones is not cut to a third
+	p.carrierNorm_=Fm4CarrierNorm(algo,p.level_) ;
 }
 
 // The six notes of the hyper chord on a root note, in semitones. With
@@ -2150,8 +2153,8 @@ bool SynthInstrument::Render(int channel,fixed *buffer,int size,bool updateTick)
 					}
 					for (int k=0;k<n;k++) sigR[k]=0.0f ;
 					// The model decays by itself: once it has been silent
-					// (-80 dB) for 100 ms the voice ends
-					if (peak<0.0001f) v.quietSamples_+=n ;
+					// (-80 dB under its level) for 100 ms the voice ends
+					if (peak<(engine==SE_DRUM?SynthDrumSilence():SynthPhysSilence())) v.quietSamples_+=n ;
 					else v.quietSamples_=0 ;
 					// (not while fading out for the next note: that one
 					// starts after the fade)

@@ -136,6 +136,7 @@ static inline float fm4FeedbackDepth(int fb) {
 }
 
 int Fm4CarrierCount(int algo) ;
+float Fm4CarrierNorm(int algo,const float *levels) ;
 
 // One set of four operators
 struct Fm4Ops {
