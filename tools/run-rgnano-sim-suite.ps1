@@ -290,6 +290,11 @@ $suite = @(
     Args = @("-ResetLastProject", "-KeepSounds")
   },
   @{
+    Name = "rack"
+    Script = "rack.rgsim"
+    Args = @("-ResetLastProject", "-SeedSampleFixture")
+  },
+  @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
     Args = @("-OpenDemo=Afterglow")

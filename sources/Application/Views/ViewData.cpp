@@ -15,6 +15,7 @@ ViewData::ViewData(Project *project) {
 	currentTable_=0 ;
 	currentInstrument_=0 ;
 	instrumentPicked_=false ;
+	instrumentFromRack_=false ;
 	currentGroove_=0 ;
 	mixerCol_=0 ;
 	mixerRow_=0 ;

@@ -1734,7 +1734,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 {
 	struct Edge { const char *from; int key; const char *to; };
 	static const Edge edges[]={
-		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},
+		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},{"song",SDLK_l,"rack"},
 		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},{"mixer",SDLK_d,"fx"},{"fx",SDLK_u,"mixer"},{"fx",SDLK_r,"eq"},{"eq",SDLK_l,"fx"},{"eq",SDLK_r,"limit"},{"limit",SDLK_l,"eq"},{"project",SDLK_r,"scale"},{"scale",SDLK_l,"project"},
 		{"chain",SDLK_l,"song"},{"chain",SDLK_r,"phrase"},
 		{"phrase",SDLK_l,"chain"},{"phrase",SDLK_r,"instrument"},
@@ -1743,11 +1743,11 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		{"instrument",SDLK_l,"phrase"},{"instrument",SDLK_d,"table"},
 	};
 	const int count=sizeof(edges)/sizeof(Edge);
-	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq","limit","scale"};
-	const int nodeCount=12;
-	int prev[12];
-	int via[12];
-	bool seen[12];
+	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq","limit","scale","rack"};
+	const int nodeCount=13;
+	int prev[13];
+	int via[13];
+	bool seen[13];
 	int start=-1;
 	int goal=-1;
 	for (int i=0;i<nodeCount;i++) {
@@ -1758,7 +1758,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		if (to==nodes[i]) goal=i;
 	}
 	if (start<0 || goal<0) return 0;
-	int queue[12];
+	int queue[13];
 	int head=0;
 	int tail=0;
 	queue[tail++]=start;

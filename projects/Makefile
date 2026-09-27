@@ -256,10 +256,10 @@ COMMONFILES := \
 	ControlNode.o \
 	I_GUIWindowImp.o \
 	Application.o AppWindow.o SelectProjectDialog.o \
-	NewProjectDialog.o InstrumentListDialog.o SoundFilesDialog.o RenderToSampleDialog.o SampleEditDialog.o GuideDialog.o \
+	NewProjectDialog.o InstrumentListDialog.o SoundFilesDialog.o SoundBrowserDialog.o RenderToSampleDialog.o SampleEditDialog.o GuideDialog.o \
 	ImportSampleDialog.o \
 	RecordSampleDialog.o \
-	MixerView.o FXView.o EQView.o LimiterView.o ScaleView.o NullView.o \
+	MixerView.o FXView.o EQView.o LimiterView.o ScaleView.o KeyboardStrip.o SoundPreview.o RackView.o NullView.o \
 	SongView.o ChainView.o PhraseView.o ViewData.o ConsoleView.o ProjectView.o InstrumentView.o InstrumentViewSynth.o InstrumentViewEngines.o InstrumentViewMacro.o InstrumentViewMod.o InstrumentViewEQ.o UIController.o \
 	View.o ModalView.o FieldView.o UIField.o UIIntField.o \
 	UIIntVarOffField.o UIIntVarField.o ViewEvent.o I_Action.o\

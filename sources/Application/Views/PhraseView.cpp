@@ -1200,6 +1200,7 @@ void PhraseView::processNormalButtonMask(unsigned short mask) {
                         } else viewData_->currentInstrument_= lastInstr_;
                     }
                     if (viewData_->currentInstrument_ != 0xFF) {
+                        viewData_->instrumentFromRack_ = false;
                         ViewType vt = VT_INSTRUMENT;
                         ViewEvent ve(VET_SWITCH_VIEW, &vt);
                         SetChanged();

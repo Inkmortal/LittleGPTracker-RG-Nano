@@ -212,14 +212,19 @@ static bool writeSound(TiXmlNode *node,InstrumentBank *bank,int slot,std::string
 }
 
 // A sound element's content into slot: sample into the song first, then
-// the instrument, then its table in a free table of this song
-static bool readSound(TiXmlElement *sound,InstrumentBank *bank,int slot,int version,std::string &error) {
+// the instrument, then its table in a free table of this song. tryOn: no
+// table, and no sample (browsing)
+static bool readSound(TiXmlElement *sound,InstrumentBank *bank,int slot,int version,std::string &error,bool tryOn=false) {
 	TiXmlElement *instrument=sound->FirstChildElement("INSTRUMENT") ;
 	if (!instrument) {
 		error="not a sound file" ;
 		return false ;
 	}
 	TiXmlElement *sample=sound->FirstChildElement("SAMPLE") ;
+	if (tryOn && sample) {
+		error="a sample sound" ;
+		return false ;
+	}
 	if (sample && sample->Attribute("FILE")) {
 		const char *file=sample->Attribute("FILE") ;
 		SamplePool *pool=SamplePool::GetInstance() ;
@@ -236,7 +241,7 @@ static bool readSound(TiXmlElement *sound,InstrumentBank *bank,int slot,int vers
 		}
 	}
 	int tableId=-1 ;
-	TiXmlElement *table=sound->FirstChildElement("TABLE") ;
+	TiXmlElement *table=tryOn?0:sound->FirstChildElement("TABLE") ;
 	if (table) {
 		tableId=TableHolder::GetInstance()->GetNext() ;
 		if (tableId==NO_MORE_TABLE) {
@@ -305,12 +310,12 @@ bool SoundLibrary::SaveSound(InstrumentBank *bank,int slot,const std::string &na
 	return true ;
 }
 
-bool SoundLibrary::LoadSound(InstrumentBank *bank,int slot,const std::string &name,std::string &error) {
+static bool loadSoundFile(InstrumentBank *bank,int slot,const std::string &name,std::string &error,bool tryOn) {
 	if (slot<0 || slot>=MAX_SAMPLEINSTRUMENT_COUNT) {
 		error="not a sound slot" ;
 		return false ;
 	}
-	std::string path=Folder()+"/"+name+SOUND_EXT ;
+	std::string path=SoundLibrary::Folder()+"/"+name+SOUND_EXT ;
 	PersistencyDocument doc(path) ;
 	if (!readDoc(path,doc)) {
 		error="can't read that sound" ;
@@ -321,9 +326,27 @@ bool SoundLibrary::LoadSound(InstrumentBank *bank,int slot,const std::string &na
 		error="not a sound file" ;
 		return false ;
 	}
-	if (!readSound(root,bank,slot,fileVersion(root),error)) return false ;
-	Trace::Log("SOUNDLIB","loaded %s into slot %02X",path.c_str(),slot) ;
+	if (!readSound(root,bank,slot,fileVersion(root),error,tryOn)) return false ;
+	Trace::Log("SOUNDLIB","%s %s into slot %02X",tryOn?"trying":"loaded",path.c_str(),slot) ;
 	return true ;
+}
+
+bool SoundLibrary::LoadSound(InstrumentBank *bank,int slot,const std::string &name,std::string &error) {
+	return loadSoundFile(bank,slot,name,error,false) ;
+}
+
+bool SoundLibrary::TryOnSound(InstrumentBank *bank,int slot,const std::string &name,std::string &error) {
+	return loadSoundFile(bank,slot,name,error,true) ;
+}
+
+std::string SoundLibrary::SampleOf(const std::string &name) {
+	std::string path=Folder()+"/"+name+SOUND_EXT ;
+	PersistencyDocument doc(path) ;
+	if (!readDoc(path,doc)) return "" ;
+	TiXmlElement *root=doc.FirstChildElement("SOUND") ;
+	TiXmlElement *sample=root?root->FirstChildElement("SAMPLE"):0 ;
+	if (!sample || !sample->Attribute("FILE")) return "" ;
+	return sampleFolder()+"/"+sample->Attribute("FILE") ;
 }
 
 static bool saveKitTo(InstrumentBank *bank,const std::string &path,const std::string &name,std::string &error) {

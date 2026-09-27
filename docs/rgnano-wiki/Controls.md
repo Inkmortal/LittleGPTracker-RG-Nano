@@ -42,6 +42,7 @@ One rule for leaving anything: **B goes back one step.** Whatever you opened (a 
 | Recording | a take (recording or recorded) is dropped for another try; then the device list; then closed |
 | Naming a song or sound | the one place **B** is a backspace: it erases the last letter you typed. With nothing typed (or only the suggested name) it leaves |
 | The full guide | back through the pages you came through; **RB + Select** closes it from anywhere |
+| The Rack | back to the Song (the Rack is a list you opened from there); in its sound browser, **B** puts the slot back as it was |
 
 On the editing screens (Song, Chain, Phrase, Instrument ...) nothing is open to close, so **B** alone does nothing there: it is the modifier for **B + A** (delete), **B + D-pad** (jump) and **B + LB** (select). In a selection, **B** copies it and ends it.
 
@@ -53,10 +54,11 @@ Hold **RB** and press a direction:
 
 | From | RB + Right | RB + Left | RB + Up | RB + Down |
 | --- | --- | --- | --- | --- |
-| Song | Chain under the cursor | — | Project | Mixer |
+| Song | Chain under the cursor | [Rack](#rack): all your sounds | Project | Mixer |
+| Rack | Instrument (edit the sound) | — | — | — |
 | Chain | Phrase under the cursor | Song | — | — |
 | Phrase | Instrument of the note | Chain | Groove | Table |
-| Instrument | — | Phrase | list of all sounds | Instrument table |
+| Instrument | — | Phrase (or the Rack, if you came from it) | list of all sounds | Instrument table |
 | Table | Instrument table | Table (from the instrument table) | back up | — |
 | Groove | — | — | — | Phrase |
 | Project | Scale | — | — | Song |
@@ -171,6 +173,21 @@ Didn't like it? **B + Select** undoes.
 | **RB + A + Left/Right** | hear it an octave down / up |
 
 Sample instruments have their own pages, play modes, trim controls and a sample editor (**Select** on any of its pages) — see [Samples](Samples).
+
+## Rack
+
+Every sound of the song on one screen, to build your instruments before you compose: **Song RB + Left**. The whole story is on [Build Your Sounds First](Build-Your-Sounds-First).
+
+| Input | Does |
+| --- | --- |
+| **Up / Down** | pick a sound (**Left / Right**: a page) |
+| **A** (hold) | play it until you let go |
+| **A + Left / Right** | the next note of the scale down / up, and play it |
+| **A + Up / Down** | an octave up / down, and play it |
+| **Select** | the sound browser: every sound plays as you move onto it; **A** takes it, **B** puts the slot back |
+| **RB + Right** | edit it on the Instrument screen (**RB + Left** there comes back) |
+| **LB + A** | copy it to a free slot |
+| **B** | back to the Song |
 
 ## Moving tracks
 

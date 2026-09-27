@@ -866,6 +866,14 @@ void SongView::processNormalButtonMask(unsigned int mask) {
                     unMuteAll();
                 }
 
+                if (mask == (EPBM_R | EPBM_LEFT)) {
+                    // The Rack: build and play your sounds
+                    ViewType vt = VT_RACK;
+                    ViewEvent ve(VET_SWITCH_VIEW, &vt);
+                    SetChanged();
+                    NotifyObservers(&ve);
+                }
+
                 if (mask & EPBM_RIGHT) {
                     unsigned char *data = viewData_->GetCurrentSongPointer();
                     if (*data != 0xFF) {
@@ -991,6 +999,14 @@ void SongView::processSelectionButtonMask(unsigned int mask) {
 
                 if (mask & EPBM_L) {
                     unMuteAll();
+                }
+
+                if (mask == (EPBM_R | EPBM_LEFT)) {
+                    // The Rack: build and play your sounds
+                    ViewType vt = VT_RACK;
+                    ViewEvent ve(VET_SWITCH_VIEW, &vt);
+                    SetChanged();
+                    NotifyObservers(&ve);
                 }
 
                 if (mask & EPBM_RIGHT) {

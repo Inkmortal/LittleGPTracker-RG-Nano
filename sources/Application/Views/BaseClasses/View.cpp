@@ -190,13 +190,14 @@ void View::drawOverlayLine(int x, int y, int width, const char *text,
 }
 
 void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
-	const char *row1="Project>Scale Groove";
-	const char *row2="   |           |";
-	const char *row3="Song > Chain > Phrase";
-	const char *row4="  |       |       |";
-	const char *row5="Mixer   Table   Instr";
-	const char *row6="  |";
-	const char *row7="  FX > EQ > Limit";
+	// Everything but the Rack sits 5 columns in, right of "Rack<"
+	const char *row1="     Project>Scale Groove";
+	const char *row2="        |           |";
+	const char *row3="Rack<Song > Chain > Phrase";
+	const char *row4="       |       |       |";
+	const char *row5="     Mixer   Table   Instr";
+	const char *row6="       |";
+	const char *row7="       FX > EQ > Limit";
 	drawOverlayLine(x,y,width,row1,props);
 	drawOverlayLine(x,y+1,width,row2,props);
 	drawOverlayLine(x,y+2,width,row3,props);
@@ -267,11 +268,16 @@ void View::drawContextMap(int x, int y, int width, GUITextProperties &props) {
 			hy=y+4;
 			label="Instr";
 			break;
+		case VT_RACK:
+			hx=x;
+			label="Rack";
+			break;
 		default:
 			hx=x;
 			label="Song";
 			break;
 	}
+	if (viewType_!=VT_RACK) hx+=5;
 	if (hx+((int)strlen(label))>x+width) {
 		hx=x+width-(int)strlen(label);
 	}
@@ -578,7 +584,7 @@ InstrumentType View::currentInstrumentType() {
 
 // Keys the 7 command lines have no room for, per screen (helper page 2)
 int View::getMoreKeys(const char **lines,int max) {
-	static const char *song[]={"Select  LIVE mode on/off","Live St cue LB+St row",
+	static const char *song[]={"RB+Left the Rack: sounds","Select  LIVE mode on/off","Live St cue LB+St row",
 		"Live RB+St stop  B+St all","B+Up/Dn 16 rows  B+A delete",
 		"B+LB select  B copy","A+LB paste  RB+LB unmute","A+Select bookmark the row",
 		"LB+Up/Dn next mark/section","Up on row 00: move tracks"};

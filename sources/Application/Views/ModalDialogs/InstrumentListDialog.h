@@ -3,6 +3,7 @@
 
 #include "Application/Views/BaseClasses/ModalView.h"
 #include "Application/Model/Song.h"
+#include "Application/Views/SoundPreview.h"
 #include <string>
 
 // Every instrument at a glance: number, type, name, how many phrases use
@@ -37,18 +38,13 @@ private:
   void move(int delta);
   void audition();
   void duplicate();
-  void cachePreview();
   bool playing(int instrument);
 
   int selected_;
   std::string status_; // one-off message on the info line
   int top_;
   int usage_[MAX_INSTRUMENT_COUNT];
-  // Preview of the selected sound, one min/max pair per column
-  int previewFor_;
-  signed char previewMin_[200];
-  signed char previewMax_[200];
-  int previewColumns_;
+  SoundPreview preview_;
   unsigned int activeMask_[(MAX_INSTRUMENT_COUNT + 31) / 32];
 };
 

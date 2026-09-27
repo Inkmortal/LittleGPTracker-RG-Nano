@@ -1421,7 +1421,8 @@ void InstrumentView::ProcessButtonMask(unsigned short mask,bool pressed) {
 
             if (mask & EPBM_R) {
                 if (mask & EPBM_LEFT) {
-                    ViewType vt = VT_PHRASE;
+                    // Back where you came from: the Rack or the phrase
+                    ViewType vt = viewData_->instrumentFromRack_ ? VT_RACK : VT_PHRASE;
                     ViewEvent ve(VET_SWITCH_VIEW, &vt);
                     SetChanged();
                     NotifyObservers(&ve);

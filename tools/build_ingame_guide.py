@@ -51,6 +51,7 @@ WIDTH = 28  # characters across the guide's text area (240 px screen, 8 px font)
 # so every page of the web guide is also in the app
 PAGES = [
     ("Your-First-Song", "first-song"),
+    ("Build-Your-Sounds-First", "sounds-first"),
     ("Controls", "controls"),
     ("How-Trackers-Work", "trackers"),
     ("Screens", "screens"),

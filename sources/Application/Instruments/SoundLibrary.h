@@ -24,6 +24,12 @@ public:
 	// false: error says why, in a few words for the screen
 	static bool SaveSound(InstrumentBank *bank,int slot,const std::string &name,std::string &error) ;
 	static bool LoadSound(InstrumentBank *bank,int slot,const std::string &name,std::string &error) ;
+	// Browsing: the sound goes in the slot to be heard, without its table
+	// (a table per try would fill the song's tables). Sample sounds can't be
+	// tried on this way: SampleOf gives the WAV to stream instead.
+	static bool TryOnSound(InstrumentBank *bank,int slot,const std::string &name,std::string &error) ;
+	// The library WAV a saved sample sound plays ("" for other sounds)
+	static std::string SampleOf(const std::string &name) ;
 	static bool SaveKit(InstrumentBank *bank,const std::string &name,std::string &error) ;
 	// Every sample slot takes the kit's sound, or is emptied
 	static bool LoadKit(InstrumentBank *bank,const std::string &name,std::string &error) ;
