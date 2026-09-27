@@ -11,6 +11,9 @@ param(
   [switch]$ResetLastProject,
   # Copy a shipped demo song (e.g. JadeSword) into the sim and auto-load it
   [string]$OpenDemo = "",
+  # Put every shipped demo song in the song list (as the RG Nano install
+  # does), without opening one
+  [switch]$SeedDemos,
   [switch]$Mute,
   # Seed for the suggested song names, so they are the same every run
   [string]$NameSeed = "",
@@ -20,7 +23,11 @@ param(
   # (normally every run starts with an empty sound library)
   [switch]$KeepSounds,
   [switch]$Visible,
-  [string]$ArtifactsDir = ""
+  [string]$ArtifactsDir = "",
+  # Run in this folder with its own copy of the simulator: its own data
+  # (rgnano-sim-data), log, last_project and output files, so several runs
+  # can go at once (run-rgnano-sim-suite.ps1 -Jobs)
+  [string]$Sandbox = ""
 )
 
 $root = Split-Path -Parent $PSScriptRoot
@@ -34,6 +41,25 @@ if (-not $exeFullPath) {
 }
 
 $exeFullPath = $exeFullPath.Path
+$workDir = (Get-Location).Path
+if ($Sandbox) {
+  New-Item -ItemType Directory -Force -Path $Sandbox | Out-Null
+  $Sandbox = (Resolve-Path -LiteralPath $Sandbox).Path
+  $sandboxExe = Join-Path $Sandbox (Split-Path -Leaf $exeFullPath)
+  if (-not (Test-Path -LiteralPath $sandboxExe) -or
+      (Get-Item -LiteralPath $sandboxExe).LastWriteTime -ne (Get-Item -LiteralPath $exeFullPath).LastWriteTime) {
+    Copy-Item -LiteralPath $exeFullPath -Destination $sandboxExe -Force
+  }
+  $exeFullPath = $sandboxExe
+  $workDir = $Sandbox
+}
+if ($Script) {
+  $Script = (Resolve-Path -LiteralPath $Script).Path
+}
+if ($ArtifactsDir) {
+  New-Item -ItemType Directory -Force -Path $ArtifactsDir | Out-Null
+  $ArtifactsDir = (Resolve-Path -LiteralPath $ArtifactsDir).Path
+}
 $exeDir = Split-Path -Parent $exeFullPath
 $runStarted = Get-Date
 
@@ -60,7 +86,7 @@ foreach ($runtimeDll in @("libgcc_s_dw2-1.dll", "libstdc++-6.dll", "libwinpthrea
   }
 }
 
-$dataDir = Join-Path (Get-Location) "rgnano-sim-data"
+$dataDir = Join-Path $workDir "rgnano-sim-data"
 New-Item -ItemType Directory -Force -Path (Join-Path $dataDir "tracks") | Out-Null
 $sampleDir = Join-Path $dataDir "samples"
 New-Item -ItemType Directory -Force -Path $sampleDir | Out-Null
@@ -284,6 +310,16 @@ if ($ResetLastProject) {
   }
 }
 
+if ($SeedDemos) {
+  Get-ChildItem -LiteralPath (Join-Path $root "projects\resources\demos") -Directory | ForEach-Object {
+    $demoTarget = Join-Path $dataDir "tracks\$($_.Name)"
+    if (Test-Path -LiteralPath $demoTarget) {
+      Remove-Item -LiteralPath $demoTarget -Recurse -Force
+    }
+    Copy-Item -LiteralPath $_.FullName -Destination $demoTarget -Recurse
+  }
+}
+
 if ($OpenDemo) {
   $demoSource = Join-Path $root "projects\resources\demos\lgpt_$OpenDemo"
   if (-not (Test-Path -LiteralPath $demoSource)) {
@@ -342,13 +378,30 @@ if ($Script -and -not $Visible) {
 # The simulator is a GUI-subsystem app (no console window), so wait on the
 # process explicitly to get its exit code.
 $quotedArgs = @($args | ForEach-Object { '"' + $_ + '"' })
+$startParams = @{ FilePath = $exeFullPath; PassThru = $true; NoNewWindow = $true; WorkingDirectory = $workDir }
 if ($quotedArgs.Count -gt 0) {
-  $process = Start-Process -FilePath $exeFullPath -ArgumentList $quotedArgs -Wait -PassThru -NoNewWindow
-} else {
-  $process = Start-Process -FilePath $exeFullPath -Wait -PassThru -NoNewWindow
+  $startParams["ArgumentList"] = $quotedArgs
 }
-
+$process = Start-Process @startParams
+# Without -Wait, PowerShell 5.1 only reports ExitCode if the handle was
+# opened while the process ran
+$processHandle = $process.Handle
+# Wait while tracking the most memory Windows gave it (the suite sizes -Jobs
+# from this); the sim's own device-equivalent figure is in its log
+$hostPeakKB = 0
+while (-not $process.HasExited) {
+  try {
+    $process.Refresh()
+    $kb = [int]($process.PeakWorkingSet64 / 1024)
+    if ($kb -gt $hostPeakKB) { $hostPeakKB = $kb }
+  } catch {}
+  Start-Sleep -Milliseconds 250
+}
+$process.WaitForExit()
 $exitCode = $process.ExitCode
+if ($ArtifactsDir) {
+  Set-Content -LiteralPath (Join-Path $ArtifactsDir "host-peak-kb.txt") -Value $hostPeakKB -Encoding ascii
+}
 
 if ($SeedLongSample -and (Test-Path -LiteralPath $longSample)) {
   Remove-Item -LiteralPath $longSample -Force
@@ -359,14 +412,18 @@ if ($ArtifactsDir) {
   if (Test-Path -LiteralPath $logPath) {
     Copy-Item -LiteralPath $logPath -Destination (Join-Path $ArtifactsDir "rgnano-sim.log") -Force
   }
-  Get-ChildItem -Path (Get-Location) -Filter "*.bmp" -File | Where-Object { $_.LastWriteTime -ge $runStarted } | ForEach-Object {
+  Get-ChildItem -Path $workDir -Filter "*.bmp" -File | Where-Object { $_.LastWriteTime -ge $runStarted } | ForEach-Object {
     Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $ArtifactsDir $_.Name) -Force
   }
-  $sweepResults = Join-Path (Get-Location) "sweep-results.txt"
+  $sweepStates = Join-Path $workDir "sweep-states.jsonl"
+  if ((Test-Path -LiteralPath $sweepStates) -and (Get-Item -LiteralPath $sweepStates).LastWriteTime -ge $runStarted) {
+    Move-Item -LiteralPath $sweepStates -Destination (Join-Path $ArtifactsDir "sweep-states.jsonl") -Force
+  }
+  $sweepResults = Join-Path $workDir "sweep-results.txt"
   if ((Test-Path -LiteralPath $sweepResults) -and (Get-Item -LiteralPath $sweepResults).LastWriteTime -ge $runStarted) {
     Move-Item -LiteralPath $sweepResults -Destination (Join-Path $ArtifactsDir "sweep-results.txt") -Force
   }
-  Get-ChildItem -Path (Get-Location) -Filter "*.wav" -File | Where-Object { $_.LastWriteTime -ge $runStarted } | ForEach-Object {
+  Get-ChildItem -Path $workDir -Filter "*.wav" -File | Where-Object { $_.LastWriteTime -ge $runStarted } | ForEach-Object {
     Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $ArtifactsDir $_.Name) -Force
   }
 }

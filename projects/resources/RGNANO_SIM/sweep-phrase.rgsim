@@ -20,12 +20,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press u 80
 wait_stable 2500
 expect_unchanged before
 expect_view phrase
 expect_layer none
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -46,6 +48,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press d 80
 wait_stable 2500
@@ -53,6 +56,7 @@ expect_changed before
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -73,12 +77,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press l 80
 wait_stable 2500
 expect_unchanged before
 expect_view phrase
 expect_layer none
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -99,6 +105,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press r 80
 wait_stable 2500
@@ -106,6 +113,7 @@ expect_changed before
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -126,9 +134,11 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press a 80
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B: N
@@ -148,12 +158,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press b 80
 wait_stable 2500
 expect_unchanged before
 expect_view phrase
 expect_layer none
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -174,12 +186,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press m 80
 wait_stable 2500
 expect_unchanged before
 expect_view phrase
 expect_layer none
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -200,12 +214,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press n 80
 wait_stable 2500
 expect_unchanged before
 expect_view phrase
 expect_layer none
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -226,10 +242,12 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press s 80
 wait 600
 expect_player_running yes
+sound_snap
 press s 80
 wait 400
 expect_player_running no
@@ -237,6 +255,7 @@ wait 3500
 reset_audio_stats
 wait 400
 expect_audio_silence 0
+state_record
 expect_no_clipping
 
 # SEL: X
@@ -256,10 +275,70 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 press k 80
 wait 600
+state_record noscreen
 expect_no_clipping
+
+# X: C
+case phrase__X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+press x 80
+wait_stable 2500
+expect_changed before
+expect_view phrase
+expect_layer none
+expect_player_running no
+state_record
+expect_no_clipping
+expect_cursor
+
+# Y: C
+case phrase__Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+press y 80
+wait_stable 2500
+expect_changed before
+expect_view phrase
+expect_layer none
+expect_player_running no
+state_record
+expect_no_clipping
+expect_cursor
 
 # A+U: C
 case phrase__A+U
@@ -278,6 +357,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press u 80
@@ -287,6 +367,7 @@ expect_changed before
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -307,6 +388,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press d 80
@@ -316,6 +398,7 @@ expect_changed before
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -336,6 +419,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press l 80
@@ -345,6 +429,7 @@ expect_changed before
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -365,6 +450,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press r 80
@@ -374,6 +460,7 @@ expect_changed before
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -394,11 +481,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press b 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+LB: X
@@ -418,11 +507,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press m 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+RB: C
@@ -442,6 +533,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press n 80
@@ -451,6 +543,7 @@ expect_changed before
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -471,11 +564,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press s 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+SEL: X
@@ -495,11 +590,65 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down a
 press k 80
 up a
 wait 600
+state_record noscreen
+expect_no_clipping
+
+# A+X: X
+case phrase__A+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down a
+press x 80
+up a
+wait 600
+state_record noscreen
+expect_no_clipping
+
+# A+Y: X
+case phrase__A+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down a
+press y 80
+up a
+wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+U: X
@@ -519,11 +668,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press u 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+D: X
@@ -543,11 +694,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press d 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+L: X
@@ -567,11 +720,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press l 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+R: X
@@ -591,11 +746,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press r 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+A: X
@@ -615,11 +772,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press a 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+LB: X
@@ -639,11 +798,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press m 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+RB: X
@@ -663,11 +824,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press n 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+START: N
@@ -687,6 +850,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press s 80
@@ -695,6 +859,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view phrase
 expect_layer none
+state_record
 expect_no_clipping
 expect_cursor
 
@@ -715,12 +880,74 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down b
 press k 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
+
+# B+X: N
+case phrase__B+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down b
+press x 80
+up b
+wait_stable 2500
+expect_unchanged before
+expect_view phrase
+expect_layer none
+state_record
+expect_no_clipping
+expect_cursor
+
+# B+Y: N
+case phrase__B+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down b
+press y 80
+up b
+wait_stable 2500
+expect_unchanged before
+expect_view phrase
+expect_layer none
+state_record
+expect_no_clipping
+expect_cursor
 
 # LB+U: X
 case phrase__LB+U
@@ -739,11 +966,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press u 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+D: X
@@ -763,11 +992,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press d 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+L: X
@@ -787,11 +1018,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press l 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+R: X
@@ -811,11 +1044,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press r 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+A: X
@@ -835,11 +1070,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press a 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+B: X
@@ -859,11 +1096,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press b 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+RB: X
@@ -883,11 +1122,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press n 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+START: A:modal:RenderToSampleDialog
@@ -907,12 +1148,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press s 80
 up m
 wait 800
 expect_layer modal:RenderToSampleDialog
+state_record noscreen
 expect_no_clipping
 press b 80
 wait 150
@@ -939,12 +1182,75 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down m
 press k 80
 up m
 wait 600
+state_record noscreen
 expect_no_clipping
+
+# LB+X: N
+case phrase__LB+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down m
+press x 80
+up m
+wait_stable 2500
+expect_unchanged before
+expect_view phrase
+expect_layer none
+state_record
+expect_no_clipping
+expect_cursor
+
+# LB+Y: C
+case phrase__LB+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down m
+press y 80
+up m
+wait_stable 2500
+expect_changed before
+expect_view phrase
+expect_layer none
+expect_player_running no
+state_record
+expect_no_clipping
+expect_cursor
 
 # RB+U: V:groove
 case phrase__RB+U
@@ -963,6 +1269,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press u 80
@@ -971,6 +1278,7 @@ wait_stable 2500
 expect_view groove
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 
 # RB+D: V:table
@@ -990,6 +1298,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press d 80
@@ -998,6 +1307,7 @@ wait_stable 2500
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 
 # RB+L: V:chain
 case phrase__RB+L
@@ -1016,6 +1326,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press l 80
@@ -1024,6 +1335,7 @@ wait_stable 2500
 expect_view chain
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 
 # RB+R: V:instrument
@@ -1043,6 +1355,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press r 80
@@ -1051,6 +1364,7 @@ wait_stable 2500
 expect_view instrument
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 
 # RB+A: X
@@ -1070,11 +1384,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press a 80
 up n
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # RB+B: X
@@ -1094,11 +1410,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press b 80
 up n
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # RB+LB: X
@@ -1118,11 +1436,13 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press m 80
 up n
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # RB+START: P
@@ -1142,12 +1462,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press s 80
 up n
 wait 600
 expect_player_running yes
+sound_snap
 down n
 press s 80
 up n
@@ -1157,6 +1479,7 @@ wait 3500
 reset_audio_stats
 wait 400
 expect_audio_silence 0
+state_record
 expect_no_clipping
 
 # RB+SEL: L:helper
@@ -1176,12 +1499,14 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 snap before
 down n
 press k 80
 up n
 wait_stable 2500
 expect_layer helper
+state_record
 expect_no_clipping
 down n
 press k 80
@@ -1192,6 +1517,66 @@ expect_layer none
 expect_view phrase
 expect_player_running no
 expect_no_clipping
+
+# RB+X: N
+case phrase__RB+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down n
+press x 80
+up n
+wait_stable 2500
+expect_unchanged before
+expect_view phrase
+expect_layer none
+state_record
+expect_no_clipping
+expect_cursor
+
+# RB+Y: N
+case phrase__RB+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+wait_stable 2500
+expect_view phrase
+expect_layer none
+model_snap
+snap before
+down n
+press y 80
+up n
+wait_stable 2500
+expect_unchanged before
+expect_view phrase
+expect_layer none
+state_record
+expect_no_clipping
+expect_cursor
 
 case end
 expect_no_soft_failures

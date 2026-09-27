@@ -16,6 +16,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press u 80
 wait_stable 2500
@@ -23,6 +24,7 @@ expect_changed before
 expect_view song
 expect_layer helper
 expect_player_running no
+state_record
 expect_no_clipping
 
 # D: C
@@ -38,6 +40,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press d 80
 wait_stable 2500
@@ -45,6 +48,7 @@ expect_changed before
 expect_view song
 expect_layer helper
 expect_player_running no
+state_record
 expect_no_clipping
 
 # L: N
@@ -60,12 +64,14 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press l 80
 wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # R: N
@@ -81,12 +87,14 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press r 80
 wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # A: L:modal:GuideDialog
@@ -102,10 +110,12 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press a 80
 wait_stable 2500
 expect_layer modal:GuideDialog
+state_record
 expect_no_clipping
 press b 80
 wait 150
@@ -117,7 +127,7 @@ expect_view song
 expect_player_running no
 expect_no_clipping
 
-# B: X
+# B: L:none
 case helper__B
 sim_reload_project
 wait 300
@@ -130,9 +140,15 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press b 80
-wait 600
+wait_stable 2500
+expect_layer none
+state_record
+expect_no_clipping
+expect_view song
+expect_player_running no
 expect_no_clipping
 
 # LB: N
@@ -148,12 +164,14 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press m 80
 wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB: N
@@ -169,12 +187,14 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press n 80
 wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # START: N
@@ -190,12 +210,14 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press s 80
 wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # SEL: N
@@ -211,12 +233,60 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 press k 80
 wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
+expect_no_clipping
+
+# X: N
+case helper__X
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+press x 80
+wait_stable 2500
+expect_unchanged before
+expect_view song
+expect_layer helper
+state_record
+expect_no_clipping
+
+# Y: N
+case helper__Y
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+press y 80
+wait_stable 2500
+expect_unchanged before
+expect_view song
+expect_layer helper
+state_record
 expect_no_clipping
 
 # A+U: X
@@ -232,11 +302,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press u 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+D: X
@@ -252,11 +324,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press d 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+L: X
@@ -272,11 +346,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press l 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+R: X
@@ -292,11 +368,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press r 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+B: X
@@ -312,11 +390,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press b 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+LB: X
@@ -332,11 +412,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press m 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+RB: X
@@ -352,11 +434,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press n 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+START: X
@@ -372,11 +456,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press s 80
 up a
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # A+SEL: X
@@ -392,11 +478,57 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down a
 press k 80
 up a
 wait 600
+state_record noscreen
+expect_no_clipping
+
+# A+X: X
+case helper__A+X
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down a
+press x 80
+up a
+wait 600
+state_record noscreen
+expect_no_clipping
+
+# A+Y: X
+case helper__A+Y
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down a
+press y 80
+up a
+wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+U: X
@@ -412,11 +544,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press u 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+D: X
@@ -432,11 +566,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press d 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+L: X
@@ -452,11 +588,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press l 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+R: X
@@ -472,11 +610,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press r 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+A: X
@@ -492,11 +632,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press a 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+LB: X
@@ -512,11 +654,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press m 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+RB: X
@@ -532,11 +676,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press n 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+START: X
@@ -552,11 +698,13 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press s 80
 up b
 wait 600
+state_record noscreen
 expect_no_clipping
 
 # B+SEL: X
@@ -572,11 +720,57 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down b
 press k 80
 up b
 wait 600
+state_record noscreen
+expect_no_clipping
+
+# B+X: X
+case helper__B+X
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down b
+press x 80
+up b
+wait 600
+state_record noscreen
+expect_no_clipping
+
+# B+Y: X
+case helper__B+Y
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down b
+press y 80
+up b
+wait 600
+state_record noscreen
 expect_no_clipping
 
 # LB+U: N
@@ -592,6 +786,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press u 80
@@ -600,6 +795,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+D: N
@@ -615,6 +811,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press d 80
@@ -623,6 +820,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+L: N
@@ -638,6 +836,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press l 80
@@ -646,6 +845,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+R: N
@@ -661,6 +861,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press r 80
@@ -669,6 +870,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+A: N
@@ -684,6 +886,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press a 80
@@ -692,6 +895,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+B: N
@@ -707,6 +911,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press b 80
@@ -715,6 +920,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+RB: N
@@ -730,6 +936,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press n 80
@@ -738,6 +945,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+START: N
@@ -753,6 +961,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press s 80
@@ -761,6 +970,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # LB+SEL: N
@@ -776,6 +986,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down m
 press k 80
@@ -784,6 +995,57 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
+expect_no_clipping
+
+# LB+X: N
+case helper__LB+X
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down m
+press x 80
+up m
+wait_stable 2500
+expect_unchanged before
+expect_view song
+expect_layer helper
+state_record
+expect_no_clipping
+
+# LB+Y: N
+case helper__LB+Y
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down m
+press y 80
+up m
+wait_stable 2500
+expect_unchanged before
+expect_view song
+expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+U: N
@@ -799,6 +1061,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press u 80
@@ -807,6 +1070,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+D: N
@@ -822,6 +1086,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press d 80
@@ -830,6 +1095,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+L: N
@@ -845,6 +1111,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press l 80
@@ -853,6 +1120,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+R: N
@@ -868,6 +1136,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press r 80
@@ -876,6 +1145,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+A: N
@@ -891,6 +1161,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press a 80
@@ -899,6 +1170,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+B: N
@@ -914,6 +1186,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press b 80
@@ -922,6 +1195,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+LB: N
@@ -937,6 +1211,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press m 80
@@ -945,6 +1220,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+START: N
@@ -960,6 +1236,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press s 80
@@ -968,6 +1245,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view song
 expect_layer helper
+state_record
 expect_no_clipping
 
 # RB+SEL: L:none
@@ -983,15 +1261,67 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer helper
+model_snap
 snap before
 down n
 press k 80
 up n
 wait_stable 2500
 expect_layer none
+state_record
 expect_no_clipping
 expect_view song
 expect_player_running no
+expect_no_clipping
+
+# RB+X: N
+case helper__RB+X
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down n
+press x 80
+up n
+wait_stable 2500
+expect_unchanged before
+expect_view song
+expect_layer helper
+state_record
+expect_no_clipping
+
+# RB+Y: N
+case helper__RB+Y
+sim_reload_project
+wait 300
+press r 80
+wait 150
+down n
+press k 80
+up n
+wait 150
+wait_stable 2500
+expect_view song
+expect_layer helper
+model_snap
+snap before
+down n
+press y 80
+up n
+wait_stable 2500
+expect_unchanged before
+expect_view song
+expect_layer helper
+state_record
 expect_no_clipping
 
 case end

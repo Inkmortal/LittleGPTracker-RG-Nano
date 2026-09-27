@@ -181,6 +181,12 @@ private:
 	int simCases_;
 	std::set<int> simHeldKeys_;
 	std::map<std::string, std::vector<Uint8> > simSnaps_;
+	// Exact sweep records (state_record): the song as the case began
+	// (model_snap) and what was playing (sound_snap)
+	std::string simModelSnap_;
+	std::string simSoundSnap_;
+	std::string BuildSimSoundSummary();
+	void WriteSimStateRecord(bool noScreen);
 	std::vector<Uint8> simStableLast_;
 	int simStableCount_;
 	unsigned long simStableStart_;

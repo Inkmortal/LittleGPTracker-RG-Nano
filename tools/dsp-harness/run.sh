@@ -29,6 +29,10 @@ if grep -q "harness: standalone" "$src"; then
 fi
 objs=$(ls "$proj"/buildRGNANO/*.o | grep -v GPSDLMain.o)
 "$cxx" -L"$sysroot/usr/lib" -o "$out" "$out.o" $objs -lSDL -lasound -lpthread
+if [ -n "$HARNESS_BUILD_ONLY" ]; then
+  # Built, not run: the caller runs "$out" under qemu itself (several at once)
+  exit 0
+fi
 if grep -q "harness: a7cost" "$src"; then
   # Cost measured by the a7cost plugin (instructions weighted for the
   # Cortex-A7), on a qemu built with plugin support

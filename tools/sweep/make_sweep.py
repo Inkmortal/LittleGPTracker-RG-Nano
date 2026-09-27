@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Write the key sweep scripts from table.py.
 
-    python tools/sweep/make_sweep.py            # all screens
+    python tools/sweep/make_sweep.py            # all screens, every combo
     python tools/sweep/make_sweep.py song chain # some
+    python tools/sweep/make_sweep.py --quick    # the quick tier: single keys
+
+The --quick scripts (sweep-quick-<screen>.rgsim) press every single key on
+every screen: the `quick` tier of run-rgnano-sim-suite.ps1. The full ones
+add every two-key combo.
 
 One script per screen (projects/resources/RGNANO_SIM/sweep-<screen>.rgsim)
 plus sweep-playback.rgsim. Each case reloads the Afterglow demo, walks to the
@@ -26,7 +31,8 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 OUT = os.path.join(ROOT, "projects", "resources", "RGNANO_SIM")
 
 SIM_KEY = {"A": "a", "B": "b", "L": "l", "R": "r", "U": "u", "D": "d",
-           "LB": "m", "RB": "n", "START": "s", "SEL": "k", "P": "p"}
+           "LB": "m", "RB": "n", "START": "s", "SEL": "k", "P": "p",
+           "X": "x", "Y": "y"}
 STABLE = "wait_stable 2500"
 
 
@@ -88,14 +94,27 @@ def clip_checked(screen, view):
     return view not in SCROLLS_SIDEWAYS
 
 
+def settle(screen):
+    # An animated dialog (a progress bar) never holds still: give it time
+    return "wait 800" if screen.get("animated") else STABLE
+
+
+def record(screen):
+    # The exact state (tools/sweep/states.py compares it with the goldens);
+    # an animated screen's text depends on timing, so only the rest counts
+    return "state_record noscreen" if screen.get("animated") else "state_record"
+
+
 def enter(screen):
     lines = ["sim_reload_project", "wait 300"]
     for combo in screen["enter"]:
         lines += press(combo)
         lines.append("wait 150")
-    lines += [STABLE,
+    lines += [settle(screen),
               "expect_view %s" % screen["view"],
-              "expect_layer %s" % screen.get("layer", "none")]
+              "expect_layer %s" % screen.get("layer", "none"),
+              # the song as the case begins: the record lists what changed
+              "model_snap"]
     return lines
 
 
@@ -107,21 +126,40 @@ def case_lines(name, screen, combo):
     out += enter(screen)
     out.append("snap before")
     out += press(combo)
+    wait = settle(screen)
     if effect == "N":
-        out += [STABLE, "expect_unchanged before",
+        out += [wait]
+        if not screen.get("animated"):
+            out.append("expect_unchanged before")
+        out += ["expect_view %s" % view, "expect_layer %s" % base, record(screen)]
+    elif effect == "C" or effect == "C:tail" or effect == "C:preview":
+        # C:tail: the key auditions a sound and releases it in the same
+        # press (the sound browser's take()), so the release envelope may
+        # still be ringing when the screen has long since settled.
+        # C:preview: the key opens a list whose first entry previews (the
+        # sound browser's openCategory): by design it keeps sounding for as
+        # long as that preset's own envelope takes (Controls.md: "every
+        # sound plays as you move onto it"), so there is no fixed wait
+        # after which silence is the right assertion; record what plays
+        # instead of demanding it stop
+        out += [wait, "expect_changed before",
                 "expect_view %s" % view, "expect_layer %s" % base]
-    elif effect == "C":
-        out += [STABLE, "expect_changed before",
-                "expect_view %s" % view, "expect_layer %s" % base,
-                "expect_player_running no"]
+        if effect == "C:tail":
+            out += ["wait 3500", "expect_player_running no"]
+        elif effect == "C:preview":
+            out.append("sound_snap")
+        else:
+            out.append("expect_player_running no")
+        out.append(record(screen))
     elif effect.startswith("V:"):
         out += [STABLE, "expect_view %s" % effect[2:], "expect_layer none",
-                "expect_player_running no"]
+                "expect_player_running no", "state_record"]
     elif effect.startswith("L:") or effect.startswith("A:"):
         # A: an animated dialog (a progress bar): it never holds still
         layer = effect[2:]
-        settle = STABLE if effect.startswith("L:") else "wait 800"
-        out += [settle, "expect_layer %s" % layer]
+        animated = effect.startswith("A:") or (screen.get("animated") and layer == base)
+        out += ["wait 800" if animated else STABLE, "expect_layer %s" % layer,
+                "state_record noscreen" if animated else "state_record"]
         if clip_checked(screen, view):
             out.append("expect_no_clipping")
         if layer != base and layer != "none":
@@ -131,14 +169,15 @@ def case_lines(name, screen, combo):
             out += [STABLE, "expect_layer %s" % (back_to or base)]
         out += ["expect_view %s" % view, "expect_player_running no"]
     elif effect == "P":
-        out += ["wait 600", "expect_player_running yes"]
+        # sound_snap: what plays (a preview: which note of which sound)
+        out += ["wait 600", "expect_player_running yes", "sound_snap"]
         out += press(combo)
         out += ["wait 400", "expect_player_running no",
                 # Echo and reverb tails die away, then nothing may sound
                 "wait 3500", "reset_audio_stats", "wait 400",
-                "expect_audio_silence 0"]
+                "expect_audio_silence 0", record(screen)]
     elif effect == "X":
-        out += ["wait 600"]
+        out += ["wait 600", "state_record noscreen"]
     else:
         raise ValueError("unknown effect %s for %s %s" % (effect, name, combo))
     if clip_checked(screen, effect[2:] if effect.startswith("V:") else view):
@@ -148,15 +187,17 @@ def case_lines(name, screen, combo):
     return out
 
 
-def script_for(name):
+def script_for(name, quick=False):
     screen = table.SCREENS[name]
     for combo in screen["keys"]:
         if combo not in table.KEY_UNIVERSE and len(combo.split("+")) < 3:
             raise ValueError("%s: %s is not in the key universe" % (name, combo))
+    keys = table.SINGLE if quick else table.KEY_UNIVERSE
     lines = ["# Generated by tools/sweep/make_sweep.py from tools/sweep/table.py:",
-             "# every key and combo on the %s screen. Don't edit by hand." % name,
+             "# every %s on the %s screen. Don't edit by hand." % (
+                 "single key" if quick else "key and combo", name),
              "wait 1500", "soft_fail on"]
-    for combo in table.KEY_UNIVERSE:
+    for combo in keys:
         lines += case_lines(name, screen, combo)
     lines += ["", "case end", "expect_no_soft_failures", "quit"]
     return lines
@@ -183,13 +224,16 @@ def playback_script():
 
 
 def main(argv):
+    quick = "--quick" in argv
+    argv = [a for a in argv if a != "--quick"]
     names = argv or list(table.SCREENS)
     for name in names:
-        path = os.path.join(OUT, "sweep-%s.rgsim" % name)
+        path = os.path.join(OUT, "sweep-%s%s.rgsim" % ("quick-" if quick else "", name))
         with open(path, "w", newline="\n") as f:
-            f.write("\n".join(script_for(name)) + "\n")
-        print("wrote %s (%d cases)" % (os.path.relpath(path, ROOT), len(table.KEY_UNIVERSE)))
-    if not argv:
+            f.write("\n".join(script_for(name, quick)) + "\n")
+        print("wrote %s (%d cases)" % (os.path.relpath(path, ROOT),
+              len(table.SINGLE if quick else table.KEY_UNIVERSE)))
+    if not argv and not quick:
         path = os.path.join(OUT, "sweep-playback.rgsim")
         with open(path, "w", newline="\n") as f:
             f.write("\n".join(playback_script()) + "\n")

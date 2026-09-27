@@ -24,12 +24,14 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press u 80
 wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # D: C
@@ -53,6 +55,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press d 80
 wait_stable 2500
@@ -60,6 +63,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # L: N
@@ -83,12 +87,14 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press l 80
 wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # R: C
@@ -112,6 +118,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press r 80
 wait_stable 2500
@@ -119,6 +126,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # A: X
@@ -142,9 +150,11 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press a 80
 wait 600
+state_record noscreen
 
 # B: N
 case table__B
@@ -167,12 +177,14 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press b 80
 wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # LB: N
@@ -196,12 +208,14 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press m 80
 wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # RB: N
@@ -225,12 +239,14 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press n 80
 wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # START: X
@@ -254,9 +270,11 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press s 80
 wait 600
+state_record noscreen
 
 # SEL: X
 case table__SEL
@@ -279,9 +297,75 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 press k 80
 wait 600
+state_record noscreen
+
+# X: C
+case table__X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+press x 80
+wait_stable 2500
+expect_changed before
+expect_view table
+expect_layer none
+expect_player_running no
+state_record
+expect_cursor
+
+# Y: C
+case table__Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+press y 80
+wait_stable 2500
+expect_changed before
+expect_view table
+expect_layer none
+expect_player_running no
+state_record
+expect_cursor
 
 # A+U: C
 case table__A+U
@@ -304,6 +388,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press u 80
@@ -313,6 +398,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # A+D: X
@@ -336,11 +422,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press d 80
 up a
 wait 600
+state_record noscreen
 
 # A+L: C
 case table__A+L
@@ -363,6 +451,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press l 80
@@ -372,6 +461,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # A+R: C
@@ -395,6 +485,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press r 80
@@ -404,6 +495,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # A+B: X
@@ -427,11 +519,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press b 80
 up a
 wait 600
+state_record noscreen
 
 # A+LB: X
 case table__A+LB
@@ -454,11 +548,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press m 80
 up a
 wait 600
+state_record noscreen
 
 # A+RB: X
 case table__A+RB
@@ -481,11 +577,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press n 80
 up a
 wait 600
+state_record noscreen
 
 # A+START: X
 case table__A+START
@@ -508,11 +606,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press s 80
 up a
 wait 600
+state_record noscreen
 
 # A+SEL: X
 case table__A+SEL
@@ -535,11 +635,71 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down a
 press k 80
 up a
 wait 600
+state_record noscreen
+
+# A+X: X
+case table__A+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down a
+press x 80
+up a
+wait 600
+state_record noscreen
+
+# A+Y: X
+case table__A+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down a
+press y 80
+up a
+wait 600
+state_record noscreen
 
 # B+U: C
 case table__B+U
@@ -562,6 +722,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press u 80
@@ -571,6 +732,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # B+D: C
@@ -594,6 +756,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press d 80
@@ -603,6 +766,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # B+L: C
@@ -626,6 +790,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press l 80
@@ -635,6 +800,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # B+R: C
@@ -658,6 +824,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press r 80
@@ -667,6 +834,7 @@ expect_changed before
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 expect_cursor
 
 # B+A: X
@@ -690,11 +858,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press a 80
 up b
 wait 600
+state_record noscreen
 
 # B+LB: X
 case table__B+LB
@@ -717,11 +887,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press m 80
 up b
 wait 600
+state_record noscreen
 
 # B+RB: N
 case table__B+RB
@@ -744,6 +916,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press n 80
@@ -752,6 +925,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # B+START: N
@@ -775,6 +949,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press s 80
@@ -783,6 +958,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # B+SEL: X
@@ -806,11 +982,79 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down b
 press k 80
 up b
 wait 600
+state_record noscreen
+
+# B+X: N
+case table__B+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down b
+press x 80
+up b
+wait_stable 2500
+expect_unchanged before
+expect_view table
+expect_layer none
+state_record
+expect_cursor
+
+# B+Y: N
+case table__B+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down b
+press y 80
+up b
+wait_stable 2500
+expect_unchanged before
+expect_view table
+expect_layer none
+state_record
+expect_cursor
 
 # LB+U: N
 case table__LB+U
@@ -833,6 +1077,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press u 80
@@ -841,6 +1086,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # LB+D: N
@@ -864,6 +1110,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press d 80
@@ -872,6 +1119,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # LB+L: N
@@ -895,6 +1143,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press l 80
@@ -903,6 +1152,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # LB+R: N
@@ -926,6 +1176,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press r 80
@@ -934,6 +1185,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # LB+A: X
@@ -957,11 +1209,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press a 80
 up m
 wait 600
+state_record noscreen
 
 # LB+B: X
 case table__LB+B
@@ -984,11 +1238,13 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press b 80
 up m
 wait 600
+state_record noscreen
 
 # LB+RB: N
 case table__LB+RB
@@ -1011,6 +1267,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press n 80
@@ -1019,6 +1276,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # LB+START: N
@@ -1042,6 +1300,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press s 80
@@ -1050,6 +1309,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # LB+SEL: X
@@ -1073,11 +1333,80 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down m
 press k 80
 up m
 wait 600
+state_record noscreen
+
+# LB+X: N
+case table__LB+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down m
+press x 80
+up m
+wait_stable 2500
+expect_unchanged before
+expect_view table
+expect_layer none
+state_record
+expect_cursor
+
+# LB+Y: C
+case table__LB+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down m
+press y 80
+up m
+wait_stable 2500
+expect_changed before
+expect_view table
+expect_layer none
+expect_player_running no
+state_record
+expect_cursor
 
 # RB+U: V:phrase
 case table__RB+U
@@ -1100,6 +1429,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press u 80
@@ -1108,6 +1438,7 @@ wait_stable 2500
 expect_view phrase
 expect_layer none
 expect_player_running no
+state_record
 expect_no_clipping
 
 # RB+D: N
@@ -1131,6 +1462,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press d 80
@@ -1139,6 +1471,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # RB+L: N
@@ -1162,6 +1495,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press l 80
@@ -1170,6 +1504,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # RB+R: V:table
@@ -1193,6 +1528,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press r 80
@@ -1201,6 +1537,7 @@ wait_stable 2500
 expect_view table
 expect_layer none
 expect_player_running no
+state_record
 
 # RB+A: N
 case table__RB+A
@@ -1223,6 +1560,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press a 80
@@ -1231,6 +1569,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # RB+B: N
@@ -1254,6 +1593,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press b 80
@@ -1262,6 +1602,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # RB+LB: N
@@ -1285,6 +1626,7 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press m 80
@@ -1293,6 +1635,7 @@ wait_stable 2500
 expect_unchanged before
 expect_view table
 expect_layer none
+state_record
 expect_cursor
 
 # RB+START: P
@@ -1316,12 +1659,14 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press s 80
 up n
 wait 600
 expect_player_running yes
+sound_snap
 down n
 press s 80
 up n
@@ -1331,6 +1676,7 @@ wait 3500
 reset_audio_stats
 wait 400
 expect_audio_silence 0
+state_record
 
 # RB+SEL: L:helper
 case table__RB+SEL
@@ -1353,12 +1699,14 @@ wait 150
 wait_stable 2500
 expect_view table
 expect_layer none
+model_snap
 snap before
 down n
 press k 80
 up n
 wait_stable 2500
 expect_layer helper
+state_record
 down n
 press k 80
 up n
@@ -1367,6 +1715,72 @@ wait_stable 2500
 expect_layer none
 expect_view table
 expect_player_running no
+
+# RB+X: N
+case table__RB+X
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down n
+press x 80
+up n
+wait_stable 2500
+expect_unchanged before
+expect_view table
+expect_layer none
+state_record
+expect_cursor
+
+# RB+Y: N
+case table__RB+Y
+sim_reload_project
+wait 300
+press d 80
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press r 80
+up n
+wait 150
+down n
+press d 80
+up n
+wait 150
+wait_stable 2500
+expect_view table
+expect_layer none
+model_snap
+snap before
+down n
+press y 80
+up n
+wait_stable 2500
+expect_unchanged before
+expect_view table
+expect_layer none
+state_record
+expect_cursor
 
 case end
 expect_no_soft_failures
