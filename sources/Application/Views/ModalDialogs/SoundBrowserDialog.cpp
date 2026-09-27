@@ -56,6 +56,12 @@ void SoundBrowserDialog::showCategories() {
         item.name = name;
         items_.push_back(item);
     }
+    // Sets of presets that belong together ("Chinese instruments")
+    for (int group = 0; group < SynthInstrument::GetPresetGroupCount(); group++) {
+        Item item = {SB_CATEGORY, group, SynthInstrument::GetPresetGroupName(group),
+                     "", SC_GROUP};
+        items_.push_back(item);
+    }
     // One entry per synth engine that has presets
     for (int engine = 0; engine < SE_LAST; engine++) {
         int first, last;
@@ -99,6 +105,16 @@ void SoundBrowserDialog::openCategory(const Item &cat) {
         SynthInstrument::GetPresetRange(cat.index, first, last);
         for (int p = first; p <= last; p++) {
             Item item = {SB_SYNTH, p, SynthInstrument::GetPresetName(p), "", 0};
+            items_.push_back(item);
+        }
+    } else if (cat.category == SC_GROUP) {
+        category_ = SC_GROUP;
+        groupTitle_ = SynthInstrument::GetPresetGroupTitle(cat.index);
+        std::vector<int> presets;
+        SynthInstrument::GetPresetGroup(cat.index, presets);
+        for (size_t i = 0; i < presets.size(); i++) {
+            Item item = {SB_SYNTH, presets[i], SynthInstrument::GetPresetName(presets[i]),
+                         "", 0};
             items_.push_back(item);
         }
     } else if (cat.category == SC_SOUNDS) {
@@ -387,6 +403,7 @@ void SoundBrowserDialog::DrawView() {
     } else {
         DrawString(13, 0, category_ == SC_SOUNDS  ? "my sounds"
                           : category_ == SC_MACRO ? "macro synth"
+                          : category_ == SC_GROUP ? groupTitle_.c_str()
                                                   : "synth presets",
                    props);
     }

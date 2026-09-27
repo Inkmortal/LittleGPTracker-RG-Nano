@@ -9,6 +9,7 @@
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Instruments/SynthInstrument.h"
 #include "Application/Instruments/MacroInstrument.h"
+#include "Application/Instruments/SoundLibrary.h"
 #include "Services/Audio/AudioDriver.h"
 #include "Application/Instruments/SamplePool.h"
 #include "Application/Mixer/MixerService.h"
@@ -815,6 +816,8 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		if (!command.arg2.empty() && command.arg2[0]==' ') {
 			command.arg2.erase(0,1);
 		}
+	} else if (command.op=="sim_save_kit") {
+		iss >> command.arg;
 	} else if (command.op=="expect_no_error" || command.op=="expect_skin_frame_clean" || command.op=="reset_audio_stats" || command.op=="end_audio_capture" || command.op=="sim_save_project" || command.op=="quit" || command.op=="expect_no_soft_failures" || command.op=="sim_reload_project" || command.op=="expect_cursor" || command.op=="expect_no_clipping") {
 	} else if (command.op=="expect_memory_below") {
 		iss >> command.value;
@@ -853,6 +856,10 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
 	} else if (command.op=="sim_set_synth" || command.op=="sim_set_macro" || command.op=="expect_instrument_type" || command.op=="expect_instrument_name") {
 		iss >> command.value >> command.arg;
+		if (command.op=="sim_set_synth" || command.op=="sim_set_macro") {
+			// preset names with spaces are written with '_' (big_gong)
+			std::replace(command.arg.begin(),command.arg.end(),'_',' ');
+		}
 	} else if (command.op=="sim_set_instrument_param" || command.op=="expect_instrument_param") {
 		iss >> command.value >> command.arg >> command.arg2;
 		std::replace(command.arg.begin(),command.arg.end(),'_',' ');
@@ -1470,6 +1477,18 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			FailSimScript("project save failed");
 			return;
 		}
+	} else if (command.op=="sim_save_kit") {
+		// Every sound of the song as a kit in SOUNDLIB/kits (builds the
+		// kits that ship with the app: tools/make_kits.ps1)
+		ViewData *viewData=GetSimViewData();
+		std::string error;
+		if (!viewData || !viewData->project_ ||
+		    !SoundLibrary::SaveKit(viewData->project_->GetInstrumentBank(),command.arg,error)) {
+			Trace::Error("RGNANO_SIM sim_save_kit %s: %s",command.arg.c_str(),error.c_str());
+			FailSimScript("kit save failed");
+			return;
+		}
+		Trace::Log("RGNANO_SIM","sim_save_kit %s",command.arg.c_str());
 	} else if (command.op=="sim_dump_song") {
 		if (!SimDumpSong(command.arg)) {
 			FailSimScript("song dump failed");
@@ -3110,6 +3129,11 @@ bool SDLEventManager::SimSetInstrumentParam(int instrument, const std::string &n
 	}
 	if (v->GetType()==Variable::CHAR_LIST || v->GetType()==Variable::BOOL) {
 		v->SetString(value.c_str());
+	} else if (v->GetType()==Variable::STRING) {
+		// a sound's name: '_' stands for a space, as in parameter names
+		std::string text=value;
+		std::replace(text.begin(),text.end(),'_',' ');
+		v->SetString(text.c_str());
 	} else {
 		v->SetInt((int)strtol(value.c_str(),0,0));
 	}
@@ -3200,6 +3224,11 @@ bool SDLEventManager::ExpectSimInstrumentParam(int instrument, const std::string
 		// List entries with spaces are written with '_' (fm_init)
 		std::string wanted=value;
 		if (v->GetType()==Variable::CHAR_LIST) std::replace(wanted.begin(),wanted.end(),'_',' ');
+		matches=(wanted==v->GetString());
+	} else if (v->GetType()==Variable::STRING) {
+		// a sound's name, '_' for a space
+		std::string wanted=value;
+		std::replace(wanted.begin(),wanted.end(),'_',' ');
 		matches=(wanted==v->GetString());
 	} else {
 		matches=(v->GetInt()==(int)strtol(value.c_str(),0,0));

@@ -299,6 +299,14 @@ public:
 
 	static int GetPresetCount() ;
 	static const char *GetPresetName(int index) ;
+	// Preset index of that name, -1 if there is none
+	static int FindPreset(const char *name) ;
+	// Groups of presets across engines that belong together (the Chinese
+	// instruments), for the sound browser
+	static int GetPresetGroupCount() ;
+	static const char *GetPresetGroupName(int group) ;
+	static const char *GetPresetGroupTitle(int group) ;
+	static void GetPresetGroup(int group,std::vector<int> &presets) ;
 
 private:
 	void startVoice(int channel,unsigned char note,bool cleanStart) ;

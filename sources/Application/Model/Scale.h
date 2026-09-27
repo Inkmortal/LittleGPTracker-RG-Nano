@@ -2,11 +2,12 @@
 #ifndef SCALE_VIEW_H
 #define SCALE_VIEW_H
 
-const int scaleCount = 47;
+const int scaleCount = 52;
 const int scaleNoteCount = 12;
-// The last scale is the song's own: the notes ticked on the Scale screen
-// (Project variable "scale custom", bit n = n semitones above the key)
-const int scaleCustom = scaleCount - 1;
+// The song's own scale: the notes ticked on the Scale screen (Project
+// variable "scale custom", bit n = n semitones above the key). Scales added
+// later come after it, so SCAL numbers already in songs keep their meaning.
+const int scaleCustom = 46;
 // Major, the notes a new custom scale starts with
 const int scaleCustomDefault = 0xAB5;
 extern const char *scaleNames[scaleCount];

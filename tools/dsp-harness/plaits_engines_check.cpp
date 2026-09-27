@@ -258,11 +258,12 @@ int main() {
 
 	static const char *drumPresets[]={
 		"drum init","808 kick","909 kick","boom kick","808 snare","909 snare","rim",
-		"808 hat","808 open","ring hat","808 tom"
+		"808 hat","808 open","ring hat","808 tom","dagu","tanggu"
 	};
 	static const char *physPresets[]={
 		"phys init","wood bar","vibes","temple bell","kalimba","hand drum",
-		"guzheng","nylon","sitar","steel","pluck bass"
+		"guzheng","nylon","sitar","steel","pluck bass",
+		"pipa","yangqin","guqin","bianzhong","big gong","opera gong","woodblock","bangzi"
 	};
 
 	printf("--- Every preset sounds and ends by itself\n");
@@ -385,6 +386,9 @@ int main() {
 			{"808 hat",8},{"ring hat",8},{"808 open",8},
 			{"phys init",4},{"wood bar",4},{"temple bell",4},{"hand drum",4},
 			{"guzheng",4},{"sitar",4},{"steel",4},{"pluck bass",4},
+			{"dagu",8},{"tanggu",8},{"pipa",4},{"yangqin",4},{"guqin",4},
+			{"bianzhong",4},{"big gong",4},{"opera gong",4},{"woodblock",8},
+			{"erhu",0},{"suona",0},{"sheng",0},
 		};
 		for (unsigned int k=0;k<sizeof(runs)/sizeof(runs[0]);k++) {
 			double peak;

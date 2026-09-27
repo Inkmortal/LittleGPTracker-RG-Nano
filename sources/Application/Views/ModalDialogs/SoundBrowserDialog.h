@@ -52,7 +52,8 @@ private:
     std::string path; // folder / WAV
     int category;     // a category: which (Category)
   };
-  enum Category { SC_SOUNDS, SC_SYNTH, SC_MACRO, SC_SAMPLES };
+  // SC_GROUP: synth presets of several engines (item.index = the group)
+  enum Category { SC_SOUNDS, SC_SYNTH, SC_MACRO, SC_SAMPLES, SC_GROUP };
 
   void showCategories();
   void openCategory(const Item &item);
@@ -79,6 +80,7 @@ private:
   bool triedOn_;
   std::string status_;
   std::string result_;
+  std::string groupTitle_; // the open preset group's short name
 };
 
 #endif

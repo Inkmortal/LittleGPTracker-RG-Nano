@@ -146,9 +146,10 @@ static const double roleLow[]={-18.0,-22.0,-19.0,-19.0,-22.0};
 static const double roleHigh[]={-8.0,-11.0,-9.0,-8.0,-9.0};
 
 static const char *drumNames[]={"kick","snare","clap","tom","808 kick","909 kick",
-	"boom kick","808 snare","909 snare","808 tom","drum init","hand drum","metaltom",0};
+	"boom kick","808 snare","909 snare","808 tom","drum init","hand drum","metaltom",
+	"dagu","tanggu",0};
 static const char *smallNames[]={"hat","openhat","perc","rim","808 hat","808 open",
-	"ring hat","noise hat",0};
+	"ring hat","noise hat","woodblock","bangzi","bo cymbal",0};
 static const char *bassNames[]={"bass","subbass","acid","fm bass","slap bass",
 	"hyper bass","chip bass","fold bass","pluck bass","fmbass","reese",0};
 static const char *padNames[]={"pad","hyper pad","strings","dream","pwm pad",

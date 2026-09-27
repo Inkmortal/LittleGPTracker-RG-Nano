@@ -58,6 +58,15 @@ const char *scaleNames[scaleCount] = {"None (Chromatic)",
                                      "Ukranian",
                                      "Whole tone",
                                      "Custom",
+                                     // The five Chinese pentatonic modes,
+                                     // each starting on a different note of
+                                     // the same five (after Custom: see
+                                     // scaleCustom)
+                                     "Gong (Chinese)",
+                                     "Shang (Chinese)",
+                                     "Jiao (Chinese)",
+                                     "Zhi (Chinese)",
+                                     "Yu (Chinese)",
                                     };
 
 const bool scaleSteps[scaleCount][scaleNoteCount] = {
@@ -197,8 +206,22 @@ const bool scaleSteps[scaleCount][scaleNoteCount] = {
     {true, false, true, false, true, false, true, false, true, false, true,
      false},
     // "Custom": not used, the notes come from the song (scaleMask)
-    {true, true, true, true, true, true, true, true, true, true, true, true}
-
+    {true, true, true, true, true, true, true, true, true, true, true, true},
+    // "Gong (Chinese)": do re mi sol la
+    {true, false, true, false, true, false, false, true, false, true, false,
+     false},
+    // "Shang (Chinese)": re mi sol la do
+    {true, false, true, false, false, true, false, true, false, false, true,
+     false},
+    // "Jiao (Chinese)": mi sol la do re
+    {true, false, false, true, false, true, false, false, true, false, true,
+     false},
+    // "Zhi (Chinese)": sol la do re mi
+    {true, false, true, false, false, true, false, true, false, true, false,
+     false},
+    // "Yu (Chinese)": la do re mi sol
+    {true, false, false, true, false, true, false, true, false, false, true,
+     false}
 };
 
 int scaleMask(int scale, int customMask) {

@@ -29,7 +29,9 @@ static const char *modTrigNames[MLT_LAST]={
 } ;
 
 // What each instrument kind can move (first five: the first release's list)
-static const int synthDests[]={
+// In the order of SynthModDestIndex (ModSources.h): synth presets pick a
+// slot's destination by that index
+static const int synthDests[SMD_COUNT]={
 	MD_VOLUME,MD_CUTOFF,MD_RESO,MD_PITCH,MD_PAN,MD_FINE,MD_DRIVE,MD_SHAPE,
 	MD_FM,MD_NOISE,MD_REVERB,MD_DELAY,MD_CHORUS
 } ;
@@ -61,9 +63,10 @@ static const ModParamDef modParams[MT_LAST][MOD_PARAM_COUNT]={
 	 {"sustn",MPK_LEVEL,0,0xFF,0x80,0x10},TIMEPARAM("releas",0xA0)},
 	// drum
 	{{"peak",MPK_PEAK,0,0xFF,0x40,0x10},TIMEPARAM("body",0x60),TIMEPARAM("decay",0xA0),NOPARAM},
-	// lfo
+	// lfo: fade grows it in from nothing after each note starts (a player's
+	// vibrato that comes in once the note has settled)
 	{{"rate",MPK_RATE,0,0xFF,0xA0,0x10},{"shape",MPK_SHAPE,0,MLS_LAST-1,MLS_TRI,1},
-	 {"trig",MPK_TRIGMODE,0,MLT_LAST-1,MLT_FREE,1},NOPARAM},
+	 {"trig",MPK_TRIGMODE,0,MLT_LAST-1,MLT_FREE,1},TIMEPARAM("fade",0x00)},
 	// trig
 	{TIMEPARAM("attack",0x00),TIMEPARAM("hold",0x00),TIMEPARAM("decay",0xA0),
 	 {"source",MPK_TRACKSRC,0,7,0,1}},
@@ -234,6 +237,7 @@ ModSource::ModSource() {
 	trigSeen_=0 ;
 	phase_=step_=held_=0.0f ;
 	cycleDone_=false ;
+	fadeAge_=0.0f ;
 	random_=1 ;
 	legacyStep_=0.0f ;
 	offset_=0 ;
@@ -341,7 +345,8 @@ void ModSource::setup(bool noteStart) {
 			if (shape==MLS_DRUNK) {
 				held_*=0.5f ;
 			}
-			level_=LfoShape(shape,phase_,held_) ;
+			fadeAge_=0.0f ;
+			level_=LfoShape(shape,phase_,held_)*lfoFade() ;
 			break ;
 		}
 		case MT_TRACK:
@@ -508,7 +513,16 @@ void ModSource::advanceLfo() {
 			}
 		}
 	}
-	level_=LfoShape(shape,phase_,held_) ;
+	fadeAge_+=1.0f/krate_ ;
+	level_=LfoShape(shape,phase_,held_)*lfoFade() ;
+}
+
+// 0..1: how far the LFO has grown in since the note started (p4 = fade)
+float ModSource::lfoFade() {
+	if (s_.param_[3]<=0) return 1.0f ;
+	float fade=TimeFromParam(s_.param_[3]) ;
+	if (fade<=0.0f || fadeAge_>=fade) return 1.0f ;
+	return fadeAge_/fade ;
 }
 
 void ModSource::Retrigger() {
@@ -524,11 +538,12 @@ void ModSource::Retrigger() {
 			advanceEnvelope(0.0f) ;
 			break ;
 		case MT_LFO:
+			fadeAge_=0.0f ;
 			if (s_.param_[2]!=MLT_FREE) {
 				phase_=0.0f ;
 				cycleDone_=false ;
-				level_=LfoShape(s_.param_[1],phase_,held_) ;
 			}
+			level_=LfoShape(s_.param_[1],phase_,held_)*lfoFade() ;
 			break ;
 		case MT_DECAY:
 		case MT_SWELL:

@@ -6,6 +6,7 @@
 #include "Application/Model/Table.h"
 #include "Services/Audio/Audio.h"
 #include "System/Console/Trace.h"
+#include "System/Console/n_assert.h"
 #include "Application/Mixer/SendFX.h"
 #include "Application/Player/Player.h"
 #include "Application/Model/Project.h"
@@ -99,6 +100,11 @@ struct SynthPreset {
 
 #define PV(a,b) {a,b}
 #define PEND {0,0}
+// A modulation slot: type, destination (SynthModDestIndex), amount, p1-p4
+#define MODSLOT(s,type,dest,amount,p1,p2,p3,p4) \
+	PV(MOD_TYPE_ID(s),type),PV(MOD_DEST_ID(s),dest),PV(MOD_AMOUNT_ID(s),amount), \
+	PV(MOD_PARAM_ID(s,0),p1),PV(MOD_PARAM_ID(s,1),p2),PV(MOD_PARAM_ID(s,2),p3), \
+	PV(MOD_PARAM_ID(s,3),p4)
 #define OP(op,shape,ratio,level,fb,a,d,s) \
 	PV(FM4_ID(op,FM4P_SHAPE),shape),PV(FM4_ID(op,FM4P_RATIO),ratio), \
 	PV(FM4_ID(op,FM4P_LEVEL),level),PV(FM4_ID(op,FM4P_FEEDBACK),fb), \
@@ -200,6 +206,72 @@ static const SynthPreset synthPresets[]={
 		PV(SYP_WAVE,SW_PULSE),PV(SYP_SHAPE,0x90),
 		PV(SYP_DECAY,0x90),PV(SYP_SUSTAIN,0x90),PV(SYP_RELEASE,0x40),
 		PV(SYP_FILTTYPE,SFT_OFF),PV(SYP_ENVAMT,0),PV(SYP_VOLUME,0x48),PEND}},
+
+	// Chinese winds and bowed strings (the "Chinese instruments" group). What
+	// makes them sound like players: a scoop up into each note (mod slot 1,
+	// an AHD pulling fine pitch down at the start) and a vibrato that only
+	// grows in once the note has settled (slot 2, an LFO with a fade).
+	// erhu: two-string fiddle. A nasal band of a bowed saw, bow hiss,
+	// slides between notes, a deep singing vibrato.
+	// The band sits near 1.2 kHz, the resonance of the python-skin face.
+	{"erhu",SE_SYNTH,{
+		PV(SYP_WAVE,SW_SAW),PV(SYP_SUB,0x20),PV(SYP_NOISE,0x14),
+		PV(SYP_ATTACK,0x68),PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0xC8),PV(SYP_RELEASE,0x78),
+		PV(SYP_GLIDE,0x48),
+		PV(SYP_FILTTYPE,SFT_BANDPASS),PV(SYP_CUTOFF,0x98),PV(SYP_RESO,0x38),
+		PV(SYP_ENVAMT,0x18),PV(SYP_ENVDEC,0xA0),PV(SYP_DRIVE,0x20),
+		MODSLOT(0,MT_AHD,SMD_FINE,-0x48,0x00,0x00,0x80,0x00),
+		MODSLOT(1,MT_LFO,SMD_FINE,0x34,0xAE,MLS_SINE,MLT_RETRIG,0xA0),
+		PV(SYP_REVERB,0x50),PV(SYP_VOLUME,0x90),PEND}},
+	// dizi: bamboo flute. A breathy triangle; its membrane (dimo) adds the
+	// buzzy edge, here a touch of FM and drive. Quick, light vibrato.
+	{"dizi",SE_SYNTH,{
+		PV(SYP_WAVE,SW_TRIANGLE),PV(SYP_NOISE,0x38),PV(SYP_FMAMT,0x16),PV(SYP_FMRATIO,4),
+		PV(SYP_TUNE,12),
+		PV(SYP_ATTACK,0x48),PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0xD0),PV(SYP_RELEASE,0x68),
+		PV(SYP_GLIDE,0x28),
+		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0xC8),PV(SYP_RESO,0x18),
+		PV(SYP_ENVAMT,0x20),PV(SYP_ENVDEC,0x98),PV(SYP_DRIVE,0x30),
+		MODSLOT(0,MT_AHD,SMD_FINE,-0x38,0x00,0x00,0x70,0x00),
+		MODSLOT(1,MT_LFO,SMD_FINE,0x22,0xB6,MLS_SINE,MLT_RETRIG,0x98),
+		PV(SYP_REVERB,0x60),PV(SYP_VOLUME,0x98),PEND}},
+	// xiao: end-blown flute, soft and dark, more breath than tone
+	{"xiao",SE_SYNTH,{
+		PV(SYP_WAVE,SW_SINE),PV(SYP_NOISE,0x50),
+		PV(SYP_ATTACK,0x78),PV(SYP_DECAY,0xB8),PV(SYP_SUSTAIN,0xC8),PV(SYP_RELEASE,0x88),
+		PV(SYP_GLIDE,0x30),
+		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0x98),PV(SYP_RESO,0x10),
+		PV(SYP_ENVAMT,0x10),PV(SYP_ENVDEC,0xA8),
+		MODSLOT(0,MT_AHD,SMD_FINE,-0x28,0x00,0x00,0x78,0x00),
+		MODSLOT(1,MT_LFO,SMD_FINE,0x18,0xA8,MLS_SINE,MLT_RETRIG,0xB0),
+		PV(SYP_REVERB,0x90),PV(SYP_VOLUME,0x98),PEND}},
+	// sheng: mouth organ. Reedy narrow pulses sounding a 5th together, the
+	// breath pulsing gently through the pipes
+	{"sheng",SE_SYNTH,{
+		PV(SYP_WAVE,SW_PULSE),PV(SYP_SHAPE,0x38),PV(SYP_CHORD,1),
+		PV(SYP_ATTACK,0x60),PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0xE0),PV(SYP_RELEASE,0x78),
+		PV(SYP_FILTTYPE,SFT_LOWPASS),PV(SYP_CUTOFF,0xB0),PV(SYP_RESO,0x18),
+		PV(SYP_ENVAMT,0x10),PV(SYP_ENVDEC,0xA0),
+		PV(SYP_LFODEST,SLD_VOLUME),PV(SYP_LFORATE,0x98),PV(SYP_LFOAMT,0x14),
+		PV(SYP_CHORUS,0x40),PV(SYP_REVERB,0x50),PV(SYP_VOLUME,0x60),PEND}},
+	// suona: double-reed horn, loud and nasal: a narrow pulse driven hard
+	// through a resonant band, big scoops and a wide vibrato
+	{"suona",SE_SYNTH,{
+		PV(SYP_WAVE,SW_PULSE),PV(SYP_SHAPE,0x70),
+		PV(SYP_ATTACK,0x30),PV(SYP_DECAY,0xB0),PV(SYP_SUSTAIN,0xE0),PV(SYP_RELEASE,0x60),
+		PV(SYP_GLIDE,0x38),
+		PV(SYP_FILTTYPE,SFT_BANDPASS),PV(SYP_CUTOFF,0xB4),PV(SYP_RESO,0x50),
+		PV(SYP_ENVAMT,0x18),PV(SYP_ENVDEC,0x98),PV(SYP_DRIVE,0x90),
+		MODSLOT(0,MT_AHD,SMD_FINE,-0x60,0x00,0x00,0x78,0x00),
+		MODSLOT(1,MT_LFO,SMD_FINE,0x40,0xB0,MLS_SINE,MLT_RETRIG,0x90),
+		PV(SYP_REVERB,0x40),PV(SYP_VOLUME,0xAC),PEND}},
+	// bo: the trashy clash of Chinese opera cymbals
+	{"bo cymbal",SE_SYNTH,{
+		PV(SYP_WAVE,SW_METAL),PV(SYP_SHAPE,0x70),PV(SYP_NOISE,0x90),PV(SYP_TUNE,-5),
+		PV(SYP_DECAY,0xC4),PV(SYP_SUSTAIN,0),PV(SYP_RELEASE,0xB0),
+		PV(SYP_FILTTYPE,SFT_HIGHPASS),PV(SYP_CUTOFF,0x98),PV(SYP_RESO,0x28),
+		PV(SYP_ENVAMT,0),PV(SYP_DRIVE,0x30),PV(SYP_REVERB,0x40),
+		PV(SYP_VOLUME,0x38),PV(SYP_PAN,0x60),PEND}},
 
 	// FM4. OP(operator, shape, ratio x100, level, feedback, attack, decay,
 	// sustain). The first entry of each engine is its starting point: every
@@ -419,6 +491,14 @@ static const SynthPreset synthPresets[]={
 	{"808 tom",SE_DRUM,{
 		PV(DRP_TONE,0x90),PV(DRP_DECAY,0x80),PV(DRP_SNAP,0x10),PV(SYP_TUNE,-12),
 		PV(SYP_VOLUME,0xE8),PEND}},
+	// dagu: the big barrel drum of lion dances and temple drumming, a deep
+	// boom with a slap of hide; tanggu: the higher hall drum, tighter
+	{"dagu",SE_DRUM,{
+		PV(DRP_TONE,0x50),PV(DRP_DECAY,0xC8),PV(DRP_SNAP,0x60),PV(SYP_TUNE,-19),
+		PV(SYP_REVERB,0x40),PV(SYP_VOLUME,0x60),PEND}},
+	{"tanggu",SE_DRUM,{
+		PV(DRP_TONE,0x88),PV(DRP_DECAY,0x90),PV(DRP_SNAP,0x80),PV(SYP_TUNE,-8),
+		PV(SYP_REVERB,0x30),PV(SYP_VOLUME,0x58),PEND}},
 
 	// PHYS: struck and plucked models, pitched like any synth
 	{"phys init",SE_PHYS,{
@@ -460,8 +540,78 @@ static const SynthPreset synthPresets[]={
 		PV(PHP_DECAY,0x98),PV(SYP_VOLUME,0x8C),PEND}},
 	{"pluck bass",SE_PHYS,{
 		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x40),PV(PHP_BRIGHT,0x90),
-		PV(PHP_DECAY,0x60),PV(PHP_STRIKE,0xFF),PV(SYP_TUNE,-24),PV(SYP_VOLUME,0xFF),PEND}}
+		PV(PHP_DECAY,0x60),PV(PHP_STRIKE,0xFF),PV(SYP_TUNE,-24),PV(SYP_VOLUME,0xFF),PEND}},
+
+	// Chinese plucked, hammered and struck instruments (the "Chinese
+	// instruments" group, with guzheng above)
+	// pipa: lute, hard nail attack and a short bright ring; played in fast
+	// tremolo (lun), so it decays quicker than the guzheng
+	{"pipa",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x4C),PV(PHP_BRIGHT,0xB0),
+		PV(PHP_DECAY,0x70),PV(PHP_STRIKE,0xE0),PV(SYP_REVERB,0x30),
+		PV(SYP_VOLUME,0x80),PEND}},
+	// yangqin: hammered dulcimer, pairs of metal strings (a little chorus
+	// for the slightly detuned pair), long shimmering ring
+	{"yangqin",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x64),PV(PHP_BRIGHT,0xA8),
+		PV(PHP_DECAY,0xA8),PV(PHP_STRIKE,0x70),PV(SYP_CHORUS,0x50),
+		PV(SYP_REVERB,0x40),PV(SYP_VOLUME,0xB0),PEND}},
+	// guqin: seven-string zither, low and dark, notes slide under the
+	// finger (glide) and ring a long time
+	{"guqin",SE_PHYS,{
+		PV(PHP_MODEL,SPM_STRING),PV(PHP_MATERIAL,0x40),PV(PHP_BRIGHT,0x48),
+		PV(PHP_DECAY,0xB4),PV(PHP_STRIKE,0x80),PV(SYP_TUNE,-12),PV(SYP_GLIDE,0x60),
+		PV(SYP_REVERB,0x60),PV(SYP_VOLUME,0xD0),PEND}},
+	// bianzhong: ancient bronze chime bells, bright and long, but it must
+	// die away on its own (under 20 s: see tools/dsp-harness/plaits_engines_check.cpp)
+	{"bianzhong",SE_PHYS,{
+		PV(PHP_MATERIAL,0xE8),PV(PHP_BRIGHT,0x70),PV(PHP_DECAY,0x88),
+		PV(PHP_STRIKE,0x80),PV(SYP_REVERB,0x70),PV(SYP_VOLUME,0xB0),PEND}},
+	// big gong (dayluo): partials squeezed together, rings after the hit; its pitch
+	// sinks after the strike (slot 1: the note starts sharp and falls).
+	// Its low material and tune ring longer per decay unit than other
+	// presets, so its decay must stay well under the others' to still die
+	// away inside 20 s.
+	{"big gong",SE_PHYS,{
+		PV(PHP_MATERIAL,0x10),PV(PHP_BRIGHT,0x50),PV(PHP_DECAY,0x78),
+		PV(PHP_STRIKE,0x60),PV(SYP_TUNE,-24),
+		MODSLOT(0,MT_AHD,SMD_FINE,0x50,0x00,0x40,0xC0,0x00),
+		PV(SYP_REVERB,0x70),PV(SYP_VOLUME,0xC0),PEND}},
+	// opera gong (xiaoluo): the small gong of Peking opera whose pitch
+	// jumps up after the hit ("jing"): the note starts low and rises
+	{"opera gong",SE_PHYS,{
+		PV(PHP_MATERIAL,0x20),PV(PHP_BRIGHT,0x98),PV(PHP_DECAY,0xA8),
+		PV(PHP_STRIKE,0xA0),PV(SYP_TUNE,12),
+		MODSLOT(0,MT_AHD,SMD_PITCH,-0x0B,0x00,0x20,0xA0,0x00),
+		PV(SYP_REVERB,0x40),PV(SYP_VOLUME,0xB0),PEND}},
+	// woodblock (muyu): the hollow temple block; bangzi: hard clappers
+	{"woodblock",SE_PHYS,{
+		PV(PHP_MATERIAL,0xB0),PV(PHP_BRIGHT,0x70),PV(PHP_DECAY,0x28),
+		PV(PHP_STRIKE,0xC0),PV(SYP_TUNE,12),PV(SYP_VOLUME,0xB0),PEND}},
+	{"bangzi",SE_PHYS,{
+		PV(PHP_MATERIAL,0xC8),PV(PHP_BRIGHT,0xC0),PV(PHP_DECAY,0x18),
+		PV(PHP_STRIKE,0xFF),PV(SYP_TUNE,24),PV(SYP_VOLUME,0xB0),PEND}}
 } ;
+
+// Preset groups: sounds from several engines that belong together, listed
+// as one category in the sound browser
+static const char *chinesePresets[]={
+	"guzheng","pipa","yangqin","guqin","erhu","dizi","xiao","sheng","suona",
+	"bianzhong","big gong","opera gong","woodblock","bangzi","dagu","tanggu",
+	"bo cymbal",0
+} ;
+
+struct SynthPresetGroup {
+	const char *name_ ;   // in the list of kinds
+	const char *title_ ;  // short, over the open list
+	const char **presets_ ;
+} ;
+
+static const SynthPresetGroup synthPresetGroups[]={
+	{"Chinese instruments","chinese",chinesePresets}
+} ;
+
+#define SYNTH_PRESET_GROUP_COUNT ((int)(sizeof(synthPresetGroups)/sizeof(SynthPresetGroup)))
 
 #define SYNTH_PRESET_COUNT ((int)(sizeof(synthPresets)/sizeof(SynthPreset)))
 
@@ -519,6 +669,37 @@ enum {
 const char *SynthInstrument::GetPresetName(int index) {
 	if (index<0 || index>=SYNTH_PRESET_COUNT) return "" ;
 	return synthPresets[index].name_ ;
+}
+
+int SynthInstrument::FindPreset(const char *name) {
+	for (int i=0;i<SYNTH_PRESET_COUNT;i++) {
+		if (!strcmp(name,synthPresets[i].name_)) return i ;
+	}
+	return -1 ;
+}
+
+int SynthInstrument::GetPresetGroupCount() {
+	return SYNTH_PRESET_GROUP_COUNT ;
+}
+
+const char *SynthInstrument::GetPresetGroupName(int group) {
+	if (group<0 || group>=SYNTH_PRESET_GROUP_COUNT) return "" ;
+	return synthPresetGroups[group].name_ ;
+}
+
+const char *SynthInstrument::GetPresetGroupTitle(int group) {
+	if (group<0 || group>=SYNTH_PRESET_GROUP_COUNT) return "" ;
+	return synthPresetGroups[group].title_ ;
+}
+
+void SynthInstrument::GetPresetGroup(int group,std::vector<int> &presets) {
+	presets.clear() ;
+	if (group<0 || group>=SYNTH_PRESET_GROUP_COUNT) return ;
+	for (const char **name=synthPresetGroups[group].presets_;*name;name++) {
+		int preset=FindPreset(*name) ;
+		NAssert(preset>=0) ;
+		if (preset>=0) presets.push_back(preset) ;
+	}
 }
 
 /***************************************************************

@@ -61,6 +61,25 @@ enum ModDest {
 	MD_LAST
 } ;
 
+// A synth slot's "dest" variable is an index into the synth's own list of
+// destinations, in this order (synthDests in ModSources.cpp)
+enum SynthModDestIndex {
+	SMD_VOLUME=0,
+	SMD_CUTOFF,
+	SMD_RESO,
+	SMD_PITCH,
+	SMD_PAN,
+	SMD_FINE,
+	SMD_DRIVE,
+	SMD_SHAPE,
+	SMD_FM,
+	SMD_NOISE,
+	SMD_REVERB,
+	SMD_DELAY,
+	SMD_CHORUS,
+	SMD_COUNT
+} ;
+
 enum ModLfoShape {
 	MLS_TRI=0,
 	MLS_SINE,
@@ -187,6 +206,7 @@ private:
 	void enterStage(int stage) ;
 	void advanceEnvelope(float dt) ;
 	void advanceLfo() ;
+	float lfoFade() ;
 	void computeOutput() ;
 	float curve(int stage,float phase) ;
 	float trackLevel() ;
@@ -212,6 +232,8 @@ private:
 	float step_ ;
 	float held_ ;
 	bool cycleDone_ ;
+	// seconds since the note started, for the LFO's fade-in (p4)
+	float fadeAge_ ;
 	unsigned int random_ ;
 	// legacy decay/swell
 	float legacyStep_ ;
