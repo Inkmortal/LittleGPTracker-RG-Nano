@@ -8,8 +8,15 @@ recordings (projects/resources/samples/chinese, credits in CREDITS.md):
 - erhu and dizi: the singing lines, with grace notes and trills
 - dagu drum, Beijing-opera clapper drum, small gong, cymbals and the big
   opera gong instead of a drum kit
-A soft synth pad and sub bass sit underneath. Melodies use only the five
-notes of the pentatonic scale (A C D E G).
+A soft synth pad and sub bass sit underneath, and a temple bell from the
+PHYS engine (a struck-metal model, not a recording) rings through the intro,
+the break and the ending. Melodies use only the five notes of the
+pentatonic scale (A C D E G).
+
+The mix: the sub bass stays under the drum, the guzheng's broken chords
+start on the chord root (no low octave to blur the drum), the pad is its
+own layer with its lows cut, and the last chorus adds a high dizi
+counter-melody over the erhu.
 """
 
 from pathlib import Path
@@ -20,7 +27,7 @@ from _patterns import chord_bar, rest, voice_progression
 SAMPLES = Path(__file__).resolve().parents[2] / "projects" / "resources" / "samples" / "chinese"
 
 (DRUM, RIM, BANGU, XIAOLUO, NAOBO, WOOD, BASS, STRINGS,
- GUZHENG, PIPA, ERHU, ERHU_LOW, DIZI, DIZI_HIGH, GONG) = range(15)
+ GUZHENG, PIPA, ERHU, ERHU_LOW, DIZI, DIZI_HIGH, GONG, BELL) = range(16)
 
 VERSE = ["Am", "F", "C", "G"]
 CHORUS = ["F", "G", "Em", "Am"]
@@ -56,7 +63,7 @@ def breathe(p: Phrase, step: int = 14) -> Phrase:
 
 def zheng_flow(voicing) -> Phrase:
     """8th-note broken chord that rises and falls, like a zither hand."""
-    tones = [voicing[0] - 12, voicing[0], voicing[1], voicing[2], voicing[0] + 12]
+    tones = [voicing[0], voicing[1], voicing[2], voicing[0] + 12, voicing[1] + 12]
     order = [0, 2, 1, 3, 4, 3, 2, 1]
     p = Phrase()
     for k, idx in enumerate(order):
@@ -126,11 +133,14 @@ def build() -> Project:
     p.extra_files["CREDITS.md"] = SAMPLES / "CREDITS.md"
 
     # --- synth bed ------------------------------------------------------------
-    p.synth(BASS, "subbass", volume=0x50)
+    p.synth(BASS, "subbass", volume=0x40)
     # sustain/release kept short so each chord fades instead of droning
     p.synth(STRINGS, "pad", shape=0x40, attack=0xA0, sustain=0xB0, release=0x9C,
             cutoff=0x68, glide=0x04, reverb=0xA0,
-            lfo_dest="pitch", lfo_rate=0x98, lfo_amount=0x06, volume=0x38)
+            lfo_dest="pitch", lfo_rate=0x98, lfo_amount=0x06, volume=0x88,
+            eq_low_gain=0x50)
+    # PHYS engine: a struck bronze bell, rung like a temple bell
+    p.synth(BELL, "temple bell", reverb=0xB0, delay=0x30, pan=0xA0, volume=0x70)
 
     # --- drums ----------------------------------------------------------------
     drum_verse = Phrase.merge(Phrase.drums("x.......x...x...", DRUM),
@@ -159,7 +169,11 @@ def build() -> Project:
 
     gong_hit = Phrase.parse("C3 . . . . . . . . . . . . . . .", GONG)
     gong_chorus = p.chain([gong_hit, rest(), rest(), rest()])
-    gong_intro = p.chain([gong_hit, Phrase(), Phrase(), Phrase()])
+    # The gong opens, then the temple bell answers on the pentatonic
+    bells = p.chain([gong_hit,
+                     Phrase.parse(". . . . . . . . A4 . . . . . . .", BELL),
+                     Phrase.parse("E4 . . . . . . . . . . . D4 . . .", BELL),
+                     Phrase.parse("A3 . . . . . . . . . . . . . . .", BELL)])
 
     # --- bass: sub notes on the roots ------------------------------------------
     def roots(names, rhythm):
@@ -202,6 +216,14 @@ def build() -> Project:
         erhu("D4 E4 . . D4 . E4 . G4 . . . E4 . D4 ."),
         erhu("C4 . . D4 . . G3 A3 . . . . - . . ."),
     ])
+    # Last chorus: the dizi floats a slow counter-melody above the erhu
+    # (VOLM 70: it floats behind the erhu, not over it)
+    dizi_counter = p.chain([
+        dizi("A4:70 . . . . . . . . . . . G4:70 . E4:70 ."),
+        dizi("D5:70 . . . . . . . . . . . E5:70 . D5:70 ."),
+        dizi("E5:70 . . . . . . . D5:70 . . . . . . ."),
+        dizi("A4:70 . . . . . . . . . . . - . . ."),
+    ])
     # Pipa comping under the second chorus: chord tones on the off-beats
     pipa_c = p.chain([
         pipa_pluck(". . A3 . . . C4 . . . A3 . . . C4 ."),   # F
@@ -228,18 +250,18 @@ def build() -> Project:
 
     #        drum         opera        wood/pipa    bass         pad         guzheng       erhu        dizi/gong
     rows = [
-        [rests, rests, rests, rests, strings_v, zheng_intro, rests, gong_intro],               # intro
+        [rests, rests, rests, rests, strings_v, zheng_intro, rests, bells],                    # intro
         [drum_v, rests, wood_v, held_bass, strings_v, zheng_verse, rests, rests],               # intro 2
         [drum_v, opera_v, wood_v, verse_bass, strings_v, zheng_verse, rests, rests],            # verse
         [drum_v, opera_v, wood_v, verse_bass, strings_v, zheng_verse, rests, dizi_verse],       # verse + dizi
         [drum_c, opera_c, rests, chorus_bass, strings_c, zheng_chorus, erhu_a, gong_chorus],    # chorus
         [drum_c, opera_c, pipa_c, chorus_bass, strings_c, zheng_chorus, erhu_b, rests],         # chorus 2
-        [rests, rests, rests, held_bass, strings_v, zheng_break, erhu_break, gong_intro],       # break
+        [rests, rests, rests, held_bass, strings_v, zheng_break, erhu_break, bells],            # break
         [drum_build, opera_build, wood_v, chorus_bass, strings_c, zheng_build, rests, rests],   # build
         [drum_c, opera_c, rests, chorus_bass, strings_c, zheng_chorus, erhu_a, gong_chorus],    # chorus
-        [drum_c, opera_c, pipa_c, chorus_bass, strings_c, zheng_chorus, erhu_b, rests],         # chorus 2
+        [drum_c, opera_c, pipa_c, chorus_bass, strings_c, zheng_chorus, erhu_b, dizi_counter],  # chorus 2
         [drum_v, rests, wood_v, held_bass, strings_v, zheng_verse, rests, dizi_verse],          # outro
-        [rests, rests, rests, rests, strings_out, zheng_intro, rests, gong_intro],               # tail
+        [rests, rests, rests, rests, strings_out, zheng_intro, rests, bells],                    # tail
     ]
     for i, r in enumerate(rows):
         p.row(i, r)
