@@ -60,30 +60,43 @@ One chord per bar, four bars, loop.
 
 `x` = hit, `.` = rest, 16 steps = one bar. Rows `00 04 08 0C` are the beats.
 
+**Four on the floor** (house, disco, synthwave). Open hats on the off-beat:
+
 ```text
-FOUR ON THE FLOOR (house, disco, synthwave)
-kick   x...x...x...x...
-clap   ....x.......x...
-hat    ..x...x...x...x.     (open hats on the off-beat)
+kick  x...x...x...x...
+clap  ....x.......x...
+hat   ..x...x...x...x.
+```
 
-BOOM BAP (hip-hop, lo-fi) — use groove 7 5 for swing
-kick   x.....x...x.....
-snare  ....x.......x...
-hat    x.x.x.x.x.x.x.x.
+**Boom bap** (hip-hop, lo-fi). Use groove `7 5` for swing:
 
-HALF TIME (epic, trap, dubstep)
-kick   x.......x.x.....
-snare  ........x.......
-hat    x.x.x.x.x.x.xxxx     (RTRG 0002 on the last hats for a roll)
+```text
+kick  x.....x...x.....
+snare ....x.......x...
+hat   x.x.x.x.x.x.x.x.
+```
 
-BREAKBEAT (drum and bass at 170+ BPM)
-kick   x.........x.....
-snare  ....x.......x..x
-hat    x.x.x.x.x.x.x.x.
+**Half time** (epic, trap, dubstep). `RTRG 0002` on the last hats makes a roll:
 
-TAIKO / WUXIA
-drum   x.......x...x...
-       x.....x.x...x.o.     (o = VOLM 0070 ghost)
+```text
+kick  x.......x.x.....
+snare ........x.......
+hat   x.x.x.x.x.x.xxxx
+```
+
+**Breakbeat** (drum and bass at 170+ BPM):
+
+```text
+kick  x.........x.....
+snare ....x.......x..x
+hat   x.x.x.x.x.x.x.x.
+```
+
+**Taiko / wuxia**. `o` is a ghost hit, `VOLM 0070`:
+
+```text
+drum  x.......x...x...
+      x.....x.x...x.o.
 ```
 
 **Make it human:** vary hat volumes with `VOLM` (loud on the beat, quieter between), and push a note late with `DLAY 0001`.

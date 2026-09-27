@@ -61,12 +61,12 @@ up n
 wait 150
 press a 80
 wait 300
-expect_screen_text B topics  LB+Up/Dn page
+expect_screen_text Up/Dn scroll  L/R section
 down m
 press d 80
 up m
 wait 100
-expect_screen_text B topics  LB+Up/Dn page
+expect_screen_text Up/Dn scroll  L/R section
 press b 80
 wait 150
 press b 80

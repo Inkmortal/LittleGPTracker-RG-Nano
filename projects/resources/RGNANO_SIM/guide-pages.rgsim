@@ -1,0 +1,168 @@
+# Every page of the built-in guide: its first two screens, for the layout
+# audit (tools/rgnano_layout_audit.py). Loading checks that no line is
+# wider than the screen and every link lands on a heading that exists.
+route boot.new_project_random
+expect_view song
+down n
+press k 80
+up n
+press a 80
+wait 200
+press b 80
+wait 60
+press u 80
+press u 80
+press u 80
+wait 60
+expect_selected_text Your First Song
+press a 80
+wait 100
+screenshot_app guide-page-00-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-00-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-01-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-01-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-02-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-02-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-03-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-03-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-04-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-04-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-05-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-05-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-06-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-06-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-07-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-07-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-08-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-08-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-09-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-09-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-10-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-10-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-11-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-11-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-12-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-12-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-13-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-13-b.bmp
+down m
+press r 80
+up m
+wait 80
+screenshot_app guide-page-14-a.bmp
+down m
+press d 80
+up m
+wait 60
+screenshot_app guide-page-14-b.bmp
+expect_log GUIDE] go developer /
+expect_no_error
+quit

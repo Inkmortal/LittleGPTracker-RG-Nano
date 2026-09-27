@@ -86,6 +86,9 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     std::string GetSimScreenDump() const;
     std::string GetSimSelectionSummary() const;
     void LogDebugState(const char *label, bool includeScreen) const;
+    // Text a view drew as pixels this frame (the guide draws its own text):
+    // the simulator's screen checks see it like character text
+    void NotePixelText(const char *text, bool selected = false);
 #endif
 
   protected: // GUIWindow implementation
@@ -147,6 +150,10 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     unsigned char _charScreenProp[1200];
     unsigned char _preScreen[1200];
     unsigned char _preScreenProp[1200];
+#if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
+    std::string _pixelText;
+    std::string _pixelSelection;  // highlighted pixel text (a list's cursor)
+#endif
 
     static GUIColor backgroundColor_;
     static GUIColor normalColor_;

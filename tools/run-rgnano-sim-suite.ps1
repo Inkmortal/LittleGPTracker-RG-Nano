@@ -218,6 +218,21 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "guide-navigation"
+    Script = "guide-navigation.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "guide-pages"
+    Script = "guide-pages.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
+    Name = "guide-over-playback"
+    Script = "guide-over-playback.rgsim"
+    Args = @("-OpenDemo=EngineRoom")
+  },
+  @{
     Name = "command-selector-workflow"
     Script = "command-selector-workflow.rgsim"
     Args = @("-ResetLastProject")

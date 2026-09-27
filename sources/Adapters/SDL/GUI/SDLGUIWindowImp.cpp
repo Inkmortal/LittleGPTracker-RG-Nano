@@ -624,13 +624,57 @@ void SDLGUIWindowImp::DrawString(const char *string,GUIPoint &pos,GUITextPropert
 	}
 }
 
-void SDLGUIWindowImp::DrawRect(GUIRect &r) 
+void SDLGUIWindowImp::DrawRect(GUIRect &r)
 {
   SDL_Rect rect;
   transform(r, &rect);
   if (!clipToAppSurface(&rect)) return;
   SDL_FillRect(screen_, &rect,currentColor_) ;
+  // Partial-update displays only show registered areas
+  if ((!framebuffer_)&&(updateCount_<MAX_OVERLAYS)) {
+    updateRects_[updateCount_++]=rect ;
+  }
 } ;
+
+void SDLGUIWindowImp::DrawTransparentString(const char *string,GUIPoint &pos)
+{
+  int xx,yy;
+  transform(pos, &xx, &yy);
+  int len=int(strlen(string)) ;
+  if ((!framebuffer_)&&(updateCount_<MAX_OVERLAYS)) {
+    SDL_Rect *area=updateRects_+updateCount_++ ;
+    area->x=xx ;
+    area->y=yy ;
+    area->h=8*mult_ ;
+    area->w=len*8*mult_ ;
+    if (!clipToAppSurface(area)) updateCount_-- ;
+  }
+  int pixelSize=screen_->format->BytesPerPixel ;
+  unsigned char *fgPtr=(unsigned char *)&currentColor_ ;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  fgPtr+=(4-pixelSize) ;
+#endif
+  for (int l=0;l<len;l++,xx+=8*mult_) {
+    unsigned int fontID=(unsigned char)string[l] ;
+    if (fontID>=FONT_COUNT || fontID==' ' || !isAppPixelVisible(xx, yy, 8*mult_, 8*mult_)) continue ;
+    const unsigned char *src=font+fontID*8 ;
+    unsigned char *row=((unsigned char *)screen_->pixels)+yy*screen_->pitch+xx*pixelSize ;
+    for (int y=0;y<8;y++,src+=FONT_WIDTH) {
+      for (int n=0;n<mult_;n++,row+=screen_->pitch) {
+        unsigned char *dest=row ;
+        for (int x=0;x<8;x++) {
+          if (src[x]) {  // 0 = ink
+            dest+=pixelSize*mult_ ;
+            continue ;
+          }
+          for (int m=0;m<mult_;m++,dest+=pixelSize) {
+            memcpy(dest,fgPtr,pixelSize) ;
+          }
+        }
+      }
+    }
+  }
+}
 
 void SDLGUIWindowImp::Clear(GUIColor &c,bool overlay) 
 {

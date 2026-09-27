@@ -24,7 +24,7 @@ press a 80
 wait 300
 screenshot_app start-guide-page.bmp
 expect_screen_text Controls
-expect_screen_text combos mean the same thing
+expect_screen_text so the same few combos mean
 # Right jumps to the next section heading
 press r 80
 wait 60
@@ -34,7 +34,7 @@ wait 60
 expect_screen_text Everywhere
 press b 80
 wait 60
-expect_screen_text pick a topic
+expect_screen_text GUIDE  Contents
 press b 80
 wait 80
 expect_screen_text YOUR SONGS
