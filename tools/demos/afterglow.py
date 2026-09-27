@@ -4,20 +4,28 @@ Melodic house in C minor, 128 BPM, with a light swing. Built from the synth
 kit every new song starts with, switched to the big engines on the way, plus
 one sample from the packs and one bar resampled from the song itself:
 
-    track 1  KICK   00 Macro Synth "kick"
+    track 1  KICK   00 Macro Synth "kick" (body near 60 Hz), four on the floor;
+                       it drops out for the last bar of each build
     track 2  SNARE  01 Macro Synth "snare" (reverb send), a ROLL into each drop
     track 3  HATS   02 Macro Synth "hat": 16ths made with the fill tool,
                        ghost notes that play only half the time (CHNC)
-    track 4  BASS   05 starter bass + a MOD slot: an LFO opening its filter
-    track 5  PAD    07 HyperSynth "hyper pad", chord maj9, scale on,
-                       its own EQ cuts the lows
-    track 6  KEYS   09 FM4 "epiano", CHRD stabs on the off-beats
+    track 4  BASS   05 starter bass, sustain 0: short notes on the offbeats,
+                       between the kicks, never on them
+    track 5  PAD    07 HyperSynth "hyper pad", chord maj9, scale on, no sub,
+                       its own EQ cuts the lows, ducked by the kick (MOD trig)
+    track 6  KEYS   09 FM4 "epiano", CHRD stabs on the offbeats with the bass
     track 7  LEAD   06 HyperSynth "trance lead": the hook
     track 8  FX     03 drums-909/crash.wav played in reverse (a riser)
                     10 rs_01.wav: the pad bar rendered to a sample, reversed
 
 Four chords, Cm9 | Abmaj9 | Ebmaj9 | Bb9, from ONE bar of pad, bass and keys
 that the chains transpose (0, -4, +3, -2).
+
+The arrangement is the drop with parts taken out: intro (kick, hats, keys),
+groove (+ snare, bass), build (+ pad, snare roll, kick out, reversed crash),
+drop x2, break (pad and hook), build, drop x2, outro. The mix keeps the low
+end for the kick and bass, the pad behind, the hook in front (the demo
+renders within a few dB of SunsetClub and NeonDrive in every band).
 
 The walkthrough (tools/walkthrough/steps.py) enters exactly this in the app;
 the sim suite (first-song-walkthrough) checks that the result equals this
@@ -43,6 +51,14 @@ HOOK_A = "G4 . . G4 . . A#4 . . . G4 . F4 . D#4 ."   # bars 1 and 3
 HOOK_B = "D#4 . . D#4 . . G4 . . . F4 . D#4 . C4 ."  # bar 2
 HOOK_C = "F4 . . F4 . . A#4 . . . C5 . A#4 . F4 ."   # bar 4, up to the top
 
+# Offbeat bass: between the kicks (steps 2 6 10 14), plus an octave pop and
+# the 5th leading back to the 1
+BASS_LINE = ". . C3 . . . C3 C4 . . C3 . . . C3 G3"
+# Chord stabs on the offbeats, with the bass: the house "pump" under the
+# syncopated hook
+STAB_STEPS = (2, 6, 10, 14)
+KEYS_STABS = ". . C3 . . . C3 . . . C3 . . . C3 ."
+
 
 def build() -> Project:
     p = Project("Afterglow", tempo=128)
@@ -53,19 +69,23 @@ def build() -> Project:
     p.params["reverb size"] = str(0xB0)       # a bigger room
     p.params["eq high gain"] = str(0x90)      # a little air on the whole mix
     p.params["limiter drive"] = str(0x10)     # catches every peak
-    p.mixer(0, 0xFF)                          # kick up
-    p.mixer(3, 0x90)                          # bass down
+    p.mixer(4, 0x90)                          # pad down: it's the background
+    p.mixer(5, 0xA0)                          # keys a little down
+    p.mixer(6, 0xE0)                          # the hook on top
 
     for slot, preset in enumerate(STARTER_KIT):
         p.synth(slot, preset)
     p.macro(KICK, "kick")
-    p.macro(SNARE, "snare", reverb=0x40)
+    p.macro(SNARE, "snare", volume=0xE0, reverb=0x40)
     p.macro(HAT, "hat")
     p.sample(CRASH, ROOT / "projects/resources/samples/drums-909/crash.wav", "C3",
              volume=0x80, loopmode="reverse")
+    # Short notes: each one is gone before the next kick
+    p.synth(BASS, "bass", sustain=0)
     p.synth(LEAD, "trance lead")
-    # Sidechain: a "trig" envelope fired by track 1 (the kick) ducks the volume
-    p.synth(PAD, "hyper pad", hyper_chord="maj9", hyper_scale=True,
+    # No sub (the low end belongs to kick and bass); a "trig" envelope fired
+    # by track 1 (the kick) ducks the volume: the house pump
+    p.synth(PAD, "hyper pad", hyper_chord="maj9", hyper_scale=True, hyper_sub=0,
             mod1_type="trig", mod1_dest="volume", mod1_amount=-64, mod1_p3=0xA0,
             eq_low_gain=0x50)
     p.synth(KEYS, "epiano")
@@ -81,10 +101,11 @@ def build() -> Project:
         hats.set(step, note=60)
     for step in (3, 7, 11, 15):
         hats.command(step, "CHNC", 0x0080)          # ghost notes, half the time
-    bass = Phrase.parse("C3 . C3 . C4 . C3 . C3 . C3 . C4 . G3 .", BASS)
+    # Between the kicks, never on them; an octave up and the 5th to roll on
+    bass = Phrase.parse(BASS_LINE, BASS)
     pad = Phrase.parse("C3 " + ". " * 15, PAD)
-    keys = Phrase.parse(". . C3 . . . C3 . . . C3 . . . C3 .", KEYS)
-    for step in (2, 6, 10, 14):
+    keys = Phrase.parse(KEYS_STABS, KEYS)
+    for step in STAB_STEPS:
         keys.command(step, "CHRD", 0x007E)          # root, 5th, 9th
     hook_a = Phrase.parse(HOOK_A, LEAD)
     hook_b = Phrase.parse(HOOK_B, LEAD)
@@ -107,18 +128,22 @@ def build() -> Project:
     L = p.chain([hook_a, hook_b, hook_a, hook_c])
     R = p.chain([rest] * 4)
     U = p.chain([snare, snare, snare, roll])        # build: a snare roll into the drop
+    KB = p.chain([kick, kick, kick, rest])          # build: the kick drops out for a bar
     X = p.chain([rest, rest, rest, crash])          # reversed crash into the drop
     Y = p.chain([rest, rest, rest, revpad])         # reversed pad out of the break
 
     rows = [
-        [R, R, H, R, P, E, R, R],    # 00 intro
-        [K, U, H, B, P, E, R, X],    # 01 build
-        [K, S, H, B, P, E, L, R],    # 02 drop
-        [K, S, H, B, P, E, L, R],    # 03
-        [R, R, R, R, P, R, L, Y],    # 04 break
-        [K, U, H, R, P, E, L, X],    # 05 build
-        [K, S, H, B, P, E, L, R],    # 06 drop
-        [R, R, H, R, P, E, R, R],    # 07 outro
+        [K, R, H, R, R, E, R, R],    # 00 intro: kick, hats, keys
+        [K, S, H, B, R, E, R, R],    # 01 groove: snare and bass
+        [KB, U, H, B, P, E, R, X],   # 02 build: the pad comes in, the kick drops out
+        [K, S, H, B, P, E, L, R],    # 03 drop: the hook
+        [K, S, H, B, P, E, L, R],    # 04
+        [R, R, R, R, P, R, L, Y],    # 05 break: pad and hook
+        [KB, U, H, R, P, E, L, X],   # 06 build
+        [K, S, H, B, P, E, L, R],    # 07 drop
+        [K, S, H, B, P, E, L, R],    # 08
+        [K, S, H, B, R, E, R, R],    # 09 outro
+        [K, R, H, R, R, E, R, R],    # 10
     ]
     for i, r in enumerate(rows):
         p.row(i, r)
