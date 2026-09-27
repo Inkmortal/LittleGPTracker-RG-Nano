@@ -1,0 +1,138 @@
+# The Rack (Song RB+Left): every sound on one screen. Hold A to play the
+# selected one, A+Left/Right steps a note in the scale, A+Up/Down an octave;
+# Select browses sounds and plays each as you move (B puts the slot back,
+# A takes it); RB+Right edits it and RB+Left on the Instrument screen comes
+# back; B returns to the Song.
+route boot.new_project_random
+expect_view song
+down n
+press l 80
+up n
+wait 200
+expect_view rack
+expect_screen_text Rack
+expect_selected_text 00 SYN KICK
+screenshot rack-kick.bmp
+press d 80
+wait 100
+expect_selected_text 01 SYN SNARE
+# Hold A: the sound plays until A is let go
+down a
+wait 300
+expect_player_running yes
+expect_play_mode audition
+up a
+wait 300
+expect_player_running no
+# An octave up, then a note up (A held for both)
+expect_screen_text note C3
+down a
+press u 80
+wait 150
+expect_screen_text note C4
+press d 80
+wait 150
+expect_screen_text note C3
+up a
+wait 200
+expect_player_running no
+# The helper knows the Rack
+down n
+press k 80
+up n
+wait 200
+expect_screen_text RACK
+# A in the helper: the full guide, at the Rack's section
+press a 80
+wait 300
+expect_screen_text The Rack
+down n
+press k 80
+up n
+wait 200
+expect_view rack
+expect_open rack
+down n
+press k 80
+up n
+wait 200
+expect_screen_text RACK
+press b 80
+wait 150
+expect_view rack
+# Select: the browser. Categories first
+press k 80
+wait 200
+expect_screen_text SOUND FOR 01
+expect_open rack>SOUND BROWSER
+screenshot rack-browser.bmp
+# The first synth engine's presets: moving plays each one in the slot
+press a 80
+wait 200
+expect_player_running yes
+press d 80
+wait 200
+expect_player_running yes
+screenshot rack-browser-list.bmp
+# B: the slot is put back as it was, one step back (the categories)
+press b 80
+wait 200
+expect_instrument_name 1 SNARE
+expect_screen_text SOUND FOR 01
+# Take one this time: the 4th sound of the first synth engine
+press a 80
+wait 200
+press d 80
+press d 80
+press d 80
+wait 200
+dump_state browser-list
+press a 80
+wait 300
+expect_view rack
+expect_open rack
+expect_screen_text in 01
+dump_state after-take
+# A sample from the packs: the Samples kind is last, A opens folders
+press k 80
+wait 200
+press r 80
+wait 100
+dump_state categories
+press a 80
+wait 200
+expect_screen_text rgnano-test-tone.wav
+dump_state samples
+expect_selected_text rgnano-test-tone.wav
+press a 80
+wait 300
+expect_view rack
+expect_instrument_type 1 Sample
+expect_instrument_sample 1 rgnano-test-tone.wav
+expect_selected_text 01 SMP
+# A note step with no key set: a semitone
+down a
+press r 80
+wait 150
+expect_screen_text note C#
+up a
+wait 200
+# RB+Right edits the sound; RB+Left on the Instrument screen comes back
+down n
+press r 80
+up n
+wait 200
+expect_view instrument
+expect_screen_text Instrument 01
+down n
+press l 80
+up n
+wait 200
+expect_view rack
+expect_selected_text 01 SMP
+# B: back to the Song
+press b 80
+wait 200
+expect_view song
+expect_no_error
+quit

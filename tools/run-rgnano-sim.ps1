@@ -16,6 +16,9 @@ param(
   [string]$NameSeed = "",
   # No key auto-repeat: every scripted press is exactly one press
   [switch]$NoKeyRepeat,
+  # Keep the saved sounds, kits and new-song template from the last run
+  # (normally every run starts with an empty sound library)
+  [switch]$KeepSounds,
   [switch]$Visible,
   [string]$ArtifactsDir = ""
 )
@@ -61,6 +64,12 @@ $dataDir = Join-Path (Get-Location) "rgnano-sim-data"
 New-Item -ItemType Directory -Force -Path (Join-Path $dataDir "tracks") | Out-Null
 $sampleDir = Join-Path $dataDir "samples"
 New-Item -ItemType Directory -Force -Path $sampleDir | Out-Null
+# SOUNDLIB: a template kit left by one test would change every new song in
+# the next one
+$soundDir = Join-Path $dataDir "sounds"
+if (-not $KeepSounds -and (Test-Path -LiteralPath $soundDir)) {
+  Remove-Item -LiteralPath $soundDir -Recurse -Force
+}
 
 function Write-TestWav {
   param([string]$Path)

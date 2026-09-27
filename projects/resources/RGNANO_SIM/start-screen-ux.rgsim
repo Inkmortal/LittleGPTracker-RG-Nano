@@ -19,6 +19,8 @@ screenshot_app start-guide-topics.bmp
 expect_screen_text GUIDE
 expect_selected_text Your First Song
 press d 80
+expect_selected_text Build Your Sounds First
+press d 80
 expect_selected_text Controls
 press a 80
 wait 300

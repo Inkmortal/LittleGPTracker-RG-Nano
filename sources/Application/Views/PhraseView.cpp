@@ -1034,6 +1034,14 @@ void PhraseView::switchSoloMode() {
 
 void PhraseView::OnFocus() {
     clipboard_.active_ = false;
+    // Coming from building or picking a sound: new notes use it
+    if (viewData_->instrumentPicked_) {
+        viewData_->instrumentPicked_ = false;
+        if (viewData_->currentInstrument_ >= 0 &&
+            viewData_->currentInstrument_ < MAX_INSTRUMENT_COUNT) {
+            lastInstr_ = viewData_->currentInstrument_;
+        }
+    }
     viewMode_ = VM_NORMAL;
     updateCursor(0, 0);
 };
@@ -1272,6 +1280,7 @@ void PhraseView::processNormalButtonMask(unsigned short mask) {
                         } else viewData_->currentInstrument_= lastInstr_;
                     }
                     if (viewData_->currentInstrument_ != 0xFF) {
+                        viewData_->instrumentFromRack_ = false;
                         ViewType vt = VT_INSTRUMENT;
                         ViewEvent ve(VET_SWITCH_VIEW, &vt);
                         SetChanged();

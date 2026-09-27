@@ -9,6 +9,7 @@
 #include "Application/Views/EQView.h"
 #include "Application/Views/LimiterView.h"
 #include "Application/Views/ScaleView.h"
+#include "Application/Views/RackView.h"
 #include "Application/Views/InstrumentView.h"
 #include "Application/Views/MixerView.h"
 #include "Application/Views/NullView.h"
@@ -133,6 +134,7 @@ class AppWindow : public GUIWindow, I_Observer, Status {
     EQView *_eqView;
     LimiterView *_limiterView;
     ScaleView *_scaleView;
+    RackView *_rackView;
     NullView *_nullView;
     MixerView *_mixerView;
 

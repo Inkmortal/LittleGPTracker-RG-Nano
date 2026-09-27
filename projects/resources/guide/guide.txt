@@ -2728,6 +2728,237 @@
    Every key is on the
    Controls page.
 ~2,8,controls,
+@sounds-first|Build Your Sounds First
+ Some people write notes
+ first and find sounds later.
+ If you'd rather assemble
+ your instruments first, then
+ compose, the Rack is for
+ you: every sound of the song
+ on one screen, where you
+ play them, browse new ones
+ by ear, shape them, and save
+ your favourites for the next
+ song.
+=The Rack
+ From the Song screen,
+ RB + Left opens the Rack.
+ 
+|Rack your sounds      05/8F
+|   kind name
+|00 SYN KICK           2
+|01 SYN SNARE          2
+|05 SYN BASS
+|06 SMP rgnano-tone
+|in 2 phrases
+|[ picture of the sound ]
+|note C3 steps in the scale
+|[ one octave keyboard ]
+ 
+ Each row is a slot: its
+ number, its kind (SYN synth,
+ MAC macro synth, SMP sample,
+ --- empty) and name, and how
+ many phrases use it. The box
+ draws the selected sound,
+ and the keyboard shows the
+ song's scale (set it on the
+ Scale screen) with a bar
+~0,5,screens,Scale
+ under the note you'll hear.
+ 
+*Up / Down
+   pick a sound (Left /
+   Right: a page)
+*A (hold)
+   play it; let go of A and
+   it stops
+*A + Left / Right
+   the next note of the scale
+   down / up, and play it (no
+   key set: a semitone)
+*A + Up / Down
+   an octave up / down, and
+   play it
+*Start
+   a short riff with it,
+   looping: a drum pattern, a
+   bass line, a held chord or
+   a melody, whichever suits
+   the sound. Start again
+   stops
+*Select
+   the sound browser: hear
+~6,13,sounds-first,The sound browser
+   sounds as you move, take
+   one
+*RB + Right
+   edit it on the Instrument
+   screen; RB + Left there
+   comes back to the Rack
+*RB + Down
+   write notes with it
+~2,19,sounds-first,Write notes with it
+*LB + Start
+   save and load sounds and
+~2,13,sounds-first,Save and load
+   kits
+*LB + A
+   copy it to a free slot, to
+   make a variation
+*B
+   back to the Song
+ 
+ The keyboard starts where
+ the sound sounds natural: a
+ synth at C3, a sample at the
+ note it was recorded at (its
+ root).
+ 
+>Picking a sound on the Rack
+>also picks it for your next
+>note: the next note you add
+>on a Phrase screen uses it.
+=The sound browser
+ Select on the Rack opens
+ every sound you can put in
+ the slot, by kind:
+ 
+*My sounds
+   the sounds you saved (see
+   Save and load)
+~2,13,sounds-first,Save and load
+*Synth presets
+   the synth's ready-made
+   sounds, one list per
+   engine (FM4, Hyper, Wav
+   ...)
+*Macro synth presets
+   the Macro Synth's
+~6,11,macro,
+*Samples
+   the sample packs on the
+   card, by folder
+ 
+ A opens a kind (or a
+ folder). Then just move:
+ every sound plays as you
+ land on it, at the Rack's
+ keyboard note. A synth sound
+ is put in the slot to be
+ heard; a sample streams from
+ the card. Start plays it
+ again.
+ 
+ - A takes it: it stays in
+   the slot, and you're back
+   on the Rack.
+ - B puts the slot back
+   exactly as it was and goes
+   back one step (to the
+   kinds, or up a folder).
+ 
+ So you can try twenty kicks
+ and still walk away with
+ your old one.
+=Write notes with it
+ RB + Down on the Rack takes
+ you to a Phrase screen with
+ the selected sound ready:
+ the next note you add there
+ uses it. It opens the chain
+ under the Song screen's
+ cursor and that chain's
+ first phrase, and makes them
+ if the song has none yet, so
+ from a brand new song it's
+ one press from a sound to
+ its first note.
+=Save and load
+ Your sounds live on the card
+ in Applications/Sounds,
+ outside any song, so they're
+ there in every song.
+ LB + Start on the Rack (or
+ on the instrument list,
+ RB + Up on the Instrument
+ screen) opens My sounds:
+ 
+*Save sound 05
+   keeps the selected sound
+   under a name; a sample
+   sound takes a copy of its
+   WAV, and its table comes
+   along
+*Load a sound into 05
+   puts a saved sound in the
+   slot (the browser's My
+   sounds does too, with a
+   listen first)
+*Save this kit
+   keeps all of this song's
+   sounds, each in its slot
+*Load a kit
+   replaces all of this
+   song's sounds with a saved
+   kit (it asks first)
+*New songs: this kit
+   every new song starts with
+   this song's sounds instead
+   of the starter kit
+*New songs: starter kit
+   back to the built-in
+   starter kit
+ 
+ The name is filled in for
+ you (the sound's name, or
+ the song's for a kit): A
+ saves straight away.
+=A kit in five minutes
+ A drum kit and a bass, built
+ before a single note:
+ 
+ 1. Song RB + Left: the Rack,
+    on 00 KICK.
+ 2. Select, A on Synth
+    presets, then Down
+    through the list: each
+    one plays. A on the kick
+    you like.
+ 3. Down to 01, Select again:
+    a snare this time. Try
+    the Samples too.
+ 4. Down to 05: the bass.
+    Hold A and step through
+    the scale with A + Right
+    to hear it across notes,
+    or Start for a bass line.
+ 5. Too dark? RB + Right,
+    open the filter on the
+    FILTER page, RB + Left
+    back.
+ 6. LB + Start, Save this
+    kit, A. Then New songs:
+    this kit if every song
+    should start with it.
+ 7. On the kick, RB + Down: a
+    phrase, ready for kick
+    notes.
+ 
+ Now write the notes: every
+ sound is already where you
+ want it.
+ 
+%00 C 3 00 ----
+%01 --- -- ----
+%02 C 3 05 ----
+%03 --- -- ----
+%04 C 3 00 ----
+ 
+ The I column (the second
+ one) says which slot plays
+ each note: 00 the kick, 05
+ the bass you built.
 @controls|Controls
  The RG Nano has few buttons,
  so the same few combos mean
@@ -2916,6 +3147,12 @@
    back through the pages you
    came through; RB + Select
    closes it from anywhere
+*The Rack
+   back to the Song (the Rack
+   is a list you opened from
+   there); in its sound
+   browser, B puts the slot
+   back as it was
  
  On the editing screens
  (Song, Chain, Phrase,
@@ -2933,9 +3170,18 @@
  
 *Song
    Chain under the cursor
-   RB + Left: -
+   RB + Left: Rack: all your
+~13,4,controls,Rack
+   sounds
    RB + Up: Project
    RB + Down: Mixer
+*Rack
+   Instrument (edit the
+   sound)
+   RB + Left: -
+   RB + Up: -
+   RB + Down: Phrase, to
+   write notes with the sound
 *Chain
    Phrase under the cursor
    RB + Left: Song
@@ -2947,7 +3193,8 @@
    RB + Up: Groove
    RB + Down: Table
 *Instrument  -
-   RB + Left: Phrase
+   RB + Left: Phrase (or the
+   Rack, if you came from it)
    RB + Up: list of all
    sounds
    RB + Down: Instrument
@@ -3331,6 +3578,54 @@
  editor (Select on any of its
  pages) - see Samples.
 ~13,7,samples,
+=Rack
+ Every sound of the song on
+ one screen, to build your
+ instruments before you
+ compose: Song RB + Left. The
+ whole story is on Build Your
+~18,10,sounds-first,
+ Sounds First.
+~0,12,sounds-first,
+ 
+*Up / Down
+   pick a sound (Left /
+   Right: a page)
+*A (hold)
+   play it until you let go
+*A + Left / Right
+   the next note of the scale
+   down / up, and play it
+*A + Up / Down
+   an octave up / down, and
+   play it
+*Start
+   a riff with it (drum
+   pattern, bass line, chord
+   or melody), looping; again
+   stops
+*Select
+   the sound browser: every
+   sound plays as you move
+   onto it; A takes it, B
+   puts the slot back
+*RB + Right
+   edit it on the Instrument
+   screen (RB + Left there
+   comes back)
+*RB + Down
+   write notes with it: a
+   phrase (made if needed)
+   where new notes use this
+   sound
+*LB + Start
+   My sounds: save / load
+   sounds and kits, the
+   new-song kit
+*LB + A
+   copy it to a free slot
+*B
+   back to the Song
 =Moving tracks
  Up on the Song's row 00
  switches to track moving
@@ -3838,7 +4133,75 @@
 *LB + A
    copy it into the next free
    slot, to make a variation
+*LB + Start
+   My sounds: save or load
+   sounds and kits (below)
 *B  back
+=Rack
+ RB + Left on the Song opens
+ the Rack: every sound of the
+ song on one screen, with a
+ picture of the selected one
+ and a one-octave keyboard in
+ the song's scale. Hold A to
+ play the sound,
+ A + Left/Right to step
+ through the scale,
+ A + Up/Down for octaves, and
+ Select to browse presets,
+ samples and your saved
+ sounds by ear, Start for a
+ riff that suits the sound.
+ RB + Right edits the sound
+ (RB + Left on the Instrument
+ screen comes back),
+ RB + Down goes to a phrase
+ to write notes with it,
+ LB + Start saves and loads
+ sounds and kits. See Build
+~21,5,sounds-first,
+ Your Sounds First.
+~0,17,sounds-first,
+=My sounds
+ LB + Start on the instrument
+ list opens your own sound
+ library. It lives on the
+ card in Applications/Sounds,
+ outside any song, so what
+ you save there is there in
+ every song.
+ 
+*Save sound 05
+   keeps the selected sound
+   as a file, under a name
+   you give it (a sample
+   sound takes a copy of its
+   WAV)
+*Load a sound into 05
+   puts one of your saved
+   sounds in the selected
+   slot
+*Save this kit
+   keeps all of this song's
+   sounds, each in its slot
+*Load a kit
+   replaces all of this
+   song's sounds with a saved
+   kit (asks first)
+*New songs: this kit
+   every new song starts with
+   this song's sounds instead
+   of the starter kit
+*New songs: starter kit
+   back to the built-in
+   starter kit
+ 
+ Up/Down picks, A chooses, B
+ goes back one step (from a
+ list to the menu, from the
+ menu to the instrument
+ list). A sound's table comes
+ with it.
 =Instrument (sample)
  Sample instruments have
  seven pages too: Source,

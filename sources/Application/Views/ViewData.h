@@ -67,6 +67,13 @@ public:
 	int currentPhrase_ ;        // .Current edited phrase
 
 	int currentInstrument_ ;    // .Current edited instrument
+	// Set when you open, build or pick an instrument (Instrument screen,
+	// instrument list, Rack). The Phrase screen then gives new notes that
+	// instrument once, instead of the last one used in the phrase.
+	bool instrumentPicked_ ;
+	// The Instrument screen was opened from the Rack: RB+Left goes back
+	// there (from a phrase it goes back to the phrase)
+	bool instrumentFromRack_ ;
 
 	int currentTable_ ;			// .Current edited table
 

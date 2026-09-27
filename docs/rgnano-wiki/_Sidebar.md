@@ -5,6 +5,7 @@
 - [Controls](Controls)
 - [How Trackers Work](How-Trackers-Work)
 - [Your First Song](Your-First-Song)
+- [Build Your Sounds First](Build-Your-Sounds-First)
 - [Demo Songs](Demo-Songs)
 
 **Reference**

@@ -1,0 +1,16 @@
+# Runs after sound-files (with -KeepSounds): that test made its kit the
+# new-song template, with a kick in slot 05. A brand new song starts with
+# it instead of the starter kit.
+route boot.new_project_random
+expect_view song
+expect_instrument_name 0 KICK
+expect_instrument_name 5 KICK
+expect_instrument_name 6 LEAD
+# The sample sound: its WAV came from the library into this song
+expect_instrument_sample 16 rgnano-test-tone.wav
+expect_project_sample rgnano-test-tone.wav
+# The table came along, in this song's first free table
+expect_instrument_param 0 table 0
+expect_table_command 0 0 1 VOLM 0040
+expect_no_error
+quit

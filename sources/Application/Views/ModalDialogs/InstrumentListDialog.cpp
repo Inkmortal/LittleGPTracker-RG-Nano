@@ -1,5 +1,6 @@
 #include "InstrumentListDialog.h"
 #include "NewProjectDialog.h"
+#include "SoundFilesDialog.h"
 #include "Application/AppWindow.h"
 #include "Application/Instruments/InstrumentBank.h"
 #include "Application/Instruments/SampleInstrument.h"
@@ -7,6 +8,7 @@
 #include "Application/Instruments/SynthInstrument.h"
 #include "Application/Instruments/MacroInstrument.h"
 #include "Application/Model/Phrase.h"
+#include "Application/Views/SoundPreview.h"
 #include "Application/Player/Player.h"
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 #include "Adapters/SDL/GUI/SDLGUIWindowImp.h"
@@ -31,9 +33,14 @@ static void renameCallback(View &v, ModalView &dialog) {
     }
 }
 
+static void soundFilesCallback(View &v, ModalView &dialog) {
+    if (dialog.GetReturnCode() > 0) {
+        ((InstrumentListDialog &)v).SoundsChanged();
+    }
+}
+
 InstrumentListDialog::InstrumentListDialog(View &view, int current)
-    : ModalView(view), selected_(current), top_(0), previewFor_(-1),
-      previewColumns_(0) {
+    : ModalView(view), selected_(current), top_(0) {
     if (selected_ < 0 || selected_ >= MAX_INSTRUMENT_COUNT)
         selected_ = 0;
     memset(activeMask_, 0, sizeof(activeMask_));
@@ -42,21 +49,8 @@ InstrumentListDialog::InstrumentListDialog(View &view, int current)
 
 InstrumentListDialog::~InstrumentListDialog() {}
 
-// Phrases that use each instrument (a phrase counts once)
 void InstrumentListDialog::countUsage() {
-    memset(usage_, 0, sizeof(usage_));
-    Phrase *phrase = viewData_->song_->phrase_;
-    for (int p = 0; p < PHRASE_COUNT; p++) {
-        bool seen[MAX_INSTRUMENT_COUNT];
-        memset(seen, 0, sizeof(seen));
-        for (int s = 0; s < 16; s++) {
-            unsigned char i = phrase->instr_[16 * p + s];
-            if (i < MAX_INSTRUMENT_COUNT && !seen[i]) {
-                seen[i] = true;
-                usage_[i]++;
-            }
-        }
-    }
+    CountInstrumentUsage(viewData_->song_, usage_);
 }
 
 bool InstrumentListDialog::playing(int instrument) {
@@ -87,19 +81,6 @@ void InstrumentListDialog::move(int delta) {
     isDirty_ = true;
 }
 
-static const char *typeTag(I_Instrument *instr) {
-    switch (instr->GetType()) {
-    case IT_SYNTH:
-        return "SYN";
-    case IT_MACRO:
-        return "MAC";
-    case IT_MIDI:
-        return "MID";
-    default:
-        return instr->IsEmpty() ? "---" : "SMP";
-    }
-}
-
 void InstrumentListDialog::DrawView() {
     SetWindow(LIST_WIDTH, LIST_HEIGHT);
     InstrumentBank *bank = viewData_->project_->GetInstrumentBank();
@@ -122,7 +103,7 @@ void InstrumentListDialog::DrawView() {
         char used[4] = "  ";
         if (usage_[i] > 0)
             sprintf(used, "%2d", usage_[i] > 99 ? 99 : usage_[i]);
-        sprintf(line, "%02X %s %-12s %s", i, typeTag(instr), name, used);
+        sprintf(line, "%02X %s %-12s %s", i, InstrumentTypeTag(instr), name, used);
         bool on = (i == selected_);
         props.invert_ = on;
         SetColor(on ? CD_CURSOR : (empty ? CD_MUTE : CD_NORMAL));
@@ -154,96 +135,8 @@ void InstrumentListDialog::DrawView() {
     SetColor(CD_NORMAL);
     DrawString(0, HINT_Y, "A open      START hear", props);
     DrawString(0, HINT_Y + 1, "SEL name    LB+A copy", props);
+    DrawString(0, HINT_Y + 2, "LB+START save/load", props);
     SetColor(CD_NORMAL);
-}
-
-// Min/max per column for the selected sound: two cycles of a synth, the
-// whole recording of a sample
-void InstrumentListDialog::cachePreview() {
-    previewFor_ = selected_;
-    previewColumns_ = (LIST_WIDTH - 2) * 8 - 4;
-    if (previewColumns_ > 200)
-        previewColumns_ = 200;
-    memset(previewMin_, 0, sizeof(previewMin_));
-    memset(previewMax_, 0, sizeof(previewMax_));
-    I_Instrument *instr =
-        viewData_->project_->GetInstrumentBank()->GetInstrument(selected_);
-    if (instr->GetType() == IT_SYNTH) {
-        float cycle[100];
-        ((SynthInstrument *)instr)->RenderCycle(cycle, 100);
-        int prev = 0;
-        for (int c = 0; c < previewColumns_; c++) {
-            float v = cycle[(c * 200 / previewColumns_) % 100];
-            int y = (int)(v * 100.0f);
-            if (y > 100)
-                y = 100;
-            if (y < -100)
-                y = -100;
-            if (c == 0)
-                prev = y;
-            // Join to the previous column so steep edges (square, saw) show
-            previewMin_[c] = (signed char)(y < prev ? y : prev);
-            previewMax_[c] = (signed char)(y > prev ? y : prev);
-            prev = y;
-        }
-        return;
-    }
-    if (instr->GetType() == IT_MACRO) {
-        // The model's own output, as on its SOUND page
-        float minv[200], maxv[200];
-        ((MacroInstrument *)instr)->RenderPreview(minv, maxv, previewColumns_);
-        for (int c = 0; c < previewColumns_; c++) {
-            int lo = (int)(minv[c] * 100.0f);
-            int hi = (int)(maxv[c] * 100.0f);
-            previewMin_[c] = (signed char)(lo < -100 ? -100 : lo);
-            previewMax_[c] = (signed char)(hi > 100 ? 100 : hi);
-        }
-        return;
-    }
-    if (instr->GetType() != IT_SAMPLE || instr->IsEmpty())
-        return;
-    int index = ((SampleInstrument *)instr)->GetSampleIndex();
-    SamplePool *pool = SamplePool::GetInstance();
-    if (index < 0 || index >= pool->GetNameListSize())
-        return;
-    SoundSource *source = pool->GetSource(index);
-    if (!source)
-        return;
-    int size = source->GetSize(-1);
-    int channels = source->GetChannelCount(-1);
-    short *samples = (short *)source->GetSampleBuffer(-1);
-    if (!samples || size <= 0)
-        return;
-    if (channels <= 0)
-        channels = 1;
-    int peak = 1;
-    int lo[200], hi[200];
-    for (int c = 0; c < previewColumns_; c++) {
-        int start = (int)(((long long)c * size) / previewColumns_);
-        int end = (int)(((long long)(c + 1) * size) / previewColumns_);
-        if (end <= start)
-            end = start + 1;
-        if (end > size)
-            end = size;
-        // Long samples: a strided scan per column is plenty for a picture
-        int stride = (end - start) / 64 + 1;
-        lo[c] = hi[c] = 0;
-        for (int i = start; i < end; i += stride) {
-            int s = samples[i * channels];
-            if (s < lo[c])
-                lo[c] = s;
-            if (s > hi[c])
-                hi[c] = s;
-        }
-        if (-lo[c] > peak)
-            peak = -lo[c];
-        if (hi[c] > peak)
-            peak = hi[c];
-    }
-    for (int c = 0; c < previewColumns_; c++) {
-        previewMin_[c] = (signed char)((lo[c] * 100) / peak);
-        previewMax_[c] = (signed char)((hi[c] * 100) / peak);
-    }
 }
 
 void InstrumentListDialog::drawGraphics() {
@@ -277,33 +170,9 @@ void InstrumentListDialog::drawGraphics() {
     imp->DrawRect(th);
 
     // Preview box
-    if (previewFor_ != selected_)
-        cachePreview();
-    int bx = ox, by = oy + PREVIEW_Y * 8 + 2;
-    int bw = (LIST_WIDTH - 1) * 8, bh = PREVIEW_ROWS * 8 - 4;
-    GUIColor frame = AppWindow::ThemeBlend(CD_BACKGROUND, CD_BORDER, 45);
-    GUIColor panel = AppWindow::ThemeColor(CD_BACKGROUND);
-    GUIColor trace = AppWindow::ThemeColor(CD_HILITE2);
-    GUIRect outer(bx, by, bx + bw, by + bh);
-    imp->SetColor(frame);
-    imp->DrawRect(outer);
-    GUIRect inner(bx + 1, by + 1, bx + bw - 1, by + bh - 1);
-    imp->SetColor(panel);
-    imp->DrawRect(inner);
-    int mid = by + bh / 2;
-    int half = bh / 2 - 3;
-    imp->SetColor(trace);
-    for (int c = 0; c < previewColumns_ && c < bw - 4; c++) {
-        int y0 = mid - (previewMax_[c] * half) / 100;
-        int y1 = mid - (previewMin_[c] * half) / 100;
-        if (y1 < y0) {
-            int t = y0;
-            y0 = y1;
-            y1 = t;
-        }
-        GUIRect col(bx + 2 + c, y0, bx + 3 + c, y1 + 1);
-        imp->DrawRect(col);
-    }
+    preview_.Draw(imp, viewData_->project_->GetInstrumentBank(), selected_, ox,
+                  oy + PREVIEW_Y * 8 + 2, (LIST_WIDTH - 1) * 8,
+                  PREVIEW_ROWS * 8 - 4);
 #endif
 }
 
@@ -367,6 +236,14 @@ void InstrumentListDialog::duplicate() {
     status_ = msg;
 }
 
+// A sound or kit came in from the library: counts and picture are stale
+void InstrumentListDialog::SoundsChanged() {
+    countUsage();
+    preview_.Invalidate();
+    status_.clear();
+    isDirty_ = true;
+}
+
 void InstrumentListDialog::Rename(const std::string &name) {
     I_Instrument *instr =
         viewData_->project_->GetInstrumentBank()->GetInstrument(selected_);
@@ -383,6 +260,10 @@ void InstrumentListDialog::ProcessButtonMask(unsigned short mask,
         return;
     if (mask == (EPBM_L | EPBM_A)) {
         duplicate();
+        return;
+    }
+    if (mask == (EPBM_L | EPBM_START)) {
+        DoModal(new SoundFilesDialog(*this, selected_), soundFilesCallback);
         return;
     }
     if (mask == EPBM_UP) {
@@ -434,6 +315,6 @@ void InstrumentListDialog::CustomizeContextOverlay(
     cmd3 = "START hear it, again stop";
     cmd4 = "SEL give it a name";
     cmd5 = "LB+A copy to a free slot";
-    cmd6 = "number = phrases using it";
-    cmd7 = "green dot = playing now";
+    cmd6 = "LB+START save/load sounds";
+    cmd7 = "number = phrases using it";
 }

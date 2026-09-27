@@ -291,6 +291,7 @@ AppWindow::AppWindow(I_GUIWindowImp &imp) : GUIWindow(imp) {
     _eqView = 0;
     _limiterView = 0;
     _scaleView = 0;
+    _rackView = 0;
     _grooveView = 0;
     _closeProject = 0;
     _loadAfterSaveAsProject = 0;
@@ -683,9 +684,21 @@ void AppWindow::LoadProject(const Path &p) {
     _limiterView->AddObserver(*this);
     _scaleView = new ScaleView((*this), _viewData);
     _scaleView->AddObserver(*this);
+    _rackView = new RackView((*this), _viewData);
+    _rackView->AddObserver(*this);
 
     _currentView = _songView;
     _currentView->OnFocus();
+
+    // A new song whose template kit didn't load says why
+    std::string templateError =
+        project->GetInstrumentBank()->TakeTemplateError();
+    if (!templateError.empty()) {
+        static char message[48];
+        snprintf(message, sizeof(message), "Your kit: %s",
+                 templateError.c_str());
+        _songView->SetNotification(message);
+    }
 
     if (!playerOK) {
         MessageBox *mb =
@@ -725,6 +738,7 @@ void AppWindow::CloseProject() {
     SAFE_DELETE(_projectView);
     SAFE_DELETE(_instrumentView);
     SAFE_DELETE(_tableView);
+    SAFE_DELETE(_rackView);
 
     UIController *controller = UIController::GetInstance();
     controller->Reset();
@@ -931,6 +945,8 @@ const char *AppWindow::GetCurrentViewName() const {
         return "limit";
     if (_currentView == _scaleView)
         return "scale";
+    if (_currentView == _rackView)
+        return "rack";
     if (_currentView == _nullView)
         return "null";
     return "unknown";
@@ -1181,6 +1197,9 @@ void AppWindow::Update(Observable &o, I_ObservableData *d) {
             break;
         case VT_SCALE:
             _currentView = _scaleView;
+            break;
+        case VT_RACK:
+            _currentView = _rackView;
             break;
         }
         _currentView->SetFocus(*vt);

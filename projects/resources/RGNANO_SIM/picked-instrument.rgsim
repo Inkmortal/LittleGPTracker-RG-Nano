@@ -1,0 +1,52 @@
+# The sound you just built or picked is the one your next note uses: after
+# the Instrument screen, a new phrase note gets that instrument, not the
+# last one used in the phrase.
+route boot.new_project_random
+expect_view song
+press a 80
+down n
+press r 80
+up n
+wait 150
+expect_view chain
+press a 80
+down n
+press r 80
+up n
+wait 150
+expect_view phrase
+press a 80
+wait 100
+expect_phrase_instrument 0 0 00
+# Edit instrument 02: RB+Right, then B+Right twice
+down n
+press r 80
+up n
+wait 150
+expect_view instrument
+down b
+press r 80
+up b
+wait 100
+down b
+press r 80
+up b
+wait 100
+expect_screen_text Instrument 02
+down n
+press l 80
+up n
+wait 150
+expect_view phrase
+press d 80
+press a 80
+wait 100
+expect_phrase_instrument 0 1 02
+# Back on the Phrase screen without visiting a sound: the phrase's last
+# instrument carries on as before
+press d 80
+press a 80
+wait 100
+expect_phrase_instrument 0 2 02
+expect_no_error
+quit

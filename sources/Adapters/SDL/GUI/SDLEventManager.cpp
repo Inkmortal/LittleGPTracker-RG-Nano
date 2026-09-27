@@ -881,8 +881,8 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 	} else if (command.op=="expect_bookmark" || command.op=="expect_track_muted") {
 		// <row or channel> yes|no
 		iss >> command.value >> command.arg;
-	} else if (command.op=="expect_phrase_note") {
-		// <phrase> <row> <midi note, or -- for none>
+	} else if (command.op=="expect_phrase_note" || command.op=="expect_phrase_instrument") {
+		// <phrase> <row> <midi note / hex instrument, or -- for none>
 		iss >> command.value >> command.value2 >> command.arg;
 	} else if (command.op=="expect_phrase_in_scale") {
 		// <phrase> <minimum number of notes>: every note fits the Key/Scale
@@ -1390,7 +1390,8 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_player" || command.op=="expect_notes_repeat" ||
 	           command.op=="expect_project_param" || command.op=="sim_set_project_param" ||
 	           command.op=="expect_bookmark" || command.op=="expect_track_muted" ||
-	           command.op=="expect_phrase_note" || command.op=="expect_mixer_level" ||
+	           command.op=="expect_phrase_note" || command.op=="expect_phrase_instrument" ||
+	           command.op=="expect_mixer_level" ||
 	           command.op=="sim_set_mixer_level" || command.op=="expect_phrase_in_scale") {
 		if (!RunSimSequencerCheck(command.op,command.arg,command.arg2,command.value,command.value2)) {
 			FailSimScript("sequencer check failed");
@@ -1401,14 +1402,14 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			FailSimScript("phrase command setup failed");
 			return;
 		}
-	} else if (command.op=="sim_set_table_command") {
-		if (!SimSetTableCommand(command.value,command.value2,atoi(command.arg.c_str()),command.arg2,command.arg3)) {
-			FailSimScript("table command setup failed");
-			return;
-		}
 	} else if (command.op=="expect_table_command") {
 		if (!ExpectSimTableCommand(command.value,command.value2,atoi(command.arg.c_str()),command.arg2,command.arg3)) {
 			FailSimScript("table command assertion failed");
+			return;
+		}
+	} else if (command.op=="sim_set_table_command") {
+		if (!SimSetTableCommand(command.value,command.value2,atoi(command.arg.c_str()),command.arg2,command.arg3)) {
+			FailSimScript("table command setup failed");
 			return;
 		}
 	} else if (command.op=="expect_groove_step") {
@@ -1742,7 +1743,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 {
 	struct Edge { const char *from; int key; const char *to; };
 	static const Edge edges[]={
-		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},
+		{"song",SDLK_u,"project"},{"song",SDLK_d,"mixer"},{"song",SDLK_r,"chain"},{"song",SDLK_l,"rack"},
 		{"project",SDLK_d,"song"},{"mixer",SDLK_u,"song"},{"mixer",SDLK_d,"fx"},{"fx",SDLK_u,"mixer"},{"fx",SDLK_r,"eq"},{"eq",SDLK_l,"fx"},{"eq",SDLK_r,"limit"},{"limit",SDLK_l,"eq"},{"project",SDLK_r,"scale"},{"scale",SDLK_l,"project"},
 		{"chain",SDLK_l,"song"},{"chain",SDLK_r,"phrase"},
 		{"phrase",SDLK_l,"chain"},{"phrase",SDLK_r,"instrument"},
@@ -1751,11 +1752,11 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		{"instrument",SDLK_l,"phrase"},{"instrument",SDLK_d,"table"},
 	};
 	const int count=sizeof(edges)/sizeof(Edge);
-	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq","limit","scale"};
-	const int nodeCount=12;
-	int prev[12];
-	int via[12];
-	bool seen[12];
+	const char *nodes[]={"song","project","mixer","chain","phrase","instrument","table","groove","fx","eq","limit","scale","rack"};
+	const int nodeCount=13;
+	int prev[13];
+	int via[13];
+	bool seen[13];
 	int start=-1;
 	int goal=-1;
 	for (int i=0;i<nodeCount;i++) {
@@ -1766,7 +1767,7 @@ static const char *simNextHop(const std::string &from, const std::string &to, in
 		if (to==nodes[i]) goal=i;
 	}
 	if (start<0 || goal<0) return 0;
-	int queue[12];
+	int queue[13];
 	int head=0;
 	int tail=0;
 	queue[tail++]=start;
@@ -2989,6 +2990,14 @@ bool SDLEventManager::RunSimSequencerCheck(const std::string &op, const std::str
 		int expected=(arg=="--")?0xFF:atoi(arg.c_str());
 		bool ok=(actual==expected);
 		Trace::Log("RGNANO_SIM","expect_phrase_note phrase=%02X row=%d actual=%d expected=%d => %s",value,value2,actual,expected,ok?"match":"mismatch");
+		return ok;
+	}
+	if (op=="expect_phrase_instrument") {
+		if (value<0 || value>=PHRASE_COUNT || value2<0 || value2>=16) return false;
+		int actual=viewData->song_->phrase_->instr_[16*value+value2];
+		int expected=(arg=="--")?0xFF:(int)strtol(arg.c_str(),0,16);
+		bool ok=(actual==expected);
+		Trace::Log("RGNANO_SIM","expect_phrase_instrument phrase=%02X row=%d actual=%02X expected=%02X => %s",value,value2,actual,expected,ok?"match":"mismatch");
 		return ok;
 	}
 	if (op=="expect_phrase_in_scale") {

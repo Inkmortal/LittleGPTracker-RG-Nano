@@ -96,9 +96,29 @@ The first row, `type`, switches the slot between **synth**, **sample** and **mac
 | Start | hear it; Start again stops |
 | Select | give it a name with the on-screen keyboard (clear the name to go back to the automatic one) |
 | LB + A | copy it into the next free slot, to make a variation |
+| LB + Start | **My sounds**: save or load sounds and kits (below) |
 | B | back |
 
 <br clear="right">
+
+## Rack
+
+**RB + Left** on the Song opens the Rack: every sound of the song on one screen, with a picture of the selected one and a one-octave keyboard in the song's scale. Hold **A** to play the sound, **A + Left/Right** to step through the scale, **A + Up/Down** for octaves, and **Select** to browse presets, samples and your saved sounds by ear, **Start** for a riff that suits the sound. **RB + Right** edits the sound (**RB + Left** on the Instrument screen comes back), **RB + Down** goes to a phrase to write notes with it, **LB + Start** saves and loads sounds and kits. See [Build Your Sounds First](Build-Your-Sounds-First).
+
+## My sounds
+
+**LB + Start** on the instrument list opens your own sound library. It lives on the card in `Applications/Sounds`, outside any song, so what you save there is there in every song.
+
+| Choice | Does |
+| --- | --- |
+| Save sound 05 | keeps the selected sound as a file, under a name you give it (a sample sound takes a copy of its WAV) |
+| Load a sound into 05 | puts one of your saved sounds in the selected slot |
+| Save this kit | keeps all of this song's sounds, each in its slot |
+| Load a kit | replaces all of this song's sounds with a saved kit (asks first) |
+| New songs: this kit | every new song starts with this song's sounds instead of the starter kit |
+| New songs: starter kit | back to the built-in starter kit |
+
+Up/Down picks, **A** chooses, **B** goes back one step (from a list to the menu, from the menu to the instrument list). A sound's table comes with it.
 
 ## Instrument (sample)
 

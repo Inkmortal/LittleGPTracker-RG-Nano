@@ -1,4 +1,5 @@
 #include "ScaleView.h"
+#include "KeyboardStrip.h"
 #include "Application/AppWindow.h"
 #include "Application/Instruments/SampleInstrument.h"
 #include "Application/Model/Project.h"
@@ -27,11 +28,6 @@
 #define WHITE_W 32
 #define BLACK_W 20
 #define BLACK_H 34
-
-// Which white key each note sits on, or the white key left of a black one
-static const int whiteIndex[12] = {0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6};
-static const bool isBlack[12] = {false, true,  false, true,  false, false,
-                                 true,  false, true,  false, true,  false};
 
 ScaleView::ScaleView(GUIWindow &w,ViewData *data):FieldView(w,data) {
 	viewType_=VT_SCALE ;
@@ -209,8 +205,8 @@ void ScaleView::DrawView() {
 		bool cursor=onKeys_ && n==keyCursor_ ;
 		SetColor(cursor?CD_CURSOR:(in?CD_NORMAL:CD_MUTE)) ;
 		props.invert_=cursor ;
-		int col=isBlack[n]?(4+4*whiteIndex[n]):(2+4*whiteIndex[n]) ;
-		DrawString(col,isBlack[n]?BLACK_LABEL_ROW:WHITE_LABEL_ROW,name,props) ;
+		int col=KeyboardIsBlack[n]?(4+4*KeyboardWhiteIndex[n]):(2+4*KeyboardWhiteIndex[n]) ;
+		DrawString(col,KeyboardIsBlack[n]?BLACK_LABEL_ROW:WHITE_LABEL_ROW,name,props) ;
 		props.invert_=false ;
 	}
 
@@ -278,58 +274,8 @@ void ScaleView::DrawView() {
 void ScaleView::drawGraphics() {
 #if defined(PLATFORM_RGNANO) || defined(PLATFORM_RGNANO_SIM)
 	SDLGUIWindowImp *imp=(SDLGUIWindowImp *)w_.GetImpWindow() ;
-	Project *project=viewData_->project_ ;
-	int key=project->GetScaleKey() ;
-	int m=mask() ;
-	const int top=KEYS_TOP_ROW*8 ;
-	const int h=KEYS_ROWS*8 ;
-	GUIColor background=AppWindow::ThemeColor(CD_BACKGROUND) ;
-	GUIColor whiteOff=AppWindow::ThemeBlend(CD_BACKGROUND,CD_NORMAL,40) ;
-	GUIColor blackOff=AppWindow::ThemeBlend(CD_BACKGROUND,CD_NORMAL,10) ;
-	GUIColor whiteOn=AppWindow::ThemeColor(CD_HILITE2) ;
-	GUIColor blackOn=AppWindow::ThemeBlend(CD_BACKGROUND,CD_HILITE2,70) ;
-	GUIColor root=AppWindow::ThemeColor(CD_CURSOR) ;
-	GUIColor cursor=AppWindow::ThemeColor(CD_CURSOR) ;
-
-	imp->SetColor(background) ;
-	GUIRect area(KEYS_X-2,top-2,KEYS_X+7*WHITE_W+2,top+h+6) ;
-	imp->DrawRect(area) ;
-
-	for (int pass=0;pass<2;pass++) {
-		for (int n=0;n<12;n++) {
-			if (isBlack[n]!=(pass==1)) continue ;  // white keys first
-			bool in=(key>=0) && ((m>>((n-key+12)%12))&1) ;
-			bool isRoot=(key==n) ;
-			GUIColor fill=whiteOff ;
-			if (isRoot) fill=root ;
-			else if (in) fill=isBlack[n]?blackOn:whiteOn ;
-			else fill=isBlack[n]?blackOff:whiteOff ;
-			int x0,x1,y1 ;
-			if (isBlack[n]) {
-				int centre=KEYS_X+WHITE_W*(whiteIndex[n]+1) ;
-				x0=centre-BLACK_W/2 ;
-				x1=centre+BLACK_W/2 ;
-				y1=top+BLACK_H ;
-				// A dark edge so a black key stands out on lit white keys
-				imp->SetColor(background) ;
-				GUIRect edge(x0-1,top,x1+1,y1+1) ;
-				imp->DrawRect(edge) ;
-			} else {
-				x0=KEYS_X+WHITE_W*whiteIndex[n]+1 ;
-				x1=KEYS_X+WHITE_W*(whiteIndex[n]+1)-1 ;
-				y1=top+h ;
-			}
-			imp->SetColor(fill) ;
-			GUIRect body(x0,top,x1,y1) ;
-			imp->DrawRect(body) ;
-			if (onKeys_ && n==keyCursor_) {
-				// Cursor: a bar under the key (under a black key: on it)
-				imp->SetColor(cursor) ;
-				int barTop=isBlack[n]?y1+2:top+h+2 ;
-				GUIRect bar(x0+2,barTop,x1-2,barTop+3) ;
-				imp->DrawRect(bar) ;
-			}
-		}
-	}
+	KeyboardStrip keys={KEYS_X,KEYS_TOP_ROW*8,WHITE_W,KEYS_ROWS*8,BLACK_W,BLACK_H} ;
+	DrawKeyboardStrip(imp,keys,viewData_->project_->GetScaleKey(),mask(),
+	                  onKeys_?keyCursor_:-1) ;
 #endif
 }

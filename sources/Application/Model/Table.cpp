@@ -18,6 +18,40 @@ void Table::Reset() {
 	SYS_MEMSET(param3_,0,sizeof(param3_[0])*TABLE_STEPS) ;
 } ;
 
+void Table::Save(TiXmlNode *node) {
+	ushort p1[TABLE_STEPS],p2[TABLE_STEPS],p3[TABLE_STEPS] ;
+	for (int i=0;i<TABLE_STEPS;i++) {
+		p1[i]=Swap16(param1_[i]) ;
+		p2[i]=Swap16(param2_[i]) ;
+		p3[i]=Swap16(param3_[i]) ;
+	}
+	saveHexBuffer(node,"CMD1",cmd1_,TABLE_STEPS) ;
+	saveHexBuffer(node,"PARAM1",p1,TABLE_STEPS) ;
+	saveHexBuffer(node,"CMD2",cmd2_,TABLE_STEPS) ;
+	saveHexBuffer(node,"PARAM2",p2,TABLE_STEPS) ;
+	saveHexBuffer(node,"CMD3",cmd3_,TABLE_STEPS) ;
+	saveHexBuffer(node,"PARAM3",p3,TABLE_STEPS) ;
+}
+
+void Table::Restore(TiXmlElement *element) {
+	TiXmlElement *sub=element->FirstChildElement() ;
+	while (sub) {
+		const char *value=sub->Value() ;
+		if (!strcmp("CMD1",value)) restoreHexBuffer(sub,(unsigned char *)cmd1_) ;
+		if (!strcmp("PARAM1",value)) restoreHexBuffer(sub,(unsigned char *)param1_) ;
+		if (!strcmp("CMD2",value)) restoreHexBuffer(sub,(unsigned char *)cmd2_) ;
+		if (!strcmp("PARAM2",value)) restoreHexBuffer(sub,(unsigned char *)param2_) ;
+		if (!strcmp("CMD3",value)) restoreHexBuffer(sub,(unsigned char *)cmd3_) ;
+		if (!strcmp("PARAM3",value)) restoreHexBuffer(sub,(unsigned char *)param3_) ;
+		sub=sub->NextSiblingElement() ;
+	}
+	for (int i=0;i<TABLE_STEPS;i++) {
+		param1_[i]=Swap16(param1_[i]) ;
+		param2_[i]=Swap16(param2_[i]) ;
+		param3_[i]=Swap16(param3_[i]) ;
+	}
+}
+
 void Table::Copy(const Table &other) {
 	SYS_MEMCPY(cmd1_,other.cmd1_,sizeof(cmd1_[0])*TABLE_STEPS) ;
 	SYS_MEMCPY(param1_,other.param1_,sizeof(param1_[0])*TABLE_STEPS) ;
