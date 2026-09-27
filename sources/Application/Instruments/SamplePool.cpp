@@ -18,7 +18,14 @@ SamplePool::SamplePool() {
 		wav_[i]=NULL ;
 	} ;
 	count_=0 ;
+	lastLoadTooBig_=false ;
 } ;
+
+bool SamplePool::TakeLoadTooBig() {
+	bool tooBig=lastLoadTooBig_ ;
+	lastLoadTooBig_=false ;
+	return tooBig ;
+}
 
 SamplePool::~SamplePool() {
 	for (int i=0;i<MAX_PIG_SAMPLES;i++) {
@@ -142,13 +149,20 @@ bool SamplePool::loadSample(const char *path, bool showStatus) {
     Path wavPath(path);
     WavFile *wave=WavFile::Open(path) ;
 	if (wave) {
+		// The whole sample lives in RAM: a long one may not fit
+		bool loaded=wave->GetBuffer(0,wave->GetSize(-1)) ;
+		wave->Close() ;
+		if (!loaded) {
+			delete wave ;
+			lastLoadTooBig_=true ;
+			Trace::Error("Sample %s doesn't fit in memory",wavPath.GetName().c_str()) ;
+			return false ;
+		}
 		wav_[count_]=wave ;
 		const std::string name=wavPath.GetName() ;
 		names_[count_]=(char*)SYS_MALLOC(name.length()+1) ;
 		strcpy(names_[count_],name.c_str()) ;
 		count_++ ;
-		wave->GetBuffer(0,wave->GetSize(-1)) ;
-		wave->Close() ;
 		return true ;
 	} else {
 		Trace::Error("Failed to load samples %s",wavPath.GetName().c_str()) ;
@@ -210,14 +224,18 @@ int SamplePool::ImportSample(Path &path) {
 
 	// now load the sample
 
-	bool status=loadSample(dstPath.GetPath().c_str()) ;
+	if (!loadSample(dstPath.GetPath().c_str())) {
+		// Don't leave a copy the song would fail to load every time
+		FileSystem::GetInstance()->Delete(dstPath.GetPath().c_str()) ;
+		return -1 ;
+	}
 
 	SetChanged() ;
 	SamplePoolEvent ev ;
 	ev.index_=count_-1 ;
 	ev.type_=SPET_INSERT ;
 	NotifyObservers(&ev) ;
-	return status?(count_-1):-1 ;
+	return count_-1 ;
 };
 
 bool SamplePool::EnsureProjectSampleDir() {

@@ -234,6 +234,8 @@ void ImportSampleDialog::import(Path &element) {
 		};
 	} else {
 		Trace::Error("failed to import sample") ;
+		// Shown on the sample's row, like the root suggestion
+		strcpy(importStatus_,pool->TakeLoadTooBig() ? "too long: no memory" : "import failed") ;
 	};
 	isDirty_=true ;
 } ;

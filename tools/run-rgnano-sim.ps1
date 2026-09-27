@@ -6,6 +6,8 @@ param(
   [switch]$SeedLofiFixture,
   # Copy the shipped sample packs (projects/resources/samples) into the sim
   [switch]$SeedSamplePacks,
+  # A WAV longer than the RG Nano's RAM can hold (sample-too-long.rgsim)
+  [switch]$SeedLongSample,
   [switch]$ResetLastProject,
   # Copy a shipped demo song (e.g. JadeSword) into the sim and auto-load it
   [string]$OpenDemo = "",
@@ -84,6 +86,32 @@ function Write-TestWav {
       $sample = [Int16]([Math]::Sin((2 * [Math]::PI * 440 * $i) / $sampleRate) * 12000)
       $writer.Write($sample)
     }
+  } finally {
+    $writer.Dispose()
+  }
+}
+
+# Silent 44.1 kHz stereo WAV of a given data size (the header is what the
+# app reads; the data is zeros, so writing it is fast)
+function Write-LongWav {
+  param([string]$Path, [int]$DataBytes)
+  $stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::Create)
+  $writer = [System.IO.BinaryWriter]::new($stream)
+  try {
+    $writer.Write([System.Text.Encoding]::ASCII.GetBytes("RIFF"))
+    $writer.Write([int](36 + $DataBytes))
+    $writer.Write([System.Text.Encoding]::ASCII.GetBytes("WAVEfmt "))
+    $writer.Write([int]16)
+    $writer.Write([Int16]1)
+    $writer.Write([Int16]2)
+    $writer.Write([int]44100)
+    $writer.Write([int](44100 * 4))
+    $writer.Write([Int16]4)
+    $writer.Write([Int16]16)
+    $writer.Write([System.Text.Encoding]::ASCII.GetBytes("data"))
+    $writer.Write([int]$DataBytes)
+    $writer.Flush()
+    $stream.SetLength(44 + $DataBytes)
   } finally {
     $writer.Dispose()
   }
@@ -213,6 +241,14 @@ if ($SeedSampleFixture) {
   Write-TestWav -Path (Join-Path $sampleDir "rgnano-test-tone.wav")
 }
 
+if ($SeedLongSample) {
+  # 44 MB of audio (about 4 min 20 s of stereo): more than the app's RAM on
+  # the device (RGNANOSIM_DEVICE_PROCESS_KB). Named to sort first; the other
+  # samples stay (later cases use them) and it is removed after the run.
+  $longSample = Join-Path $sampleDir "aaa-long-take.wav"
+  Write-LongWav -Path $longSample -DataBytes (44 * 1024 * 1024)
+}
+
 if ($SeedLofiFixture) {
   Write-LofiWav -Path (Join-Path $sampleDir "lofi-kick.wav") -Kind "kick"
   Write-LofiWav -Path (Join-Path $sampleDir "lofi-snare.wav") -Kind "snare"
@@ -304,6 +340,10 @@ if ($quotedArgs.Count -gt 0) {
 }
 
 $exitCode = $process.ExitCode
+
+if ($SeedLongSample -and (Test-Path -LiteralPath $longSample)) {
+  Remove-Item -LiteralPath $longSample -Force
+}
 
 if ($ArtifactsDir) {
   $logPath = Join-Path $exeDir "rgnano-sim.log"

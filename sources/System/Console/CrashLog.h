@@ -16,6 +16,8 @@ public:
 	static void Dump(int fd);
 	// Resident memory of the process in KB, -1 if unknown
 	static int MemoryKB();
+	// The simulator reports what the device's RSS would be instead
+	static void SetMemoryProbe(int (*probe)());
 	static unsigned long UptimeSeconds();
 	// Device: SIGSEGV/SIGBUS/SIGILL/SIGFPE/SIGABRT write a report to path
 	static void InstallSignalHandlers(const char *path);

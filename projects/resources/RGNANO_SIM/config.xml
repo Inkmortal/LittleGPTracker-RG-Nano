@@ -1,7 +1,6 @@
 <CONFIG>
 	<ROOTFOLDER value="./rgnano-sim-data/tracks"/>
 	<SAMPLELIB value="./rgnano-sim-data/samples"/>
-	<AUDIOAPI value="MMSYSTEM"/>
 	<AUDIOBUFFERSIZE value="512"/>
 	<SCREENMULT value="1"/>
 	<CHANNELMODE value="SPLIT"/>
