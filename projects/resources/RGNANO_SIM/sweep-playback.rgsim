@@ -11,6 +11,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer none
+model_snap
 down n
 press s 80
 up n
@@ -39,6 +40,7 @@ wait 150
 wait_stable 2500
 expect_view chain
 expect_layer none
+model_snap
 down n
 press s 80
 up n
@@ -71,6 +73,7 @@ wait 150
 wait_stable 2500
 expect_view phrase
 expect_layer none
+model_snap
 down n
 press s 80
 up n
@@ -97,6 +100,7 @@ wait 150
 wait_stable 2500
 expect_view mixer
 expect_layer none
+model_snap
 down n
 press s 80
 up n
@@ -133,6 +137,7 @@ wait 150
 wait_stable 2500
 expect_view instrument
 expect_layer none
+model_snap
 down n
 press s 80
 up n
@@ -157,6 +162,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer none
+model_snap
 down n
 press s 80
 up n
@@ -179,6 +185,7 @@ wait 150
 wait_stable 2500
 expect_view song
 expect_layer none
+model_snap
 down n
 press s 80
 up n
@@ -217,6 +224,7 @@ wait 150
 wait_stable 2500
 expect_view instrument
 expect_layer none
+model_snap
 down n
 press s 80
 up n

@@ -258,23 +258,39 @@ The controls are documented in the guide ([Controls](rgnano-wiki/Controls.md)) a
 ## Key Sweep (every key on every screen)
 
 `tools/sweep/table.py` lists, for every screen, dialog and overlay (Song,
-Chain, Phrase, Instrument, Table, Groove, Project, Scale, Mixer, FX, EQ,
-Limit, Live mode, track moving, the helper, the guide, the power menu, the
-instrument list), what every key and two-key combo must do: nothing, change
-the screen, go to another screen, open something (and how to close it), or
-play. A key the table doesn't list must do nothing visible.
-`tools/sweep/make_sweep.py` turns it into `sweep-<screen>.rgsim` scripts
-(the suite regenerates them each run), one case per key, each starting from
-the Afterglow demo reloaded and reached with real key presses. Besides the
-promised effect, every case checks: no text cut off at the screen edge, a
-cursor on screen, nothing left playing after a stop (the sound must die
-away), and a way back out of whatever opened. `sweep-playback` opens the
-helper, power menu, guide and instrument list while the song plays and
-checks nothing draws over them. A hang fails the case through the hang
-watchdog.
+Live mode, track moving, Chain, Phrase, Instrument, the instrument list,
+Table, Groove, Project, Scale, Mixer, FX, EQ, Limit, the Rack, its sound
+browser and My sounds dialog, the command picker, the render-to-sample
+dialog, the helper, the guide, the power menu), what every key and two-key
+combo must do: nothing (`N`), change the screen (`C`), go to another screen
+(`V:<view>`), open something and how to close it (`L:<layer>` /
+`A:<layer>` for one that never holds still, e.g. a progress bar), or play
+(`P`). `C:tail` and `C:preview` are for a key that starts a sound with its
+own envelope (auditioning a preset, opening a list that previews its first
+entry): the screen assertions are the same as `C`, but silence isn't
+asserted on a fixed clock, since a preset's own release time decides that,
+not the test. A key the table doesn't list defaults to `N` unless the
+modifier held first already does something on its own (checked from the
+`SCREENS[name]["keys"]` entry for that key alone) — then it is `X`
+(something visible may happen; not asserted further), because that
+modifier key fires its own handler for the instant it is held before the
+second key joins it (see `effect_of` in `make_sweep.py`).
+
+`tools/sweep/make_sweep.py` turns the table into `sweep-<screen>.rgsim`
+scripts (the suite regenerates them each run), one case per key/combo, each
+starting from the Afterglow demo reloaded and reached with real key
+presses. `--quick` writes `sweep-quick-<screen>.rgsim` instead: every
+single key, no two-key combos (the quick tier). Besides the promised
+effect, every case checks: no text cut off at the screen edge
+(`expect_no_clipping`), a cursor on screen, nothing left playing after a
+stop (the sound must die away), a way back out of whatever opened, and
+**exact state** (below). `sweep-playback` opens the helper, power menu,
+guide and instrument list while the song plays and checks nothing draws
+over them. A hang fails the case through the hang watchdog.
 
 ```powershell
-python tools/sweep/make_sweep.py
+python tools/sweep/make_sweep.py              # every sweep-<screen>.rgsim
+python tools/sweep/make_sweep.py --quick       # every sweep-quick-<screen>.rgsim
 .\tools\run-rgnano-sim.ps1 -Script .\projects\resources\RGNANO_SIM\sweep-song.rgsim -Mute -OpenDemo Afterglow -ArtifactsDir .\sim-artifacts-sweep\sweep-song
 python tools/sweep/report.py -v    # failures with the screen text
 ```
@@ -289,7 +305,85 @@ Sweep script commands: `case <name>`, `soft_fail on`,
 nothing open), `wait_stable <max ms>` (until the screen holds still),
 `snap <name>` / `expect_changed <name>` / `expect_unchanged <name>`
 (pixel compare, no files), `expect_layer none|helper|power|power+help|confirm|debug|modal|modal:<Dialog>`,
-`expect_cursor`, `expect_no_clipping`.
+`expect_cursor`, `expect_no_clipping`, `button <Name>` (a dialog's button
+row: presses Right until it's selected), `model_snap` / `sound_snap` /
+`state_record [noscreen]` (exact state, below).
+
+### Exact state, not just "something happened"
+
+Checking that a key changes *some* pixel isn't enough to catch a key doing
+the *wrong* thing. Every sweep case ends with `state_record`, which writes
+one JSON line to `sweep-states.jsonl`: the view, layer, cursor, the last
+notification, what's playing (`sound_snap`), every line of the screen and
+of the song model that changed since the case began (`model_snap`, taken
+right after the case's `enter` sequence). `noscreen` drops the screen/pixel
+fields for a case whose timing decides what's drawn (an animated dialog, a
+sound still auditioning) — the rest of the record still has to match.
+`tools/sweep/states.py <artifacts-root>` compares every case's record with
+`tests/golden/sweep/<script>.jsonl` and prints exactly what differs (a
+screen line, a model line, the notification, the cursor); `--update`
+accepts the current run as the new goldens. The suite runs this after every
+sweep script and fails the tier if anything differs.
+
+```powershell
+python tools/sweep/states.py .\sim-artifacts-suite            # compare
+python tools/sweep/states.py .\sim-artifacts-suite --update   # accept
+```
+
+## Golden Audio (every preset, every shipped sample, every demo)
+
+`tools/golden_audio.py` renders every SYNTH preset (every engine: synth,
+wav, fm4, hyper, drum, phys), every MACRO preset, every sample the install
+ships, and the first seconds of every demo song, on the device's own code
+under `qemu-arm` (`tools/dsp-harness/golden_audio.sh` +
+`tools/dsp-harness/audio_golden_check.cpp` / `engine_room_check.cpp`,
+deterministic — same code, same numbers, every run). Each render is
+fingerprinted (level envelope, peak, onset/length, left/right balance,
+octave-band energy, brightness/spectral centroid, pitch) and compared with
+`tests/golden/audio.json`. A failure names the sound and how it changed
+("level -3.1 dB", "pitch 261.6 -> 277.2 Hz (+100 cents)", "length 1450 ->
+900 ms") and writes `build/golden-audio/diff/<id>-before.wav` /
+`-after.wav` to listen to.
+
+```powershell
+python tools\golden_audio.py                 # render + compare (~30s, a few hundred sounds)
+python tools\golden_audio.py --update         # render + accept as golden, print what changed
+python tools\golden_audio.py --only fm4       # just ids containing fm4
+python tools\golden_audio.py --no-render      # compare the last render again
+```
+
+## Tiers and Running in Parallel
+
+`tools/run-rgnano-sim-suite.ps1 -Tier quick|full` (default `full`):
+
+- **`quick`**: golden audio, the key workflow cases (`smoke`,
+  `basic-music-workflow`, `key-grammar`, `back-out-everywhere`, the Rack,
+  the sample browser, live mode, undo, the command picker, ...), and the
+  quick key sweep (every single key on every screen, no combos). A few
+  minutes.
+- **`full`**: everything, including every two-key combo on every screen
+  and `first-song-walkthrough`. ~15-20 minutes depending on `-Jobs`.
+
+```powershell
+.\tools\run-rgnano-sim-suite.ps1 -Tier quick              # a few minutes
+.\tools\run-rgnano-sim-suite.ps1                          # full tier
+.\tools\run-rgnano-sim-suite.ps1 -Jobs 4                  # cap simulators at once
+.\tools\run-rgnano-sim-suite.ps1 -NoAudio                 # skip golden audio (faster iteration)
+.\tools\run-rgnano-sim-suite.ps1 -UpdateGoldens            # accept sounds + key results as new goldens
+.\tools\run-rgnano-sim-suite.ps1 -Only smoke,sweep-song    # just these cases/scripts
+```
+
+Cases run several at once, each in its own sandbox
+(`build\sim-par\w<slot>`: its own `rgnano-sim-data`, log, `last_project`,
+screenshots and a copy of the exe), so they never share files. A case that
+needs the one before it (e.g. reopening a song it just saved) runs right
+after it in the same sandbox (see `$after` in the suite script). `-Jobs`
+defaults to half the CPU cores, then lowered if that would use more than
+half the machine's free RAM: each simulator's actual Windows working-set
+peak is recorded (`host-peak-kb.txt` per case) and the next run sizes
+`-Jobs` from the worst one seen, so the cap adapts instead of guessing.
+Don't run two simulators outside the suite's sandboxing at once — they'd
+share the top-level `rgnano-sim-data`, log and `last_project`.
 
 ## Scripted Smoke Tests
 

@@ -818,7 +818,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		}
 	} else if (command.op=="sim_save_kit") {
 		iss >> command.arg;
-	} else if (command.op=="expect_no_error" || command.op=="expect_skin_frame_clean" || command.op=="reset_audio_stats" || command.op=="end_audio_capture" || command.op=="sim_save_project" || command.op=="quit" || command.op=="expect_no_soft_failures" || command.op=="sim_reload_project" || command.op=="expect_cursor" || command.op=="expect_no_clipping") {
+	} else if (command.op=="expect_no_error" || command.op=="model_snap" || command.op=="sound_snap" || command.op=="expect_skin_frame_clean" || command.op=="reset_audio_stats" || command.op=="end_audio_capture" || command.op=="sim_save_project" || command.op=="quit" || command.op=="expect_no_soft_failures" || command.op=="sim_reload_project" || command.op=="expect_cursor" || command.op=="expect_no_clipping") {
 	} else if (command.op=="expect_memory_below") {
 		iss >> command.value;
 	} else if (command.op=="expect_colors" || command.op=="expect_audio_activity" || command.op=="expect_audio_silence" || command.op=="expect_audio_peak_max" || command.op=="expect_audio_capture_bytes" || command.op=="expect_tempo" || command.op=="expect_render_mode" || command.op=="sim_set_tempo" || command.op=="sim_set_render_mode" || command.op=="sim_set_scale" || command.op=="sim_set_key") {
@@ -845,7 +845,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		iss >> command.value >> command.value2 >> command.arg;
 	} else if (command.op=="sim_set_chain_phrase" || command.op=="sim_set_phrase_note") {
 		iss >> command.value >> command.value2 >> command.arg >> command.arg2;
-	} else if (command.op=="goto" || command.op=="page" || command.op=="instrument" || command.op=="row") {
+	} else if (command.op=="goto" || command.op=="page" || command.op=="instrument" || command.op=="row" || command.op=="button") {
 		iss >> command.arg;
 	} else if (command.op=="focus") {
 		std::getline(iss,command.arg);
@@ -904,7 +904,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		iss >> command.value >> command.arg;
 	} else if (command.op=="case" || command.op=="soft_fail" || command.op=="snap" ||
 	           command.op=="expect_changed" || command.op=="expect_unchanged" ||
-	           command.op=="expect_layer") {
+	           command.op=="expect_layer" || command.op=="state_record") {
 		// Key sweep (tools/sweep): one word
 		iss >> command.arg;
 	} else if (command.op=="wait_stable") {
@@ -1006,7 +1006,8 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	}
 
 	if (command.op=="goto" || command.op=="focus" || command.op=="set" ||
-	    command.op=="page" || command.op=="instrument" || command.op=="row") {
+	    command.op=="page" || command.op=="instrument" || command.op=="row" ||
+	    command.op=="button") {
 		int result=StepSimGoal(window,command);
 		if (result<0) {
 			FailSimScript("goal command failed");
@@ -1517,6 +1518,8 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="case") {
 		simCaseName_=command.arg;
 		simCases_++;
+		simSoundSnap_="";
+		View::simLastNotification_="";
 		AppWindow::ResetSimClipping();
 		Trace::Log("SWEEP","case %s",command.arg.c_str());
 	} else if (command.op=="soft_fail") {
@@ -1524,6 +1527,7 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 		if (simSoftFail_) {
 			// The log only keeps its last 1 MB; failures go here in full
 			std::ofstream("sweep-results.txt",std::ios::trunc);
+			std::ofstream("sweep-states.jsonl",std::ios::trunc);
 		}
 	} else if (command.op=="expect_no_soft_failures") {
 		Trace::Log("SWEEP","%d cases, %d failed",simCases_,simSoftFailures_);
@@ -1588,6 +1592,12 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 		Trace::Log("RGNANO_SIM","%s",command.arg.c_str());
 	} else if (command.op=="dump_state") {
 		LogSimState(command.arg.empty() ? "dump_state" : command.arg.c_str(),true);
+	} else if (command.op=="model_snap") {
+		simModelSnap_=BuildSimSongDump();
+	} else if (command.op=="sound_snap") {
+		simSoundSnap_=BuildSimSoundSummary();
+	} else if (command.op=="state_record") {
+		WriteSimStateRecord(command.arg=="noscreen");
 	} else {
 		FailSimScript("unknown script command");
 		return;
@@ -1817,6 +1827,138 @@ bool SDLEventManager::ExpectSimScreenChanged(SDLGUIWindowImp *window, const std:
 
 // What is on top: none, helper, power, power+help, confirm, debug, or the
 // open dialog (modal:GuideDialog), joined with '+'
+// What is playing, without positions (those depend on timing): the mode,
+// and per sounding track the note and instrument when it is a preview
+std::string SDLEventManager::BuildSimSoundSummary()
+{
+	Player *player=Player::GetInstance();
+	ViewData *viewData=GetSimViewData();
+	std::ostringstream out;
+	bool running=player->IsRunning();
+	out << (running ? "running" : "stopped");
+	if (!running || !viewData) {
+		return out.str();
+	}
+	bool audition=viewData->playMode_==PM_AUDITION;
+	out << " " << (audition ? "audition" : (viewData->playMode_==PM_SONG ? "song" :
+	               viewData->playMode_==PM_CHAIN ? "chain" : viewData->playMode_==PM_PHRASE ? "phrase" : "other"));
+	out << " tracks";
+	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
+		if (!player->IsChannelPlaying(i)) continue;
+		out << " " << i;
+		if (audition) {
+			out << ":" << player->GetPlayedNote(i) << player->GetPlayedOctive(i)
+			    << "/" << player->GetPlayedInstrument(i);
+		}
+	}
+	return out.str();
+}
+
+static std::string simJson(const std::string &s)
+{
+	std::string out="\"";
+	for (size_t i=0;i<s.size();i++) {
+		unsigned char c=(unsigned char)s[i];
+		if (c=='"' || c=='\\') {
+			out+='\\';
+			out+=(char)c;
+		} else if (c<0x20 || c>=0x7F) {
+			char esc[8];
+			sprintf(esc,"\\u%04x",c);
+			out+=esc;
+		} else {
+			out+=(char)c;
+		}
+	}
+	return out+"\"";
+}
+
+// One JSON line per sweep case (tools/sweep/states.py compares them with
+// tests/golden/sweep): everything a key press can change, exactly. The
+// notification is recorded on its own and blanked from the screen text, so
+// how long it stayed up can't make two runs differ.
+void SDLEventManager::WriteSimStateRecord(bool noScreen)
+{
+	GUIWindow *guiWindow=Application::GetInstance()->GetWindow();
+	AppWindow *appWindow=(AppWindow *)guiWindow;
+	if (!appWindow) {
+		return;
+	}
+	std::string note=View::simLastNotification_;
+	std::vector<std::string> screen;
+	std::vector<std::string> pixel;
+	std::string selected;
+	{
+		std::istringstream lines(appWindow->GetSimScreenDump());
+		std::string line;
+		bool inPixel=false;
+		while (std::getline(lines,line)) {
+			if (line.compare(0,10,"selected: ")==0) {
+				selected=line.substr(10);
+			} else if (line=="pixel text:") {
+				inPixel=true;
+			} else if (inPixel) {
+				pixel.push_back(line);
+			} else if (line.size()>=3 && line[2]=='|') {
+				std::string row=line.size()>4 ? line.substr(4) : "";
+				if (!note.empty()) {
+					size_t at=row.find(note);
+					if (at!=std::string::npos) {
+						row.replace(at,note.size(),std::string(note.size(),' '));
+					}
+				}
+				while (!row.empty() && row[row.size()-1]==' ') row.erase(row.size()-1);
+				screen.push_back(row);
+			}
+		}
+	}
+	// The song as it is now, against the song as the case began
+	std::vector<std::string> model;
+	if (!simModelSnap_.empty()) {
+		std::string now=BuildSimSongDump();
+		std::vector<std::string> a,b;
+		std::string line;
+		std::istringstream ia(simModelSnap_),ib(now);
+		while (std::getline(ia,line)) a.push_back(line);
+		while (std::getline(ib,line)) b.push_back(line);
+		std::set<std::string> sa(a.begin(),a.end()),sb(b.begin(),b.end());
+		for (size_t i=0;i<a.size();i++) {
+			if (!sb.count(a[i])) model.push_back("-"+a[i]);
+		}
+		for (size_t i=0;i<b.size();i++) {
+			if (!sa.count(b[i])) model.push_back("+"+b[i]);
+		}
+		if (model.size()>80) {
+			char more[48];
+			sprintf(more,"... %d more changed lines",(int)model.size()-80);
+			model.resize(80);
+			model.push_back(more);
+		}
+	}
+	std::ostringstream out;
+	out << "{\"case\":" << simJson(simCaseName_)
+	    << ",\"view\":" << simJson(appWindow->GetCurrentViewName())
+	    << ",\"layer\":" << simJson(GetSimLayer())
+	    << ",\"selected\":" << simJson(selected)
+	    << ",\"notification\":" << simJson(note)
+	    << ",\"sound\":" << simJson(simSoundSnap_.empty() ? BuildSimSoundSummary() : simSoundSnap_)
+	    << ",\"model\":[";
+	for (size_t i=0;i<model.size();i++) out << (i?",":"") << simJson(model[i]);
+	out << "]";
+	if (noScreen) {
+		// Timing decides what it shows (a progress bar, a sound playing)
+		out << ",\"screen\":null,\"pixel\":null}";
+	} else {
+		out << ",\"screen\":[";
+		for (size_t i=0;i<screen.size();i++) out << (i?",":"") << simJson(screen[i]);
+		out << "],\"pixel\":[";
+		for (size_t i=0;i<pixel.size();i++) out << (i?",":"") << simJson(pixel[i]);
+		out << "]}";
+	}
+	std::ofstream records("sweep-states.jsonl",std::ios::app);
+	records << out.str() << "\n";
+}
+
 std::string SDLEventManager::GetSimLayer()
 {
 	std::string layer;
@@ -1909,9 +2051,14 @@ bool SDLEventManager::ExpectSimFile(const std::string &path)
 		Trace::Error("RGNANO_SIM expect_file missing path");
 		return false;
 	}
-	std::ifstream file(path.c_str(),std::ios::binary);
+	// "bin:last_project": next to the executable, wherever the run put it
+	std::string real=path;
+	if (path.compare(0,4,"bin:")==0 || path.compare(0,5,"root:")==0) {
+		real=Path(path.c_str()).GetPath();
+	}
+	std::ifstream file(real.c_str(),std::ios::binary);
 	bool exists=file.good();
-	Trace::Log("RGNANO_SIM","expect_file %s => %s",path.c_str(),exists?"exists":"missing");
+	Trace::Log("RGNANO_SIM","expect_file %s => %s",real.c_str(),exists?"exists":"missing");
 	return exists;
 }
 
@@ -2176,6 +2323,20 @@ int SDLEventManager::StepSimGoal(SDLGUIWindowImp *window, SimCommand &command)
 		}
 		if (current==target) return 0;
 		PressSimCombo(window,0,target>current?SDLK_d:SDLK_u);
+		return 1;
+	}
+
+	if (command.op=="button") {
+		// A dialog's button row (Open New Delete Help): Right until the
+		// named one is selected, wherever the dialog put the cursor (the
+		// song list starts on New when there are no songs, else on Open)
+		std::string wanted=std::string("=\"")+command.arg+"\"";
+		if (appWindow->GetSimSelectionSummary().find(wanted)!=std::string::npos) return 0;
+		if (simGoalSteps_>8) {
+			Trace::Error("RGNANO_SIM button %s: not in this dialog",command.arg.c_str());
+			return -1;
+		}
+		PressSimCombo(window,0,SDLK_r);
 		return 1;
 	}
 

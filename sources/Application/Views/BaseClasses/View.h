@@ -226,6 +226,11 @@ protected:
     uint32_t notificationTime_;
     uint16_t NOTIFICATION_TIMEOUT;
     std::string displayNotification_;
+public:
+    // The last notification any screen showed (the sim's key sweep
+    // records it however long it stayed up)
+    static std::string simLastNotification_;
+protected:
     int notiDistY_;
     // The line notifications use; a screen whose labels sit on the default
     // line moves them to a free one

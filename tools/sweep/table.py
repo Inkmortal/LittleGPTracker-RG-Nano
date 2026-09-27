@@ -24,11 +24,17 @@ when the key held first does nothing on its own (otherwise it is X).
 Every case starts from the Afterglow demo as saved (sim_reload_project) and
 walks to the screen with real key presses (`enter`, from the Song screen,
 cursor on row 00 track 1).
+
+The effect above is what Controls.md promises. On top of it every case
+records the exact state it ends in (state_record: screen text, cursor,
+view, layer, notification, what plays, and every line of the song that
+changed) and tools/sweep/states.py compares that with tests/golden/sweep:
+the table says a key must change the screen, the golden says exactly how.
 """
 
-SINGLE = ["U", "D", "L", "R", "A", "B", "LB", "RB", "START", "SEL"]
+SINGLE = ["U", "D", "L", "R", "A", "B", "LB", "RB", "START", "SEL", "X", "Y"]
 MODIFIERS = ["A", "B", "LB", "RB"]
-PARTNERS = ["U", "D", "L", "R", "A", "B", "LB", "RB", "START", "SEL"]
+PARTNERS = ["U", "D", "L", "R", "A", "B", "LB", "RB", "START", "SEL", "X", "Y"]
 
 
 def key_universe():
@@ -46,6 +52,9 @@ KEY_UNIVERSE = key_universe()
 MOVE = {"U": "C", "D": "C", "L": "C", "R": "C"}
 HELPER = {"RB+SEL": "L:helper"}
 UNDO = {"B+SEL": "X", "LB+SEL": "X"}  # nothing to undo/redo: may say so
+# X copy, Y paste, LB+Y paste new copies / duplicate: every screen says what
+# it did ("Copied chain 00", "Nothing to copy here"), so the screen changes
+COPY = {"X": "C", "Y": "C", "LB+Y": "C"}
 
 SCREENS = {
     "song": {
@@ -53,6 +62,7 @@ SCREENS = {
         "enter": ["R"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "C",  # row 00: track moving
             "D": "C", "L": "C", "R": "C",
             "A": "X",
@@ -73,6 +83,7 @@ SCREENS = {
             "LB+L": "X", "LB+R": "X",  # tempo nudge: only while playing
             "LB+START": "X",  # launch the row live
             "RB+U": "V:project", "RB+D": "V:mixer", "RB+R": "V:chain",
+            "RB+L": "V:rack",  # Rack: build and play your sounds
             "RB+START": "P",
             "RB+LB": "X", "RB+A": "X", "RB+B": "X",
             **UNDO, **HELPER,
@@ -83,6 +94,7 @@ SCREENS = {
         "enter": ["D", "RB+R"],  # chain 00, cursor on row 00: phrase 00
         "cursor": True,
         "keys": {
+            **COPY,
             **MOVE,
             "U": "N", "L": "N",  # top-left edge
             "A": "X",
@@ -105,6 +117,7 @@ SCREENS = {
         "enter": ["D", "RB+R", "RB+R"],
         "cursor": True,
         "keys": {
+            **COPY,
             **MOVE,
             "U": "N", "L": "N",  # top-left edge
             "A": "X",
@@ -131,6 +144,7 @@ SCREENS = {
         "enter": ["D", "RB+R", "RB+R", "RB+R"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "C", "D": "C", "L": "X", "R": "X",
             "A": "X",
             "START": "P",
@@ -154,6 +168,7 @@ SCREENS = {
         "enter": ["D", "RB+R", "RB+R", "RB+D"],
         "cursor": True,
         "keys": {
+            **COPY,
             **MOVE,
             "U": "N", "L": "N",  # top-left edge
             "A": "X",
@@ -174,6 +189,7 @@ SCREENS = {
         "enter": ["D", "RB+R", "RB+R", "RB+U"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "C", "D": "C",
             "A": "X",
             "START": "X",
@@ -190,6 +206,7 @@ SCREENS = {
         "enter": ["RB+U"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "X", "D": "C",
             "A": "X",  # Save Song
             "START": "P",
@@ -205,6 +222,7 @@ SCREENS = {
         "enter": ["RB+U", "RB+R"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "X", "D": "C", "L": "X", "R": "X",
             "A": "X",
             "START": "P",
@@ -220,9 +238,10 @@ SCREENS = {
         "enter": ["RB+D"],
         "cursor": True,
         "keys": {
+            **COPY,
             "L": "X", "R": "C",
             "START": "P",
-            "A+U": "N",  # track 1 is at the top (FF)
+            "A+U": "C",  # track 1 starts at C0/100%: Up raises it
             "A+D": "C", "A+L": "X", "A+R": "X",
             "A+RB": "C", "B+RB": "C",
             "B+A": "X",
@@ -236,6 +255,7 @@ SCREENS = {
         "enter": ["RB+D", "RB+D"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "X", "D": "C", "L": "X", "R": "C",
             "START": "P",
             "A+U": "C", "A+D": "C", "A+L": "C", "A+R": "C",
@@ -250,6 +270,7 @@ SCREENS = {
         "enter": ["RB+D", "RB+D", "RB+R"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "X", "D": "C", "L": "X", "R": "C",
             "START": "P",
             "A+U": "C", "A+D": "C", "A+L": "C", "A+R": "C",
@@ -264,6 +285,7 @@ SCREENS = {
         "enter": ["RB+D", "RB+D", "RB+R", "RB+R"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "X", "D": "C", "L": "X", "R": "C",
             "START": "P",
             "A+U": "C", "A+D": "C", "A+L": "C", "A+R": "C",
@@ -282,7 +304,7 @@ SCREENS = {
         "keys": {
             "U": "C", "D": "C",
             "A": "L:modal:GuideDialog",
-            "B": "X",
+            "B": "L:none",
             "RB+SEL": "L:none",
         },
         # The guide replaces the helper: B goes back to the screen
@@ -301,7 +323,14 @@ SCREENS = {
             "B": "X",
             "START": "L:none",  # closes the guide
             "LB+U": "X", "LB+D": "X",
-            "RB+SEL": "X",
+            "LB+L": "C", "LB+R": "C",  # previous / next page, wraps: always changes
+            # Redo (View::ProcessButton) is blocked inside any modal
+            # (IsModal()): LB alone does nothing on the guide, so nothing
+            # to redo leaves the screen unchanged. B alone (held first, so
+            # it fires on its own before Select joins it) already goes back
+            # to Contents: **UNDO's "X" default covers B+SEL
+            "LB+SEL": "N",
+            "RB+SEL": "L:none",
         },
     },
     "power": {
@@ -332,15 +361,24 @@ SCREENS = {
             "START": "X",
             "SEL": "X",
             "LB+A": "X",
+            # My sounds, nested on top of the instrument list (not replacing it)
+            "LB+START": "L:modal:InstrumentListDialog>SoundFilesDialog",
+            # Redo is blocked inside any modal (IsModal()): LB alone does
+            # nothing here, so nothing to redo leaves the screen unchanged.
+            # B alone (held first) already closes the list: the default "X"
+            # fallback (B maps to "L:none", not "N") covers B+SEL
+            "LB+SEL": "N",
             "RB+SEL": "L:modal:InstrumentListDialog+helper",
         },
-        "exits": {"modal:InstrumentListDialog+helper": ["RB+SEL"]},
+        "exits": {"modal:InstrumentListDialog+helper": ["RB+SEL"],
+                   "modal:InstrumentListDialog>SoundFilesDialog": ["B"]},
     },
     "live": {
         "view": "song",
         "enter": ["R", "SEL"],
         "cursor": True,
         "keys": {
+            **COPY,
             "U": "C", "D": "C", "L": "C", "R": "C",
             "SEL": "C",
             "START": "X", "LB+START": "X", "RB+START": "X", "B+START": "X",
@@ -352,9 +390,104 @@ SCREENS = {
             "B+D": "C", "B+A": "C", "B+LB": "X", "LB+B": "X",
             "LB+L": "X", "LB+R": "X", "LB+U": "X", "LB+D": "X",
             "RB+U": "V:project", "RB+D": "V:mixer", "RB+R": "V:chain",
+            # Live shares the Song screen's RB grid (SongView::ProcessButton
+            # is unconditional on RB+Left/Right/Up/Down): RB+Left also opens
+            # the Rack from here
+            "RB+L": "V:rack",
             "RB+LB": "X", "A+LB": "X", "RB+A": "X", "RB+B": "X",
             **UNDO, **HELPER,
         },
+    },
+    "rack": {
+        "view": "rack",
+        "enter": ["RB+L"],
+        "cursor": True,
+        "keys": {
+            "U": "N",  # the first sound: nothing above
+            "D": "C", "R": "C",  # next sound, next page
+            "L": "N",  # first page
+            "A": "X",  # plays while held
+            "A+L": "X", "A+R": "X", "A+U": "X", "A+D": "X",  # note / octave, plays
+            "LB+A": "C",  # copy to a free slot
+            "START": "P",  # riff
+            "SEL": "L:modal:SoundBrowserDialog",
+            "LB+START": "L:modal:SoundFilesDialog",
+            "RB+R": "V:instrument",
+            "RB+D": "V:phrase",
+            "RB+L": "C",  # says B goes back
+            "RB+START": "P",
+            "B": "V:song",
+            "X": "C", "Y": "C", "LB+Y": "C",
+            **UNDO, **HELPER,
+        },
+        "exits": {"modal:SoundBrowserDialog": ["B"], "modal:SoundFilesDialog": ["B"]},
+    },
+    "soundbrowser": {
+        "view": "rack",
+        "layer": "modal:SoundBrowserDialog",
+        "enter": ["RB+L", "SEL"],
+        "cursor": True,
+        "keys": {
+            "U": "X", "D": "C", "L": "X", "R": "X",
+            # The cursor starts on the first category ("Synth presets"): A
+            # opens it, which previews its first preset ("init") the same
+            # way moving onto any sound does (Controls.md) -- it keeps
+            # sounding for as long as that preset's own envelope takes
+            "A": "C:preview",
+            "B": "L:none",  # puts the slot back
+            "RB+SEL": "L:modal:SoundBrowserDialog+helper",
+        },
+        "exits": {"modal:SoundBrowserDialog+helper": ["RB+SEL"]},
+    },
+    "soundfiles": {
+        "view": "rack",
+        "layer": "modal:SoundFilesDialog",
+        "enter": ["RB+L", "LB+START"],
+        "cursor": True,
+        "keys": {
+            "U": "X", "D": "C", "L": "X", "R": "X",
+            "A": "X",
+            "B": "L:none",
+            "RB+SEL": "L:modal:SoundFilesDialog+helper",
+        },
+        "exits": {"modal:SoundFilesDialog+helper": ["RB+SEL"]},
+    },
+    "cmdpicker": {
+        "view": "phrase",
+        "layer": "modal:CommandSelectorModal",
+        # Phrase 00, step 0: Right x2 is the first command column
+        "enter": ["D", "RB+R", "RB+R", "R", "R", "SEL"],
+        "cursor": True,
+        "keys": {
+            # The grid reads Up/Down/Left/Right alone (LB/RB held first
+            # change nothing extra, so LB+dir / RB+dir land on the same
+            # command as dir alone) and moving previews the newly selected
+            # command's sound, same as the sound browser's category list
+            "U": "C:preview", "D": "C:preview", "L": "C:preview", "R": "C:preview",
+            "LB+U": "C:preview", "LB+D": "C:preview",
+            "LB+L": "C:preview", "LB+R": "C:preview",
+            "RB+U": "C:preview", "RB+D": "C:preview",
+            "RB+L": "C:preview", "RB+R": "C:preview",
+            "A": "L:none",  # takes the command
+            "LB+A": "L:none", "RB+A": "L:none",  # A is read the same way
+            "B": "L:none",  # puts back the command you had
+            # But B (unlike A/the D-pad) is read normally: LB/RB+B isn't Back
+            "LB+B": "N", "RB+B": "N",
+            "RB+SEL": "L:modal:CommandSelectorModal+helper",
+        },
+        "exits": {"modal:CommandSelectorModal+helper": ["RB+SEL"]},
+    },
+    "render": {
+        "view": "chain",
+        "layer": "modal:RenderToSampleDialog",
+        "enter": ["D", "RB+R", "LB+START"],
+        "animated": True,  # a progress bar: never holds still
+        "cursor": False,
+        "keys": {
+            "B": "L:none",
+            "RB+SEL": "L:modal:RenderToSampleDialog+helper",
+        },
+        "exits": {"modal:RenderToSampleDialog+helper": ["RB+SEL"]},
     },
     "movetracks": {
         "view": "song",
@@ -370,6 +503,9 @@ SCREENS = {
             # Pressing RB leaves track moving (design question: see report)
             "RB": "C", "A+RB": "X", "LB+RB": "X",
             "RB+L": "X", "RB+A": "X", "RB+B": "X", "RB+LB": "X",
+            # X/Y copy and paste the chain under the song cursor while the
+            # tracks are being moved (design question: see the test report)
+            "X": "X", "Y": "X", "LB+Y": "X",
             **UNDO, **HELPER,
         },
     },

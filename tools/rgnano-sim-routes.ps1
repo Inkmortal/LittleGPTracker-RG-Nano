@@ -25,7 +25,8 @@ function Get-RGNanoSimRoutes {
 
   $routes["boot.new_project_random"] = @(
     "wait 500",
-    "press r 80",
+    # Right to New: the song list starts on New when there are no songs yet
+    "button New",
     "press a 80",
     # The name dialog opens on OK with a free random name
     "wait 200",

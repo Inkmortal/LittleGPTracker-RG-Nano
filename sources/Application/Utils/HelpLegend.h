@@ -5,8 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-static inline std::string* getHelpLegend(FourCC command) {
-	std::string* result = new std::string[3];
+// A command's three help lines, next to the title of the Phrase and Table
+// screens: columns 10 to 29, so no line is longer than 20 characters
+// (tools/check_help_legend.py checks)
+static inline void getHelpLegend(FourCC command, std::string result[3]) {
+	result[0].assign("");
+	result[1].assign("");
 	result[2].assign("bb at speed aa");
 	switch (command) {
 		case I_CMD_KILL:
@@ -15,19 +19,19 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[2].assign("after bb ticks");
 			break;
 		case I_CMD_LPOF:
-			result[0].assign("LooP OFset: Shift both");
-			result[1].assign("the loop start & loop ");
-			result[2].assign("end values aaaa digits");
+			result[0].assign("LooP OFset:aaaa");
+			result[1].assign("shifts loop start");
+			result[2].assign("and end together");
 			break;
 		case I_CMD_ARPG:
 			result[0].assign("ARPeGgio:abcd Cycle");
-			result[1].assign("through relative pitches");
+			result[1].assign("through a,b,c,d semi");
 			result[2].assign("from original pitch");
 			break;
 		case I_CMD_RAND:
 			result[0].assign("RANDom:00bb up to bb");
 			result[1].assign("on the other command");
-			result[2].assign("alone: note, in scale");
+			result[2].assign("alone: note in scale");
 			break;
 		case I_CMD_CHNC:
 			result[0].assign("CHaNCe:00bb note");
@@ -50,23 +54,23 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[1].assign("approach pitch");
 			break;
 		case I_CMD_HOP:
-			result[0].assign("HOP:aabb go to row bb");
+			result[0].assign("HOP:aabb to row bb");
 			result[1].assign("table: aa times");
 			result[2].assign("phrase --FF: stop");
 			break;
 		case I_CMD_LEGA:
 			result[0].assign("LEGAto: slide from");
-			result[1].assign("previous note to pitch");
+			result[1].assign("last note to this");
 			break;
 		case I_CMD_RTRG:
-			result[0].assign("ReTRiG:aabb retrigger loop");
-			result[1].assign("from current position over");
-			result[2].assign("bb ticks at speed aa");
+			result[0].assign("ReTRiG:aabb loop the");
+			result[1].assign("last bb ticks from");
+			result[2].assign("here, speed aa");
 			break;
 		case I_CMD_TMPO:
 			result[0].assign("TeMPO:--bb");
-			result[1].assign("sets the tempo to hex");
-			result[2].assign("value bb");
+			result[1].assign("tempo = hex value bb");
+			result[2].assign("");
 			break;
 		case I_CMD_MDCC:
 			result[0].assign("MiDiCC:aabb");
@@ -75,12 +79,12 @@ static inline std::string* getHelpLegend(FourCC command) {
 			break;
 		case I_CMD_MDPG:
 			result[0].assign("MiDi ProGram Change");
-			result[1].assign("send program change bb");
+			result[1].assign("program change bb");
 			result[2].assign("to current channel");
 			break;
 		case I_CMD_MVEL:
 			result[0].assign("MidiVELocity:--bb");
-			result[1].assign("Set velocity bb for step");
+			result[1].assign("velocity bb, step");
 			result[2].assign("");
 	    break;
 		case I_CMD_PLOF:
@@ -95,7 +99,7 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[2].assign("03 revlp 04 pingpong");
 			break;
 		case I_CMD_FLTR:
-			result[0].assign("FiLTer&Resonance:aabb");
+			result[0].assign("FiLTeR:aabb");
 			result[1].assign("cutoff aa");
 			result[2].assign("resonance bb");
 			break;
@@ -135,8 +139,8 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[2].assign("");
 			break;
 		case I_CMD_IRTG:
-			result[0].assign("InstrumentReTriG:aabb");
-			result[1].assign("retrig and transpose to");
+			result[0].assign("Instr ReTriG:aabb");
+			result[1].assign("retrig, transpose aa");
 			break;
 		case I_CMD_PFIN:
 			result[0].assign("PitchFINetune:aabb");
@@ -207,7 +211,6 @@ static inline std::string* getHelpLegend(FourCC command) {
 			result[2].assign("");
 		break;
 	}
-	return result;
 }
 
 #endif //_HELP_LEGEND_H_

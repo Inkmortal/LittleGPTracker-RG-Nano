@@ -171,13 +171,13 @@ void CommandSelectorModal::DrawView() {
     props.invert_ = false;
     SetColor(CD_NORMAL);
 
-    std::string *cmdStr = getHelpLegend(selectedCommand_);
+    std::string cmdStr[3];
+    getHelpLegend(selectedCommand_, cmdStr);
     for (int i = 0; i < 3; i++) {
         DrawString(0, rows + 1 + i, "                         ", props);
         DrawString(0, rows + 1 + i, cmdStr[i].c_str(), props);
 
     }
-    delete[] cmdStr;
 }
 
 void CommandSelectorModal::OnPlayerUpdate(PlayerEventType, unsigned int) {}
