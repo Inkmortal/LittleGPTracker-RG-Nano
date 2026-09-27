@@ -3682,7 +3682,20 @@
  models with two knobs, and
  keeps this page's ENV,
  FILTER, MOD, MIX and EQ
- pages.
+ pages. For analog-style
+ drum machine sounds and
+ struck or plucked
+ instruments, the synth's
+ own drum and phys engines
+ (below) are the richer
+ choice.
+ 
+ New to sound design? Sound
+ Design explains how each
+ engine makes its sound,
+ with a picture of the
+ insides and recipes to
+ type in.
  
 =The starter kit
  
@@ -3775,13 +3788,26 @@
    bend: chip leads, PWM,
    sync and fold sounds
    Like the M8's: Wavsynth
+*drum
+   analog-circuit drum
+   models: 808 and 909
+   kicks and snares, two
+   hi-hats
+   Like the M8's: -
+*phys
+   physical models: a
+   struck bar/bell/drum
+   (modal) and a plucked
+   string
+   Like the M8's: -
  
  Changing the engine loads
  that engine's starting
  sound (fm init, hyper
- init, wav init); A +
- Left/Right on preset then
- browses only that engine's
+ init, wav init, drum init,
+ phys init); A + Left/Right
+ on preset then browses
+ only that engine's
  presets. B + Select undoes
  an engine change like any
  other edit.
@@ -3801,6 +3827,16 @@
    pwm pad, sync lead, fold
    bass, zap, lofi bell,
    noise hat
+*drum
+   808 kick, 909 kick, boom
+   kick, 808 snare, 909
+   snare, rim, 808 hat, 808
+   open, ring hat, 808 tom
+*phys
+   wood bar, vibes, temple
+   bell, kalimba, hand
+   drum, guzheng, nylon,
+   sitar, steel, pluck bass
  
  The LFO's shape target,
  and a MOD slot aimed at
@@ -3811,8 +3847,11 @@
  - the swarm breathes, wav
  - the mirror moves
  (pulse-width modulation on
- pulse50). A MOD slot aimed
- at fm deepens every FM4
+ pulse50), drum - the tone
+ knob, phys - the
+ brightness of the hit. A
+ MOD slot aimed at fm
+ deepens every FM4
  modulator (+127 = twice as
  deep); one aimed at noise
  mixes noise into any
@@ -4049,6 +4088,164 @@
  a sine with drive 60 and
  limit fold.
  
+=DRUM engine
+ 
+ Drum machine sounds made
+ the way the machines made
+ them, from models of their
+ circuits (ported from the
+ open-source Plaits module
+ by Mutable Instruments).
+ Nothing is a sample: every
+ hit is computed, so every
+ knob changes the drum
+ itself. The picture shows
+ the first 150 ms of a hit
+ with the current knobs.
+ 
+*model
+   kick 808 (a filter that
+   rings when a pulse hits
+   it), kick 909 (a sine
+   with a fast pitch
+   sweep), snare 808 (two
+   ringing drum modes plus
+   filtered noise), snare
+   909 (an FM body plus
+   noise), hat 808 (six
+   square waves through a
+   band-pass filter), hat
+   ring (ring-modulated
+   pairs, more metallic)
+*tone
+   kicks: round (00) to
+   clicky; snare 808: which
+   drum mode is louder (low
+   = deep body); snare 909:
+   FM on the body (high =
+   metallic ring); hats:
+   the filter (low = dark,
+   high = sizzle)
+*decay
+   how long the drum rings:
+   00 tight ... FF long (a
+   boom, an open hat)
+*snap
+   kicks: the click and
+   punch at the start (kick
+   808 adds overdrive above
+   80); snares: how much
+   snare rattle against the
+   body; hats: metal (00)
+   to white noise (FF)
+*accent
+   how hard the drum is
+   hit: louder and brighter
+*drive
+   the synth's drive, after
+   the drum
+*tune
+   semitones. The presets
+   are tuned so C 3 sounds
+   right; play other notes
+   to tune a kick to your
+   song's key
+ 
+ The drum makes its own
+ decay, so the presets
+ leave the ENV page's amp
+ envelope open (sustn FF)
+ and the filter off. A
+ voice stops by itself once
+ the drum has died away.
+ RTRG hits the drum again
+ (rolls); CHRD does not
+ apply.
+ 
+ Try: 808 kick, then decay
+ E0 and tune -29 for a long
+ sub boom; 909 snare with
+ snap FF for a crisp
+ clap-like crack; 808 hat
+ with RTRG 0002 for a trap
+ roll.
+ 
+=PHYS engine
+ 
+ Physical models: instead
+ of a wave, the engine
+ simulates an object being
+ hit or plucked (from
+ Plaits too). The picture
+ shows the first 600 ms of
+ a hit.
+ 
+ - modal: a struck object.
+   A short click (the
+   mallet) excites 24 tuned
+   resonators, one per
+   partial of the object.
+   Their spacing (matter)
+   decides what the object
+   is.
+ - string: a plucked
+   string. A short burst of
+   noise (the pick) runs
+   round a delay line one
+   period long; the loop's
+   filter makes the high
+   partials die first, like
+   a real string.
+ 
+*model
+   modal or string
+*matter
+   modal: 00-3F partials
+   squeezed together (hand
+   drums, gongs), 40 in
+   tune (a string or pipe),
+   up to C0 stretched like
+   a wooden or metal bar
+   (marimba, vibes), E0+ a
+   bell. string: below 40 a
+   buzzing bridge (sitar),
+   40 a plain string, above
+   it a stiffer, more
+   metallic string
+*bright
+   the mallet or pick: 00
+   soft felt, FF hard and
+   bright
+*decay
+   how long it rings: 00
+   muted ... FF rings on
+   and on
+*strike
+   how hard it is hit:
+   louder, brighter, rings
+   a little longer
+*tune
+   semitones
+ 
+ Like the drums, the object
+ rings by itself (the
+ presets leave the amp
+ envelope open) and the
+ voice ends when it falls
+ silent. Eight modal voices
+ are the heaviest sound in
+ the app (about a fifth of
+ the CPU), so use them on a
+ track or two.
+ 
+ Try: wood bar and play a
+ melody with reverb 60;
+ guzheng with PTCH slides;
+ phys init with matter
+ swept from 00 to FF to
+ hear a drum turn into a
+ string, a bar and a bell.
+ 
 =Pages and knobs
  
  Switch pages with LB +
@@ -4066,10 +4263,10 @@
    synth / sample
 *engine
    how the tone is made:
-   synth, fm4, hyper, wav
-   (see Engines); the rows
-   below are the synth
-   engine's
+   synth, fm4, hyper, wav,
+   drum, phys (see
+   Engines); the rows below
+   are the synth engine's
 *preset
    load a ready sound
    (overwrites the knobs)
@@ -5070,6 +5267,467 @@
  heaviest shape being HARM.
  Eight voices of any shape
  fit on the RG Nano.
+@sound|Sound Design
+ How each sound engine
+ works inside, what its
+ knobs really do, and
+ recipes you can type in.
+ Each section has a small
+ picture of the insides:
+ read it top to bottom,
+ like the sound flows.
+ 
+ Every recipe starts from a
+ preset (A + Left/Right on
+ preset), then changes a
+ few knobs. Values are hex,
+ as on the screen. A +
+ Start plays the instrument
+ while you turn knobs, so
+ you hear each change.
+ 
+=How a synth note is made
+ 
+ Whatever the engine, a
+ synth note goes through
+ the same chain. The engine
+ makes the raw tone;
+ everything after it is
+ shared, and lives on the
+ ENV, FILTER, LFO, MOD, MIX
+ and EQ pages.
+ 
+| note (pitch, tune)
+|   |
+| ENGINE: the raw tone
+|   |
+| + noise   (noise knob)
+|   |
+| drive     (FILTER page)
+|   |
+| filter    cutoff, reso
+|   |       <- env, LFO
+| amp env   attack decay
+|   |       sustn releas
+| EQ        (EQ page)
+|   |
+| volume, pan, sends
+ 
+ So a dull engine can be
+ brightened by the filter,
+ a short one lengthened by
+ the amp envelope, and any
+ engine can wobble with the
+ LFO or a MOD slot. The
+ engine knob on the SOUND
+ page picks the engine; the
+ rest of the page changes
+ to that engine's knobs.
+ 
+*basses, leads, pads, class
+   synth
+   Start from: bass, lead,
+   pad
+*e-pianos, bells, brass, or
+   fm4
+   Start from: epiano, fm
+   bell, brass
+*huge chords, trance leads,
+   hyper
+   Start from: hyper pad,
+   trance lead
+*chiptune, lo-fi, buzzy 8-b
+   wav
+   Start from: chip lead,
+   fold bass
+*drum machine kicks, snares
+   drum
+   Start from: 808 kick,
+   909 snare, 808 hat
+*marimba, bells, strings, h
+   phys
+   Start from: wood bar,
+   guzheng
+*vowels, 47 more models in 
+   macro (type)
+   Start from: see Macro
+   Synth
+ 
+=synth: waves through a fil
+ 
+ The classic analog recipe:
+ start with a bright wave,
+ then carve it with the
+ filter. The fm knob lets a
+ second sine bend the wave
+ for bells and keys.
+ 
+| wave + sub + noise
+|   |    ^
+|   |    fm: a sine at
+|   |    'ratio' bends it
+|   v
+| filter <- env, LFO
+|   v
+| amp env -> out
+ 
+ - wave: saw and pulse are
+   bright (lots of
+   harmonics to filter),
+   sine and triangle are
+   soft. shape changes the
+   wave (pulse width, fold,
+   detune).
+ - cutoff closes the filter
+   (darker), reso makes it
+   ring at the cutoff. env
+   opens the filter at
+   every note and envdec
+   closes it again: the
+   "pluck" of a bass or a
+   synth brass.
+ - sub adds a square an
+   octave down: a fatter
+   bass for free.
+ 
+ Rubber bass - from init:
+ wave saw, sub 60, tune
+ -24, cutoff 48, reso 50,
+ env A0, envdec 88, decay
+ 90, sustn 40.
+ 
+ Soft lead - from lead:
+ shape 40, attack 18, glide
+ 30, cutoff B0, then LFO
+ page lfo pitch, rate B0,
+ depth 14.
+ 
+ Wind - from init: wave
+ noise, filter bandpass,
+ cutoff 90, reso C0, attack
+ 80, releas B0, then LFO
+ page lfo cutoff, rate 40,
+ depth 50.
+ 
+=fm4: operators bending eac
+ 
+ Four sine waves, A B C D.
+ A carrier is heard. A
+ modulator is not heard: it
+ bends another operator's
+ pitch very fast, which
+ adds new harmonics. More
+ modulator level = brighter
+ and more metallic. ratio
+ sets each operator's pitch
+ against the note: whole
+ numbers sound warm, others
+ ring like bells.
+ 
+| algo 00:
+| A -> B -> C -> D -> out
+| each bends the next
+|
+| algo 07 (e-piano):
+| A -> B -> out
+| C -> D -> out
+ 
+ Each operator has its own
+ envelope (atk dec sus): a
+ modulator that decays fast
+ gives the "tine" ping of
+ an e-piano, one that
+ attacks slowly gives a
+ brass swell. The algo
+ picture on the page draws
+ who bends whom.
+ 
+ Bell - from fm init: C
+ ratio 3.50, C level A0.
+ Pluck - then C dec 70: the
+ brightness dies, the note
+ stays.
+ 
+ Organ - from fm init: algo
+ 0B (all four heard, no
+ FM), A ratio 0.50 level
+ C0, B ratio 1.00 level FF,
+ C ratio 2.00 level A0, D
+ ratio 3.00 level 60: four
+ drawbars.
+ 
+ Tremolo e-piano - preset
+ epiano, then LFO page lfo
+ volume, rate A0, depth 20:
+ the classic stage-piano
+ wobble.
+ 
+=hyper: a detuned saw choir
+ 
+ Six notes of a chord, each
+ played by two saws tuned a
+ little apart. Two saws at
+ almost the same pitch beat
+ against each other: that
+ shimmer is what makes pads
+ and trance leads sound
+ huge. width pushes one saw
+ of each pair left and the
+ other right.
+ 
+| note 1: saw~saw
+| note 2: saw~saw
+| ...      (x6)
+| note 6: saw~saw
+|   ~ = swarm (detune)
+| width: L saws / R saws
+| + square sub
+ 
+ - chord fills the six
+   notes (minor, maj7,
+   ...); shift fades from
+   notes 1-3 to 4-6.
+ - swarm is the detune: 20
+   gentle, 60 thick, C0+
+   seasick. scale on keeps
+   every chord in the
+   song's key.
+ 
+ Wide minor pad - from
+ hyper init: chord minor,
+ swarm 60, width FF, then
+ ENV attack C0, releas C0,
+ MIX reverb 80.
+ 
+ Trance lead - preset
+ trance lead, then shift 00
+ (only notes 1-3) and MIX
+ delay 60.
+ 
+ Hoover - preset hoover,
+ then glide 40 and slide
+ between notes with PTCH.
+ 
+=wav: an 8-bit oscillator y
+ 
+ A wave drawn in a few
+ steps, like a game
+ console, with nothing
+ smoothed. Every knob
+ reshapes the drawing.
+ 
+| wave (pulse, saw, sine)
+|   |
+| size: steps per cycle
+|   |
+| mult: repeat it (sync)
+|   |
+| warp, mirror: squeeze,
+|   |    move the middle
+| drive + limit
+ 
+ Chip lead - preset chip
+ lead, then in the phrase
+ ARPG 0047 on a held note:
+ the classic chiptune
+ chord.
+ 
+ PWM pad - preset pwm pad:
+ the LFO moves mirror, so
+ the pulse width sweeps.
+ 
+ Fold bass - from wav init:
+ wave sine, tune -24, drive
+ 60, limit fold: the
+ louder, the more it folds
+ into buzz.
+ 
+=drum: circuit models of dr
+ 
+ The classic drum machines
+ made their sounds from
+ small circuits, not
+ samples. This engine
+ simulates those circuits,
+ so a knob changes the drum
+ the way turning a pot
+ inside the machine would.
+ 
+| kick 808:
+| pulse -> ringing filter
+|   tone, decay
+| + click, FM (snap)
+| -> overdrive (snap)
+|
+| snare 808:
+| 2 ringing drum modes
+| + noise (snap)
+|
+| hat 808:
+| 6 square oscillators
+| -> band-pass (tone)
+| -> fade (decay)
+| + white noise (snap)
+ 
+ - kick 909 and snare 909
+   are sine oscillators
+   with pitch and FM
+   sweeps: punchier and
+   cleaner than the 808's
+   ringing filters. hat
+   ring multiplies
+   oscillators in pairs for
+   a harder, clangy metal.
+ - tune sets the drum's
+   pitch; play different
+   notes for tom fills or
+   to tune a kick to your
+   key.
+ - The drum decays by
+   itself (decay), so leave
+   the ENV page's amp
+   envelope open.
+ 
+ Deep 808 - preset 808
+ kick: decay C0, tune -29,
+ snap 20. Long and round,
+ for trap and hip hop.
+ 
+ Tight house kick - preset
+ 909 kick: decay 50, snap
+ C0, tone 90.
+ 
+ Crack snare - preset 909
+ snare: snap FF, tone C0,
+ decay 40, MIX reverb 50.
+ 
+ Trap hat roll - preset 808
+ hat; in the phrase put
+ RTRG 0002 on a note (a
+ roll) and VOLM to shape
+ it.
+ 
+=phys: objects you hit or p
+ 
+ Instead of a wave, this
+ engine simulates an
+ object. Hit a bar and it
+ rings with a few
+ frequencies at once (its
+ partials); how those are
+ spaced is what makes wood
+ sound like wood and a bell
+ like a bell.
+ 
+| modal (struck):
+| click (bright, strike)
+|   |
+| 24 resonators, one per
+| partial of the object
+|   matter: their spacing
+|   decay: how long
+|
+| string (plucked):
+| noise burst (the pick)
+|   |
+| delay line, 1 period
+|   | <- filter: highs
+|   |    fade first
+|   +-> back round
+ 
+ - matter is the key knob.
+   On modal: 00 squeezed
+   partials (a hand drum),
+   40 perfectly in tune (a
+   string or pipe), C0 a
+   wooden bar, E0+ a bell.
+   On string: below 40 a
+   buzzing bridge like a
+   sitar's, above it a
+   stiffer, metallic
+   string.
+ - bright is the mallet or
+   pick: felt (00) or hard
+   (FF). decay is how long
+   it rings.
+ 
+ Marimba - preset wood bar
+ as it is; play chords on
+ three tracks.
+ 
+ Glockenspiel - from phys
+ init: matter E0, bright
+ C0, decay 90, tune +24.
+ 
+ Guzheng bend - preset
+ guzheng; in the phrase a
+ note then PTCH 1002 on the
+ next row: the string bends
+ up a whole tone as it
+ rings.
+ 
+ Gong - from phys init:
+ matter 10, bright 60,
+ decay E0, tune -24, MIX
+ reverb A0.
+ 
+=Macro synth: 47 models, tw
+ 
+ Set type to macro for the
+ other family: 47 complete
+ synthesis models from the
+ Braids module (vowels,
+ formants, FM, wavetables,
+ physical models, noise),
+ each played with just
+ timbre and color. The page
+ tells you what the two
+ knobs do on the shape
+ under the cursor. See
+ Macro Synth for the list.
+ 
+ Singing vowel - preset
+ vowels, then in the phrase
+ TIMB 2000 on one note and
+ TIMB 20FF a few rows
+ later: the voice slides
+ from "a" to "u".
+ 
+=What each engine costs
+ 
+ The RG Nano has one 1.2
+ GHz core. Measured in the
+ device's own build (tools/
+ dsp-harness/plaits_engines
+ _check.cpp), eight voices
+ of one sound at once take:
+ 
+*wav pwm pad
+   8%
+*drum hats
+   8-13%
+*fm4 epiano
+   10%
+*phys string
+   10%
+*drum kicks, snares
+   10-11%
+*synth pad
+   13%
+*hyper pad
+   15%
+*phys modal
+   20%
+ 
+ A full song with heavy
+ sounds on every track, the
+ send effects, EQ and
+ limiter plays well within
+ the device's limits, so
+ mix engines freely. The
+ modal model is the
+ heaviest: one or two
+ tracks of it is plenty.
 @commands|Commands
  Commands live in the two
  command columns of a

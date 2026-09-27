@@ -1,0 +1,123 @@
+# The synth's DRUM and PHYS engines (Plaits drum and physical models):
+# reach them with A+Right on "engine", browse their presets, turn their
+# knobs with real keys, hear them (A+Start), and check a drum voice stops
+# by itself. Screenshots of both SOUND pages.
+route boot.new_project_random
+expect_view song
+press a 80
+goto chain
+press a 80
+goto phrase
+press a 80
+goto instrument
+expect_screen_text Instrument 00 SYNTH
+
+# --- DRUM: engine synth -> fm4 -> hyper -> wav -> drum ---
+focus engine
+down a
+press r 80
+press r 80
+press r 80
+press r 80
+up a
+expect_instrument_param 0 engine drum
+expect_instrument_param 0 preset drum_init
+expect_screen_text Instrument 00 DRUM SYNTH
+expect_screen_text model  kick 808
+screenshot_app engine-drum-init.bmp
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_audio_activity 64
+wait 2500
+# the kick has died away by itself (no note-off): silence
+reset_audio_stats
+wait 500
+expect_audio_silence 0
+down a
+press s 80
+up a
+
+# The preset list steps through the drum kit
+focus preset
+down a
+press r 80
+up a
+expect_instrument_param 0 preset 808_kick
+down a
+press r 80
+press r 80
+press r 80
+up a
+expect_instrument_param 0 preset 808_snare
+expect_screen_text model  snare 808
+# snap: A+Up adds 16
+focus snap
+down a
+press u 80
+up a
+expect_instrument_param 0 drum_snap 184
+# The helper names what snap does on a snare
+down n
+press k 80
+up n
+expect_screen_text snares: body vs noise,
+down n
+press k 80
+up n
+reset_audio_stats
+down a
+press s 80
+up a
+wait 300
+expect_audio_activity 64
+screenshot_app engine-drum-snare.bmp
+
+# --- PHYS: one more A+Right on engine ---
+focus engine
+down a
+press r 80
+up a
+expect_instrument_param 0 engine phys
+expect_instrument_param 0 preset phys_init
+expect_screen_text Instrument 00 PHYS SYNTH
+expect_screen_text model  modal
+set preset guzheng
+expect_screen_text model  string
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_audio_activity 64
+screenshot_app engine-phys-guzheng.bmp
+# material: the helper says what the string's value means
+focus matter
+down a
+press d 80
+up a
+expect_instrument_param 0 phys_material 48
+expect_screen_text buzz
+set preset temple_bell
+reset_audio_stats
+down a
+press s 80
+up a
+wait 400
+expect_audio_activity 64
+screenshot_app engine-phys-bell.bmp
+
+# B+Select undoes the engine change like any edit
+focus engine
+down a
+press l 80
+up a
+expect_instrument_param 0 engine drum
+down b
+press k 80
+up b
+expect_instrument_param 0 engine phys
+expect_no_error
+quit
