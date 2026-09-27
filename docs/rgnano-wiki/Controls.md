@@ -55,7 +55,7 @@ Hold **RB** and press a direction:
 | From | RB + Right | RB + Left | RB + Up | RB + Down |
 | --- | --- | --- | --- | --- |
 | Song | Chain under the cursor | [Rack](#rack): all your sounds | Project | Mixer |
-| Rack | Instrument (edit the sound) | — | — | — |
+| Rack | Instrument (edit the sound) | — | — | Phrase, to write notes with the sound |
 | Chain | Phrase under the cursor | Song | — | — |
 | Phrase | Instrument of the note | Chain | Groove | Table |
 | Instrument | — | Phrase (or the Rack, if you came from it) | list of all sounds | Instrument table |
@@ -184,8 +184,11 @@ Every sound of the song on one screen, to build your instruments before you comp
 | **A** (hold) | play it until you let go |
 | **A + Left / Right** | the next note of the scale down / up, and play it |
 | **A + Up / Down** | an octave up / down, and play it |
+| **Start** | a riff with it (drum pattern, bass line, chord or melody), looping; again stops |
 | **Select** | the sound browser: every sound plays as you move onto it; **A** takes it, **B** puts the slot back |
 | **RB + Right** | edit it on the Instrument screen (**RB + Left** there comes back) |
+| **RB + Down** | write notes with it: a phrase (made if needed) where new notes use this sound |
+| **LB + Start** | My sounds: save / load sounds and kits, the new-song kit |
 | **LB + A** | copy it to a free slot |
 | **B** | back to the Song |
 

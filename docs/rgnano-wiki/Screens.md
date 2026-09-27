@@ -103,7 +103,7 @@ The first row, `type`, switches the slot between **synth**, **sample** and **mac
 
 ## Rack
 
-**RB + Left** on the Song opens the Rack: every sound of the song on one screen, with a picture of the selected one and a one-octave keyboard in the song's scale. Hold **A** to play the sound, **A + Left/Right** to step through the scale, **A + Up/Down** for octaves, and **Select** to browse presets, samples and your saved sounds by ear. **RB + Right** edits the sound; **RB + Left** on the Instrument screen comes back. See [Build Your Sounds First](Build-Your-Sounds-First).
+**RB + Left** on the Song opens the Rack: every sound of the song on one screen, with a picture of the selected one and a one-octave keyboard in the song's scale. Hold **A** to play the sound, **A + Left/Right** to step through the scale, **A + Up/Down** for octaves, and **Select** to browse presets, samples and your saved sounds by ear, **Start** for a riff that suits the sound. **RB + Right** edits the sound (**RB + Left** on the Instrument screen comes back), **RB + Down** goes to a phrase to write notes with it, **LB + Start** saves and loads sounds and kits. See [Build Your Sounds First](Build-Your-Sounds-First).
 
 ## My sounds
 

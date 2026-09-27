@@ -2303,6 +2303,13 @@
 *A + Up / Down
    an octave up / down, and
    play it
+*Start
+   a short riff with it,
+   looping: a drum pattern, a
+   bass line, a held chord or
+   a melody, whichever suits
+   the sound. Start again
+   stops
 *Select
    the sound browser: hear
 ~6,13,sounds-first,The sound browser
@@ -2312,6 +2319,13 @@
    edit it on the Instrument
    screen; RB + Left there
    comes back to the Rack
+*RB + Down
+   write notes with it
+~2,19,sounds-first,Write notes with it
+*LB + Start
+   save and load sounds and
+~2,13,sounds-first,Save and load
+   kits
 *LB + A
    copy it to a free slot, to
    make a variation
@@ -2370,15 +2384,28 @@
  So you can try twenty kicks
  and still walk away with
  your old one.
+=Write notes with it
+ RB + Down on the Rack takes
+ you to a Phrase screen with
+ the selected sound ready:
+ the next note you add there
+ uses it. It opens the chain
+ under the Song screen's
+ cursor and that chain's
+ first phrase, and makes them
+ if the song has none yet, so
+ from a brand new song it's
+ one press from a sound to
+ its first note.
 =Save and load
  Your sounds live on the card
  in Applications/Sounds,
  outside any song, so they're
  there in every song.
- LB + Start on the instrument
- list (RB + Up on the
- Instrument screen) opens My
- sounds:
+ LB + Start on the Rack (or
+ on the instrument list,
+ RB + Up on the Instrument
+ screen) opens My sounds:
  
 *Save sound 05
    keeps the selected sound
@@ -2427,17 +2454,19 @@
  4. Down to 05: the bass.
     Hold A and step through
     the scale with A + Right
-    to hear it across notes.
+    to hear it across notes,
+    or Start for a bass line.
  5. Too dark? RB + Right,
     open the filter on the
     FILTER page, RB + Left
     back.
- 6. RB + Up on the Instrument
-    screen, LB + Start, Save
-    this kit, A. Then New
-    songs: this kit if every
-    song should start with
-    it.
+ 6. LB + Start, Save this
+    kit, A. Then New songs:
+    this kit if every song
+    should start with it.
+ 7. On the kick, RB + Down: a
+    phrase, ready for kick
+    notes.
  
  Now write the notes: every
  sound is already where you
@@ -2654,7 +2683,8 @@
    sound)
    RB + Left: -
    RB + Up: -
-   RB + Down: -
+   RB + Down: Phrase, to
+   write notes with the sound
 *Chain
    Phrase under the cursor
    RB + Left: Song
@@ -2976,6 +3006,11 @@
 *A + Up / Down
    an octave up / down, and
    play it
+*Start
+   a riff with it (drum
+   pattern, bass line, chord
+   or melody), looping; again
+   stops
 *Select
    the sound browser: every
    sound plays as you move
@@ -2985,6 +3020,15 @@
    edit it on the Instrument
    screen (RB + Left there
    comes back)
+*RB + Down
+   write notes with it: a
+   phrase (made if needed)
+   where new notes use this
+   sound
+*LB + Start
+   My sounds: save / load
+   sounds and kits, the
+   new-song kit
 *LB + A
    copy it to a free slot
 *B
@@ -3485,13 +3529,18 @@
  A + Up/Down for octaves, and
  Select to browse presets,
  samples and your saved
- sounds by ear. RB + Right
- edits the sound; RB + Left
- on the Instrument screen
- comes back. See Build Your
-~16,10,sounds-first,
- Sounds First.
-~0,12,sounds-first,
+ sounds by ear, Start for a
+ riff that suits the sound.
+ RB + Right edits the sound
+ (RB + Left on the Instrument
+ screen comes back),
+ RB + Down goes to a phrase
+ to write notes with it,
+ LB + Start saves and loads
+ sounds and kits. See Build
+~21,5,sounds-first,
+ Your Sounds First.
+~0,17,sounds-first,
 =My sounds
  LB + Start on the instrument
  list opens your own sound

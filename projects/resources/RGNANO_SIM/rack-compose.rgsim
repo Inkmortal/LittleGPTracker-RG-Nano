@@ -1,0 +1,118 @@
+# The Rack's hand-off to composing: Start plays a riff that suits the
+# sound (and keeps looping until Start again), LB+Start opens My sounds,
+# and RB+Down goes to a phrase with the sound ready for new notes, making
+# the chain and phrase if the song has none.
+route boot.new_project_random
+expect_view song
+down n
+press l 80
+up n
+wait 200
+expect_view rack
+# 05 is the starter kit's bass: a bass line
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+wait 100
+expect_selected_text 05 SYN BASS
+reset_audio_stats
+press s 80
+wait 300
+expect_screen_text riff: bass line
+expect_player_running yes
+expect_play_mode audition
+# A single preview stops by itself after 4 s; a riff keeps going
+wait 5000
+expect_player_running yes
+expect_audio_activity 32
+# It walks the line: the octave jump (C4) and the scale's 5th (G3)
+expect_log RIFF] step 4 note 72
+expect_log RIFF] step 8 note 67
+screenshot rack-riff.bmp
+press s 80
+wait 300
+expect_player_running no
+# The kick gets a drum pattern
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+wait 100
+press s 80
+wait 300
+expect_screen_text riff: drums
+expect_player_running yes
+# Leaving the Rack ends it
+press b 80
+wait 300
+expect_view song
+expect_player_running no
+# LB+Start: My sounds, from the Rack
+down n
+press l 80
+up n
+wait 200
+down m
+press s 80
+up m
+wait 200
+expect_open rack>MY SOUNDS
+expect_screen_text Save sound 00
+press b 80
+wait 150
+expect_open rack
+# RB+Down from the bass: a new chain and phrase, and new notes use 05
+press d 80
+press d 80
+press d 80
+press d 80
+press d 80
+wait 100
+expect_song_chain 0 0 FF
+down n
+press d 80
+up n
+wait 300
+expect_view phrase
+expect_song_chain 0 0 00
+expect_chain_phrase 0 0 00
+press a 80
+wait 150
+expect_phrase_instrument 0 0 05
+# Again from the kick: the same chain and phrase, new notes use 00
+down n
+press l 80
+up n
+wait 200
+down n
+press l 80
+up n
+wait 200
+expect_view song
+down n
+press l 80
+up n
+wait 200
+expect_view rack
+press u 80
+press u 80
+press u 80
+press u 80
+press u 80
+wait 100
+expect_selected_text 00 SYN KICK
+down n
+press d 80
+up n
+wait 300
+expect_view phrase
+press d 80
+press a 80
+wait 150
+expect_phrase_instrument 0 1 00
+expect_phrase_instrument 0 0 05
+expect_no_error
+quit

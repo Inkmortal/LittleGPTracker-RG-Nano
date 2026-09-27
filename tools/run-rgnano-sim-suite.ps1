@@ -295,6 +295,11 @@ $suite = @(
     Args = @("-ResetLastProject", "-SeedSampleFixture")
   },
   @{
+    Name = "rack-compose"
+    Script = "rack-compose.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "live-mode"
     Script = "live-mode.rgsim"
     Args = @("-OpenDemo=Afterglow")

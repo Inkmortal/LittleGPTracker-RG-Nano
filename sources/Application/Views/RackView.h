@@ -47,12 +47,20 @@ protected:
 private:
   void move(int delta);
   void play();
-  void stop();
+  void stop();  // the note held with A
+  void leave(); // any sound the Rack started (held note, riff)
   void stepNote(int direction);
   void octave(int direction);
   void duplicate();
   void switchTo(ViewType type);
   int baseNote();
+  // Start: a short loop that suits the sound (drums, bass, pad, lead)
+  void toggleRiff();
+  // RB+Down: to a phrase, with this sound ready for new notes
+  void composeWithIt();
+  // The k-th note of the song's scale above the base (a major scale when
+  // the song has no key)
+  int scaleNote(int base, int k);
 
   int selected_;
   int top_;

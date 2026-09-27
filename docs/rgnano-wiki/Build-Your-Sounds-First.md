@@ -27,8 +27,11 @@ Each row is a slot: its number, its kind (`SYN` synth, `MAC` macro synth, `SMP` 
 | **A** (hold) | play it; let go of **A** and it stops |
 | **A + Left / Right** | the next note of the scale down / up, and play it (no key set: a semitone) |
 | **A + Up / Down** | an octave up / down, and play it |
+| **Start** | a short riff with it, looping: a drum pattern, a bass line, a held chord or a melody, whichever suits the sound. **Start** again stops |
 | **Select** | the [sound browser](#the-sound-browser): hear sounds as you move, take one |
 | **RB + Right** | edit it on the Instrument screen; **RB + Left** there comes back to the Rack |
+| **RB + Down** | [write notes with it](#write-notes-with-it) |
+| **LB + Start** | [save and load](#save-and-load) sounds and kits |
 | **LB + A** | copy it to a free slot, to make a variation |
 | **B** | back to the Song |
 
@@ -54,9 +57,13 @@ The keyboard starts where the sound sounds natural: a synth at C3, a sample at t
 
 So you can try twenty kicks and still walk away with your old one.
 
+## Write notes with it
+
+**RB + Down** on the Rack takes you to a Phrase screen with the selected sound ready: the next note you add there uses it. It opens the chain under the Song screen's cursor and that chain's first phrase, and makes them if the song has none yet, so from a brand new song it's one press from a sound to its first note.
+
 ## Save and load
 
-Your sounds live on the card in `Applications/Sounds`, outside any song, so they're there in every song. **LB + Start** on the instrument list (**RB + Up** on the Instrument screen) opens **My sounds**:
+Your sounds live on the card in `Applications/Sounds`, outside any song, so they're there in every song. **LB + Start** on the Rack (or on the instrument list, **RB + Up** on the Instrument screen) opens **My sounds**:
 
 | Choice | Does |
 | --- | --- |
@@ -76,9 +83,10 @@ A drum kit and a bass, built before a single note:
 1. Song **RB + Left**: the Rack, on `00 KICK`.
 2. **Select**, **A** on `Synth presets`, then **Down** through the list: each one plays. **A** on the kick you like.
 3. **Down** to `01`, **Select** again: a snare this time. Try the `Samples` too.
-4. **Down** to `05`: the bass. Hold **A** and step through the scale with **A + Right** to hear it across notes.
+4. **Down** to `05`: the bass. Hold **A** and step through the scale with **A + Right** to hear it across notes, or **Start** for a bass line.
 5. Too dark? **RB + Right**, open the filter on the FILTER page, **RB + Left** back.
-6. **RB + Up** on the Instrument screen, **LB + Start**, `Save this kit`, **A**. Then `New songs: this kit` if every song should start with it.
+6. **LB + Start**, `Save this kit`, **A**. Then `New songs: this kit` if every song should start with it.
+7. On the kick, **RB + Down**: a phrase, ready for kick notes.
 
 Now write the notes: every sound is already where you want it.
 

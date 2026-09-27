@@ -38,6 +38,10 @@ private:
 	unsigned int tickCount_ ;
 } ;
 
+// AuditionRiff steps that are not a note
+#define RIFF_REST -1
+#define RIFF_OFF -2
+
 class Player: public I_Observer,public Observable,public T_Singleton<Player> {
 private: // Singleton
 	Player() ;
@@ -59,6 +63,12 @@ public:
 	void Start(PlayMode mode,bool forceSongMode) ;
 	void Stop() ;
 	void AuditionInstrument(int instrument,int note) ;
+	// A short looping phrase with one instrument, outside the song (the
+	// Rack's Start): a step every 6 ticks at the song's tempo. Each step is
+	// a note (MIDI), RIFF_REST (the last note rings on) or RIFF_OFF. Runs
+	// until Stop().
+	void AuditionRiff(int instrument,const int *notes,int count) ;
+	bool IsRiffPlaying() ;
 	void ForgetInstrument(I_Instrument *instrument) ;
 	
 //	void Toggle(PlayMode mode,bool forceSongMode=false) ;
@@ -190,6 +200,15 @@ private:
 
 	bool retrigAllImmediate_ ;
 	unsigned char retrigPos_ ;
+
+	// AuditionRiff: the steps, where it is, ticks to the next step
+	enum { RIFF_MAX_STEPS=32 } ;
+	int riffNotes_[RIFF_MAX_STEPS] ;
+	int riffCount_ ;
+	int riffPos_ ;
+	int riffTicks_ ;
+	int riffInstrument_ ;
+	void stepRiff() ;
 
 	// Per-track sequencer state
 	unsigned int randomState_[SONG_CHANNEL_COUNT] ;   // RAND, CHNC, SEED

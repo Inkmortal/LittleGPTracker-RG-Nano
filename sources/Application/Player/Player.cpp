@@ -41,6 +41,10 @@ Player::Player() {
 	sequencerMode_=SM_SONG ;
 	lastPercentage_=0 ;
 	retrigAllImmediate_=false ;
+	riffCount_=0 ;
+	riffPos_=0 ;
+	riffTicks_=0 ;
+	riffInstrument_=-1 ;
 #ifdef PLATFORM_RGNANO_SIM
 	simStreaming_=false ;
 	simStreamingPath_="" ;
@@ -247,6 +251,8 @@ void Player::AuditionInstrument(int instrument,int note) {
 	if (note<0) note=0;
 	if (note>127) note=127;
 	mixer_->Lock();
+	// A single note ends any riff (AuditionRiff sets its own after this)
+	riffCount_=0;
 	if (isRunning_ && viewData_->playMode_==PM_AUDITION) {
 		for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 			mixer_->StopChannel(i);
@@ -280,6 +286,48 @@ void Player::AuditionInstrument(int instrument,int note) {
 	mixer_->Unlock();
 }
 
+void Player::AuditionRiff(int instrument,const int *notes,int count) {
+	if (!project_ || !viewData_ || instrument<0 || instrument>=MAX_INSTRUMENT_COUNT) {
+		return ;
+	}
+	if (count>RIFF_MAX_STEPS) count=RIFF_MAX_STEPS ;
+	if (count<=0) return ;
+	// The first step starts it like any preview note
+	int first=notes[0]>=0?notes[0]:60 ;
+	AuditionInstrument(instrument,first) ;
+	mixer_->Lock() ;
+	for (int i=0;i<count;i++) riffNotes_[i]=notes[i] ;
+	riffCount_=count ;
+	riffPos_=0 ;
+	riffTicks_=6 ;
+	riffInstrument_=instrument ;
+	mixer_->Unlock() ;
+}
+
+bool Player::IsRiffPlaying() {
+	return isRunning_ && viewData_ && viewData_->playMode_==PM_AUDITION && riffCount_>0 ;
+}
+
+// The next step of the riff (render thread, mixer locked)
+void Player::stepRiff() {
+	if (--riffTicks_>0) return ;
+	riffTicks_=6 ;
+	riffPos_=(riffPos_+1)%riffCount_ ;
+	int note=riffNotes_[riffPos_] ;
+	int channel=viewData_->songX_ ;
+	if (channel<0 || channel>=SONG_CHANNEL_COUNT) channel=0 ;
+	if (note==RIFF_REST) return ;
+	mixer_->StopInstrument(channel) ;
+	if (note==RIFF_OFF) return ;
+	I_Instrument *instr=project_->GetInstrumentBank()->GetInstrument(riffInstrument_) ;
+	if (!instr) return ;
+	if (note>127) note=127 ;
+	mixer_->StartInstrument(channel,instr,(unsigned char)note,true) ;
+#ifdef PLATFORM_RGNANO_SIM
+	Trace::Log("RIFF","step %d note %d",riffPos_,note) ;
+#endif
+}
+
 void Player::ForgetInstrument(I_Instrument *instrument) {
 	if (!instrument) return ;
 	mixer_->Lock() ;
@@ -292,6 +340,7 @@ void Player::Stop() {
 	CrashLog::Note("player stop") ;
 
 	mixer_->Lock() ;
+	riffCount_=0 ;
 
 	for (int i=0;i<SONG_CHANNEL_COUNT;i++) {
 		mixer_->StopChannelQuickly(i) ;
@@ -672,6 +721,9 @@ void Player::Update(Observable &o,I_ObservableData *d) {
 			// Don't advance in audition mode
 			if (viewData_->playMode_ != PM_AUDITION) {
 				moveToNextStep() ;
+			} else if (riffCount_>0) {
+				// A riff loops until stopped
+				stepRiff() ;
 			} else if (GetPlayTime() > AUDITION_MAX_SECONDS) {
 				// A preview note has no note-off of its own: end it here,
 				// or a pad or held sample would ring until the app quits

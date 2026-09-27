@@ -1,6 +1,13 @@
 #include "RackView.h"
 #include "KeyboardStrip.h"
 #include "ModalDialogs/SoundBrowserDialog.h"
+#include "ModalDialogs/SoundFilesDialog.h"
+#include "Application/Instruments/SynthInstrument.h"
+#include "Application/Instruments/SamplePool.h"
+#include "Application/Model/Chain.h"
+#include "Application/Model/Phrase.h"
+#include <ctype.h>
+#include <string>
 #include "Application/AppWindow.h"
 #include "Application/Instruments/InstrumentBank.h"
 #include "Application/Instruments/SampleInstrument.h"
@@ -45,6 +52,56 @@ static void noteLabel(int note, char *out) {
 static void browserCallback(View &v, ModalView &dialog) {
     SoundBrowserDialog &browser = (SoundBrowserDialog &)dialog;
     ((RackView &)v).SoundChanged(browser.GetResult());
+}
+
+static void soundFilesCallback(View &v, ModalView &dialog) {
+    if (dialog.GetReturnCode() > 0) {
+        ((RackView &)v).SoundChanged("");
+    }
+}
+
+enum RiffKind { RK_DRUMS, RK_BASS, RK_PAD, RK_LEAD };
+static const char *riffNames[] = {"drums", "bass line", "pad", "melody"};
+
+static bool nameHas(const std::string &name, const char *const *words) {
+    for (int i = 0; words[i]; i++) {
+        if (name.find(words[i]) != std::string::npos)
+            return true;
+    }
+    return false;
+}
+
+// What kind of part the sound is for, from its name and what it is
+static RiffKind riffKind(I_Instrument *instr) {
+    std::string name = instr->GetName();
+    for (size_t i = 0; i < name.size(); i++)
+        name[i] = tolower(name[i]);
+    static const char *const drums[] = {"kick", "snare", "hat", "clap", "tom",
+                                        "perc", "drum", "cym", "rim", "shaker",
+                                        "crash", "ride", "bd", "sd", 0};
+    static const char *const bass[] = {"bass", "sub", "808", 0};
+    static const char *const pads[] = {"pad", "chord", "string", "choir",
+                                       "drone", "bed", "ambient", 0};
+    if (nameHas(name, drums))
+        return RK_DRUMS;
+    if (nameHas(name, bass))
+        return RK_BASS;
+    if (nameHas(name, pads))
+        return RK_PAD;
+    if (instr->GetType() == IT_SYNTH) {
+        std::string engine = SynthInstrument::GetEngineName(
+            ((SynthInstrument *)instr)->GetEngine());
+        if (engine == "drum")
+            return RK_DRUMS;
+    }
+    if (instr->GetType() == IT_SAMPLE) {
+        // A short one-shot is a hit
+        int index = ((SampleInstrument *)instr)->GetSampleIndex();
+        SoundSource *source = SamplePool::GetInstance()->GetSource(index);
+        if (index >= 0 && source && source->GetSize(-1) < 22050)
+            return RK_DRUMS;
+    }
+    return RK_LEAD;
 }
 
 RackView::RackView(GUIWindow &w, ViewData *viewData)
@@ -134,6 +191,12 @@ void RackView::play() {
     isDirty_ = true;
 }
 
+void RackView::leave() {
+    stop();
+    if (Player::GetInstance()->IsRiffPlaying())
+        Player::GetInstance()->Stop();
+}
+
 void RackView::stop() {
     if (!holding_)
         return;
@@ -189,8 +252,119 @@ void RackView::duplicate() {
     status_ = msg;
 }
 
+int RackView::scaleNote(int base, int k) {
+    Project *project = viewData_->project_;
+    if (project->GetScaleKey() < 0) {
+        static const int major[7] = {0, 2, 4, 5, 7, 9, 11};
+        return base + 12 * (k / 7) + major[k % 7];
+    }
+    int note = base;
+    for (int found = 0; found < k && note < 127;) {
+        note++;
+        if (project->IsNoteInScale(note))
+            found++;
+    }
+    return note;
+}
+
+void RackView::toggleRiff() {
+    Player *player = Player::GetInstance();
+    if (player->IsRiffPlaying()) {
+        player->Stop();
+        status_.clear();
+        isDirty_ = true;
+        return;
+    }
+    if (player->IsRunning() && viewData_->playMode_ != PM_AUDITION) {
+        status_ = "song playing: Start stops it";
+        isDirty_ = true;
+        return;
+    }
+    I_Instrument *instr =
+        viewData_->project_->GetInstrumentBank()->GetInstrument(selected_);
+    if (instr->GetType() == IT_SAMPLE && instr->IsEmpty()) {
+        status_ = "empty: Select to pick a sound";
+        isDirty_ = true;
+        return;
+    }
+    int b = PlayNote();
+    const int R = RIFF_REST, O = RIFF_OFF;
+    int d0 = b, d2 = scaleNote(b, 2), d4 = scaleNote(b, 4), d7 = scaleNote(b, 7);
+    RiffKind kind = riffKind(instr);
+    int steps[16];
+    switch (kind) {
+    case RK_DRUMS: {
+        // x..x..x.x..x..x.
+        const int hits[16] = {1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0};
+        for (int i = 0; i < 16; i++)
+            steps[i] = hits[i] ? d0 : R;
+        break;
+    }
+    case RK_BASS: {
+        const int line[16] = {d0, R, d0, O, d0 + 12, O, d0, R,
+                              d4, R, d0, O, d2, R, d0, O};
+        memcpy(steps, line, sizeof(steps));
+        break;
+    }
+    case RK_PAD: {
+        const int held[16] = {d0, R, R, R, R, R, R, R,
+                              d4, R, R, R, R, R, R, O};
+        memcpy(steps, held, sizeof(steps));
+        break;
+    }
+    default: {
+        const int arp[16] = {d0, d2, d4, d7, d4, d2, d0, O,
+                             d0, d2, d4, d2, d0, R, O, R};
+        memcpy(steps, arp, sizeof(steps));
+        break;
+    }
+    }
+    player->AuditionRiff(selected_, steps, 16);
+    holding_ = false;
+    char message[40];
+    sprintf(message, "riff: %s  Start stops", riffNames[kind]);
+    status_ = message;
+    isDirty_ = true;
+}
+
+// A place to write notes with this sound: the chain under the Song's
+// cursor (a new one on an empty cell), its first phrase (a new one if it
+// has none), and the sound as the instrument of new notes
+void RackView::composeWithIt() {
+    leave();
+    Song *song = viewData_->song_;
+    unsigned char *cell = viewData_->GetCurrentSongPointer();
+    if (*cell == 0xFF) {
+        unsigned short chain = song->chain_->GetNext();
+        if (chain == NO_MORE_CHAIN) {
+            status_ = "no free chain left";
+            isDirty_ = true;
+            return;
+        }
+        *cell = (unsigned char)chain;
+        song->chain_->SetUsed(*cell);
+    }
+    viewData_->currentChain_ = *cell;
+    viewData_->chainRow_ = 0;
+    unsigned char *row = song->chain_->data_ + 16 * viewData_->currentChain_;
+    if (*row == 0xFF) {
+        unsigned short phrase = song->phrase_->GetNext();
+        if (phrase == NO_MORE_PHRASE) {
+            status_ = "no free phrase left";
+            isDirty_ = true;
+            return;
+        }
+        *row = (unsigned char)phrase;
+        song->phrase_->SetUsed(*row);
+    }
+    viewData_->currentPhrase_ = *row;
+    viewData_->currentInstrument_ = selected_;
+    viewData_->instrumentPicked_ = true;
+    switchTo(VT_PHRASE);
+}
+
 void RackView::switchTo(ViewType type) {
-    stop();
+    leave();
     if (type == VT_INSTRUMENT) {
         viewData_->currentInstrument_ = selected_;
         // Its RB+Left comes back here instead of going to a phrase
@@ -239,9 +413,16 @@ void RackView::ProcessButtonMask(unsigned short mask, bool pressed) {
         }
         return;
     }
+    if (mask == (EPBM_L | EPBM_START)) {
+        leave();
+        DoModal(new SoundFilesDialog(*this, selected_), soundFilesCallback);
+        return;
+    }
     if (mask & EPBM_R) {
         if (mask == (EPBM_R | EPBM_RIGHT)) {
             switchTo(VT_INSTRUMENT);
+        } else if (mask == (EPBM_R | EPBM_DOWN)) {
+            composeWithIt();
         } else if (mask == (EPBM_R | EPBM_LEFT)) {
             status_ = "B: back to the Song";
             isDirty_ = true;
@@ -249,6 +430,9 @@ void RackView::ProcessButtonMask(unsigned short mask, bool pressed) {
         return;
     }
     switch (mask) {
+    case EPBM_START:
+        toggleRiff();
+        break;
     case EPBM_UP:
         move(-1);
         break;
@@ -267,7 +451,7 @@ void RackView::ProcessButtonMask(unsigned short mask, bool pressed) {
             isDirty_ = true;
             break;
         }
-        stop();
+        leave();
         DoModal(new SoundBrowserDialog(*this, selected_, PlayNote()),
                 browserCallback);
         break;
@@ -340,8 +524,9 @@ void RackView::DrawView() {
                key < 0 ? "every note" : "steps in the scale", props);
 
     SetColor(CD_NORMAL);
-    DrawString(pos._x, HINT_Y, "A play A+L/R note A+U/D oct", props);
-    DrawString(pos._x, HINT_Y + 1, "SEL browse RB+R edit B back", props);
+    DrawString(pos._x, HINT_Y, "A play START riff SEL browse", props);
+    DrawString(pos._x, HINT_Y + 1, "RB+R edit  RB+D write notes", props);
+    DrawString(pos._x, HINT_Y + 2, "LB+START save/load  B back", props);
     SetColor(CD_NORMAL);
     View::EnableNotification();
 }
@@ -385,10 +570,10 @@ void RackView::CustomizeContextOverlay(const char *&name, const char *&where,
     cmd1 = "Up/Down pick, L/R page";
     cmd2 = "A hold: play the sound";
     cmd3 = "A+L/R note  A+U/D octave";
-    cmd4 = "Select: browse & hear";
-    cmd5 = "RB+Right edit the sound";
-    cmd6 = "LB+A copy to a free slot";
-    cmd7 = "B back to the Song";
+    cmd4 = "Start: a riff with it";
+    cmd5 = "Select: browse & hear";
+    cmd6 = "RB+Down: write notes";
+    cmd7 = "LB+Start save/load, kits";
 }
 
 void RackView::CustomizeHowToSteps(const char **lines) {
@@ -397,6 +582,6 @@ void RackView::CustomizeHowToSteps(const char **lines) {
     lines[2] = "1 Select: browse, you hear";
     lines[3] = "  each one as you move";
     lines[4] = "2 A takes it, hold A plays";
-    lines[5] = "3 RB+Right to shape it";
-    lines[6] = "Then write notes with it";
+    lines[5] = "3 Start: hear it in a riff";
+    lines[6] = "4 RB+Down: write notes";
 }
