@@ -72,6 +72,18 @@ int Fm4CarrierCount(int algo) {
 	return n>0?n:1 ;
 }
 
+// Output scale for the algorithm's carriers at these levels: their summed
+// level may reach full scale, never more. Four carriers at FF are each a
+// quarter; one carrier at FF (however faint the others) is full.
+float Fm4CarrierNorm(int algo,const float *levels) {
+	if (algo<0 || algo>=FM4_ALGO_COUNT) return 1.0f ;
+	float sum=0.0f ;
+	for (int op=0;op<FM4_OPS;op++) {
+		if (fm4Algos[algo].carriers_&(1<<op)) sum+=levels[op] ;
+	}
+	return sum>1.0f?1.0f/sum:1.0f ;
+}
+
 void Fm4Start(Fm4Ops &o,unsigned int seed) {
 	for (int op=0;op<FM4_OPS;op++) {
 		// Every note starts its operators at phase zero (key sync), so an

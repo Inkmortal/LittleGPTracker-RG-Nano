@@ -56,6 +56,11 @@ void SynthPhysRender(SynthPlaitsVoice *v,int model,bool strike,float f0,
                      float material,float bright,float decay,float accent,
                      float *out,int n) ;
 
+// Output level below which a model counts as silent (-80 dB under the
+// model's own level, so the output gains don't lengthen or cut the tail)
+float SynthDrumSilence() ;
+float SynthPhysSilence() ;
+
 // Model names for the knob and per-model help text
 extern const char *synthDrumModelNames[SDM_LAST] ;
 extern const char *synthPhysModelNames[SPM_LAST] ;
