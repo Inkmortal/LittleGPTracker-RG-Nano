@@ -10,14 +10,14 @@ wait 120
 screenshot_app context-overlay-song.bmp
 expect_screen_text MAP
 expect_screen_text Song > Chain > Phrase
-expect_screen_text Up/Dn page RB+Sel close
+expect_screen_text Up/Dn page B close
 press d 80
 wait 120
 screenshot_app context-overlay-song-commands.bmp
 expect_screen_text COMMANDS
 expect_screen_text A paste/new chain
 expect_screen_text Start play song row
-expect_screen_text Up/Dn page RB+Sel close
+expect_screen_text Up/Dn page B close
 press u 80
 wait 80
 expect_screen_text MAP

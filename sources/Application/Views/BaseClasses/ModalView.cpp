@@ -12,6 +12,11 @@ int ModalView::GetReturnCode() { return returnCode_; };
 
 bool ModalView::IsFinished() { return finished_; };
 
+bool ModalView::Back() {
+    EndModal(0);
+    return true;
+}
+
 void ModalView::EndModal(int returnCode) {
     returnCode_ = returnCode;
     finished_ = true;

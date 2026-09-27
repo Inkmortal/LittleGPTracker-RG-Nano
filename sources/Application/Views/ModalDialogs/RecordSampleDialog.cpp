@@ -64,6 +64,30 @@ void RecordSampleDialog::OnFocus() {
     isDirty_ = true;
 }
 
+bool RecordSampleDialog::Back() {
+    switch (state_) {
+        case RS_SELECT_DEVICE:
+            cancel();
+            break;
+        case RS_READY:
+            state_ = RS_SELECT_DEVICE;
+            break;
+        case RS_RECORDING:
+            capture_->StopRecording();
+            state_ = RS_READY;
+            statusMessage_ = "Take dropped";
+            break;
+        case RS_STOPPED:
+            state_ = RS_READY;
+            statusMessage_ = "Take dropped";
+            break;
+        case RS_SAVING:
+            break;
+    }
+    isDirty_ = true;
+    return true;
+}
+
 void RecordSampleDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
     if (!pressed) return;
 
@@ -79,8 +103,6 @@ void RecordSampleDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
                 isDirty_ = true;
             } else if (mask & EPBM_A) {
                 selectDevice();
-            } else if (mask & EPBM_B) {
-                cancel();
             }
             break;
 
@@ -95,10 +117,6 @@ void RecordSampleDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
                 recordDuration_--;
                 if (recordDuration_ < 1) recordDuration_ = 1;
                 isDirty_ = true;
-            } else if (mask & EPBM_B) {
-                // Go back to device selection
-                state_ = RS_SELECT_DEVICE;
-                isDirty_ = true;
             }
             break;
 
@@ -111,8 +129,6 @@ void RecordSampleDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
         case RS_STOPPED:
             if (mask & EPBM_A) {
                 saveRecording();
-            } else if (mask & EPBM_B) {
-                cancel();
             }
             break;
 
@@ -133,7 +149,7 @@ void RecordSampleDialog::CustomizeContextOverlay(
 	field="Recording modal";
 	cmd1="Up/Down device/len";
 	cmd2="A select/save";
-	cmd3="B cancel/back";
+	cmd3="B back one step";
 	cmd4="Start rec/stop";
 	cmd5="RG Nano has no mic";
 	cmd6="Use imported WAVs";

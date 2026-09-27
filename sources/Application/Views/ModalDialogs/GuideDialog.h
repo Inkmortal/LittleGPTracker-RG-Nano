@@ -17,6 +17,8 @@ public:
   virtual void OnPlayerUpdate(PlayerEventType, unsigned int currentTick);
   virtual void OnFocus();
   virtual void ProcessButtonMask(unsigned short mask, bool pressed);
+  // The guide walks B back through its own pages in ProcessButtonMask
+  virtual bool Back() { return false; }
   virtual void GetGuideTopic(const char *&page, const char *&section) {
     page = 0;
     section = 0;

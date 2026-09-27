@@ -11,6 +11,11 @@ class ModalView : public View {
 
     bool IsFinished();
     virtual bool IsModal() { return true; }
+    // B backs out one step, on press, with no side effects: by default it
+    // closes the dialog (return code 0). A dialog with steps inside (a
+    // folder, a recording take, typed letters) overrides this to go back
+    // one of them first. Return false to handle B in ProcessButtonMask.
+    virtual bool Back();
     int GetReturnCode();
 
   protected:

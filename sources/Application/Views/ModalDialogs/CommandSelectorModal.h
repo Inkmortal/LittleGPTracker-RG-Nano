@@ -13,6 +13,8 @@ class CommandSelectorModal : public ModalView {
     virtual ~CommandSelectorModal();
 
     virtual void ProcessButtonMask(unsigned short mask, bool pressed);
+    // B: cancel, putting back the command it was showing live
+    virtual bool Back();
     virtual void GetGuideTopic(const char *&page, const char *&section) {
         page = "commands";
         section = "";

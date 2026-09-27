@@ -83,7 +83,8 @@ static void SaveAsProjectCallback(View &v,ModalView &dialog) {
     }
 }
 
-// "Save your work?" Yes saves then leaves, No (or B) leaves without saving
+// "Save your work?" Yes saves then leaves, No leaves without saving, B
+// (cancel) stays
 static bool leaveAfterSavePrompt(ModalView &dialog) {
     MixerService::GetInstance()->SetRenderMode(0);
     int answer = dialog.GetReturnCode();
@@ -106,7 +107,12 @@ static void QuitCallback(View &v,ModalView &dialog) {
 } ;
 
 static void PurgeCallback(View &v,ModalView &dialog) {
-	((ProjectView &)v).OnPurgeInstruments(dialog.GetReturnCode()==MBL_YES) ;
+	// Yes also deletes the files, No only frees the instruments, B
+	// (cancel) does nothing
+	int answer=dialog.GetReturnCode() ;
+	if (answer==MBL_YES || answer==MBL_NO) {
+		((ProjectView &)v).OnPurgeInstruments(answer==MBL_YES) ;
+	}
 } ;
 
 ProjectView::ProjectView(GUIWindow &w,ViewData *data):FieldView(w,data) {

@@ -129,12 +129,15 @@ void CommandSelectorModal::ProcessButtonMask(unsigned short mask, bool pressed) 
             *liveTarget_ = selectedCommand_;
         }
         EndModal(1);  // Confirm selection
-    } else if (mask & EPBM_B) {
-        if (liveTarget_) {
-            *liveTarget_ = savedCmd_;
-        }
-        EndModal(0);  // Cancel
     }
+}
+
+bool CommandSelectorModal::Back() {
+    if (liveTarget_) {
+        *liveTarget_ = savedCmd_;
+    }
+    EndModal(0);
+    return true;
 }
 
 void CommandSelectorModal::DrawView() {

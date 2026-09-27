@@ -184,13 +184,16 @@ void RenderToSampleDialog::drawGraphics() {
 void RenderToSampleDialog::ProcessButtonMask(unsigned short mask, bool pressed) {
     if (!pressed)
         return;
-    if (mask == EPBM_B) {
-        if (started_ && !done_)
-            cancel();
-        EndModal(0);
-    } else if (mask == EPBM_A && done_ && instrument_ >= 0) {
+    if (mask == EPBM_A && done_ && instrument_ >= 0) {
         EndModal(1);
     }
+}
+
+bool RenderToSampleDialog::Back() {
+    if (started_ && !done_)
+        cancel();
+    EndModal(0);
+    return true;
 }
 
 void RenderToSampleDialog::GetGuideTopic(const char *&page, const char *&section) {

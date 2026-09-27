@@ -749,7 +749,7 @@ bool SDLEventManager::AddSimScriptLine(const std::string &line, const char *scri
 		}
 	} else if (command.op=="down" || command.op=="up" || command.op=="screenshot" || command.op=="screenshot_app" || command.op=="log" || command.op=="expect_file" || command.op=="sim_make_project" || command.op=="sim_remove_project" || command.op=="expect_project_exists" || command.op=="expect_no_project" || command.op=="expect_project_sample" || command.op=="expect_view" || command.op=="expect_player_running" || command.op=="expect_play_mode" || command.op=="sim_set_note_names" || command.op=="expect_sample_trim_order" || command.op=="sim_dump_song" || command.op=="expect_song_dump") {
 		iss >> command.arg;
-	} else if (command.op=="expect_screen_text" || command.op=="expect_selected_text" || command.op=="expect_streaming_sample" || command.op=="dump_state") {
+	} else if (command.op=="expect_screen_text" || command.op=="expect_selected_text" || command.op=="expect_open" || command.op=="expect_streaming_sample" || command.op=="dump_state") {
 		std::getline(iss,command.arg);
 		if (!command.arg.empty() && command.arg[0]==' ') {
 			command.arg.erase(0,1);
@@ -1099,6 +1099,11 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 	} else if (command.op=="expect_selected_text") {
 		if (!ExpectSimSelectedText(command.arg)) {
 			FailSimScript("selected text assertion failed");
+			return;
+		}
+	} else if (command.op=="expect_open") {
+		if (!ExpectSimOpen(command.arg)) {
+			FailSimScript("open layers assertion failed");
 			return;
 		}
 	} else if (command.op=="expect_player_running") {
@@ -1865,6 +1870,34 @@ bool SDLEventManager::ExpectSimView(const std::string &viewName)
 	Trace::Log("RGNANO_SIM","expect_view %s => %s",viewName.c_str(),current);
 	if (!matches) {
 		Trace::Error("RGNANO_SIM expected view %s but found %s",viewName.c_str(),current);
+	}
+	return matches;
+}
+
+// expect_open song>menu>confirm: exactly these layers are open, the screen
+// first, then each dialog/overlay over it (the power menu's sit on top).
+// Proves a B press closed one layer, not zero or two.
+bool SDLEventManager::ExpectSimOpen(const std::string &expected)
+{
+	GUIWindow *guiWindow=Application::GetInstance()->GetWindow();
+	AppWindow *appWindow=(AppWindow *)guiWindow;
+	std::string open=appWindow ? appWindow->GetOpenLayers() : "none";
+	if (showPowerMenu_ || showDebugScreen_) {
+		open += ">menu";
+	}
+	if (showExitConfirm_) {
+		open += ">confirm";
+	}
+	if (showDebugScreen_) {
+		open += ">debug";
+	}
+	if (menuHelpOverlay_) {
+		open += ">helper";
+	}
+	bool matches=open==expected;
+	Trace::Log("RGNANO_SIM","expect_open %s actual %s => %s",expected.c_str(),open.c_str(),matches?"match":"mismatch");
+	if (!matches) {
+		Trace::Error("RGNANO_SIM expected open %s, got %s",expected.c_str(),open.c_str());
 	}
 	return matches;
 }
@@ -3530,7 +3563,7 @@ void SDLEventManager::RenderPowerMenu(SDL_Surface *screen, SDLGUIWindowImp *wind
 		showExitConfirm_ ? "Save before leaving" : "Sound, light, quit",
 		showExitConfirm_ ? "Up/Down choose" : "Up/Down  L/R adjust",
 		showExitConfirm_ ? "A answer" : "A open choice",
-		showExitConfirm_ ? "B = No, leave" : "B or Power close",
+		showExitConfirm_ ? "B back to menu" : "B or Power close",
 		"R+Select helper");
 }
 
@@ -3548,6 +3581,10 @@ bool SDLEventManager::HandleMenuHelpInput(SDLKey key)
 	if (menuHelpOverlay_) {
 		if (key == SDLK_u || key == SDLK_d) {
 			menuHelpPage_ = menuHelpPage_ == 0 ? 1 : 0;
+		}
+		if (key == SDLK_b) {
+			// B backs out of the helper like any overlay
+			menuHelpOverlay_ = false;
 		}
 		return true;
 	}
@@ -3590,7 +3627,7 @@ void SDLEventManager::RenderMenuHelp(SDL_Surface *screen, SDLGUIWindowImp *windo
 		DrawSimOverlayText(screen,cmd3,box.x+12,box.y+98,white,scale);
 		DrawSimOverlayText(screen,cmd4,box.x+12,box.y+118,white,scale);
 	}
-	DrawSimOverlayText(screen,"Up/Dn page R+Sel close",box.x+12,box.y+134,pink,scale);
+	DrawSimOverlayText(screen,"Up/Dn page B close",box.x+12,box.y+134,pink,scale);
 }
 
 const char *SDLEventManager::GetReplayKeyName(SDLKey key)
@@ -3650,9 +3687,7 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 
 			case SDLK_a:  // A button - confirm
 			case SDLK_RETURN:
-			case SDLK_b:  // B answers "No": one press to leave without saving
 			{
-				if (key == SDLK_b) exitConfirmSelection_ = 1;
 				if (exitConfirmSelection_ == 0) {
 					PersistencyService::GetInstance()->Save();
 					Trace::Log("EVENT","Power menu: saved song");
@@ -3669,6 +3704,7 @@ void SDLEventManager::HandlePowerMenuInput(SDLKey key)
 				break;
 			}
 
+			case SDLK_b:  // B backs out of the question: nothing saved or quit
 			case SDLK_ESCAPE:
 				// Back to main menu
 				showExitConfirm_ = false;
@@ -3767,16 +3803,18 @@ void SDLEventManager::HandleDebugScreenInput(SDLKey key)
 				// System Info - TODO: implement
 				Trace::Log("DEBUG", "System Info selected");
 			} else if (debugScreenSelection_ == 2) {
-				// Exit Debug
+				// Exit Debug: back to the menu it was opened from
 				showDebugScreen_ = false;
+				showPowerMenu_ = true;
 				menuHelpOverlay_ = false;
 				debugScreenSelection_ = 0;
 			}
 			break;
 
-			case SDLK_b:  // B button - back
+		case SDLK_b:  // B backs out one step: to the menu it came from
 		case SDLK_ESCAPE:
 			showDebugScreen_ = false;
+			showPowerMenu_ = true;
 			menuHelpOverlay_ = false;
 			debugScreenSelection_ = 0;
 			break;

@@ -565,7 +565,7 @@ void View::drawContextOverlay() {
 	SetColor(CD_CURSOR);
 	drawOverlayLine(innerX,y+boxH-3,innerW,"A: full guide for this",props);
 	SetColor(CD_HILITE2);
-	drawOverlayLine(innerX,y+boxH-2,innerW,"Up/Dn page RB+Sel close",props);
+	drawOverlayLine(innerX,y+boxH-2,innerW,"Up/Dn page B close",props);
 	SetColor(CD_NORMAL);
 }
 
@@ -1183,6 +1183,18 @@ void View::SetDirty(bool isDirty) {
 	isDirty_=true ;
 } ;
 
+std::string View::GetLayerStack() {
+	if (modalView_) {
+		const char *name="dialog",*where="",*edit="",*field="",*cmd1="",
+		           *cmd2="",*cmd3="",*cmd4="",*cmd5="",*cmd6="",*cmd7="" ;
+		modalView_->CustomizeContextOverlay(name,where,edit,field,cmd1,cmd2,
+		                                    cmd3,cmd4,cmd5,cmd6,cmd7) ;
+		return std::string(">")+name+modalView_->GetLayerStack() ;
+	}
+	// One helper for the whole app: it belongs to the innermost layer
+	return contextOverlay_ ? ">helper" : "" ;
+}
+
 void View::ProcessButton(unsigned short mask, bool pressed) {
 	isDirty_=false ;
 	if (pressed) {
@@ -1223,6 +1235,13 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 			return;
 		}
 		if (contextOverlay_) {
+			if (mask == EPBM_B) {
+				// B backs out of the helper like any overlay
+				contextOverlay_ = false;
+				isDirty_ = true;
+				((AppWindow &)w_).SetDirty();
+				return;
+			}
 			if (mask == EPBM_A) {
 				// Full guide at the page for this screen
 				contextOverlay_ = false;
@@ -1305,6 +1324,9 @@ void View::ProcessButton(unsigned short mask, bool pressed) {
 			isDirty_=true ;
 			((AppWindow &)w_).InvalidateScreenCache() ;
 		}
+	} else if (pressed && mask==EPBM_B && Back()) {
+		// A dialog backed out one step (one rule for every dialog)
+		isDirty_=true ;
 	} else {
 		ProcessButtonMask(mask,pressed);
 		if (pressed && (mask & EPBM_START)) {

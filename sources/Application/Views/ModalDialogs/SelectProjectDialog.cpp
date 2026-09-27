@@ -256,6 +256,19 @@ void SelectProjectDialog::runAction() {
     }
 }
 
+bool SelectProjectDialog::Back() {
+	if (currentPath_.GetPath()!=Path("root:").GetPath()) {
+		// A opened the folder, B leaves it
+		Path parent=currentPath_.GetParent() ;
+		setCurrentFolder(parent) ;
+		isDirty_=true ;
+	} else {
+		// The first screen: nothing behind it
+		View::SetNotification("Quit: Power button",0) ;
+	}
+	return true ;
+}
+
 void SelectProjectDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
 	if (!pressed) return ;
 

@@ -118,6 +118,7 @@ private:
 	bool ExpectSimAudioSilence(int maxPeak);
 	bool ExpectSimAudioCaptureBytes(int minBytes);
 	bool ExpectSimScreenText(const std::string &needle);
+	bool ExpectSimOpen(const std::string &expected);
 	bool ExpectSimSongChain(int row, int channel, const std::string &expected);
 	bool ExpectSimChainPhrase(int chain, int row, const std::string &expected);
 	bool ExpectSimPhraseRowCount(int phrase, int minRows);

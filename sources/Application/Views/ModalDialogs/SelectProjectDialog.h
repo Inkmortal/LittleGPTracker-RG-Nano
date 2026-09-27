@@ -14,6 +14,9 @@ public:
 	virtual void OnPlayerUpdate(PlayerEventType ,unsigned int currentTick) ;
 	virtual void OnFocus() ;
 	virtual void ProcessButtonMask(unsigned short mask,bool pressed) ;
+	// B goes up a folder; the song list itself is the first screen, so
+	// there it only says how to leave the app
+	virtual bool Back() ;
 	virtual void GetGuideTopic(const char *&page, const char *&section) ;
 	virtual void CustomizeContextOverlay(const char *&name, const char *&where,
 										 const char *&edit, const char *&field,
