@@ -4,7 +4,9 @@
 // Native synth instrument: an M8-style "one knob per idea" voice that needs
 // no samples. One voice per tracker channel. The "engine" knob picks how the
 // tone is made: the original subtractive/FM synth, FM4 (four operators),
-// HYPER (a six-note detuned-saw chord) or WAV (a bendable 8-bit oscillator).
+// HYPER (a six-note detuned-saw chord), WAV (a bendable 8-bit oscillator),
+// DRUM (808/909 drum circuit models) or PHYS (a struck modal resonator or a
+// plucked string); DRUM and PHYS are Plaits models (SynthPlaits.h).
 // Envelope, filter, LFO, MOD and MIX pages are shared by every engine.
 
 #include "I_Instrument.h"
@@ -113,6 +115,22 @@ enum SynthLfoDest {
 #define WVP_MIRROR    MAKE_FOURCC('W','V','M','I')
 #define WVP_LIMIT     MAKE_FOURCC('W','V','L','M')
 
+// DRUM: model, tone, decay, snap, accent (Plaits drums, SynthPlaits.h)
+#define DRP_MODEL     MAKE_FOURCC('D','R','M','O')
+#define DRP_TONE      MAKE_FOURCC('D','R','T','O')
+#define DRP_DECAY     MAKE_FOURCC('D','R','D','E')
+#define DRP_SNAP      MAKE_FOURCC('D','R','S','N')
+#define DRP_ACCENT    MAKE_FOURCC('D','R','A','C')
+
+// PHYS: model, material, bright, decay, strike (Plaits modal/string)
+#define PHP_MODEL     MAKE_FOURCC('P','H','M','O')
+#define PHP_MATERIAL  MAKE_FOURCC('P','H','M','A')
+#define PHP_BRIGHT    MAKE_FOURCC('P','H','B','R')
+#define PHP_DECAY     MAKE_FOURCC('P','H','D','E')
+#define PHP_STRIKE    MAKE_FOURCC('P','H','S','T')
+
+struct SynthPlaitsVoice ;
+
 struct SynthVoice {
 	bool active_ ;          // producing sound
 	int stage_ ;            // amp envelope stage
@@ -160,6 +178,11 @@ struct SynthVoice {
 	int hyperSemis_[HYPER_NOTES] ;  // notes in use (after the scale)
 	int hyperKey_ ;                 // what hyperSemis_/hyperRatio_ were made from
 	float hyperRatio_[HYPER_NOTES] ;
+	// DRUM / PHYS: the Plaits models, made the first time the voice plays
+	// one of those engines (they need ~7 KB, most instruments never do)
+	SynthPlaitsVoice *plaits_ ;
+	bool strike_ ;                  // hit the model on the next block
+	int quietSamples_ ;             // how long the model has been silent
 
 	// Command-driven state, same units as SampleInstrument
 	fixed baseVolume_ ;
@@ -349,6 +372,16 @@ private:
 	Variable *wavWarp_ ;
 	Variable *wavMirror_ ;
 	Variable *wavLimit_ ;
+	Variable *drumModel_ ;
+	Variable *drumTone_ ;
+	Variable *drumDecay_ ;
+	Variable *drumSnap_ ;
+	Variable *drumAccent_ ;
+	Variable *physModel_ ;
+	Variable *physMaterial_ ;
+	Variable *physBright_ ;
+	Variable *physDecay_ ;
+	Variable *physStrike_ ;
 	std::vector<Variable *> engineVars_ ;
 } ;
 

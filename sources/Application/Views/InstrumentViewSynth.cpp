@@ -207,11 +207,13 @@ void InstrumentView::getSynthFieldHelp(FourCC id, I_Instrument *s, char *line1,
 			break;
 		case SYP_ENGINE:
 			strcpy(line1,"how the tone is made: synth,");
-			strcpy(line2,"fm4, hyper chord or wav");
+			strcpy(line2,"fm4 hyper wav drum phys");
 			switch(x) {
 				case SE_FM4: strcpy(value,"4-op FM"); break;
 				case SE_HYPER: strcpy(value,"6-note saw chord"); break;
 				case SE_WAV: strcpy(value,"8-bit shapes"); break;
+				case SE_DRUM: strcpy(value,"808/909 drum models"); break;
+				case SE_PHYS: strcpy(value,"struck bar / string"); break;
 				default: strcpy(value,"subtractive + FM"); break;
 			}
 			break;

@@ -378,6 +378,11 @@ $suite = @(
     Args = @("-ResetLastProject")
   },
   @{
+    Name = "synth-drum-phys"
+    Script = "synth-drum-phys.rgsim"
+    Args = @("-ResetLastProject")
+  },
+  @{
     Name = "wuxia-lofi-studio"
     Script = "wuxia-lofi-studio.rgsim"
     Args = @("-ResetLastProject", "-SeedLofiFixture", "-Skin")

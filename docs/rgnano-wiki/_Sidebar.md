@@ -12,6 +12,7 @@
 - [Screens](Screens)
 - [Synth](Synth)
 - [Macro Synth](Macro-Synth)
+- [Sound Design](Sound-Design)
 - [Commands](Commands)
 - [Music Theory Cheat Sheet](Music-Theory-Cheat-Sheet)
 - [Samples](Samples)

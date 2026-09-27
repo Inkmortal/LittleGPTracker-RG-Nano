@@ -4,7 +4,9 @@ Every instrument slot `00`–`7F` can be a **synth** or a **sample**. New projec
 
 Each track plays one synth voice at a time. A note stopped by `KILL` or replaced by a different instrument fades out with its release instead of cutting off.
 
-Want vowels, plucked strings, bells, 808 drums or wavetables? Set `type` to **macro**: the [Macro Synth](Macro-Synth) plays 47 ready synthesis models with two knobs, and keeps this page's ENV, FILTER, MOD, MIX and EQ pages.
+Want vowels, plucked strings, bells, 808 drums or wavetables? Set `type` to **macro**: the [Macro Synth](Macro-Synth) plays 47 ready synthesis models with two knobs, and keeps this page's ENV, FILTER, MOD, MIX and EQ pages. For analog-style drum machine sounds and struck or plucked instruments, the synth's own `drum` and `phys` engines (below) are the richer choice.
+
+New to sound design? [Sound Design](Sound-Design) explains how each engine makes its sound, with a picture of the insides and recipes to type in.
 
 ## The starter kit
 
@@ -31,16 +33,20 @@ The `engine` knob (SOUND page, under `type`) picks how the tone is made. The oth
 | `fm4` | four-operator FM: e-pianos, bells, brass, organs, slap bass | FM Synth |
 | `hyper` | a six-note chord of detuned saw pairs, wide in stereo: pads, trance leads, hoovers | Hypersynth |
 | `wav` | raw 8-bit shapes you bend: chip leads, PWM, sync and fold sounds | Wavsynth |
+| `drum` | analog-circuit drum models: 808 and 909 kicks and snares, two hi-hats | — |
+| `phys` | physical models: a struck bar/bell/drum (modal) and a plucked string | — |
 
-Changing the engine loads that engine's starting sound (`fm init`, `hyper init`, `wav init`); **A + Left/Right** on `preset` then browses only that engine's presets. **B + Select** undoes an engine change like any other edit.
+Changing the engine loads that engine's starting sound (`fm init`, `hyper init`, `wav init`, `drum init`, `phys init`); **A + Left/Right** on `preset` then browses only that engine's presets. **B + Select** undoes an engine change like any other edit.
 
 | Engine | Presets |
 | --- | --- |
 | `fm4` | `epiano`, `fm bell`, `tubular`, `fm bass`, `slap bass`, `brass`, `organ`, `marimba`, `fm pluck`, `glass`, `fm lead`, `clav` |
 | `hyper` | `hyper pad`, `trance lead`, `hoover`, `strings`, `stab`, `dream`, `hyper bass` |
 | `wav` | `chip lead`, `chip bass`, `pwm pad`, `sync lead`, `fold bass`, `zap`, `lofi bell`, `noise hat` |
+| `drum` | `808 kick`, `909 kick`, `boom kick`, `808 snare`, `909 snare`, `rim`, `808 hat`, `808 open`, `ring hat`, `808 tom` |
+| `phys` | `wood bar`, `vibes`, `temple bell`, `kalimba`, `hand drum`, `guzheng`, `nylon`, `sitar`, `steel`, `pluck bass` |
 
-The LFO's `shape` target, and a MOD slot aimed at `shape`, mean something per engine: `fm4` — FM brightness (every modulator's depth), `hyper` — the swarm breathes, `wav` — the mirror moves (pulse-width modulation on `pulse50`). A MOD slot aimed at `fm` deepens every FM4 modulator (`+127` = twice as deep); one aimed at `noise` mixes noise into any engine.
+The LFO's `shape` target, and a MOD slot aimed at `shape`, mean something per engine: `fm4` — FM brightness (every modulator's depth), `hyper` — the swarm breathes, `wav` — the mirror moves (pulse-width modulation on `pulse50`), `drum` — the tone knob, `phys` — the brightness of the hit. A MOD slot aimed at `fm` deepens every FM4 modulator (`+127` = twice as deep); one aimed at `noise` mixes noise into any engine.
 
 ### FM4 engine
 
@@ -117,6 +123,52 @@ A deliberately raw, 8-bit oscillator (no smoothing: it aliases like a game conso
 
 <br clear="right">
 
+### DRUM engine
+
+<img src="images/synth-10-drum.png" width="280" align="right">
+
+Drum machine sounds made the way the machines made them, from models of their circuits (ported from the open-source Plaits module by Mutable Instruments). Nothing is a sample: every hit is computed, so every knob changes the drum itself. The picture shows the first 150 ms of a hit with the current knobs.
+
+| Knob | Does |
+| --- | --- |
+| `model` | `kick 808` (a filter that rings when a pulse hits it), `kick 909` (a sine with a fast pitch sweep), `snare 808` (two ringing drum modes plus filtered noise), `snare 909` (an FM body plus noise), `hat 808` (six square waves through a band-pass filter), `hat ring` (ring-modulated pairs, more metallic) |
+| `tone` | kicks: round (`00`) to clicky; `snare 808`: which drum mode is louder (low = deep body); `snare 909`: FM on the body (high = metallic ring); hats: the filter (low = dark, high = sizzle) |
+| `decay` | how long the drum rings: `00` tight … `FF` long (a boom, an open hat) |
+| `snap` | kicks: the click and punch at the start (`kick 808` adds overdrive above `80`); snares: how much snare rattle against the body; hats: metal (`00`) to white noise (`FF`) |
+| `accent` | how hard the drum is hit: louder and brighter |
+| `drive` | the synth's drive, after the drum |
+| `tune` | semitones. The presets are tuned so `C 3` sounds right; play other notes to tune a kick to your song's key |
+
+The drum makes its own decay, so the presets leave the ENV page's amp envelope open (`sustn FF`) and the filter off. A voice stops by itself once the drum has died away. `RTRG` hits the drum again (rolls); `CHRD` does not apply.
+
+**Try:** `808 kick`, then `decay E0` and `tune -29` for a long sub boom; `909 snare` with `snap FF` for a crisp clap-like crack; `808 hat` with `RTRG 0002` for a trap roll.
+
+<br clear="right">
+
+### PHYS engine
+
+<img src="images/synth-11-phys.png" width="280" align="right">
+
+Physical models: instead of a wave, the engine simulates an object being hit or plucked (from Plaits too). The picture shows the first 600 ms of a hit.
+
+- `modal`: a struck object. A short click (the mallet) excites 24 tuned resonators, one per partial of the object. Their spacing (`matter`) decides what the object is.
+- `string`: a plucked string. A short burst of noise (the pick) runs round a delay line one period long; the loop's filter makes the high partials die first, like a real string.
+
+| Knob | Does |
+| --- | --- |
+| `model` | `modal` or `string` |
+| `matter` | `modal`: `00`–`3F` partials squeezed together (hand drums, gongs), `40` in tune (a string or pipe), up to `C0` stretched like a wooden or metal bar (marimba, vibes), `E0`+ a bell. `string`: below `40` a buzzing bridge (sitar), `40` a plain string, above it a stiffer, more metallic string |
+| `bright` | the mallet or pick: `00` soft felt, `FF` hard and bright |
+| `decay` | how long it rings: `00` muted … `FF` rings on and on |
+| `strike` | how hard it is hit: louder, brighter, rings a little longer |
+| `tune` | semitones |
+
+Like the drums, the object rings by itself (the presets leave the amp envelope open) and the voice ends when it falls silent. Eight `modal` voices are the heaviest sound in the app (about a fifth of the CPU), so use them on a track or two.
+
+**Try:** `wood bar` and play a melody with `reverb 60`; `guzheng` with `PTCH` slides; `phys init` with `matter` swept from `00` to `FF` to hear a drum turn into a string, a bar and a bell.
+
+<br clear="right">
+
 ## Pages and knobs
 
 Switch pages with **LB + Left/Right**. Values are hex `00`–`FF` unless noted. The top of the page draws the result; press **RB + Select** for a plain-English explanation of the focused knob.
@@ -128,7 +180,7 @@ Switch pages with **LB + Left/Right**. Values are hex `00`–`FF` unless noted. 
 | Knob | Does |
 | --- | --- |
 | `type` | synth / sample |
-| `engine` | how the tone is made: `synth`, `fm4`, `hyper`, `wav` (see [Engines](#engines)); the rows below are the `synth` engine's |
+| `engine` | how the tone is made: `synth`, `fm4`, `hyper`, `wav`, `drum`, `phys` (see [Engines](#engines)); the rows below are the `synth` engine's |
 | `preset` | load a ready sound (overwrites the knobs) |
 | `wave` | sine, triangle, saw, pulse, supersaw, noise, metal |
 | `shape` | depends on the wave: sine → feedback (buzzier), triangle → wavefold, saw → octave brightness, pulse → width, supersaw → detune, noise → crunch, metal → spread |
@@ -280,10 +332,10 @@ So `A 2` + `CHRD 0037` = **A minor**, and `F 2` + `CHRD 0047` = **F major**. The
 **What the digits actually do:** each digit says "also play the note this many steps up from mine". `0037` on `A 2`:
 
 ```text
-A                               <- your note
-A  A# B  C                      <- 3 steps up:  C
-A  A# B  C  C# D  D# E          <- 7 steps up:  E
-                                   plays A + C + E = A minor
+A               your note
+A A# B C        3 up = C
+A .. C# D D# E  7 up = E
+A + C + E = A minor
 ```
 
 Count every key, black ones included (A → A# → B → C is 3 steps). Past 9 the digits are hex letters: `A` = 10, `B` = 11.

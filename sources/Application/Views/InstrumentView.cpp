@@ -1525,7 +1525,8 @@ void InstrumentView::DrawView() {
             int engine=((SynthInstrument *)viewData_->project_->GetInstrumentBank()
                         ->GetInstrument(viewData_->currentInstrument_))->GetEngine();
             kind = engine==SE_FM4 ? " FM4 SYNTH" : (engine==SE_HYPER ? " HYPERSYNTH" :
-                   (engine==SE_WAV ? " WAVSYNTH" : " SYNTH"));
+                   (engine==SE_WAV ? " WAVSYNTH" : (engine==SE_DRUM ? " DRUM SYNTH" :
+                   (engine==SE_PHYS ? " PHYS SYNTH" : " SYNTH"))));
             break;
         }
         case IT_MACRO: kind = " MACRO"; break;

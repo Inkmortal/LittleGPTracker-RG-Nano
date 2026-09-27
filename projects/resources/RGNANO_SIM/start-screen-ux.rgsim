@@ -28,6 +28,9 @@ expect_screen_text so the same few combos mean
 # Right jumps to the next section heading
 press r 80
 wait 60
+expect_screen_text Backing out
+press r 80
+wait 60
 expect_screen_text Moving between screens
 press r 80
 wait 60
