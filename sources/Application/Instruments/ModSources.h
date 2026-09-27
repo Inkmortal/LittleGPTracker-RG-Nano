@@ -221,6 +221,9 @@ private:
 	float volScale_ ;
 	float extra_ ;
 	static int noteStarts_[8] ;
+	// When each track last started a note (ModClock time): a trig slot whose
+	// note starts on the same tick as its source's fires right away
+	static double noteStartTime_[8] ;
 } ;
 
 // A sample clock for free-running LFOs: rendered once per audio buffer

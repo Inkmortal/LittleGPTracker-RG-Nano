@@ -201,6 +201,22 @@ int main() {
 		int t0=n;
 		runTo(m,kr,n,(t0+(H+D+0.003f)*kr)/kr); near("trig back to 0 after hold+decay",m.GetLevel(),0.0,1e-6);
 	}
+	// --- Trig on the source's own tick: a bass note that starts together with
+	// the kick it ducks under must duck on that kick (the player starts track
+	// 1's note first, then track 4's)
+	{
+		ModClock::Advance(4096);
+		ModSource::NoteStarted(2);
+		ModSource m; int n=0;
+		m.Start(slot(MT_TRIG,MD_VOLUME,-MOD_AMOUNT_MAX,0,0x40,0x80,2),kr,60,0,1);
+		near("trig fires when its note starts on the source's tick",m.GetLevel(),1.0,1e-6);
+		runTo(m,kr,n,0.5f); near("trig then decays as usual",m.GetLevel(),0.0,1e-6);
+		// A later tick: the source's earlier note doesn't fire a new note's slot
+		ModClock::Advance(512);
+		ModSource later;
+		later.Start(slot(MT_TRIG,MD_VOLUME,-MOD_AMOUNT_MAX,0,0x40,0x80,2),kr,60,0,1);
+		near("trig ignores the source's note from an earlier tick",later.GetLevel(),0.0,1e-6);
+	}
 
 	// --- LFO shapes at phases 0.1, 0.35, 0.6, 0.85 (step = 1/100 cycle)
 	{

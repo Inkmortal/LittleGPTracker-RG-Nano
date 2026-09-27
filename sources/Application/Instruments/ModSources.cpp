@@ -206,10 +206,12 @@ enum ModStage {
 } ;
 
 int ModSource::noteStarts_[8]={0,0,0,0,0,0,0,0} ;
+double ModSource::noteStartTime_[8]={-1,-1,-1,-1,-1,-1,-1,-1} ;
 
 void ModSource::NoteStarted(int channel) {
 	if (channel>=0 && channel<8) {
 		noteStarts_[channel]++ ;
+		noteStartTime_[channel]=ModClock::Seconds() ;
 	}
 }
 
@@ -315,6 +317,12 @@ void ModSource::setup(bool noteStart) {
 			stage_=MS_IDLE ;
 			int src=s_.param_[3]&7 ;
 			trigSeen_=noteStarts_[src] ;
+			// The source already played on this very tick (a bass note on
+			// the kick it ducks under): that hit counts, fire now
+			if (noteStartTime_[src]==ModClock::Seconds()) {
+				enterStage(MS_ATTACK) ;
+				advanceEnvelope(0.0f) ;
+			}
 			break ;
 		}
 		case MT_LFO: {
