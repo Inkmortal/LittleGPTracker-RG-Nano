@@ -1,0 +1,2812 @@
+<KIT VERSION="1" NAME="Chinese">
+    <SOUND SLOT="00">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="guzheng" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="0" />
+            <PARAM NAME="delay" VALUE="48" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="string" />
+            <PARAM NAME="phys material" VALUE="64" />
+            <PARAM NAME="phys bright" VALUE="176" />
+            <PARAM NAME="phys decay" VALUE="144" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="01">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="guzheng" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="0" />
+            <PARAM NAME="delay" VALUE="48" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="0" />
+            <PARAM NAME="table automation" VALUE="true" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="guzheng bend" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="string" />
+            <PARAM NAME="phys material" VALUE="64" />
+            <PARAM NAME="phys bright" VALUE="176" />
+            <PARAM NAME="phys decay" VALUE="144" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+        <TABLE>
+            <CMD1>
+                <DATA>2D2D2D2D2D2D2D2D2D2D2D2D50544348484F50202D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD1>
+            <PARAM1>
+                <DATA>0000000000000210040000000000000000000000000000000000000000000000</DATA>
+            </PARAM1>
+            <CMD2>
+                <DATA VALUE="45" LENGTH="64" />
+            </CMD2>
+            <PARAM2>
+                <DATA VALUE="0" LENGTH="32" />
+            </PARAM2>
+            <CMD3>
+                <DATA>5449434B2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD3>
+            <PARAM3>
+                <DATA>0200000000000000000000000000000000000000000000000000000000000000</DATA>
+            </PARAM3>
+        </TABLE>
+    </SOUND>
+    <SOUND SLOT="02">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="guzheng" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="0" />
+            <PARAM NAME="delay" VALUE="48" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="1" />
+            <PARAM NAME="table automation" VALUE="true" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="guzheng run" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="string" />
+            <PARAM NAME="phys material" VALUE="64" />
+            <PARAM NAME="phys bright" VALUE="176" />
+            <PARAM NAME="phys decay" VALUE="144" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+        <TABLE>
+            <CMD1>
+                <DATA>4152504741525047484F50202D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD1>
+            <PARAM1>
+                <DATA>7924000002000000000000000000000000000000000000000000000000000000</DATA>
+            </PARAM1>
+            <CMD2>
+                <DATA>52545247525452472D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD2>
+            <PARAM2>
+                <DATA>0100000000000000000000000000000000000000000000000000000000000000</DATA>
+            </PARAM2>
+            <CMD3>
+                <DATA>5449434B2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD3>
+            <PARAM3>
+                <DATA>0500000000000000000000000000000000000000000000000000000000000000</DATA>
+            </PARAM3>
+        </TABLE>
+    </SOUND>
+    <SOUND SLOT="03">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="pipa" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="48" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="128" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="string" />
+            <PARAM NAME="phys material" VALUE="76" />
+            <PARAM NAME="phys bright" VALUE="176" />
+            <PARAM NAME="phys decay" VALUE="112" />
+            <PARAM NAME="phys strike" VALUE="224" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="04">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="pipa" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="48" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="128" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="2" />
+            <PARAM NAME="table automation" VALUE="true" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="pipa lun" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="string" />
+            <PARAM NAME="phys material" VALUE="76" />
+            <PARAM NAME="phys bright" VALUE="176" />
+            <PARAM NAME="phys decay" VALUE="112" />
+            <PARAM NAME="phys strike" VALUE="224" />
+        </INSTRUMENT>
+        <TABLE>
+            <CMD1>
+                <DATA>52545247484F50202D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD1>
+            <PARAM1>
+                <DATA>0200010000000000000000000000000000000000000000000000000000000000</DATA>
+            </PARAM1>
+            <CMD2>
+                <DATA VALUE="45" LENGTH="64" />
+            </CMD2>
+            <PARAM2>
+                <DATA VALUE="0" LENGTH="32" />
+            </PARAM2>
+            <CMD3>
+                <DATA VALUE="45" LENGTH="64" />
+            </CMD3>
+            <PARAM3>
+                <DATA VALUE="0" LENGTH="32" />
+            </PARAM3>
+        </TABLE>
+    </SOUND>
+    <SOUND SLOT="05">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="yangqin" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="64" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="80" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="string" />
+            <PARAM NAME="phys material" VALUE="100" />
+            <PARAM NAME="phys bright" VALUE="168" />
+            <PARAM NAME="phys decay" VALUE="168" />
+            <PARAM NAME="phys strike" VALUE="112" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="06">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="guqin" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="-12" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="96" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="96" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="208" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="string" />
+            <PARAM NAME="phys material" VALUE="64" />
+            <PARAM NAME="phys bright" VALUE="72" />
+            <PARAM NAME="phys decay" VALUE="180" />
+            <PARAM NAME="phys strike" VALUE="128" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="07">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="erhu" />
+            <PARAM NAME="engine" VALUE="synth" />
+            <PARAM NAME="wave" VALUE="saw" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="32" />
+            <PARAM NAME="noise" VALUE="20" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="104" />
+            <PARAM NAME="decay" VALUE="176" />
+            <PARAM NAME="sustain" VALUE="200" />
+            <PARAM NAME="release" VALUE="120" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="72" />
+            <PARAM NAME="filter" VALUE="bandpass" />
+            <PARAM NAME="cutoff" VALUE="152" />
+            <PARAM NAME="resonance" VALUE="56" />
+            <PARAM NAME="env amount" VALUE="24" />
+            <PARAM NAME="env decay" VALUE="160" />
+            <PARAM NAME="drive" VALUE="32" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="80" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="144" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="ahd" />
+            <PARAM NAME="mod1 dest" VALUE="fine" />
+            <PARAM NAME="mod1 amount" VALUE="-72" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="128" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="lfo" />
+            <PARAM NAME="mod2 dest" VALUE="fine" />
+            <PARAM NAME="mod2 amount" VALUE="52" />
+            <PARAM NAME="mod2 p1" VALUE="174" />
+            <PARAM NAME="mod2 p2" VALUE="1" />
+            <PARAM NAME="mod2 p3" VALUE="1" />
+            <PARAM NAME="mod2 p4" VALUE="160" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="08">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="dizi" />
+            <PARAM NAME="engine" VALUE="synth" />
+            <PARAM NAME="wave" VALUE="triangle" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="56" />
+            <PARAM NAME="fm amount" VALUE="22" />
+            <PARAM NAME="fm ratio" VALUE="2" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="12" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="72" />
+            <PARAM NAME="decay" VALUE="176" />
+            <PARAM NAME="sustain" VALUE="208" />
+            <PARAM NAME="release" VALUE="104" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="40" />
+            <PARAM NAME="filter" VALUE="lowpass" />
+            <PARAM NAME="cutoff" VALUE="200" />
+            <PARAM NAME="resonance" VALUE="24" />
+            <PARAM NAME="env amount" VALUE="32" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="48" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="96" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="152" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="ahd" />
+            <PARAM NAME="mod1 dest" VALUE="fine" />
+            <PARAM NAME="mod1 amount" VALUE="-56" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="112" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="lfo" />
+            <PARAM NAME="mod2 dest" VALUE="fine" />
+            <PARAM NAME="mod2 amount" VALUE="34" />
+            <PARAM NAME="mod2 p1" VALUE="182" />
+            <PARAM NAME="mod2 p2" VALUE="1" />
+            <PARAM NAME="mod2 p3" VALUE="1" />
+            <PARAM NAME="mod2 p4" VALUE="152" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="09">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="dizi" />
+            <PARAM NAME="engine" VALUE="synth" />
+            <PARAM NAME="wave" VALUE="triangle" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="56" />
+            <PARAM NAME="fm amount" VALUE="22" />
+            <PARAM NAME="fm ratio" VALUE="2" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="12" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="72" />
+            <PARAM NAME="decay" VALUE="176" />
+            <PARAM NAME="sustain" VALUE="208" />
+            <PARAM NAME="release" VALUE="104" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="40" />
+            <PARAM NAME="filter" VALUE="lowpass" />
+            <PARAM NAME="cutoff" VALUE="200" />
+            <PARAM NAME="resonance" VALUE="24" />
+            <PARAM NAME="env amount" VALUE="32" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="48" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="96" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="152" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="3" />
+            <PARAM NAME="table automation" VALUE="true" />
+            <PARAM NAME="mod1 type" VALUE="ahd" />
+            <PARAM NAME="mod1 dest" VALUE="fine" />
+            <PARAM NAME="mod1 amount" VALUE="-56" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="112" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="lfo" />
+            <PARAM NAME="mod2 dest" VALUE="fine" />
+            <PARAM NAME="mod2 amount" VALUE="34" />
+            <PARAM NAME="mod2 p1" VALUE="182" />
+            <PARAM NAME="mod2 p2" VALUE="1" />
+            <PARAM NAME="mod2 p3" VALUE="1" />
+            <PARAM NAME="mod2 p4" VALUE="152" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="dizi grace" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+        <TABLE>
+            <CMD1>
+                <DATA>505443482D2D2D2D50544348484F50202D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD1>
+            <PARAM1>
+                <DATA>0200000000000300000000000000000000000000000000000000000000000000</DATA>
+            </PARAM1>
+            <CMD2>
+                <DATA VALUE="45" LENGTH="64" />
+            </CMD2>
+            <PARAM2>
+                <DATA VALUE="0" LENGTH="32" />
+            </PARAM2>
+            <CMD3>
+                <DATA>5449434B2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</DATA>
+            </CMD3>
+            <PARAM3>
+                <DATA>0200000000000000000000000000000000000000000000000000000000000000</DATA>
+            </PARAM3>
+        </TABLE>
+    </SOUND>
+    <SOUND SLOT="0A">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="xiao" />
+            <PARAM NAME="engine" VALUE="synth" />
+            <PARAM NAME="wave" VALUE="sine" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="80" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="120" />
+            <PARAM NAME="decay" VALUE="184" />
+            <PARAM NAME="sustain" VALUE="200" />
+            <PARAM NAME="release" VALUE="136" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="48" />
+            <PARAM NAME="filter" VALUE="lowpass" />
+            <PARAM NAME="cutoff" VALUE="152" />
+            <PARAM NAME="resonance" VALUE="16" />
+            <PARAM NAME="env amount" VALUE="16" />
+            <PARAM NAME="env decay" VALUE="168" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="144" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="152" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="ahd" />
+            <PARAM NAME="mod1 dest" VALUE="fine" />
+            <PARAM NAME="mod1 amount" VALUE="-40" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="120" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="lfo" />
+            <PARAM NAME="mod2 dest" VALUE="fine" />
+            <PARAM NAME="mod2 amount" VALUE="24" />
+            <PARAM NAME="mod2 p1" VALUE="168" />
+            <PARAM NAME="mod2 p2" VALUE="1" />
+            <PARAM NAME="mod2 p3" VALUE="1" />
+            <PARAM NAME="mod2 p4" VALUE="176" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="0B">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="sheng" />
+            <PARAM NAME="engine" VALUE="synth" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="56" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="5th" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="96" />
+            <PARAM NAME="decay" VALUE="176" />
+            <PARAM NAME="sustain" VALUE="224" />
+            <PARAM NAME="release" VALUE="120" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="lowpass" />
+            <PARAM NAME="cutoff" VALUE="176" />
+            <PARAM NAME="resonance" VALUE="24" />
+            <PARAM NAME="env amount" VALUE="16" />
+            <PARAM NAME="env decay" VALUE="160" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="volume" />
+            <PARAM NAME="lfo rate" VALUE="152" />
+            <PARAM NAME="lfo amount" VALUE="20" />
+            <PARAM NAME="reverb" VALUE="80" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="64" />
+            <PARAM NAME="volume" VALUE="96" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="0C">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="suona" />
+            <PARAM NAME="engine" VALUE="synth" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="112" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="48" />
+            <PARAM NAME="decay" VALUE="176" />
+            <PARAM NAME="sustain" VALUE="224" />
+            <PARAM NAME="release" VALUE="96" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="56" />
+            <PARAM NAME="filter" VALUE="bandpass" />
+            <PARAM NAME="cutoff" VALUE="180" />
+            <PARAM NAME="resonance" VALUE="80" />
+            <PARAM NAME="env amount" VALUE="24" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="144" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="64" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="172" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="ahd" />
+            <PARAM NAME="mod1 dest" VALUE="fine" />
+            <PARAM NAME="mod1 amount" VALUE="-96" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="120" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="lfo" />
+            <PARAM NAME="mod2 dest" VALUE="fine" />
+            <PARAM NAME="mod2 amount" VALUE="64" />
+            <PARAM NAME="mod2 p1" VALUE="176" />
+            <PARAM NAME="mod2 p2" VALUE="1" />
+            <PARAM NAME="mod2 p3" VALUE="1" />
+            <PARAM NAME="mod2 p4" VALUE="144" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="0D">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="bianzhong" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="0" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="112" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="232" />
+            <PARAM NAME="phys bright" VALUE="112" />
+            <PARAM NAME="phys decay" VALUE="136" />
+            <PARAM NAME="phys strike" VALUE="128" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="0E">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="big gong" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="-24" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="112" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="192" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="ahd" />
+            <PARAM NAME="mod1 dest" VALUE="fine" />
+            <PARAM NAME="mod1 amount" VALUE="80" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="64" />
+            <PARAM NAME="mod1 p3" VALUE="192" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="16" />
+            <PARAM NAME="phys bright" VALUE="80" />
+            <PARAM NAME="phys decay" VALUE="120" />
+            <PARAM NAME="phys strike" VALUE="96" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="0F">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="opera gong" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="12" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="64" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="ahd" />
+            <PARAM NAME="mod1 dest" VALUE="pitch" />
+            <PARAM NAME="mod1 amount" VALUE="-11" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="32" />
+            <PARAM NAME="mod1 p3" VALUE="160" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="32" />
+            <PARAM NAME="phys bright" VALUE="152" />
+            <PARAM NAME="phys decay" VALUE="168" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="10">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="woodblock" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="12" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="0" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="176" />
+            <PARAM NAME="phys bright" VALUE="112" />
+            <PARAM NAME="phys decay" VALUE="40" />
+            <PARAM NAME="phys strike" VALUE="192" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="11">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="bangzi" />
+            <PARAM NAME="engine" VALUE="phys" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="24" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="160" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="0" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="176" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="200" />
+            <PARAM NAME="phys bright" VALUE="192" />
+            <PARAM NAME="phys decay" VALUE="24" />
+            <PARAM NAME="phys strike" VALUE="255" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="12">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="dagu" />
+            <PARAM NAME="engine" VALUE="drum" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="-19" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="144" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="64" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="96" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="80" />
+            <PARAM NAME="drum decay" VALUE="200" />
+            <PARAM NAME="drum snap" VALUE="96" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="13">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="tanggu" />
+            <PARAM NAME="engine" VALUE="drum" />
+            <PARAM NAME="wave" VALUE="pulse" />
+            <PARAM NAME="shape" VALUE="0" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="0" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="-8" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="255" />
+            <PARAM NAME="sustain" VALUE="255" />
+            <PARAM NAME="release" VALUE="144" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="off" />
+            <PARAM NAME="cutoff" VALUE="192" />
+            <PARAM NAME="resonance" VALUE="32" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="0" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="48" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="88" />
+            <PARAM NAME="pan" VALUE="127" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="136" />
+            <PARAM NAME="drum decay" VALUE="144" />
+            <PARAM NAME="drum snap" VALUE="128" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+    <SOUND SLOT="14">
+        <INSTRUMENT TYPE="Synth">
+            <PARAM NAME="preset" VALUE="bo cymbal" />
+            <PARAM NAME="engine" VALUE="synth" />
+            <PARAM NAME="wave" VALUE="metal" />
+            <PARAM NAME="shape" VALUE="112" />
+            <PARAM NAME="sub" VALUE="0" />
+            <PARAM NAME="noise" VALUE="144" />
+            <PARAM NAME="fm amount" VALUE="0" />
+            <PARAM NAME="fm ratio" VALUE="1" />
+            <PARAM NAME="chord" VALUE="off" />
+            <PARAM NAME="tune" VALUE="-5" />
+            <PARAM NAME="fine" VALUE="0" />
+            <PARAM NAME="attack" VALUE="0" />
+            <PARAM NAME="decay" VALUE="196" />
+            <PARAM NAME="sustain" VALUE="0" />
+            <PARAM NAME="release" VALUE="176" />
+            <PARAM NAME="pitch env" VALUE="0" />
+            <PARAM NAME="pitch decay" VALUE="128" />
+            <PARAM NAME="glide" VALUE="0" />
+            <PARAM NAME="filter" VALUE="highpass" />
+            <PARAM NAME="cutoff" VALUE="152" />
+            <PARAM NAME="resonance" VALUE="40" />
+            <PARAM NAME="env amount" VALUE="0" />
+            <PARAM NAME="env decay" VALUE="152" />
+            <PARAM NAME="drive" VALUE="48" />
+            <PARAM NAME="lfo dest" VALUE="pitch" />
+            <PARAM NAME="lfo rate" VALUE="176" />
+            <PARAM NAME="lfo amount" VALUE="0" />
+            <PARAM NAME="reverb" VALUE="64" />
+            <PARAM NAME="delay" VALUE="0" />
+            <PARAM NAME="chorus" VALUE="0" />
+            <PARAM NAME="volume" VALUE="56" />
+            <PARAM NAME="pan" VALUE="96" />
+            <PARAM NAME="table" VALUE="-1" />
+            <PARAM NAME="table automation" VALUE="false" />
+            <PARAM NAME="mod1 type" VALUE="off" />
+            <PARAM NAME="mod1 dest" VALUE="cutoff" />
+            <PARAM NAME="mod1 amount" VALUE="64" />
+            <PARAM NAME="mod1 p1" VALUE="0" />
+            <PARAM NAME="mod1 p2" VALUE="0" />
+            <PARAM NAME="mod1 p3" VALUE="0" />
+            <PARAM NAME="mod1 p4" VALUE="0" />
+            <PARAM NAME="mod2 type" VALUE="off" />
+            <PARAM NAME="mod2 dest" VALUE="pitch" />
+            <PARAM NAME="mod2 amount" VALUE="4" />
+            <PARAM NAME="mod2 p1" VALUE="0" />
+            <PARAM NAME="mod2 p2" VALUE="0" />
+            <PARAM NAME="mod2 p3" VALUE="0" />
+            <PARAM NAME="mod2 p4" VALUE="0" />
+            <PARAM NAME="mod3 type" VALUE="off" />
+            <PARAM NAME="mod3 dest" VALUE="volume" />
+            <PARAM NAME="mod3 amount" VALUE="64" />
+            <PARAM NAME="mod3 p1" VALUE="0" />
+            <PARAM NAME="mod3 p2" VALUE="0" />
+            <PARAM NAME="mod3 p3" VALUE="0" />
+            <PARAM NAME="mod3 p4" VALUE="0" />
+            <PARAM NAME="mod4 type" VALUE="off" />
+            <PARAM NAME="mod4 dest" VALUE="pan" />
+            <PARAM NAME="mod4 amount" VALUE="64" />
+            <PARAM NAME="mod4 p1" VALUE="0" />
+            <PARAM NAME="mod4 p2" VALUE="0" />
+            <PARAM NAME="mod4 p3" VALUE="0" />
+            <PARAM NAME="mod4 p4" VALUE="0" />
+            <PARAM NAME="eq low gain" VALUE="128" />
+            <PARAM NAME="eq low freq" VALUE="112" />
+            <PARAM NAME="eq mid gain" VALUE="128" />
+            <PARAM NAME="eq mid freq" VALUE="128" />
+            <PARAM NAME="eq high gain" VALUE="128" />
+            <PARAM NAME="eq high freq" VALUE="144" />
+            <PARAM NAME="name" VALUE="" />
+            <PARAM NAME="fm algo" VALUE="00" />
+            <PARAM NAME="fm a shape" VALUE="sin" />
+            <PARAM NAME="fm a ratio" VALUE="100" />
+            <PARAM NAME="fm a level" VALUE="0" />
+            <PARAM NAME="fm a feedback" VALUE="0" />
+            <PARAM NAME="fm a attack" VALUE="0" />
+            <PARAM NAME="fm a decay" VALUE="128" />
+            <PARAM NAME="fm a sustain" VALUE="255" />
+            <PARAM NAME="fm b shape" VALUE="sin" />
+            <PARAM NAME="fm b ratio" VALUE="100" />
+            <PARAM NAME="fm b level" VALUE="0" />
+            <PARAM NAME="fm b feedback" VALUE="0" />
+            <PARAM NAME="fm b attack" VALUE="0" />
+            <PARAM NAME="fm b decay" VALUE="128" />
+            <PARAM NAME="fm b sustain" VALUE="255" />
+            <PARAM NAME="fm c shape" VALUE="sin" />
+            <PARAM NAME="fm c ratio" VALUE="100" />
+            <PARAM NAME="fm c level" VALUE="96" />
+            <PARAM NAME="fm c feedback" VALUE="0" />
+            <PARAM NAME="fm c attack" VALUE="0" />
+            <PARAM NAME="fm c decay" VALUE="128" />
+            <PARAM NAME="fm c sustain" VALUE="255" />
+            <PARAM NAME="fm d shape" VALUE="sin" />
+            <PARAM NAME="fm d ratio" VALUE="100" />
+            <PARAM NAME="fm d level" VALUE="255" />
+            <PARAM NAME="fm d feedback" VALUE="0" />
+            <PARAM NAME="fm d attack" VALUE="0" />
+            <PARAM NAME="fm d decay" VALUE="128" />
+            <PARAM NAME="fm d sustain" VALUE="255" />
+            <PARAM NAME="hyper chord" VALUE="major" />
+            <PARAM NAME="hyper note 1" VALUE="0" />
+            <PARAM NAME="hyper note 2" VALUE="4" />
+            <PARAM NAME="hyper note 3" VALUE="7" />
+            <PARAM NAME="hyper note 4" VALUE="12" />
+            <PARAM NAME="hyper note 5" VALUE="16" />
+            <PARAM NAME="hyper note 6" VALUE="19" />
+            <PARAM NAME="hyper shift" VALUE="0" />
+            <PARAM NAME="hyper swarm" VALUE="96" />
+            <PARAM NAME="hyper width" VALUE="128" />
+            <PARAM NAME="hyper sub" VALUE="0" />
+            <PARAM NAME="hyper scale" VALUE="false" />
+            <PARAM NAME="wav shape" VALUE="saw" />
+            <PARAM NAME="wav size" VALUE="255" />
+            <PARAM NAME="wav mult" VALUE="0" />
+            <PARAM NAME="wav warp" VALUE="0" />
+            <PARAM NAME="wav mirror" VALUE="128" />
+            <PARAM NAME="limit" VALUE="soft" />
+            <PARAM NAME="drum model" VALUE="kick 808" />
+            <PARAM NAME="drum tone" VALUE="96" />
+            <PARAM NAME="drum decay" VALUE="128" />
+            <PARAM NAME="drum snap" VALUE="64" />
+            <PARAM NAME="drum accent" VALUE="192" />
+            <PARAM NAME="phys model" VALUE="modal" />
+            <PARAM NAME="phys material" VALUE="128" />
+            <PARAM NAME="phys bright" VALUE="128" />
+            <PARAM NAME="phys decay" VALUE="128" />
+            <PARAM NAME="phys strike" VALUE="160" />
+        </INSTRUMENT>
+    </SOUND>
+</KIT>

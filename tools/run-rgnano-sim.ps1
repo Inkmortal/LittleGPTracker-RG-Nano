@@ -70,6 +70,13 @@ $soundDir = Join-Path $dataDir "sounds"
 if (-not $KeepSounds -and (Test-Path -LiteralPath $soundDir)) {
   Remove-Item -LiteralPath $soundDir -Recurse -Force
 }
+# The kits that ship with the app are on the card like on the Nano
+$shippedKits = Join-Path $root "projects\resources\sounds\kits"
+if (Test-Path -LiteralPath $shippedKits) {
+  $kitDir = Join-Path $soundDir "kits"
+  New-Item -ItemType Directory -Force -Path $kitDir | Out-Null
+  Get-ChildItem -LiteralPath $shippedKits -Filter "*.lgk" -File | Copy-Item -Destination $kitDir -Force
+}
 
 function Write-TestWav {
   param([string]$Path)

@@ -1,0 +1,74 @@
+# Builds the "Chinese" kit that ships with the app (tools/make_kits.ps1
+# runs this and copies SOUNDLIB/kits/Chinese.lgk to projects/resources/
+# sounds/kits). Every sound is a preset from the "Chinese instruments"
+# group; a few are played ornaments, done by the sound's own table:
+#   01 guzheng bend   presses the string after the pluck (an yin): the
+#                     note bends up a whole step
+#   02 guzheng run    a quick run up the pentatonic, then the note
+#   04 pipa lun       the pipa's rolling tremolo on every note
+#   09 dizi grace     a quick grace note a step above, then the note
+route boot.new_project_random
+expect_view song
+
+sim_set_synth 0 guzheng
+sim_set_synth 1 guzheng
+sim_set_instrument_param 1 name guzheng_bend
+sim_set_synth 2 guzheng
+sim_set_instrument_param 2 name guzheng_run
+sim_set_synth 3 pipa
+sim_set_synth 4 pipa
+sim_set_instrument_param 4 name pipa_lun
+sim_set_synth 5 yangqin
+sim_set_synth 6 guqin
+sim_set_synth 7 erhu
+sim_set_synth 8 dizi
+sim_set_synth 9 dizi
+sim_set_instrument_param 9 name dizi_grace
+sim_set_synth 10 xiao
+sim_set_synth 11 sheng
+sim_set_synth 12 suona
+sim_set_synth 13 bianzhong
+sim_set_synth 14 big_gong
+sim_set_synth 15 opera_gong
+sim_set_synth 16 woodblock
+sim_set_synth 17 bangzi
+sim_set_synth 18 dagu
+sim_set_synth 19 tanggu
+sim_set_synth 20 bo_cymbal
+
+# Table 00, guzheng bend: rows every 2 ticks; after 3 rows (the pluck has
+# spoken) bend up 2 semitones, slowly; then hold there
+sim_set_table_command 0 0 3 TICK 0002
+sim_set_table_command 0 3 1 PTCH 1002
+sim_set_table_command 0 4 1 HOP 0004
+sim_set_instrument_param 1 table 0
+sim_set_instrument_param 1 table_automation true
+
+# Table 01, guzheng run: for 5 ticks, re-pluck every tick while the
+# arpeggio climbs C D E G A (+2 +4 +7 +9), then stop on the note
+sim_set_table_command 1 0 1 ARPG 2479
+sim_set_table_command 1 0 2 RTRG 0001
+sim_set_table_command 1 0 3 TICK 0005
+sim_set_table_command 1 1 1 ARPG 0000
+sim_set_table_command 1 1 2 RTRG 0000
+sim_set_table_command 1 2 1 HOP 0002
+sim_set_instrument_param 2 table 1
+sim_set_instrument_param 2 table_automation true
+
+# Table 02, pipa lun: re-pluck every 2 ticks for as long as the note lasts
+sim_set_table_command 2 0 1 RTRG 0002
+sim_set_table_command 2 1 1 HOP 0001
+sim_set_instrument_param 4 table 2
+sim_set_instrument_param 4 table_automation true
+
+# Table 03, dizi grace: a step up for 4 ticks, then the note, then hold
+sim_set_table_command 3 0 1 PTCH 0002
+sim_set_table_command 3 0 3 TICK 0002
+sim_set_table_command 3 2 1 PTCH 0000
+sim_set_table_command 3 3 1 HOP 0003
+sim_set_instrument_param 9 table 3
+sim_set_instrument_param 9 table_automation true
+
+sim_save_kit Chinese
+expect_no_error
+quit

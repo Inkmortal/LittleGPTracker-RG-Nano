@@ -131,6 +131,30 @@ Get-ChildItem -LiteralPath (Join-Path $projects "resources\demos") -Directory | 
   }
 }
 
+# Kits that ship with the app (tools/make_kits.ps1) go to Sounds/kits, like
+# the demos: a kit you saved over keeps your version
+$kitsDest = Join-Path $applications "Sounds\kits"
+New-Item -ItemType Directory -Force -Path $kitsDest | Out-Null
+Get-ChildItem -LiteralPath (Join-Path $projects "resources\sounds\kits") -Filter "*.lgk" -File | ForEach-Object {
+  $dest = Join-Path $kitsDest $_.Name
+  $marker = Join-Path $kitsDest ".$($_.BaseName).installed.hash"
+  $shipped = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
+  $replace = $true
+  if ((Test-Path -LiteralPath $dest) -and -not $UpdateDemos) {
+    $current = (Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash
+    $installed = if (Test-Path -LiteralPath $marker) { (Get-Content -LiteralPath $marker -Raw).Trim() } else { "" }
+    if ($current -ne $shipped -and $installed -ne $current) {
+      $replace = $false
+      Write-Host "  keeping kit $($_.BaseName): it has your edits (use -UpdateDemos to replace)"
+    }
+  }
+  if ($replace) {
+    Copy-Item -LiteralPath $_.FullName -Destination $dest -Force
+    Set-Content -LiteralPath $marker -Value $shipped -NoNewline
+    Write-Host "  kit $($_.BaseName)"
+  }
+}
+
 $commit = (git -C $root rev-parse --short HEAD).Trim()
 $dirty = if ((git -C $root status --porcelain -- sources projects/Makefile projects/resources).Length -gt 0) { " (+uncommitted)" } else { "" }
 $stamp = Get-Date -Format "o"

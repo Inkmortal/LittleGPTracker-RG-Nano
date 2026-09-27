@@ -1,0 +1,237 @@
+# The Chinese instruments: the kit ships on the card (Sounds/kits), loads
+# from the Rack's My sounds with real keys, every sound plays, the
+# ornament tables come with it, the sound browser lists the group, and the
+# five Chinese pentatonic modes are on the Scale screen.
+route boot.new_project_random
+expect_view song
+# Song RB+Left: the Rack; LB+Start: My sounds
+down n
+press l 80
+up n
+wait 200
+expect_view rack
+down m
+press s 80
+up m
+wait 200
+expect_screen_text MY SOUNDS
+# Save sound, Load a sound, Save this kit, Load a kit
+press d 80
+press d 80
+press d 80
+wait 100
+expect_selected_text Load a kit
+press a 80
+wait 200
+expect_screen_text SAVED KITS
+expect_selected_text Chinese
+screenshot_app chinese-kit-list.bmp
+press a 80
+wait 200
+expect_screen_text Replace every sound?
+# No is selected: Left = Yes
+press l 80
+press a 80
+wait 400
+expect_screen_text kit loaded: Chinese
+expect_instrument_param 0 preset guzheng
+expect_instrument_param 1 name guzheng_bend
+expect_instrument_param 1 table_automation true
+expect_instrument_param 4 name pipa_lun
+expect_instrument_param 4 table_automation true
+expect_instrument_param 7 preset erhu
+expect_instrument_param 9 name dizi_grace
+expect_instrument_param 12 preset suona
+expect_instrument_param 20 preset bo_cymbal
+# The ornaments' tables came with the kit (into the song's first free ones)
+expect_table_command 0 3 1 PTCH 1002
+expect_table_command 2 0 1 RTRG 0002
+expect_table_command 3 0 1 PTCH 0002
+# Back to the Rack: B, B
+press b 80
+wait 150
+press b 80
+wait 200
+expect_view rack
+expect_selected_text 00 SYN GUZHENG
+screenshot_app chinese-kit-rack.bmp
+
+# Every sound plays: hold A on each of the 21 slots
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+expect_selected_text 07 SYN ERHU
+reset_audio_stats
+down a
+wait 600
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 600
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 600
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 600
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 600
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 600
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 200
+press d 80
+expect_selected_text 14 SYN BO CYMBAL
+reset_audio_stats
+down a
+wait 400
+expect_audio_activity 64
+up a
+wait 300
+
+# The sound browser lists the group, right after My sounds
+press k 80
+wait 200
+expect_screen_text Chinese instruments
+press a 80
+wait 300
+expect_screen_text chinese
+expect_screen_text erhu
+expect_screen_text suona
+screenshot_app chinese-browser.bmp
+press b 80
+wait 150
+press b 80
+wait 200
+expect_view rack
+
+# The Chinese modes on the Scale screen (B: the Rack back to the Song)
+press b 80
+wait 200
+expect_view song
+sim_set_scale 51
+goto scale
+wait 150
+expect_screen_text Yu (Chinese)
+sim_set_scale 47
+wait 150
+expect_screen_text Gong (Chinese)
+expect_no_error
+quit
