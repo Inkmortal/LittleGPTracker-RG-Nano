@@ -155,27 +155,60 @@ def case_lines(name, screen, combo):
         out += [STABLE, "expect_view %s" % effect[2:], "expect_layer none",
                 "expect_player_running no", "state_record"]
     elif effect.startswith("L:") or effect.startswith("A:"):
-        # A: an animated dialog (a progress bar): it never holds still
+        # A: an animated dialog (a progress bar): it never holds still.
+        # A helper or other overlay opened on top of it (layer startswith
+        # base rather than == base) doesn't stop it animating underneath,
+        # so it inherits the same treatment - checked wait_stable there
+        # timed out for exactly this (render__RB+SEL: the helper over the
+        # render progress dialog).
         layer = effect[2:]
-        animated = effect.startswith("A:") or (screen.get("animated") and layer == base)
+        animated = effect.startswith("A:") or (screen.get("animated") and layer.startswith(base))
         out += ["wait 800" if animated else STABLE, "expect_layer %s" % layer,
                 "state_record noscreen" if animated else "state_record"]
         if clip_checked(screen, view):
             out.append("expect_no_clipping")
+        final_animated = animated
         if layer != base and layer != "none":
             keys, back_to = exits_for(screen, layer)
             for k in keys:
                 out += press(k) + ["wait 150"]
-            out += [STABLE, "expect_layer %s" % (back_to or base)]
-        out += ["expect_view %s" % view, "expect_player_running no"]
+            back = back_to or base
+            final_animated = screen.get("animated") and back.startswith(base)
+            out += ["wait 800" if final_animated else STABLE, "expect_layer %s" % back]
+        out += ["expect_view %s" % view]
+        if not final_animated:
+            # An animated dialog (rendering) legitimately still has the
+            # player running for as long as it's on screen - real state,
+            # not settled, so there's nothing fixed to assert here (the
+            # generic "closing a modal stops the player" check only holds
+            # once the dialog is actually gone).
+            out.append("expect_player_running no")
     elif effect == "P":
-        # sound_snap: what plays (a preview: which note of which sound)
-        out += ["wait 600", "expect_player_running yes", "sound_snap"]
+        # sound_snap: what plays (a preview: which note of which sound).
+        # Poll isRunning_ (wait_player, up to 10s) instead of a fixed wait:
+        # some starts (a Rack riff) don't set it as fast as a normal Start
+        # does, and a fixed 600ms was occasionally too short there.
+        out += ["wait_player running 0 1", "expect_player_running yes", "sound_snap"]
         out += press(combo)
         out += ["wait 400", "expect_player_running no",
                 # Echo and reverb tails die away, then nothing may sound
                 "wait 3500", "reset_audio_stats", "wait 400",
-                "expect_audio_silence 0", record(screen)]
+                "expect_audio_silence 0",
+                # The stop can leave a play-position HUD (percent/timecode)
+                # or a meter's peak-hold mid fade-out: its removal is a
+                # queued player update the UI thread draws when it gets
+                # scheduled, which under several sims running at once can
+                # take longer than the usual STABLE window (screen-text
+                # flake between this case and its neighbor at -Jobs 4).
+                # Record only once the screen has genuinely settled, with
+                # more headroom than the default wait_stable. Even then,
+                # some screens' post-stop readout (a live meter, a HUD a
+                # queued player update draws) is real timing, not settled
+                # app state: don't pin its exact text (table.py's
+                # stop_noscreen), same as an animated dialog never holds
+                # still for a full compare.
+                "wait_stable 6000",
+                "state_record noscreen" if screen.get("stop_noscreen") else record(screen)]
     elif effect == "X":
         out += ["wait 600", "state_record noscreen"]
     else:

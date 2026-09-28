@@ -1465,18 +1465,17 @@ snap before
 down n
 press k 80
 up n
-wait_stable 2500
+wait 800
 expect_layer modal:RenderToSampleDialog+helper
-state_record
+state_record noscreen
 expect_no_clipping
 down n
 press k 80
 up n
 wait 150
-wait_stable 2500
+wait 800
 expect_layer modal:RenderToSampleDialog
 expect_view chain
-expect_player_running no
 expect_no_clipping
 
 # RB+X: N

@@ -1494,15 +1494,24 @@ void SongView::OnPlayerUpdate(PlayerEventType eventType, unsigned int tick) {
         DrawString(pos._x, pos._y, strbuffer, props);
     }
 
+    // On stop, blank the elapsed-time readout instead of just skipping the
+    // draw: GetPlayTime() keeps climbing with the audio driver's wall clock
+    // even while stopped, and player updates are now queued and drawn from
+    // the render thread (AppWindow::queuePlayerUpdate), so whether a stale
+    // digit is left on screen depended on which draw call happened to run
+    // last, not on real state - the readout must resolve to the same thing
+    // every time a stop is drawn.
+    SetColor(CD_NORMAL);
+    props.invert_ = false;
+    pos._y += 1;
     if (eventType != PET_STOP) {
-        SetColor(CD_NORMAL);
-        props.invert_ = false;
         int time = int(player->GetPlayTime());
         int mi = time / 60;
         int se = time - mi * 60;
         sprintf(strbuffer, "%2.2d:%2.2d", mi, se);
-        pos._y += 1;
         DrawString(pos._x, pos._y, strbuffer, props);
+    } else {
+        DrawString(pos._x, pos._y, "     ", props);
     }
     drawNotes();
     drawSideMeters(eventType == PET_STOP);

@@ -1727,7 +1727,7 @@ snap before
 down n
 press s 80
 up n
-wait 600
+wait_player running 0 1
 expect_player_running yes
 sound_snap
 down n
@@ -1739,6 +1739,7 @@ wait 3500
 reset_audio_stats
 wait 400
 expect_audio_silence 0
+wait_stable 6000
 state_record
 expect_no_clipping
 

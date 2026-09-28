@@ -1824,6 +1824,12 @@ bool Player::IsSimStreaming() const {
 
 int Player::GetSimValue(const std::string &name,int channel) {
 	if (channel<0 || channel>=SONG_CHANNEL_COUNT) return -1 ;
+	// Channel-independent (channel is still required to be in range, but
+	// ignored): whether the player itself is running, for wait_player to
+	// poll instead of a fixed sleep before expect_player_running (some
+	// starts, like a Rack riff, don't mark isRunning_ as fast as a normal
+	// Start does)
+	if (name=="running") return isRunning_?1:0 ;
 	if (name=="notes") return (int)notesStarted_[channel] ;
 	if (name=="last_note") return noteHistory_[channel][0] ;
 	if (name=="pass") {

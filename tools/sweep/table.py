@@ -61,6 +61,11 @@ SCREENS = {
         "view": "song",
         "enter": ["R"],
         "cursor": True,
+        # The CPU-load/elapsed-time HUD is drawn by a queued player update
+        # (AppWindow::queuePlayerUpdate) the render thread hands to the UI
+        # thread; whether that draw has landed by the time a stop is
+        # captured is real scheduling, not app state worth pinning exactly
+        "stop_noscreen": True,
         "keys": {
             **COPY,
             "U": "C",  # row 00: track moving
@@ -237,6 +242,9 @@ SCREENS = {
         "view": "mixer",
         "enter": ["RB+D"],
         "cursor": True,
+        # Same queued-draw CPU/timer HUD as "song" (MixerView.cpp draws its
+        # own copy): real scheduling, not app state.
+        "stop_noscreen": True,
         "keys": {
             **COPY,
             "L": "X", "R": "C",
@@ -284,6 +292,11 @@ SCREENS = {
         "view": "limit",
         "enter": ["RB+D", "RB+D", "RB+R", "RB+R"],
         "cursor": True,
+        # The in/out dBFS readout is a live meter: exactly which buffer it
+        # last measured before a key-press-timed Stop() lands is real
+        # jitter, not a fixed value, so its digits after a stop aren't
+        # worth pinning to the exact tenth of a dB
+        "stop_noscreen": True,
         "keys": {
             **COPY,
             "U": "X", "D": "C", "L": "X", "R": "C",
@@ -415,7 +428,12 @@ SCREENS = {
             "RB+R": "V:instrument",
             "RB+D": "V:phrase",
             "RB+L": "C",  # says B goes back
-            "RB+START": "P",
+            # RackView::ProcessButtonMask returns on any R-held combo it
+            # doesn't name (R+Right/Down/Left), before ever reaching the
+            # plain-START case that starts a riff: R+Start is a dead
+            # combo here, not a second way to trigger it (that's "START"
+            # above, matching the screen's own "START riff" hint).
+            "RB+START": "N",
             "B": "V:song",
             "X": "C", "Y": "C", "LB+Y": "C",
             **UNDO, **HELPER,
@@ -493,6 +511,8 @@ SCREENS = {
         "view": "song",
         "enter": ["R", "U"],
         "cursor": True,
+        # Same queued-draw HUD as "song" above: real, not app state.
+        "stop_noscreen": True,
         "keys": {
             "L": "C", "R": "C",
             "D": "C", "B": "C",  # back to the grid

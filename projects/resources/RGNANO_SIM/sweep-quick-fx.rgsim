@@ -223,7 +223,7 @@ expect_layer none
 model_snap
 snap before
 press s 80
-wait 600
+wait_player running 0 1
 expect_player_running yes
 sound_snap
 press s 80
@@ -233,6 +233,7 @@ wait 3500
 reset_audio_stats
 wait 400
 expect_audio_silence 0
+wait_stable 6000
 state_record
 expect_no_clipping
 
