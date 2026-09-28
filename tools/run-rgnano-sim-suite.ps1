@@ -26,7 +26,19 @@ $builder = Join-Path $PSScriptRoot "build-rgnano-sim.ps1"
 $scriptRoot = Join-Path $root "projects\resources\RGNANO_SIM"
 
 if (-not $NoBuild) {
-  & powershell -NoProfile -ExecutionPolicy Bypass -File $builder
+  # Under $ErrorActionPreference=Stop, a stderr line from this native
+  # process (MSYS2 make's own harmless warnings, e.g. "jobserver
+  # unavailable") is promoted to a terminating error that kills the child
+  # process mid-build, well before it can report a real exit code. Relax
+  # the preference for just this call and judge success by $LASTEXITCODE,
+  # like every other native call in this script.
+  $previousEap = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File $builder
+  } finally {
+    $ErrorActionPreference = $previousEap
+  }
   if ($LASTEXITCODE -ne 0) {
     throw "RG Nano simulator build failed with exit code $LASTEXITCODE"
   }
@@ -498,10 +510,20 @@ if (Test-Path -LiteralPath $lastSummary) {
 $chains = @($chains | Sort-Object -Descending { $t = 0; foreach ($c in $_) { if ($lastTimes[$c.Name]) { $t += $lastTimes[$c.Name] } else { $t += 60 } }; $t })
 
 # How many simulators at once: half the cores by default, fewer when memory
-# is short (each sim's Windows peak is measured; 200 MB assumed until then)
+# is short (each sim's Windows peak is measured; 200 MB assumed until then),
+# but never more than 4. Each sim paces itself off the real audio clock
+# (SDLAudioDriver / SyncMaster), not a virtual one, so beyond a handful at
+# once the host can't keep every one of them fed in real time; screen text
+# that reflects live playback state (a meter, a CPU/timer HUD) then gets
+# captured mid-update instead of settled, and the sequencer can even stall
+# waiting on state that a starved sim never reaches (the exact-sweep and
+# suite flakiness this many-worktree machine has shown at -Jobs 16). 4 is
+# the highest count that stayed clean over repeated runs while this suite
+# was made reliable; raise it only after confirming higher counts still
+# pass 3 runs in a row on the target machine.
 if ($Jobs -le 0) {
   $cores = [Environment]::ProcessorCount
-  $Jobs = [math]::Max(1, [math]::Floor($cores / 2))
+  $Jobs = [math]::Min(4, [math]::Max(1, [math]::Floor($cores / 2)))
   $freeMB = [math]::Floor((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory / 1024)
   $perSimMB = 200
   if (Test-Path -LiteralPath $lastSummary) {
@@ -518,14 +540,19 @@ Write-Host "Tier $Tier : $($suite.Count) cases in $($chains.Count) chains, $Jobs
 
 $started = Get-Date
 
-# Golden audio first (it uses every core under qemu for a few minutes)
-$audioExit = 0
+# Golden audio runs under WSL/qemu-arm, never touching the Windows sim exe
+# or its sandboxes, so it can render on the host's other cores while the
+# sim cases run below instead of adding its own time in front of them.
+$audioJob = $null
 if (-not $NoAudio -and -not $Only) {
-  Write-Host "==> golden audio"
+  Write-Host "==> golden audio (in the background, alongside the sim cases)"
   $audioArgs = @((Join-Path $PSScriptRoot "golden_audio.py"))
   if ($UpdateGoldens) { $audioArgs += "--update" }
-  & python @audioArgs | Select-Object -Last 12 | ForEach-Object { Write-Host "    $_" }
-  $audioExit = $LASTEXITCODE
+  $audioJob = Start-Job -ScriptBlock {
+    param($py, $args1)
+    & $py @args1
+    $LASTEXITCODE
+  } -ArgumentList "python", $audioArgs
 }
 
 $chainScript = {
@@ -620,6 +647,23 @@ while (@($running | Where-Object { -not $_.done }).Count -gt 0) {
   Start-Sleep -Milliseconds 200
 }
 $pool.Close()
+
+# Golden audio was rendering in the background since before the sim cases
+# started; collect it now that the cases are done (usually it finishes
+# first, since it has no case queueing to wait through)
+$audioExit = 0
+if ($audioJob) {
+  Write-Host "==> waiting on golden audio"
+  Wait-Job $audioJob | Out-Null
+  $audioOut = @(Receive-Job $audioJob)
+  Remove-Job $audioJob
+  if ($audioOut.Count -gt 0) {
+    $audioExit = [int]$audioOut[-1]
+    $audioOut[0..($audioOut.Count - 2)] | Select-Object -Last 12 | ForEach-Object { Write-Host "    $_" }
+  } else {
+    $audioExit = 1
+  }
+}
 
 # The exact sweep: every case's end state against tests/golden/sweep
 $statesExit = 0
