@@ -20,6 +20,7 @@
 #include "System/FileSystem/FileSystem.h"
 #include "Adapters/DINGOO/System/DINGOOSystem.h"
 #include "System/Console/Logger.h"
+#include "Externals/Plaits/stmlib/utils/random.h"
 #include <dirent.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -113,6 +114,13 @@ static bool mine(const std::string &id) {
 // Holds the note HOLD seconds, releases, and keeps going until the voice
 // ends by itself (Render returns false) or MAX_TAIL has passed
 static void playTo(const std::string &id, const std::string &kind, I_Instrument *s) {
+	// Plaits' excitation noise (physical models, some Macro shapes) comes
+	// from one PRNG that just keeps advancing note after note, so what a
+	// preset sounds like here depends on how many other sounds rendered
+	// before it in this shard. Reseed the same way before every sound so
+	// a golden only ever changes because the sound itself changed, never
+	// because sharding or the preset list shifted who renders first.
+	pstmlib::Random::Seed(0x21);
 	std::vector<short> out;
 	s->Start(0, NOTE, true);
 	int held = (int)(HOLD * RATE / FRAMES) + 1;
