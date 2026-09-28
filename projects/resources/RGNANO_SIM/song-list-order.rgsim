@@ -36,5 +36,97 @@ press d 80
 press u 80
 expect_selected_text ZzRecentTest
 sim_remove_project lgpt_ZzRecentTest
+
+# A after a sort-order toggle must open the song the cursor is still on,
+# not whatever the toggle happened to scroll to. Two songs whose recency
+# and alphabetical order disagree, so the toggle actually reorders them:
+# ZzAAATest opened first (older, but "A to Z" first); ZzZZZTest opened
+# second (newest, but "A to Z" last). A distinct saved tempo on each is
+# the only reliable way to tell which one actually opened, since a wrong
+# song can look just as blank as a real "New" song at a glance.
+sim_remove_project lgpt_ZzAAATest
+sim_remove_project lgpt_ZzZZZTest
+sim_make_project lgpt_ZzAAATest
+sim_make_project lgpt_ZzZZZTest
+# Already on the list (no song open): switching to A to Z both refreshes
+# it with the two new songs and sorts them where "Zz" always lands, last
+# (after every real demo name). Up from the top wraps to the very last
+# entry (ZzZZZTest, the greater of the two), one more Up reaches the one
+# right before it (ZzAAATest, nothing else sorts between them).
+press k 80
+wait 150
+expect_screen_text A to Z
+press u 80
+wait 100
+expect_selected_text ZzZZZTest
+press u 80
+wait 100
+expect_selected_text ZzAAATest
+# Back to recent first (the order the rest of this test exercises); the
+# toggle keeps the cursor on the same song by name
+press k 80
+wait 150
+expect_screen_text recent first
+expect_selected_text ZzAAATest
+press a 80
+wait 1500
+expect_view song
+sim_set_tempo 111
+sim_save_project
+press p 80
+wait 150
+press d 80
+press d 80
+press d 80
+expect_selected_text powerMenu=Song List
+press a 80
+wait 200
+press a 80
+wait 1500
+expect_screen_text YOUR SONGS
+expect_screen_text recent first
+expect_selected_text ZzAAATest
+# ZzZZZTest hasn't been opened yet, so it isn't "recent" either: it's
+# still tied with every other untouched song and sorts last among them
+# (alphabetically, same as the A to Z pass above). From the top, Up
+# wraps to the list's last entry.
+press u 80
+wait 100
+expect_selected_text ZzZZZTest
+press a 80
+wait 1500
+expect_view song
+sim_set_tempo 133
+sim_save_project
+press p 80
+wait 150
+press d 80
+press d 80
+press d 80
+expect_selected_text powerMenu=Song List
+press a 80
+wait 200
+press a 80
+wait 1500
+expect_screen_text YOUR SONGS
+expect_screen_text recent first
+# recent first: ZzZZZTest (just saved) on top, ZzAAATest below it
+expect_selected_text ZzZZZTest
+press d 80
+expect_selected_text ZzAAATest
+# Toggle to A to Z: this is the real regression case, since it reorders
+# the whole list (recency no longer decides anything). The cursor must
+# still land on ZzAAATest, wherever A to Z now puts it, not on whatever
+# scrolled into the row it used to occupy.
+press k 80
+wait 150
+expect_screen_text A to Z
+expect_selected_text ZzAAATest
+press a 80
+wait 1500
+expect_view song
+expect_tempo 111
+sim_remove_project lgpt_ZzAAATest
+sim_remove_project lgpt_ZzZZZTest
 expect_no_error
 quit

@@ -31,6 +31,7 @@ static bool isProjectFolder(const std::string &name) {
 
 Path SelectProjectDialog::lastFolder_("root:") ;
 int SelectProjectDialog::lastProject_ = 0 ;
+std::string SelectProjectDialog::lastProjectName_ ;
 
 static void NewProjectCallback(View &v,ModalView &dialog) {
 
@@ -182,7 +183,22 @@ void SelectProjectDialog::OnPlayerUpdate(PlayerEventType,
 void SelectProjectDialog::OnFocus() {
 
 	setCurrentFolder(lastFolder_) ;
+    // Opening the song we're returning from can itself have changed
+    // "recent first" order (it is now the most recent), so lastProject_'s
+    // index no longer names the same song it did when saved. Find it by
+    // name in the freshly rebuilt list; only fall back to the old index
+    // if it is gone (deleted while we were in it).
     currentProject_ = lastProject_;
+    if (!lastProjectName_.empty()) {
+        int index = 0;
+        IteratorPtr<Path> it(content_.GetIterator());
+        for (it->Begin(); !it->IsDone(); it->Next(), index++) {
+            if (it->CurrentItem().GetName() == lastProjectName_) {
+                currentProject_ = index;
+                break;
+            }
+        }
+    }
 };
 
 void SelectProjectDialog::GetGuideTopic(const char *&page, const char *&section) {
@@ -233,6 +249,7 @@ void SelectProjectDialog::runAction() {
             selection_ = current;
             lastFolder_ = currentPath_;
             lastProject_ = currentProject_;
+            lastProjectName_ = current.GetName();
             EndModal(1);
         } else if (current.GetName() == "..") {
             Path parent = currentPath_.GetParent();
@@ -289,15 +306,34 @@ void SelectProjectDialog::ProcessButtonMask(unsigned short mask,bool pressed) {
         std::string current = GetCurrentProjectPath().GetName();
         RecentSongs::SetSortByRecent(!RecentSongs::SortByRecent());
         int button = selected_;
+        // setCurrentFolder() forces "New" when the list is empty (nothing
+        // to Open). If that's the only reason button is PA_NEW, it must
+        // not survive into a list that now has songs in it - reported as
+        // "A after a sort toggle opens New Song instead of the selected
+        // song": create the first song, and while its folder existed on
+        // disk before this SEL, this dialog's content_ was still the
+        // stale empty snapshot from when it first opened, so selected_
+        // was still PA_NEW; restoring that button after the refresh below
+        // (now non-empty) reintroduced the same forced "New" regardless
+        // of what the list, and the row highlighted on screen, now show.
+        bool hadContent = content_.Size() > 0;
         // A copy: setCurrentFolder assigns its argument to currentPath_
         Path folder(currentPath_);
         setCurrentFolder(folder);
-        selected_ = button;
+        if (hadContent || content_.Size() == 0) {
+            selected_ = button;
+        }
+        // setCurrentFolder() always leaves currentProject_ at 0, so find
+        // where the same song landed in the re-sorted list and put the
+        // cursor there directly (DrawView() scrolls topIndex_ to follow
+        // it). Not found (e.g. it was deleted meanwhile): stay at 0, on
+        // whatever the new order puts first.
         int index = 0;
         IteratorPtr<Path> it(content_.GetIterator());
         for (it->Begin(); !it->IsDone(); it->Next(), index++) {
             if (it->CurrentItem().GetName() == current) {
-                warpToNextProject(index);
+                currentProject_ = index;
+                isDirty_ = true;
                 break;
             }
         }

@@ -4,6 +4,7 @@
 #include "Application/Views/BaseClasses/ModalView.h"
 #include "System/FileSystem/FileSystem.h"
 #include "System/Errors/Result.h"
+#include <string>
 
 class SelectProjectDialog:public ModalView {
 public:
@@ -49,6 +50,11 @@ private:
   Path selection_;
   static Path lastFolder_;
   static int lastProject_;
+  // Opening a song can itself change "recent first" order (the song just
+  // opened becomes the most recent), so the name is what OnFocus() must
+  // return the cursor to; lastProject_ is kept only as a same-order
+  // fallback for when the name is no longer in the list.
+  static std::string lastProjectName_;
 } ;
 
 #endif

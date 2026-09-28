@@ -1144,11 +1144,22 @@ void SDLEventManager::ProcessSimScript(SDLGUIWindowImp *window)
 			return;
 		}
 	} else if (command.op=="sim_remove_project") {
-		// Test setup: clear a folder left behind by an earlier failed run
-		Path dir=Path("root:").Descend(command.arg);
-		if (dir.Exists()) {
-			SelectProjectDialog::DeleteFolder(dir);
+		// Test setup: clear a folder left behind by an earlier failed run.
+		// A project just closed (saved and navigated away from) can still
+		// have a file handle Windows hasn't released yet; deleting it right
+		// away then silently leaves it behind for the next run to trip
+		// over. Retry a few times, bounded, before giving up. Path::Exists()
+		// caches its answer for the life of the Path object (gotType_), so
+		// a fresh Path is built for every check here, or every retry after
+		// the first would see the stale pre-delete answer and either loop
+		// uselessly past a real success or report "still there" for a
+		// folder that is already gone.
+		std::string arg=command.arg;
+		for (int attempt=0;attempt<40 && Path("root:").Descend(arg).Exists();attempt++) {
+			SelectProjectDialog::DeleteFolder(Path("root:").Descend(arg));
+			if (Path("root:").Descend(arg).Exists()) SDL_Delay(100);
 		}
+		Path dir=Path("root:").Descend(arg);
 		Trace::Log("RGNANO_SIM","sim_remove_project %s => %s",dir.GetPath().c_str(),dir.Exists()?"still there":"gone");
 	} else if (command.op=="expect_project_exists" || command.op=="expect_no_project") {
 		Path dir=Path("root:").Descend(command.arg);

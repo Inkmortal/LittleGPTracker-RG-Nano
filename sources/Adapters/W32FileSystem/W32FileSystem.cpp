@@ -106,11 +106,19 @@ FileType W32FileSystem::GetFileType(const char *path) {
 };
 
 void W32FileSystem::Delete(const char *path) {
-	// Match Unix remove(): files and empty folders
+	// Match Unix remove(): files and empty folders. A folder just written
+	// to (a project just saved and navigated away from) can still be held
+	// by real-time antivirus scanning or a not-yet-released handle, so a
+	// failure here is routine, not a bug; callers that need the delete to
+	// really happen (sim_remove_project) retry around this.
+	BOOL ok ;
 	if (GetFileType(path)==FT_DIR) {
-		RemoveDirectory(path) ;
+		ok=RemoveDirectory(path) ;
 	} else {
-		DeleteFile(path) ;
+		ok=DeleteFile(path) ;
+	}
+	if (!ok) {
+		Trace::Log("FILESYSTEM","delete %s failed, error %lu",path,(unsigned long)GetLastError()) ;
 	}
 }
 
