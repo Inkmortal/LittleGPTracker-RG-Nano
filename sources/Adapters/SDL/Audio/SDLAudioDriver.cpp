@@ -156,6 +156,13 @@ void SDLAudioDriver::OnChunkDone(Uint8 *stream, int len) {
         if (pool_[poolPlayPosition_].buffer_ == 0) {
             if (thread_ && isPlaying_) {
                 noteUnderrun();
+                // The render thread only wakes when notified. If it falls
+                // behind and the pool runs dry, it must still be nudged here
+                // or it sleeps on its semaphore forever: no more buffers are
+                // ever rendered, so the sequencer freezes silently while the
+                // callback keeps feeding blank audio (GetStreamTime() keeps
+                // climbing, hiding the freeze). Wake it so it can catch up.
+                thread_->Notify();
             }
             SYS_MEMCPY(mainBuffer_ + bufferSize_ - bufferPos_, miniBlank_, len);
             bufferSize_ = bufferSize_ - bufferPos_ + len;
