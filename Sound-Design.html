@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sound Design · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Sound Design.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Build-Your-Sounds-First.html">Build Your Sounds First</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Sound-Design.html" class="active">Sound Design</a></li><li><a href="Chinese-Instruments.html">Chinese Instruments</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="sound-design">Sound Design</h1>
+<p>How each sound engine works inside, what its knobs really do, and recipes you can type in. Each section has a small picture of the insides: read it top to bottom, like the sound flows.</p>
+<p>Every recipe starts from a preset (<strong>A + Left/Right</strong> on <code>preset</code>), then changes a few knobs. Values are hex, as on the screen. <strong>A + Start</strong> plays the instrument while you turn knobs, so you hear each change.</p>
+<h2 id="how-a-synth-note-is-made">How a synth note is made</h2>
+<p>Whatever the engine, a synth note goes through the same chain. The engine makes the raw tone; everything after it is shared, and lives on the ENV, FILTER, LFO, MOD, MIX and EQ pages.</p>
+<pre><code> note (pitch, tune)
+   |
+ ENGINE: the raw tone
+   |
+ + noise   (noise knob)
+   |
+ drive     (FILTER page)
+   |
+ filter    cutoff, reso
+   |       &lt;- env, LFO
+ amp env   attack decay
+   |       sustn releas
+ EQ        (EQ page)
+   |
+ volume, pan, sends
+</code></pre>
+<p>So a dull engine can be brightened by the filter, a short one lengthened by the amp envelope, and any engine can wobble with the LFO or a MOD slot. The <code>engine</code> knob on the SOUND page picks the engine; the rest of the page changes to that engine's knobs.</p>
+<table>
+<thead>
+<tr>
+<th>You want</th>
+<th>Engine</th>
+<th>Start from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>basses, leads, pads, classic analog</td>
+<td><code>synth</code></td>
+<td><code>bass</code>, <code>lead</code>, <code>pad</code></td>
+</tr>
+<tr>
+<td>e-pianos, bells, brass, organs</td>
+<td><code>fm4</code></td>
+<td><code>epiano</code>, <code>fm bell</code>, <code>brass</code></td>
+</tr>
+<tr>
+<td>huge chords, trance leads, hoovers</td>
+<td><code>hyper</code></td>
+<td><code>hyper pad</code>, <code>trance lead</code></td>
+</tr>
+<tr>
+<td>chiptune, lo-fi, buzzy 8-bit</td>
+<td><code>wav</code></td>
+<td><code>chip lead</code>, <code>fold bass</code></td>
+</tr>
+<tr>
+<td>drum machine kicks, snares, hats</td>
+<td><code>drum</code></td>
+<td><code>808 kick</code>, <code>909 snare</code>, <code>808 hat</code></td>
+</tr>
+<tr>
+<td>marimba, bells, strings, hand drums</td>
+<td><code>phys</code></td>
+<td><code>wood bar</code>, <code>guzheng</code></td>
+</tr>
+<tr>
+<td>vowels, 47 more models in two knobs</td>
+<td>macro (<code>type</code>)</td>
+<td>see <a href="Macro-Synth.html">Macro Synth</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="synth-waves-through-a-filter">synth: waves through a filter</h2>
+<p>The classic analog recipe: start with a bright wave, then carve it with the filter. The <code>fm</code> knob lets a second sine bend the wave for bells and keys.</p>
+<pre><code> wave + sub + noise
+   |    ^
+   |    fm: a sine at
+   |    'ratio' bends it
+   v
+ filter &lt;- env, LFO
+   v
+ amp env -&gt; out
+</code></pre>
+<ul>
+<li><code>wave</code>: saw and pulse are bright (lots of harmonics to filter), sine and triangle are soft. <code>shape</code> changes the wave (pulse width, fold, detune).</li>
+<li><code>cutoff</code> closes the filter (darker), <code>reso</code> makes it ring at the cutoff. <code>env</code> opens the filter at every note and <code>envdec</code> closes it again: the "pluck" of a bass or a synth brass.</li>
+<li><code>sub</code> adds a square an octave down: a fatter bass for free.</li>
+</ul>
+<p><strong>Rubber bass</strong> — from <code>init</code>: <code>wave saw</code>, <code>sub 60</code>, <code>tune -24</code>, <code>cutoff 48</code>, <code>reso 50</code>, <code>env A0</code>, <code>envdec 88</code>, <code>decay 90</code>, <code>sustn 40</code>.</p>
+<p><strong>Soft lead</strong> — from <code>lead</code>: <code>shape 40</code>, <code>attack 18</code>, <code>glide 30</code>, <code>cutoff B0</code>, then LFO page <code>lfo pitch</code>, <code>rate B0</code>, <code>depth 14</code>.</p>
+<p><strong>Wind</strong> — from <code>init</code>: <code>wave noise</code>, <code>filter bandpass</code>, <code>cutoff 90</code>, <code>reso C0</code>, <code>attack 80</code>, <code>releas B0</code>, then LFO page <code>lfo cutoff</code>, <code>rate 40</code>, <code>depth 50</code>.</p>
+<h2 id="fm4-operators-bending-each-other">fm4: operators bending each other</h2>
+<p>Four sine waves, <strong>A B C D</strong>. A <strong>carrier</strong> is heard. A <strong>modulator</strong> is not heard: it bends another operator's pitch very fast, which adds new harmonics. More modulator <code>level</code> = brighter and more metallic. <code>ratio</code> sets each operator's pitch against the note: whole numbers sound warm, others ring like bells.</p>
+<pre><code> algo 00:
+ A -&gt; B -&gt; C -&gt; D -&gt; out
+ each bends the next
+
+ algo 07 (e-piano):
+ A -&gt; B -&gt; out
+ C -&gt; D -&gt; out
+</code></pre>
+<p>Each operator has its own envelope (<code>atk</code> <code>dec</code> <code>sus</code>): a modulator that decays fast gives the "tine" ping of an e-piano, one that attacks slowly gives a brass swell. The <code>algo</code> picture on the page draws who bends whom.</p>
+<p><strong>Bell</strong> — from <code>fm init</code>: C <code>ratio 3.50</code>, C <code>level A0</code>. <strong>Pluck</strong> — then C <code>dec 70</code>: the brightness dies, the note stays.</p>
+<p><strong>Organ</strong> — from <code>fm init</code>: <code>algo 0B</code> (all four heard, no FM), A <code>ratio 0.50</code> <code>level C0</code>, B <code>ratio 1.00</code> <code>level FF</code>, C <code>ratio 2.00</code> <code>level A0</code>, D <code>ratio 3.00</code> <code>level 60</code>: four drawbars.</p>
+<p><strong>Tremolo e-piano</strong> — preset <code>epiano</code>, then LFO page <code>lfo volume</code>, <code>rate A0</code>, <code>depth 20</code>: the classic stage-piano wobble.</p>
+<h2 id="hyper-a-detuned-saw-choir">hyper: a detuned saw choir</h2>
+<p>Six notes of a chord, each played by <strong>two saws</strong> tuned a little apart. Two saws at almost the same pitch beat against each other: that shimmer is what makes pads and trance leads sound huge. <code>width</code> pushes one saw of each pair left and the other right.</p>
+<pre><code> note 1: saw~saw
+ note 2: saw~saw
+ ...      (x6)
+ note 6: saw~saw
+   ~ = swarm (detune)
+ width: L saws / R saws
+ + square sub
+</code></pre>
+<ul>
+<li><code>chord</code> fills the six notes (<code>minor</code>, <code>maj7</code>, ...); <code>shift</code> fades from notes 1-3 to 4-6.</li>
+<li><code>swarm</code> is the detune: <code>20</code> gentle, <code>60</code> thick, <code>C0</code>+ seasick. <code>scale on</code> keeps every chord in the song's key.</li>
+</ul>
+<p><strong>Wide minor pad</strong> — from <code>hyper init</code>: <code>chord minor</code>, <code>swarm 60</code>, <code>width FF</code>, then ENV <code>attack C0</code>, <code>releas C0</code>, MIX <code>reverb 80</code>.</p>
+<p><strong>Trance lead</strong> — preset <code>trance lead</code>, then <code>shift 00</code> (only notes 1-3) and MIX <code>delay 60</code>.</p>
+<p><strong>Hoover</strong> — preset <code>hoover</code>, then <code>glide 40</code> and slide between notes with <code>PTCH</code>.</p>
+<h2 id="wav-an-8-bit-oscillator-you-bend">wav: an 8-bit oscillator you bend</h2>
+<p>A wave drawn in a few steps, like a game console, with nothing smoothed. Every knob reshapes the drawing.</p>
+<pre><code> wave (pulse, saw, sine)
+   |
+ size: steps per cycle
+   |
+ mult: repeat it (sync)
+   |
+ warp, mirror: squeeze,
+   |    move the middle
+ drive + limit
+</code></pre>
+<p><strong>Chip lead</strong> — preset <code>chip lead</code>, then in the phrase <code>ARPG 0047</code> on a held note: the classic chiptune chord.</p>
+<p><strong>PWM pad</strong> — preset <code>pwm pad</code>: the LFO moves <code>mirror</code>, so the pulse width sweeps.</p>
+<p><strong>Fold bass</strong> — from <code>wav init</code>: <code>wave sine</code>, <code>tune -24</code>, <code>drive 60</code>, <code>limit fold</code>: the louder, the more it folds into buzz.</p>
+<h2 id="drum-circuit-models-of-drum-machines">drum: circuit models of drum machines</h2>
+<p>The classic drum machines made their sounds from small circuits, not samples. This engine simulates those circuits, so a knob changes the drum the way turning a pot inside the machine would.</p>
+<pre><code> kick 808:
+ pulse -&gt; ringing filter
+   tone, decay
+ + click, FM (snap)
+ -&gt; overdrive (snap)
+
+ snare 808:
+ 2 ringing drum modes
+ + noise (snap)
+
+ hat 808:
+ 6 square oscillators
+ -&gt; band-pass (tone)
+ -&gt; fade (decay)
+ + white noise (snap)
+</code></pre>
+<ul>
+<li><code>kick 909</code> and <code>snare 909</code> are sine oscillators with pitch and FM sweeps: punchier and cleaner than the 808's ringing filters. <code>hat ring</code> multiplies oscillators in pairs for a harder, clangy metal.</li>
+<li><code>tune</code> sets the drum's pitch; play different notes for tom fills or to tune a kick to your key.</li>
+<li>The drum decays by itself (<code>decay</code>), so leave the ENV page's amp envelope open.</li>
+</ul>
+<p><strong>Deep 808</strong> — preset <code>808 kick</code>: <code>decay C0</code>, <code>tune -29</code>, <code>snap 20</code>. Long and round, for trap and hip hop.</p>
+<p><strong>Tight house kick</strong> — preset <code>909 kick</code>: <code>decay 50</code>, <code>snap C0</code>, <code>tone 90</code>.</p>
+<p><strong>Crack snare</strong> — preset <code>909 snare</code>: <code>snap FF</code>, <code>tone C0</code>, <code>decay 40</code>, MIX <code>reverb 50</code>.</p>
+<p><strong>Trap hat roll</strong> — preset <code>808 hat</code>; in the phrase put <code>RTRG 0002</code> on a note (a roll) and <code>VOLM</code> to shape it.</p>
+<h2 id="phys-objects-you-hit-or-pluck">phys: objects you hit or pluck</h2>
+<p>Instead of a wave, this engine simulates an object. Hit a bar and it rings with a few frequencies at once (its <strong>partials</strong>); how those are spaced is what makes wood sound like wood and a bell like a bell.</p>
+<pre><code> modal (struck):
+ click (bright, strike)
+   |
+ 24 resonators, one per
+ partial of the object
+   matter: their spacing
+   decay: how long
+
+ string (plucked):
+ noise burst (the pick)
+   |
+ delay line, 1 period
+   | &lt;- filter: highs
+   |    fade first
+   +-&gt; back round
+</code></pre>
+<ul>
+<li><code>matter</code> is the key knob. On <code>modal</code>: <code>00</code> squeezed partials (a hand drum), <code>40</code> perfectly in tune (a string or pipe), <code>C0</code> a wooden bar, <code>E0</code>+ a bell. On <code>string</code>: below <code>40</code> a buzzing bridge like a sitar's, above it a stiffer, metallic string.</li>
+<li><code>bright</code> is the mallet or pick: felt (<code>00</code>) or hard (<code>FF</code>). <code>decay</code> is how long it rings.</li>
+</ul>
+<p><strong>Marimba</strong> — preset <code>wood bar</code> as it is; play chords on three tracks.</p>
+<p><strong>Glockenspiel</strong> — from <code>phys init</code>: <code>matter E0</code>, <code>bright C0</code>, <code>decay 90</code>, <code>tune +24</code>.</p>
+<p><strong>Guzheng bend</strong> — preset <code>guzheng</code>; in the phrase a note then <code>PTCH 1002</code> on the next row: the string bends up a whole tone as it rings.</p>
+<p><strong>Gong</strong> — from <code>phys init</code>: <code>matter 10</code>, <code>bright 60</code>, <code>decay E0</code>, <code>tune -24</code>, MIX <code>reverb A0</code>.</p>
+<h2 id="macro-synth-47-models-two-knobs">Macro synth: 47 models, two knobs</h2>
+<p>Set <code>type</code> to <code>macro</code> for the other family: 47 complete synthesis models from the Braids module (vowels, formants, FM, wavetables, physical models, noise), each played with just <code>timbre</code> and <code>color</code>. The page tells you what the two knobs do on the shape under the cursor. See <a href="Macro-Synth.html">Macro Synth</a> for the list.</p>
+<p><strong>Singing vowel</strong> — preset <code>vowels</code>, then in the phrase <code>TIMB 2000</code> on one note and <code>TIMB 20FF</code> a few rows later: the voice slides from "a" to "u".</p>
+<h2 id="what-each-engine-costs">What each engine costs</h2>
+<p>The RG Nano has one 1.2 GHz core. Measured in the device's own build (<code>tools/dsp-harness/plaits_engines_check.cpp</code>), eight voices of one sound at once take:</p>
+<table>
+<thead>
+<tr>
+<th>Sound (8 voices)</th>
+<th>CPU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wav</code> pwm pad</td>
+<td>8%</td>
+</tr>
+<tr>
+<td><code>drum</code> hats</td>
+<td>8–13%</td>
+</tr>
+<tr>
+<td><code>fm4</code> epiano</td>
+<td>10%</td>
+</tr>
+<tr>
+<td><code>phys</code> string</td>
+<td>10%</td>
+</tr>
+<tr>
+<td><code>drum</code> kicks, snares</td>
+<td>10–11%</td>
+</tr>
+<tr>
+<td><code>synth</code> pad</td>
+<td>13%</td>
+</tr>
+<tr>
+<td><code>hyper</code> pad</td>
+<td>15%</td>
+</tr>
+<tr>
+<td><code>phys</code> modal</td>
+<td>20%</td>
+</tr>
+</tbody>
+</table>
+<p>A full song with heavy sounds on every track, the send effects, EQ and limiter plays well within the device's limits, so mix engines freely. The <code>modal</code> model is the heaviest: one or two tracks of it is plenty.</p>
+<div class="pager"><a class="prev" href="Macro-Synth.html"><small>Previous</small>Macro Synth</a><a class="next" href="Chinese-Instruments.html"><small>Next</small>Chinese Instruments</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

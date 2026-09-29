@@ -1,0 +1,1406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Controls · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Controls.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html" class="active">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Build-Your-Sounds-First.html">Build Your Sounds First</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Sound-Design.html">Sound Design</a></li><li><a href="Chinese-Instruments.html">Chinese Instruments</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="controls">Controls</h1>
+<p>The RG Nano has few buttons, so the same few combos mean the same thing on every screen. Learn these rules once:</p>
+<table>
+<thead>
+<tr>
+<th>Keys</th>
+<th>Always means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>D-pad</strong></td>
+<td>move the cursor</td>
+</tr>
+<tr>
+<td><strong>A</strong></td>
+<td>add / paste / press the thing under the cursor</td>
+</tr>
+<tr>
+<td><strong>A + D-pad</strong></td>
+<td>change the value (Left/Right small step, Up/Down big step)</td>
+</tr>
+<tr>
+<td><strong>B + A</strong></td>
+<td>delete it, or put a knob back to its default</td>
+</tr>
+<tr>
+<td><strong>A + Start</strong></td>
+<td>hear the instrument (on a phrase, <strong>A</strong> on a note already previews it)</td>
+</tr>
+<tr>
+<td><strong>B + D-pad</strong></td>
+<td>jump to the neighbouring item that way (chain, phrase, instrument, table, groove; 16 rows on the Song)</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>back one step: closes whatever is open (dialog, list, menu, question, helper, folder), right away and without changing anything. See <a href="#backing-out">Backing out</a></td>
+</tr>
+<tr>
+<td><strong>Left/Right</strong> in a list</td>
+<td>a page at a time (where Left/Right pick a button instead: <strong>LB + Up/Down</strong>)</td>
+</tr>
+<tr>
+<td><strong>RB + D-pad</strong></td>
+<td>go to the screen that way on the map</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>play / stop what this screen shows</td>
+</tr>
+<tr>
+<td><strong>RB + Start</strong></td>
+<td>play / stop the whole song</td>
+</tr>
+<tr>
+<td><strong>LB + Start</strong></td>
+<td>capture or launch: record this bar/chain into a sample, or on the Song launch the row live</td>
+</tr>
+<tr>
+<td><strong>LB + D-pad</strong></td>
+<td>the finer or alternate move (chromatic note, instrument page, trim marker, MOD slot, song section or bookmark)</td>
+</tr>
+<tr>
+<td><strong>B + RB</strong> / <strong>A + RB</strong></td>
+<td>mute / solo the track; <strong>RB + LB</strong> unmutes all</td>
+</tr>
+<tr>
+<td><strong>X</strong></td>
+<td>copy what's under the cursor, or the selection. See <a href="#copy-and-paste">Copy and paste</a></td>
+</tr>
+<tr>
+<td><strong>Y</strong></td>
+<td>paste it. With nothing copied (Song, Chain): a new copy of the chain or phrase under the cursor in the next empty row</td>
+</tr>
+<tr>
+<td><strong>LB + Y</strong></td>
+<td>make new ones: paste new copies instead of the same chains/phrases again; on a Phrase, Table, Groove or Instrument, duplicate the one you're in</td>
+</tr>
+<tr>
+<td><strong>LB + X</strong></td>
+<td>highlight a cell on Song, Chain, Phrase or Table. D-pad grows it. Repeat <strong>LB + X</strong> for whole rows (whole tracks on Song), then the whole block. <strong>X</strong> copies, <strong>B + A</strong> cuts, <strong>Y</strong> pastes, <strong>B</strong> cancels</td>
+</tr>
+<tr>
+<td><strong>Select</strong></td>
+<td>this screen's special tool: command picker, Live mode, sample import/root/editor, rename, sort</td>
+</tr>
+<tr>
+<td><strong>A + Select</strong></td>
+<td>mark it: bookmark the Song row</td>
+</tr>
+<tr>
+<td><strong>B + Select</strong> / <strong>LB + Select</strong></td>
+<td>undo / redo any change, on every screen (hold B or LB first)</td>
+</tr>
+<tr>
+<td><strong>RB + Select</strong></td>
+<td>the helper, on every screen and dialog. See <a href="#the-quick-guide">The quick guide</a></td>
+</tr>
+</tbody>
+</table>
+<p>Nothing is mapped twice on a screen, and a combo never fires two actions at once.</p>
+<blockquote>
+<p>On the RG Nano, <strong>Select</strong> is the <code>FN</code> button. <strong>LB/RB</strong> are the shoulder buttons. <strong>X</strong> and <strong>Y</strong> are the left and top face buttons (next to <strong>B</strong> and <strong>A</strong>). The Menu/Power button opens the app menu: <strong>Volume</strong> and <strong>Brightness</strong> (Left/Right), <strong>Save and quit</strong>, <strong>Quit, don't save</strong> (asks first) and <strong>Debug tools</strong>. Holding power to switch off saves your song first.</p>
+</blockquote>
+<h2 id="backing-out">Backing out</h2>
+<p>One rule for leaving anything: <strong>B goes back one step.</strong> Whatever you opened (a dialog, a list, a menu, a question, the helper, a folder), <strong>B</strong> closes it and puts you back exactly where you were, the moment you press it. It never saves, deletes, quits or changes anything on the way out; press it again to go back another step.</p>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>B does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Any dialog (instrument list, command picker, sample editor, render)</td>
+<td>closes it; the command picker puts back the command you had</td>
+</tr>
+<tr>
+<td>A question (<code>Save your work?</code>, <code>Delete ... ?</code>, <code>Purge ...?</code>)</td>
+<td>closes it with no answer: nothing is saved, deleted or left. To answer <strong>No</strong>, pick <code>No</code> and press <strong>A</strong></td>
+</tr>
+<tr>
+<td>The helper (<strong>RB + Select</strong>)</td>
+<td>closes it (so does <strong>RB + Select</strong> again)</td>
+</tr>
+<tr>
+<td>A folder (sample browser, song list)</td>
+<td>back up one folder; in the sample browser's top folder, closes it. The song list is the first screen, so there <strong>B</strong> just reminds you that Power quits</td>
+</tr>
+<tr>
+<td>Power menu</td>
+<td>its question → the menu → closed; <strong>Debug tools</strong> → the menu. <strong>Power</strong> closes the whole menu from anywhere</td>
+</tr>
+<tr>
+<td>Recording</td>
+<td>a take (recording or recorded) is dropped for another try; then the device list; then closed</td>
+</tr>
+<tr>
+<td>Naming a song or sound</td>
+<td>the one place <strong>B</strong> is a backspace: it erases the last letter you typed. With nothing typed (or only the suggested name) it leaves</td>
+</tr>
+<tr>
+<td>The full guide</td>
+<td>back through the pages you came through; <strong>RB + Select</strong> closes it from anywhere</td>
+</tr>
+<tr>
+<td>The Rack</td>
+<td>back to the Song (the Rack is a list you opened from there); in its sound browser, <strong>B</strong> puts the slot back as it was</td>
+</tr>
+</tbody>
+</table>
+<p>On the editing screens (Song, Chain, Phrase, Instrument ...) nothing is open to close, so <strong>B</strong> alone does nothing there: it is the modifier for <strong>B + A</strong> (delete), <strong>B + D-pad</strong> (jump) and the older <strong>B + LB</strong> selection shortcut. In a highlight, tap <strong>B</strong> to cancel without replacing your clipboard; hold it and press <strong>A</strong> to cut. Cancellation happens when B is released, so it can still be used as a modifier.</p>
+<h2 id="the-quick-guide">The quick guide</h2>
+<p><strong>RB + Select</strong> opens it, full screen, on every screen and every dialog. It always has the same three pages, <strong>Left/Right</strong> changes section; <strong>Up/Down</strong> scrolls long sections and moves to the adjacent section at either end, <strong>B</strong> or <strong>RB + Select</strong> closes it (see <a href="#backing-out">Backing out</a>):</p>
+<ol>
+<li><strong>Map</strong> — where you are and where <strong>RB + direction</strong> goes from here</li>
+<li><strong>Controls</strong> — every key and combo that does something on this screen, grouped; nothing is left out</li>
+<li><strong>Read the screen</strong> — every label, column and abbreviation this screen shows, explained</li>
+</ol>
+<p><strong>A</strong> on any page opens the full built-in guide at the section for the current screen.</p>
+<p>One table drives this overlay and this wiki (<code>tools/quickguide/data.py</code> → <code>tools/quickguide/generate.py</code>), so the app and the docs can't say something different from each other. <code>tools/quickguide/generate.py --check</code> also checks every screen's Controls page against <code>tools/sweep/table.py</code> (the key sweep): a key that does something but has no help line fails the check. Per-screen text: <a href="#quick-guide-reference">Quick guide reference</a> at the end of this page.</p>
+<h2 id="moving-between-screens">Moving between screens</h2>
+<p><img src="images/help-1-map.png" width="300" align="right" alt="Helper map page"></p>
+<p>Hold <strong>RB</strong> and press a direction:</p>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>RB + Right</th>
+<th>RB + Left</th>
+<th>RB + Up</th>
+<th>RB + Down</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Song</td>
+<td>Chain under the cursor</td>
+<td><a href="#rack">Rack</a>: all your sounds</td>
+<td>Project</td>
+<td>Mixer</td>
+</tr>
+<tr>
+<td>Rack</td>
+<td>Instrument (edit the sound)</td>
+<td>—</td>
+<td>—</td>
+<td>Phrase, to write notes with the sound</td>
+</tr>
+<tr>
+<td>Chain</td>
+<td>Phrase under the cursor</td>
+<td>Song</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Phrase</td>
+<td>Instrument of the note</td>
+<td>Chain</td>
+<td>Groove</td>
+<td>Table</td>
+</tr>
+<tr>
+<td>Instrument</td>
+<td>—</td>
+<td>Phrase (or the Rack, if you came from it)</td>
+<td>list of all sounds</td>
+<td>Instrument table</td>
+</tr>
+<tr>
+<td>Table</td>
+<td>Instrument table</td>
+<td>Table (from the instrument table)</td>
+<td>back up</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Groove</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>Phrase</td>
+</tr>
+<tr>
+<td>Project</td>
+<td>Scale</td>
+<td>—</td>
+<td>—</td>
+<td>Song</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>—</td>
+<td>Project</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Mixer</td>
+<td>—</td>
+<td>—</td>
+<td>Song</td>
+<td>FX</td>
+</tr>
+<tr>
+<td>FX</td>
+<td>EQ</td>
+<td>—</td>
+<td>Mixer</td>
+<td>—</td>
+</tr>
+<tr>
+<td>EQ</td>
+<td>Limit</td>
+<td>FX</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Limit</td>
+<td>—</td>
+<td>EQ</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>If a cell is empty, RB + Right tells you to press <strong>A</strong> first. Holding RB + a direction moves one screen, however long you hold it.</p>
+<p><br clear="right"></p>
+<h2 id="copy-and-paste">Copy and paste</h2>
+<p><strong>X</strong> copies, <strong>Y</strong> pastes, on every screen that has something to copy. Each screen keeps its own copy, and the screen says what happened (<code>Copied chain 03</code>, <code>New phrase 07 = copy of 03</code>). Every paste can be undone with <strong>B + Select</strong>.</p>
+<p>"The same" or "new": a Song cell only points at a chain, and a Chain row at a phrase. <strong>Y</strong> pastes the pointer, so both places play (and change with) the same chain. <strong>LB + Y</strong> makes new ones: fresh chains and phrases with the same notes, so you can edit the copy and leave the original alone.</p>
+<table>
+<thead>
+<tr>
+<th>Screen</th>
+<th><strong>X</strong></th>
+<th><strong>Y</strong></th>
+<th><strong>LB + Y</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Song</td>
+<td>copies the chain (or selection)</td>
+<td>paste it here, rows below move down. Nothing copied: a new copy of this chain (with new phrases) in the next empty row below, and the cursor goes there</td>
+<td>paste new copies (new chains with new phrases)</td>
+</tr>
+<tr>
+<td>Chain</td>
+<td>copies the phrase or transpose (or selection)</td>
+<td>paste it here. Nothing copied: a new copy of this row's phrase in the next empty row below</td>
+<td>paste new copies (new phrases)</td>
+</tr>
+<tr>
+<td>Phrase</td>
+<td>copies the step (or selection)</td>
+<td>paste it here</td>
+<td>duplicate this phrase into the chain's next empty row and open it</td>
+</tr>
+<tr>
+<td>Table</td>
+<td>copies the step (or selection)</td>
+<td>paste it here</td>
+<td>duplicate this table into a new one and open it</td>
+</tr>
+<tr>
+<td>Groove</td>
+<td>copies the whole groove</td>
+<td>paste it into this groove</td>
+<td>duplicate this groove into the next unused one and open it</td>
+</tr>
+<tr>
+<td>Instrument</td>
+<td>copies the whole sound</td>
+<td>paste it into this slot (its type changes if needed)</td>
+<td>duplicate this sound into the next free slot and open it</td>
+</tr>
+<tr>
+<td>Song List</td>
+<td>duplicates the whole song under the cursor - its file and every sample it uses - as a new song (next free name, e.g. <code>Afterglow</code> -&gt; <code>Afterglow 2</code>), and selects it</td>
+<td>- (nothing to paste; <strong>Copy</strong> already makes the new song)</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>A variation in one press: on the Chain, put the cursor on a phrase and press <strong>Y</strong>. The copy lands in the next empty row, ready to edit with <strong>RB + Right</strong>. On the Song, the same makes a whole new chain.</p>
+<p>On Song, Chain, Phrase, and Table, <strong>LB + X</strong> starts a highlight without replacing your last copy. Move in any direction to grow it; repeat <strong>LB + X</strong> for whole rows, then all 16 rows. On Song, the first repeat selects whole tracks across all 256 rows, and the next selects all tracks. <strong>X</strong> copies the highlighted cells, <strong>B + A</strong> cuts them, and <strong>B</strong> cancels. <strong>Y</strong> and <strong>LB + Y</strong> use the existing clipboard with the reference/duplicate behavior in the table above. The older <strong>B + LB</strong> selection/clone gesture and <strong>A + LB</strong> cut/paste gesture still work.</p>
+<h2 id="everywhere">Everywhere</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Start</strong></td>
+<td>play / stop (what plays depends on the screen, see <a href="#playing-and-previewing">Playing and previewing</a>)</td>
+</tr>
+<tr>
+<td><strong>RB + Start</strong></td>
+<td>play / stop the whole song, from the current song row, on every screen</td>
+</tr>
+<tr>
+<td><strong>RB + Select</strong></td>
+<td>the quick guide: <strong>Left/Right</strong> changes Map → Controls → Read the screen; <strong>Up/Down</strong> scrolls, <strong>A</strong> opens the full guide, <strong>B</strong> (or <strong>RB + Select</strong>) closes. See <a href="#the-quick-guide">The quick guide</a></td>
+</tr>
+<tr>
+<td><strong>B + Select</strong> / <strong>LB + Select</strong></td>
+<td>undo / redo (32 steps; one A-hold of edits is one step)</td>
+</tr>
+<tr>
+<td><strong>A + RB</strong></td>
+<td>solo the track (Song, Chain, Phrase, Mixer)</td>
+</tr>
+<tr>
+<td><strong>B + RB</strong></td>
+<td>mute the track (Song, Chain, Phrase, Mixer)</td>
+</tr>
+<tr>
+<td><strong>LB + X</strong></td>
+<td>highlight; D-pad grows, repeat expands, <strong>X</strong> copies, <strong>B + A</strong> cuts, <strong>B</strong> cancels</td>
+</tr>
+<tr>
+<td><strong>X</strong> / <strong>Y</strong> / <strong>LB + Y</strong></td>
+<td>copy / paste / paste new copies (see <a href="#copy-and-paste">Copy and paste</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>The small label at the top right says what is playing: <code>PLAY:SONG</code>, <code>PLAY:CHAIN</code>, <code>PLAY:PHR</code>, <code>PLAY:LIVE</code>, <code>AUDITION</code> or <code>STOP</code>.</p>
+<h2 id="song-list">Song List</h2>
+<p>The first screen: pick a song to open, or make one. Five buttons: <code>Open New Copy Delete Help</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D-pad</td>
+<td>move between songs</td>
+</tr>
+<tr>
+<td><strong>Left/Right</strong></td>
+<td>pick a button</td>
+</tr>
+<tr>
+<td><strong>A</strong></td>
+<td>run the highlighted button</td>
+</tr>
+<tr>
+<td><strong>X</strong></td>
+<td>copy the song under the cursor - same as the <strong>Copy</strong> button</td>
+</tr>
+<tr>
+<td><strong>LB + Up/Down</strong></td>
+<td>a page of songs at a time</td>
+</tr>
+<tr>
+<td><strong>Select</strong></td>
+<td>song list order: recent first / A to Z</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>nothing to back out of here (the first screen); reminds you Power quits</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Copy</strong> (or <strong>X</strong>) duplicates the whole song - its file, its samples folder, everything in it - into a new song named the next free variant (<code>Afterglow</code> -&gt; <code>Afterglow 2</code>), and selects the copy: <code>Afterglow-&gt;Afterglow 2</code>. Handy for trying a different direction without losing the original. <strong>Delete</strong> asks first; <strong>Copy</strong> doesn't need to, since nothing is lost.</p>
+<p>Inside a song, <strong>Save Song As</strong> on the <a href="Screens.html#project">Project</a> screen does the same kind of thing the other way around: it saves your current changes into a new song and switches you to it, leaving the one you started from exactly as it was.</p>
+<h2 id="playing-and-previewing">Playing and previewing</h2>
+<p>One play rule, the same everywhere:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Start</strong></td>
+<td>plays / stops what this screen shows, from the cursor (the song row on Song; this chain on Chain; this phrase on Phrase, Table, Groove and Instrument)</td>
+</tr>
+<tr>
+<td><strong>RB + Start</strong></td>
+<td>plays / stops the whole song, from the current song row — always the same on every screen</td>
+</tr>
+<tr>
+<td><strong>A + Start</strong></td>
+<td>hears the sound under the cursor once (the instrument on Instrument, the note on Phrase, the highlighted sound on the instrument list) — press again while it sounds to stop it</td>
+</tr>
+</tbody>
+</table>
+<p>Named exceptions, not violations of the rule (each screen's own quick guide Controls page says so too):</p>
+<ul>
+<li><strong>Live mode</strong> (Song, <strong>Select</strong>): a clip launcher — <strong>Start</strong> toggles the cell (queues a start or stop), <strong>LB + Start</strong> cues the whole row, <strong>RB + Start</strong> toggles the whole song, <strong>B + Start</strong> stops everything. See <a href="#live-mode">Live mode</a>.</li>
+<li><strong>LB + Start</strong> is the screen-specific "capture/launch" slot, not part of the play rule: render to sample (Chain, Phrase), toggle the sample preview loop (Instrument's sample waveform pages), launch a song row live (Song), My sounds (Rack, instrument list).</li>
+<li><strong>Rack</strong>: holding <strong>A</strong> plays the selected sound for as long as you hold it (so you can browse quickly by ear); <strong>A + Start</strong> does the same thing as a single press, for consistency with every other screen. <strong>Start</strong> plays a short riff with the selected sound instead of "this screen" (the Rack has no timeline of its own).</li>
+<li>The instrument list and sound browser dialogs: <strong>Start</strong> or <strong>A + Start</strong> hears or stops the highlighted sound while keeping the dialog open.</li>
+<li><strong>Project</strong>, <strong>Scale</strong>, <strong>Mixer</strong>, <strong>FX</strong>, <strong>EQ</strong> and <strong>Limit</strong> have no single "thing" narrower than the whole song, so <strong>Start</strong> and <strong>RB + Start</strong> do the same thing on them: play / stop the song.</li>
+<li>Dialogs with their own meaning for <strong>Start</strong> aren't part of the play rule at all: naming a song (<strong>Start</strong>/<code>DONE</code> creates it), recording a sample (<strong>Start</strong> starts/stops recording), the sample editor (<strong>Start</strong> auditions the pending edit), the guide (<strong>Start</strong> closes it; <strong>RB + Select</strong> opens its helper).</li>
+</ul>
+<h2 id="song">Song</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D-pad</td>
+<td>move between rows (time) and the 8 tracks</td>
+</tr>
+<tr>
+<td><strong>A</strong> on <code>--</code></td>
+<td>put the last-used chain here (screen says <code>Reused 00</code>)</td>
+</tr>
+<tr>
+<td><strong>A</strong> again</td>
+<td>replace it with a brand-new empty chain (<code>New chain 01</code>)</td>
+</tr>
+<tr>
+<td><strong>A + D-pad</strong></td>
+<td>change the chain number</td>
+</tr>
+<tr>
+<td><strong>B + A</strong></td>
+<td>delete the chain from this cell</td>
+</tr>
+<tr>
+<td><strong>B + Up/Down</strong></td>
+<td>16 rows up / down</td>
+</tr>
+<tr>
+<td><strong>LB + Up/Down</strong></td>
+<td>jump to the next / previous bookmark or section start</td>
+</tr>
+<tr>
+<td><strong>A + Select</strong></td>
+<td>bookmark this row (again: remove the bookmark)</td>
+</tr>
+<tr>
+<td><strong>Up</strong> on row <code>00</code></td>
+<td>move tracks: <strong>A + Left/Right</strong> carries the track over, <strong>Down</strong> is done</td>
+</tr>
+<tr>
+<td><strong>LB + Left/Right</strong></td>
+<td>nudge the tempo</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>play the song from this row</td>
+</tr>
+<tr>
+<td><strong>B + Start</strong></td>
+<td>while playing, jump every track to this row right away</td>
+</tr>
+<tr>
+<td><strong>Select</strong></td>
+<td>switch to <strong>Live mode</strong> and back (see below)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="live-mode">Live mode</h2>
+<p>Jam with your song: loop sections, bring parts in and out, switch sections on the beat. <strong>Select</strong> on the Song screen switches Song ↔ Live; the title says which, and the buttons are listed at the bottom of the screen.</p>
+<table>
+<thead>
+<tr>
+<th>Input (Live)</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Start</strong> on a cell</td>
+<td>cue that chain on its track: it starts when the track's current chain ends, then loops. Press twice to switch at the next bar instead</td>
+</tr>
+<tr>
+<td><strong>LB + Start</strong></td>
+<td>cue the whole row: every track switches to this section together</td>
+</tr>
+<tr>
+<td><strong>RB + Start</strong></td>
+<td>toggle the whole song, including while Live mode is selected</td>
+</tr>
+<tr>
+<td><strong>B + Start</strong></td>
+<td>stop everything now</td>
+</tr>
+<tr>
+<td><strong>B + RB</strong> / <strong>A + RB</strong></td>
+<td>mute / solo a track while it plays</td>
+</tr>
+</tbody>
+</table>
+<p>A cued cell blinks in green until it starts. A track keeps looping its chain until you cue something else, so you can leave the drums on the verse while the bass moves to the chorus. <strong>LB + Start</strong> also switches to Live by itself. The Mixer, and Start on any other screen, work as usual. Live also keeps the Song screen's <strong>RB + Left/Right/Up/Down</strong> (the <a href="#rack">Rack</a>, the chain under the cursor, Project, Mixer), the same as <a href="#moving-between-screens">Moving between screens</a> — they aren't repeated here because they don't touch what's playing.</p>
+<h2 id="chain">Chain</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A</strong> on <code>--</code></td>
+<td>put the last phrase here; <strong>A</strong> again for a new empty phrase</td>
+</tr>
+<tr>
+<td><strong>A + D-pad</strong></td>
+<td>change phrase number, or transpose (second column)</td>
+</tr>
+<tr>
+<td><strong>B + D-pad</strong></td>
+<td>jump to the next/previous chain</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>play this track's chain on a loop</td>
+</tr>
+<tr>
+<td><strong>LB + Start</strong></td>
+<td>record the chain into a new sample (<a href="Samples.html#render-to-sample">render to sample</a>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="phrase">Phrase</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A</strong> on an empty step</td>
+<td>add a note (copies the last note and instrument)</td>
+</tr>
+<tr>
+<td><strong>A + Left/Right</strong></td>
+<td>note down/up a semitone (or a scale step if a key is set)</td>
+</tr>
+<tr>
+<td><strong>A + Up/Down</strong></td>
+<td>note down/up an octave</td>
+</tr>
+<tr>
+<td><strong>LB + D-pad</strong> on a note</td>
+<td>chromatic edit that ignores the key/scale</td>
+</tr>
+<tr>
+<td><strong>A + D-pad</strong> on the <code>I</code> column</td>
+<td>pick the instrument</td>
+</tr>
+<tr>
+<td><strong>Select</strong> on a command column</td>
+<td>open the command picker</td>
+</tr>
+<tr>
+<td><strong>A + Up/Down</strong> on a command</td>
+<td>step through the commands A to Z</td>
+</tr>
+<tr>
+<td><strong>A + Left/Right</strong> on a command</td>
+<td>step through the commands in list order</td>
+</tr>
+<tr>
+<td><strong>B + A</strong></td>
+<td>delete</td>
+</tr>
+<tr>
+<td><strong>B + D-pad</strong></td>
+<td>jump to the neighbouring phrase</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>loop this bar</td>
+</tr>
+<tr>
+<td><strong>LB + Start</strong></td>
+<td>record this bar into a new sample (<a href="Samples.html#render-to-sample">render to sample</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>While playback is stopped, moving in the command picker auditions the current step. Scale, key, tempo, transpose and groove effects belong to that preview: browsing does not change the saved song settings. <strong>A</strong> keeps the chosen command; <strong>B</strong> cancels without changing the original command. Both close the picker and stop its preview. During playback, browsing leaves the playing phrase or table unchanged until <strong>A</strong> confirms the candidate. Committed effects run normally when you play the phrase.</p>
+<p>With a selection (<strong>LB + X</strong>, then move to grow it), <strong>LB + D-pad</strong> writes for you:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LB + Right</strong></td>
+<td>random notes in the song's Key/Scale, keeping the rhythm (no notes selected: random notes on random steps). Again for another roll</td>
+</tr>
+<tr>
+<td><strong>LB + Left</strong></td>
+<td>fill: repeat the first selected note on every step; again for every 2nd, 4th, 8th step</td>
+</tr>
+<tr>
+<td><strong>LB + Up</strong></td>
+<td>shuffle the selected steps</td>
+</tr>
+<tr>
+<td><strong>LB + Down</strong></td>
+<td>reverse them</td>
+</tr>
+</tbody>
+</table>
+<p>Didn't like it? <strong>B + Select</strong> undoes.</p>
+<h2 id="instrument">Instrument</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LB + Left/Right</strong></td>
+<td>change page (SOUND, ENV, FILTER, LFO, MOD, MIX, EQ for synths)</td>
+</tr>
+<tr>
+<td><strong>LB + Up/Down</strong> on the MOD page</td>
+<td>pick the slot (1–4) the settings edit</td>
+</tr>
+<tr>
+<td><strong>A + Left/Right</strong> on <code>preset</code></td>
+<td>browse ready-made sounds (of the synth's <code>engine</code>)</td>
+</tr>
+<tr>
+<td><strong>A + D-pad</strong></td>
+<td>change the focused knob</td>
+</tr>
+<tr>
+<td><strong>Up/Down</strong> in a grid (FM4 operators, hyper notes)</td>
+<td>stay in the column; <strong>Left/Right</strong> move across (see <a href="Synth.html#engines">Engines</a>)</td>
+</tr>
+<tr>
+<td><strong>B + Left/Right</strong></td>
+<td>previous / next instrument (<strong>B + Down/Up</strong>: 16 forward / back)</td>
+</tr>
+<tr>
+<td><strong>B + A</strong></td>
+<td>put the knob back to its default (on <code>sample</code>: remove the sample; on <code>table</code>: clear it)</td>
+</tr>
+<tr>
+<td><strong>RB + Up</strong></td>
+<td>the list of all sounds</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>play / stop the phrase, same as the Phrase screen</td>
+</tr>
+<tr>
+<td><strong>A + Start</strong></td>
+<td>hear the instrument (synth at C3, sample at its root); again to stop</td>
+</tr>
+<tr>
+<td><strong>RB + A + Left/Right</strong></td>
+<td>hear it an octave down / up</td>
+</tr>
+</tbody>
+</table>
+<p>Sample instruments have their own pages, play modes, trim controls and a sample editor (<strong>Select</strong> on any of its pages) — see <a href="Samples.html">Samples</a>.</p>
+<h2 id="rack">Rack</h2>
+<p>Every sound of the song on one screen, to build your instruments before you compose: <strong>Song RB + Left</strong>. The whole story is on <a href="Build-Your-Sounds-First.html">Build Your Sounds First</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Up / Down</strong></td>
+<td>pick a sound (<strong>Left / Right</strong>: a page)</td>
+</tr>
+<tr>
+<td><strong>A</strong> (hold)</td>
+<td>play it until you let go</td>
+</tr>
+<tr>
+<td><strong>A + Left / Right</strong></td>
+<td>the next note of the scale down / up, and play it</td>
+</tr>
+<tr>
+<td><strong>A + Up / Down</strong></td>
+<td>an octave up / down, and play it</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>a riff with it (drum pattern, bass line, chord or melody), looping; again stops</td>
+</tr>
+<tr>
+<td><strong>Select</strong></td>
+<td>the sound browser: every sound plays as you move onto it; <strong>A</strong> takes it, <strong>B</strong> puts the slot back</td>
+</tr>
+<tr>
+<td><strong>RB + Right</strong></td>
+<td>edit it on the Instrument screen (<strong>RB + Left</strong> there comes back)</td>
+</tr>
+<tr>
+<td><strong>RB + Down</strong></td>
+<td>write notes with it: a phrase (made if needed) where new notes use this sound</td>
+</tr>
+<tr>
+<td><strong>LB + Start</strong></td>
+<td>My sounds: save / load sounds and kits, the new-song kit</td>
+</tr>
+<tr>
+<td><strong>LB + A</strong></td>
+<td>copy it to a free slot</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>back to the Song</td>
+</tr>
+</tbody>
+</table>
+<h2 id="moving-tracks">Moving tracks</h2>
+<p><strong>Up</strong> on the Song's row <code>00</code> switches to track moving (the title says <code>MOVE TRACKS</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Input (moving tracks)</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Left/Right</strong></td>
+<td>pick a track</td>
+</tr>
+<tr>
+<td><strong>A + Left/Right</strong></td>
+<td>move the track one place, with its chains, mixer level and mute</td>
+</tr>
+<tr>
+<td><strong>Down</strong> or <strong>B</strong></td>
+<td>back to the song grid</td>
+</tr>
+</tbody>
+</table>
+<h2 id="scale">Scale</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Up/Down</strong></td>
+<td>Key → Scale → keyboard</td>
+</tr>
+<tr>
+<td><strong>A + D-pad</strong> on Key/Scale</td>
+<td>change it (Up/Down: 10 scales at a time)</td>
+</tr>
+<tr>
+<td><strong>Left/Right</strong> on the keyboard</td>
+<td>pick a note</td>
+</tr>
+<tr>
+<td><strong>A</strong> on a note</td>
+<td>in or out of the scale (makes it your Custom scale)</td>
+</tr>
+<tr>
+<td><strong>B + A</strong></td>
+<td>on a note: take it out; on Key/Scale: back to none / chromatic</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>play / stop the song</td>
+</tr>
+<tr>
+<td><strong>RB + Left</strong></td>
+<td>back to Project</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mixer-fx-eq-and-limit">Mixer, FX, EQ and Limit</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Left/Right</strong></td>
+<td>pick a strip (Mixer)</td>
+</tr>
+<tr>
+<td><strong>Up/Down</strong></td>
+<td>pick a knob (FX, EQ, Limit)</td>
+</tr>
+<tr>
+<td><strong>A + Up/Down</strong> / <strong>A + Left/Right</strong></td>
+<td>big / small step</td>
+</tr>
+<tr>
+<td><strong>B + A</strong></td>
+<td>back to default (fader to <code>C0</code>, master to 100, knob to its default)</td>
+</tr>
+<tr>
+<td><strong>B + RB</strong> / <strong>A + RB</strong></td>
+<td>mute / solo the track (Mixer); <strong>RB + LB</strong> unmutes all</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>play / stop the song</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-guide">The guide</h2>
+<p>This guide, built in: <strong>Help</strong> on the start screen, or <strong>A</strong> in the <strong>RB + Select</strong> helper (it opens at the part about the screen you're on). It has three places: the contents, a page, and an index of every key, command and heading.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Up/Down</strong></td>
+<td>scroll the page, or pick in a list</td>
+</tr>
+<tr>
+<td><strong>LB + Up/Down</strong></td>
+<td>a whole screen up / down</td>
+</tr>
+<tr>
+<td><strong>Left/Right</strong></td>
+<td>previous / next section of the page (its name is in the title)</td>
+</tr>
+<tr>
+<td><strong>LB + Left/Right</strong></td>
+<td>previous / next page</td>
+</tr>
+<tr>
+<td><strong>A</strong> on a page</td>
+<td>Go to: the links on screen (underlined), the pages this one points to, the contents and the index</td>
+</tr>
+<tr>
+<td><strong>A</strong> in the contents / index</td>
+<td>read that page or section</td>
+</tr>
+<tr>
+<td><strong>Right / Left</strong> in the contents</td>
+<td>open a topic up to its sections / fold them away</td>
+</tr>
+<tr>
+<td><strong>Left/Right</strong> in the index</td>
+<td>jump to the next / previous first letter</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>step back to where you were (a link, a page, the contents); from the contents, close</td>
+</tr>
+<tr>
+<td><strong>RB + Select</strong></td>
+<td>open the guide's Map, Controls and Read the screen helper</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>close the full guide from anywhere</td>
+</tr>
+</tbody>
+</table>
+<h2 id="naming-a-new-song">Naming a new song</h2>
+<p>The letters are in alphabetical order (not QWERTY), so the next letter is always one press away.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D-pad</td>
+<td>move over the keys and the <code>abc RANDOM CANCEL DONE</code> row (Down from the buttons wraps to the top letters)</td>
+</tr>
+<tr>
+<td><strong>A</strong> on <code>abc</code> / <code>ABC</code>, or <strong>Select</strong></td>
+<td>switch the keys to lowercase / uppercase</td>
+</tr>
+<tr>
+<td><strong>A</strong></td>
+<td>type the letter / run the button</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>erase the last letter you typed; with nothing typed (empty, or only the suggested name) leave without making a song</td>
+</tr>
+<tr>
+<td><strong>LB / RB</strong></td>
+<td>move the cursor inside the name</td>
+</tr>
+<tr>
+<td><strong>Start</strong> or <code>DONE</code></td>
+<td>create the song</td>
+</tr>
+</tbody>
+</table>
+<p>The suggested random name is highlighted: the first letter you type replaces it. <code>name taken</code> means a song with that name already exists.</p>
+<h2 id="quick-guide-reference">Quick guide reference</h2>
+<p>Generated from <code>tools/quickguide/data.py</code> by <code>tools/quickguide/generate.py</code> for every screen and dialog's RB+Select overlay; do not edit the blocks below by hand.</p>
+<h3 id="song_1">SONG</h3>
+<!-- quickguide:begin song -->
+<p><strong>Quick guide (SONG)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> The arrangement; Rows=time, cols=8 tracks; RB+Right: Chain here; RB+Left: Rack (all sounds); RB+Up: Project; RB+Down: Mixer; Empty cell: RB+Right says; press A first</p>
+<p><em>Move:</em> Dpad  move row / track; B+Up/Dn  16 rows; LB+Up/Dn  bookmark/section
+<em>Edit a cell:</em> A on --  reuse last chain; A again  new; A+Dpad number; B+A  delete the chain
+<em>Play:</em> Start  play from this row; RB+Start  play whole song; B+Start jump LB+Start launch
+<em>Track / mute:</em> B+RB mute  A+RB solo; RB+LB unmute  Up row00 move
+<em>Other:</em> A+Sel bookmark  Sel Live; LB+L/R  nudge tempo; X copy  Y paste  LB+Y new; A+LB paste  B+LB select; RB+Dpad  see the Map page
+LB+X begin/expand selection; Dpad grow from anchor; B release cancels selection; B+LB also begins selection; B+A cut highlighted cells
+LB+X: cell, column, all
+A+Start hear cursor sound
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="song-live">SONG - LIVE</h3>
+<!-- quickguide:begin live -->
+<p><strong>Quick guide (SONG - LIVE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Clip launcher view of Song; Select: back to Song; RB+Right/Left/Up/Down: same; map as Song (Chain/Rack/; Project/Mixer)</p>
+<p><em>Cue:</em> Start cell: cue / queue stop;   (loops from this track's;   chain end); twice=next bar
+<em>Cue everything:</em> LB+Start  cue whole row; RB+Start  whole song toggle;   (also when Live is active); B+Start  stop right now
+<em>While it plays:</em> B+RB mute  A+RB solo; Dpad move  RB+LB unmute
+<em>Other (like Song):</em> X copy Y paste LB+Y new; A reuse/new A+LB paste; A+Sel bookmark  Sel: Song; A+Dpad edit like Song;;   B+A delete  B+LB select; B+Dpad 16 rows/bookmark; LB+Dpad  tempo/bookmark; RB+Dpad  see the Map page
+LB+X begin/expand selection; Dpad grow from anchor; B release cancels selection; B+LB also begins selection; B+A cut highlighted cells
+LB+X: cell, column, all
+A+Start hear cursor sound
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="song-move-tracks">SONG - MOVE TRACKS</h3>
+<!-- quickguide:begin movetracks -->
+<p><strong>Quick guide (SONG - MOVE TRACKS)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Up again on row 00 from Song; Down or B: back to the grid</p>
+<p><em>Move:</em> Left/Right  pick a track; A+Left/Right  swap it past;   its neighbour (chains,;   mixer level and mute move)
+<em>Leave:</em> Down  back to the song grid; B  back to the song grid
+<em>Play:</em> Start  play from this row; RB+Start  same, whole song
+<em>Other:</em> RB+Dpad  leaves, see Map; RB+LB  unmute all; A+RB solo  B+RB mute; X copy  Y paste  LB+Y new
+LB+X begin/expand selection; Dpad grow from anchor; B release cancels selection; B+LB also begins selection; B+A cut highlighted cells
+LB+X: cell, column, all
+RB held: navigation modifier
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="chain_1">CHAIN</h3>
+<!-- quickguide:begin chain -->
+<p><strong>Quick guide (CHAIN)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> One track's playlist of bars; RB+Left: Song; RB+Right: Phrase here</p>
+<p><em>Move:</em> Dpad  move row / field; B+Dpad  next/prev chain
+<em>Edit a cell:</em> A on --  last phrase used; A again  brand-new phrase; A+Dpad  phrase # or, on the;   2nd column, transpose; A+LB  paste, B+A  delete
+<em>Play / go:</em> Start  loop this chain; RB+Start  play whole song; LB+Start  render to sample; RB+Left Song, RB+Right Phr
+<em>Mute:</em> B+RB mute  A+RB solo; RB+LB  unmute all
+<em>Copy / select:</em> X copy  Y paste/new phrase; LB+Y  paste new copies; B+LB  start select, X copies
+LB+X begin/expand selection; Dpad grow from anchor; B release cancels selection; B+LB also begins selection; B+A cut highlighted cells
+LB+X: cell, row, all
+A+Start hear cursor sound
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="phrase_1">PHRASE</h3>
+<!-- quickguide:begin phrase -->
+<p><strong>Quick guide (PHRASE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> One bar, 16 steps; RB+Left: Chain; RB+Right: Instrument of;   the note under the cursor; RB+Up: Groove; RB+Down: Table</p>
+<p><em>Move &amp; edit:</em> Dpad move  B+Dpad next/prev; A on empty step  add note; A+L/R semitone, A+U/D octave; LB+Dpad  chromatic, no scale; A+Dpad I col instr  B+A del; Sel on cmd column  picker; A+Up/Dn cmd A-Z, A+L/R list
+<em>Play / preview:</em> A on a note  preview it; Start  loop this bar; RB+Start  play whole song; LB+Start  render to sample
+<em>Selection (LB+X, then move):</em> LB+Right rand, LB+Left fill; LB+Up shuffle, LB+Dn reverse
+<em>Other:</em> X copy  Y paste  LB+Y dup; A+LB  cut  B+RB mute; A+RB solo  RB+LB unmute; RB+Dpad  see the Map page
+LB+X begin/expand selection; Dpad grow from anchor; B release cancels selection; B+LB also begins selection; B+A cut highlighted cells
+LB+X: cell, row, all
+A+Start hear cursor sound
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="instrument-sample">INSTRUMENT - SAMPLE</h3>
+<!-- quickguide:begin instrument-sample -->
+<p><strong>Quick guide (INSTRUMENT - SAMPLE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> RB+Left: Phrase (or the Rack;   if opened from there); RB+Up: list of all sounds; RB+Down: this instrument's;   table</p>
+<p><em>Pages &amp; edit:</em> LB+Left/Right  next page; A+Dpad  edit focused knob; B+A  reset (sample: remove;;   table: clear)
+<em>Sample:</em> Sel on sample  import one; Sel elsewhere  sample editor; LB+Start  preview once/loop; LB+Up/Dn on SOURCE/LOOP:;   cycle start/loop/end mark; LB+A+L/R  nudge that marker
+<em>Play / preview:</em> Start  play the phrase; RB+Start  play whole song; A+Start  hear it, again to;   stop; RB+A+L/R: octave
+<em>Other:</em> B+Dpad other instr, +-16 U/D; X copy sound  Y paste it; LB+Y  duplicate the sound; RB+Up list, RB+Down table
+Dpad pick field A activate; RB+Left back Phrase/Rack
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="instrument-synth">INSTRUMENT - SYNTH</h3>
+<!-- quickguide:begin instrument-synth -->
+<p><strong>Quick guide (INSTRUMENT - SYNTH)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> RB+Left: Phrase (or the Rack;   if opened from there); RB+Up: list of all sounds; RB+Down: this instrument's;   table</p>
+<p><em>Pages &amp; edit:</em> LB+Left/Right  next page; A+Dpad  edit focused knob; B+A  knob to default; A+Left/Right on preset;   browse ready-made sounds
+<em>MOD page:</em> LB+Up/Dn  pick slot 1-4
+<em>Grids (FM4, hyper):</em> Up/Down  stay in column; Left/Right  move across
+<em>Play / preview:</em> Start  play the phrase; RB+Start  play whole song; A+Start  hear it, again to;   stop; RB+A+L/R: octave
+<em>Other:</em> B+Dpad other instr, +-16 U/D; X copy sound  Y paste it; LB+Y  duplicate the sound; RB+Up list, RB+Down table
+Dpad pick field A activate; RB+Left back Phrase/Rack
+Select has no action here
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="instrument-macro">INSTRUMENT - MACRO</h3>
+<!-- quickguide:begin instrument-macro -->
+<p><strong>Quick guide (INSTRUMENT - MACRO)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> RB+Left: Phrase (or the Rack;   if opened from there); RB+Up: list of all sounds; RB+Down: this instrument's;   table</p>
+<p><em>Pages:</em> LB+Left/Right  next page
+<em>Edit:</em> A+Dpad  edit focused knob;   (timbre, color = the 2;   main macro knobs); B+A  knob to default; A+Left/Right on preset;   browse the 47 models
+<em>MOD page:</em> LB+Up/Dn  pick slot 1-4
+<em>Play / preview:</em> Start  play the phrase; RB+Start  play whole song; A+Start  hear it, again to;   stop; RB+A+L/R: octave
+<em>Other:</em> B+Dpad other instr, +-16 U/D; X copy sound  Y paste it; LB+Y  duplicate the sound; RB+Up list, RB+Down table
+Dpad pick field A activate; RB+Left back Phrase/Rack
+Select has no action here
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="instrument-midi">INSTRUMENT - MIDI</h3>
+<!-- quickguide:begin instrument-midi -->
+<p><strong>Quick guide (INSTRUMENT - MIDI)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> RB+Left: Phrase (or the Rack;   if opened from there); RB+Up: list of all sounds; RB+Down: this instrument's;   table</p>
+<p><em>Edit:</em> Dpad  choose field; A+L/R small, A+U/D big step
+<em>Type:</em> A+Dpad on type  switch;   sample/synth/macro/MIDI
+<em>Play:</em> Start  play the phrase; RB+Start  play whole song; B+A  field to default
+<em>Not on MIDI:</em> A+Start, RB+A+L/R: no sound;   to preview; LB+Left/Right, LB+Up/Dn: no;   pages to switch; RB+Left: back to Phrase
+<em>Other:</em> B+Dpad other instr, +-16 U/D; X copy sound  Y paste it; LB+Y  duplicate the sound; RB+Up list, RB+Down table
+Dpad pick field A activate; RB+Left back Phrase/Rack
+Select has no action here
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="instrument-table">INSTRUMENT TABLE</h3>
+<!-- quickguide:begin table2 -->
+<p><strong>Quick guide (INSTRUMENT TABLE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> This instrument's own table; (set on the synth LFO page; or the sample Motion page); RB+Up: Instrument; RB+Left: the Phrase table</p>
+<p><em>Move:</em> Dpad  move cmd / param; B+Left/Right  other table
+<em>Edit:</em> Sel  command picker; A+Dpad  edit value; A  paste the last command; A+LB  paste, B+A  delete
+<em>Selection:</em> B+LB mark  B+RB interpolate
+<em>Play / copy / go:</em> Start  loop the phrase; RB+Start  play whole song; X copy  Y paste; LB+Y  duplicate this table; RB+Up Instrument, RB+Left;   the Phrase table
+LB+X begin/expand selection; Dpad grow from anchor; B release cancels selection; B+LB also begins selection; B+A cut highlighted cells
+LB+X: cell, row, all
+A+Start hear cursor sound
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="table">TABLE</h3>
+<!-- quickguide:begin table -->
+<p><strong>Quick guide (TABLE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Command mini-sequence a; phrase's TABL command runs; RB+Up: Phrase; RB+Right: this instrument's;   own table</p>
+<p><em>Move:</em> Dpad  move cmd / param; B+Dpad  prev/next table
+<em>Edit:</em> Sel  command picker; A+Dpad  edit value; A  paste the last command; A+LB  paste, B+A  delete
+<em>Selection:</em> B+LB mark  B+RB interpolate
+<em>Play / copy / go:</em> Start  loop the phrase; RB+Start  play whole song; X copy  Y paste; LB+Y  duplicate this table; RB+Up Phrase, RB+Right;   this instrument's table
+LB+X begin/expand selection; Dpad grow from anchor; B release cancels selection; B+LB also begins selection; B+A cut highlighted cells
+LB+X: cell, row, all
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="groove">GROOVE</h3>
+<!-- quickguide:begin groove -->
+<p><strong>Quick guide (GROOVE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> How many ticks each step; lasts, cycling; RB+Down: Phrase</p>
+<p><em>Move:</em> Up/Down  move tick cell; B+Left/Right  other groove; B+Up/Down  +/-16 grooves
+<em>Edit:</em> A+Dpad  edit ticks; B+A  clear the step
+<em>Play / copy / go:</em> Start  play current chain; RB+Start  play whole song; RB+Down  back to Phrase; X copy  Y paste groove; LB+Y  duplicate this groove
+A on empty: one tick
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="project">PROJECT</h3>
+<!-- quickguide:begin project -->
+<p><strong>Quick guide (PROJECT)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Tempo, key/scale, render,; song-level tools; RB+Down: Song; RB+Right: Scale (see Key/;   Scale/Notes on a keyboard)</p>
+<p><em>Move / edit:</em> Dpad  choose a field; A+Dpad  edit its value; A on an action  run it
+<em>Fields worth knowing:</em> Save Song / Song List /;   Save Song As; Remove unused chains/sounds; Quit  (offers to save)
+<em>Play / render / go:</em> Start  play/stop the song; RB+Start  same as Start; Render field  Stereo or;   Stems, then Start exports; RB+Down Song, RB+Right Scale
+<em>Other:</em> B on Tempo  tap tempo; B+A  no field default here; X/Y/LB+Y  nothing to copy
+X copy: nothing here
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="scale_1">SCALE</h3>
+<!-- quickguide:begin scale -->
+<p><strong>Quick guide (SCALE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> The song's key and scale,; on a keyboard; RB+Left: Project</p>
+<p><em>Move:</em> Up/Down  Key, Scale, keys
+<em>Edit Key/Scale:</em> A+Dpad  change it;   (Up/Dn: 10 scales at once); B+A  back to none/chromatic
+<em>Edit the keyboard:</em> Left/Right  pick a note; A  note in/out of scale;   (makes a Custom scale); B+A  take the note out
+<em>Play / go:</em> Start  play/stop the song; RB+Start  same as Start; RB+Left  back to Project
+<em>Other:</em> X/Y/LB+Y  nothing to copy
+X copy: nothing here
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="mixer">MIXER</h3>
+<!-- quickguide:begin mixer -->
+<p><strong>Quick guide (MIXER)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Faders: 8 tracks + C/D/R; sends + M master; RB+Up: Song  RB+Down: FX</p>
+<p><em>Move:</em> Left/Right  pick a strip
+<em>Edit:</em> A+Up/Down  fader big step;   (C0 = unity, FF = boost); A+Left/Right  fine step; B+A  fader to C0;   (master to 100)
+<em>Mute / solo:</em> B+RB mute  A+RB solo; RB+LB  unmute all
+<em>Play / go:</em> Start  play/stop the song; RB+Start  same as Start; RB+Up Song, RB+Down FX
+<em>Other:</em> X/Y/LB+Y  nothing to copy
+X copy: nothing here
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="fx">FX</h3>
+<!-- quickguide:begin fx -->
+<p><strong>Quick guide (FX)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> The 3 shared send effects; RB+Up: Mixer  RB+Right: EQ</p>
+<p><em>Move / edit:</em> Up/Down  pick a knob; A+Left/Right  small step; A+Up/Down  big step; B+A  knob to default
+<em>Play / go:</em> Start  play/stop the song; RB+Start  same as Start; RB+Up Mixer, RB+Right EQ
+<em>Other:</em> X/Y/LB+Y  nothing to copy
+X copy: nothing here
+Dpad pick field
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="eq">EQ</h3>
+<!-- quickguide:begin eq -->
+<p><strong>Quick guide (EQ)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> 3-band EQ on the whole mix,; after the effects; RB+Left: FX  RB+Right: Limit</p>
+<p><em>Move / edit:</em> Up/Down  pick a knob; A+Left/Right  small step; A+Up/Down  big step; B+A  knob back to flat
+<em>Play / go:</em> Start  play/stop the song; RB+Start  same as Start; RB+Left FX, RB+Right Limit
+<em>Other:</em> X/Y/LB+Y  nothing to copy
+X copy: nothing here
+Dpad pick field
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="limit">LIMIT</h3>
+<!-- quickguide:begin limit -->
+<p><strong>Quick guide (LIMIT)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Master limiter: keeps the; mix under a ceiling; RB+Left: EQ</p>
+<p><em>Move / edit:</em> Up/Down  pick a knob; A+Left/Right  small step; A+Up/Down  big step; B+A  knob to default;   (drive back to off)
+<em>Play / go:</em> Start  play/stop the song; RB+Start  same as Start; RB+Left  back to EQ
+<em>Other:</em> X/Y/LB+Y  nothing to copy
+X copy: nothing here
+Dpad pick field
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="rack_1">RACK</h3>
+<!-- quickguide:begin rack -->
+<p><strong>Quick guide (RACK)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Every sound of the song,; to build them before you; compose. Opened from Song; RB+Right: edit it on;   Instrument; RB+Down: write notes with;   it (opens/makes a phrase); B: back to Song</p>
+<p><em>Move:</em> Up/Down  pick a sound; Left/Right  a page
+<em>Hear it:</em> A hold  play; let go stops; A+Left/Right  scale, plays; A+Up/Down  octave, plays; A+Start  hear once, again;   to stop
+<em>Play / Go:</em> Start  loop a riff, again;   stops; RB+Start whole song; Sel  sound browser (plays;   as you browse); RB+Right edit,RB+Down phrase; RB+Left / B  back to Song
+<em>Other:</em> LB+A  copy to a free slot; LB+Start  My sounds; X copy  Y paste  LB+Y new
+RB+Select  open/close helper; B+Sel undo  LB+Sel redo</p>
+<!-- quickguide:end -->
+
+<h3 id="instrument-list">INSTRUMENT LIST</h3>
+<!-- quickguide:begin instlist -->
+<p><strong>Quick guide (INSTRUMENT LIST)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> RB+Up on Instrument opens; every instrument at once; B: back to Instrument</p>
+<p><em>Move:</em> Up/Down  pick an instrument; Left/Right  jump a page
+<em>Use it:</em> A  open on Instrument screen; Start  hear it, again stops; Sel  rename it (clear the;   name: back to automatic); LB+A  copy to a free slot; LB+Start  My sounds
+<em>Other:</em> B  back
+A+Start hear cursor sound
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="sound-browser">SOUND BROWSER</h3>
+<!-- quickguide:begin soundbrowser -->
+<p><strong>Quick guide (SOUND BROWSER)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Select on the Rack opens it; B: puts the slot back, or;   up one folder/category</p>
+<p><em>Move / preview:</em> Up/Down/Left/Right  move;;   every sound plays as you;   land on it
+<em>Choose:</em> A  open a category, or;   take the highlighted sound; Start toggle current sound; B  back one step
+A+Start hear cursor sound
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="sample-browser">SAMPLE BROWSER</h3>
+<!-- quickguide:begin samplebrowser -->
+<p><strong>Quick guide (SAMPLE BROWSER)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Select on the Instrument; sample field opens it; B: up a folder, or closes;   it from the top folder</p>
+<p><em>Move:</em> LB+Up/Down  page
+<em>Choose:</em> A  preview/import/record,;   or open the folder, by;   the highlighted button; Start+Up/Down  browse while;   it keeps previewing; Start+Right  load it; Start+Left  up a folder
+<em>Other:</em> B  back
+Dpad select file or action
+A+Start hear cursor sound
+Start toggle file preview
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="my-sounds">MY SOUNDS</h3>
+<!-- quickguide:begin mysounds -->
+<p><strong>Quick guide (MY SOUNDS)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> LB+Start on the instrument; list or the Rack opens it; B: back to the menu, or;   from the menu, closes</p>
+<p><em>Move / choose:</em> Up/Down  pick (Left/Right:;   no effect on this list); A  run it; B  back
+<em>Menu choices:</em> Save sound  keep the slot;   as a file, under a name; Load a sound  into the slot; Save this kit  every sound;   of the song, one file; Load a kit  replaces every;   sound (asks first); New songs: this kit / the;   starter kit
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="song-list_1">SONG LIST</h3>
+<!-- quickguide:begin songlist -->
+<p><strong>Quick guide (SONG LIST)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> The first screen: no B to; back out of, just Power; to quit</p>
+<p><em>Move:</em> LB+Up/Down  page; Up/Down/Left/Right  cursor;   or the button row
+<em>Choose:</em> A  run the highlighted;   action (open, new, ...); Sel  toggle sort by recent
+<em>Other:</em> B  up a folder (reminds you;   Power quits at the top)
+X or Copy: duplicate song
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="name-the-song">NAME THE SONG</h3>
+<!-- quickguide:begin newsong -->
+<p><strong>Quick guide (NAME EDITOR)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> A on New (song list) opens; it; Start or DONE: accept name</p>
+<p><em>Type:</em> Dpad  move over the keys;   and abc RANDOM CANCEL DONE; A  type the letter / run;   the highlighted button; A on abc/ABC, or Sel  case
+<em>Move in the name:</em> LB/RB  move the cursor;   inside the typed name
+<em>Finish / leave:</em> Start or DONE  accept name; B  erase the last letter;;   empty (or suggested name;   untouched): leaves
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="record-sample">RECORD SAMPLE</h3>
+<!-- quickguide:begin record -->
+<p><strong>Quick guide (RECORD SAMPLE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> LB+Start on a sample field's; browser opens it; B: drop this take, then the;   device list, then close</p>
+<p><em>Pick a device:</em> Up/Down  choose it; A  use it
+<em>Ready:</em> Up/Down  set duration; Start  start recording
+<em>Recording:</em> Start  stop recording
+<em>Stopped (a take exists):</em> A  keep it, saves the WAV; B  drop it, try again
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="sample-editor">SAMPLE EDITOR</h3>
+<!-- quickguide:begin sampleeditor -->
+<p><strong>Quick guide (SAMPLE EDITOR)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Select on most Instrument; sample pages opens it; B: back, discards the edit</p>
+<p><em>Choose the operation:</em> Up/Down  cycle it;   (normalize, crop, fade,;   reverse, ...)
+<em>Apply:</em> A  apply it; Start  audition the result;   before applying
+<em>Other:</em> B  back, nothing changed
+A+Start hear cursor sound
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="command-picker">COMMAND PICKER</h3>
+<!-- quickguide:begin cmdpicker -->
+<p><strong>Quick guide (COMMAND PICKER)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Select on a Phrase or Table; command column opens it; B: puts back the command;   you had</p>
+<p><em>Move / preview:</em> Dpad  move in the grid;;   moving previews the sound;   with the newly-selected;   command (LB/RB+Dpad: same)
+<em>Choose:</em> A (or LB+A, RB+A)  take the;   highlighted command; B  cancel, keep the old one
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="render-to-sample">RENDER TO SAMPLE</h3>
+<!-- quickguide:begin render -->
+<p><strong>Quick guide (RENDER TO SAMPLE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> LB+Start on Chain or Phrase; opens it; B: stops an in-progress;   render and closes</p>
+<p><em>While it runs:</em> (nothing to press: it plays;   and records by itself)
+<em>When done:</em> A  keep it, opens on the;   free instrument it used
+<em>Other:</em> B  stop and close
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="question">QUESTION</h3>
+<!-- quickguide:begin messagebox -->
+<p><strong>Quick guide (QUESTION)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Any confirm (Save your; work?, Delete ... ?, Purge; ...?) uses this same box; B: cancels, no side effects</p>
+<p><em>Choose:</em> Left/Right  pick a button; A  run the highlighted one
+<em>Cancel:</em> B  closes with no answer:;   nothing saved, deleted or;   left. For No, pick No;   and press A
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<h3 id="menu">MENU</h3>
+<!-- quickguide:begin power -->
+<p><strong>Quick guide (MENU)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> The Menu/Power button opens; it from anywhere; Power: closes the whole menu; B: closes the menu, or its;   question, one step back</p>
+<p><em>Move / edit:</em> Up/Down  pick a row; Left/Right  Volume/;   Brightness on that row
+<em>Choose:</em> A  run it (Save and quit,;   Quit don't save, Debug;   tools)
+<em>Other:</em> B  back one step; Power  closes from anywhere
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<!-- quickguide:begin guide -->
+<p><strong>Quick guide (FULL GUIDE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Contents &gt; topic &gt; section; B returns one step; RB+Select helper</p>
+<p><em>Read:</em> Up/Down scroll or pick; Left/Right change section; A open topic or links; B back; at contents closes
+Start close full guide; LB+Up/Down page scroll; LB+Left/Right guide topic
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<!-- quickguide:begin debug -->
+<p><strong>Quick guide (DEBUG TOOLS)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Power menu &gt; Debug tools; B returns to Power menu</p>
+<p><em>Choose:</em> Up/Down pick A activate; B return Power menu; Power close menu
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<!-- quickguide:begin exit -->
+<p><strong>Quick guide (EXIT QUESTION)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Power menu &gt; quit choice; B returns to menu</p>
+<p><em>Answer:</em> Up/Down choose A answer; B cancel this question; Power close menu
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<!-- quickguide:begin startup -->
+<p><strong>Quick guide (STARTUP)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Song list opens on startup</p>
+<p><em>Wait:</em> Power opens app menu
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+
+<!-- quickguide:begin console -->
+<p><strong>Quick guide (CONSOLE)</strong> - RB+Select on this screen:</p>
+<p><em>Map:</em> Diagnostic log display</p>
+<p><em>Read:</em> Power opens app menu
+RB+Select  open/close helper; RB+Start song (when loaded)</p>
+<!-- quickguide:end -->
+<div class="pager"><a class="prev" href="Install.html"><small>Previous</small>Install</a><a class="next" href="How-Trackers-Work.html"><small>Next</small>How Trackers Work</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

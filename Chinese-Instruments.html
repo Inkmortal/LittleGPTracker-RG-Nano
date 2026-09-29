@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chinese Instruments · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Chinese Instruments.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Build-Your-Sounds-First.html">Build Your Sounds First</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Sound-Design.html">Sound Design</a></li><li><a href="Chinese-Instruments.html" class="active">Chinese Instruments</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="chinese-instruments">Chinese Instruments</h1>
+<p>A kit of Chinese instruments, built from the synth engines: plucked zithers and lutes, bowed and blown melody instruments, gongs, bells and temple drums. This page shows how each one is played, and how to make a tracker phrase sound like a player instead of a machine.</p>
+<h2 id="what-makes-them-sound-chinese">What makes them sound Chinese</h2>
+<p>The big sample libraries (Kong Audio's Chinee series is the one players rate highest) sound real because of <strong>how the notes are played</strong>, not just the tone: pitch slides between notes, grace notes, vibrato that grows as a note is held, tremolo on plucked strings, glissandos. Get those right and even a simple tone sounds like an erhu. The presets do part of it for you:</p>
+<ul>
+<li><strong>Scoops</strong>: the winds and the erhu start each note a little flat and slide up into it (mod slot 1).</li>
+<li><strong>Late vibrato</strong>: their vibrato fades in after the note has settled, like a player's (mod slot 2, an LFO with a <code>fade</code>).</li>
+<li><strong>Slides</strong>: <code>glide</code> is on, so a note right after another slides to it.</li>
+</ul>
+<p>The rest you play with commands, below.</p>
+<h2 id="load-the-kit">Load the kit</h2>
+<ol>
+<li>On the Song screen, <strong>RB + Left</strong> opens the Rack.</li>
+<li><strong>LB + Start</strong>: My sounds. Pick <code>Load a kit</code>, then <code>Chinese</code>.</li>
+<li>It asks "Replace every sound?": <strong>Left</strong>, then <strong>A</strong> (Yes).</li>
+</ol>
+<blockquote>
+<p>Loading a kit replaces every sound in the song. Load it into a new song, or save your own sounds first.</p>
+</blockquote>
+<p>Every sound is also a preset you can pick one by one: in the Rack, <strong>Select</strong> opens the sound browser, and <code>Chinese instruments</code> lists them all. You hear each one as you move onto it.</p>
+<table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Sound</th>
+<th>Kind</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>00</code></td>
+<td>guzheng</td>
+<td>zither, plucked</td>
+</tr>
+<tr>
+<td><code>01</code></td>
+<td>guzheng bend</td>
+<td>pressed bend after the pluck</td>
+</tr>
+<tr>
+<td><code>02</code></td>
+<td>guzheng run</td>
+<td>a run up, then the note</td>
+</tr>
+<tr>
+<td><code>03</code></td>
+<td>pipa</td>
+<td>lute, plucked</td>
+</tr>
+<tr>
+<td><code>04</code></td>
+<td>pipa lun</td>
+<td>pipa with its tremolo</td>
+</tr>
+<tr>
+<td><code>05</code></td>
+<td>yangqin</td>
+<td>hammered dulcimer</td>
+</tr>
+<tr>
+<td><code>06</code></td>
+<td>guqin</td>
+<td>low zither, slides</td>
+</tr>
+<tr>
+<td><code>07</code></td>
+<td>erhu</td>
+<td>two-string fiddle</td>
+</tr>
+<tr>
+<td><code>08</code></td>
+<td>dizi</td>
+<td>bamboo flute</td>
+</tr>
+<tr>
+<td><code>09</code></td>
+<td>dizi grace</td>
+<td>dizi with a grace note</td>
+</tr>
+<tr>
+<td><code>0A</code></td>
+<td>xiao</td>
+<td>soft end-blown flute</td>
+</tr>
+<tr>
+<td><code>0B</code></td>
+<td>sheng</td>
+<td>mouth organ, in 5ths</td>
+</tr>
+<tr>
+<td><code>0C</code></td>
+<td>suona</td>
+<td>loud double reed</td>
+</tr>
+<tr>
+<td><code>0D</code></td>
+<td>bianzhong</td>
+<td>bronze chime bells</td>
+</tr>
+<tr>
+<td><code>0E</code></td>
+<td>big gong</td>
+<td>pitch sinks after the hit</td>
+</tr>
+<tr>
+<td><code>0F</code></td>
+<td>opera gong</td>
+<td>pitch jumps up</td>
+</tr>
+<tr>
+<td><code>10</code></td>
+<td>woodblock</td>
+<td>temple block</td>
+</tr>
+<tr>
+<td><code>11</code></td>
+<td>bangzi</td>
+<td>hard clappers</td>
+</tr>
+<tr>
+<td><code>12</code></td>
+<td>dagu</td>
+<td>big drum</td>
+</tr>
+<tr>
+<td><code>13</code></td>
+<td>tanggu</td>
+<td>hall drum</td>
+</tr>
+<tr>
+<td><code>14</code></td>
+<td>bo cymbal</td>
+<td>opera cymbals</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-scales">The scales</h2>
+<p>Chinese music mostly uses five notes, the pentatonic. The same five notes make five modes, each starting on a different one of them. On the Scale screen they are at the end of the list:</p>
+<table>
+<thead>
+<tr>
+<th>Scale</th>
+<th>Notes from C</th>
+<th>Feel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gong</td>
+<td>C D E G A</td>
+<td>bright, "folk song"</td>
+</tr>
+<tr>
+<td>Shang</td>
+<td>C D F G A#</td>
+<td>open, floating</td>
+</tr>
+<tr>
+<td>Jiao</td>
+<td>C D# F G# A#</td>
+<td>dark, rare</td>
+</tr>
+<tr>
+<td>Zhi</td>
+<td>C D F G A</td>
+<td>bold, festive</td>
+</tr>
+<tr>
+<td>Yu</td>
+<td>C D# F G A#</td>
+<td>sad, "wuxia"</td>
+</tr>
+</tbody>
+</table>
+<p>With a scale set, <strong>A + Up/Down</strong> on a note only steps through those five notes, so every melody fits. <code>SCAL</code> switches mode mid-song: <code>SCAL 002F</code> Gong, <code>0030</code> Shang, <code>0031</code> Jiao, <code>0032</code> Zhi, <code>0033</code> Yu (the first two digits are the key, <code>00</code> = C).</p>
+<h2 id="guzheng">Guzheng</h2>
+<p>The 21-string zither: bright plucks that ring, pressed bends, runs across the strings.</p>
+<ul>
+<li><strong>Bend</strong> (an yin): play slot <code>01</code>, or put <code>PTCH 1002</code> on the step after the note.</li>
+<li><strong>Run</strong> (gliss): slot <code>02</code> runs up the pentatonic into each note.</li>
+<li><strong>Tremolo</strong>: <code>RTRG 0002</code> on a note re-plucks it very fast.</li>
+</ul>
+<pre><code class="language-phrase">00 A 3 00 ----
+01 --- -- ----
+02 C 4 00 ----
+03 --- -- PTCH 1002
+04 A 3 02 ----
+05 --- -- ----
+06 G 3 00 RTRG 0002
+07 --- -- ----
+</code></pre>
+<h2 id="pipa">Pipa</h2>
+<p>The pear-shaped lute: a hard nail attack and a short ring. Its signature is the <strong>lun</strong>, a rolling tremolo on held notes: slot <code>04</code> does it on every note. For a single tremolo note on the plain pipa, use <code>RTRG 0002</code>; <code>ROLL 0042</code> fades one out.</p>
+<pre><code class="language-phrase">00 E 4 03 ----
+01 D 4 03 ----
+02 C 4 04 ----
+03 --- -- ----
+04 --- -- ----
+05 A 3 03 ----
+06 G 3 03 ----
+07 A 3 04 ----
+</code></pre>
+<h2 id="yangqin-and-guqin">Yangqin and guqin</h2>
+<p>The <strong>yangqin</strong> is hammered: bright metal strings in pairs, played fast. Short repeated notes and octaves suit it; <code>RTRG 0003</code> gives its drum-roll tremolo.</p>
+<p>The <strong>guqin</strong> is the scholar's zither: low, dark and slow, with long notes that slide under the finger. Leave space between notes and let them ring. Its <code>glide</code> is high, so a note right after another slides; <code>LEGA 20FE</code> slides in from 2 below on purpose.</p>
+<h2 id="erhu">Erhu</h2>
+<p>The two-string fiddle, the "voice" of Chinese music. Its preset scoops into notes and grows a vibrato, so the trick is in the phrasing:</p>
+<ul>
+<li><strong>Long notes</strong>: give it room, the vibrato needs half a second to bloom.</li>
+<li><strong>Slides</strong>: notes in a row slide (glide). <code>LEGA 10F9</code> slides up from 7 below: a big expressive swoop.</li>
+<li><strong>More vibrato</strong>: <code>VIBR 0056</code> on a note for a deep, wide one.</li>
+<li><strong>Grace note</strong>: a note one tick long just before the main note (<code>KILL 0001</code> after it).</li>
+</ul>
+<pre><code class="language-phrase">00 E 4 07 LEGA 10FB
+01 --- -- ----
+02 --- -- ----
+03 D 4 07 ----
+04 E 4 07 ----
+05 --- -- ----
+06 G 4 07 VIBR 0056
+07 --- -- ----
+</code></pre>
+<h2 id="dizi-and-xiao">Dizi and xiao</h2>
+<p>The <strong>dizi</strong> is the bright bamboo flute: breathy, with the buzz of its membrane. Slot <code>09</code> flicks a grace note a step above into every note, the most common flute ornament. Quick runs suit it: notes on every step, up and down the scale.</p>
+<p>The <strong>xiao</strong> is its soft, dark cousin, blown from the end: slow melodies in the low range, lots of space, <code>reverb</code> up.</p>
+<h2 id="sheng-and-suona">Sheng and suona</h2>
+<p>The <strong>sheng</strong> is a mouth organ: a bundle of bamboo pipes, each with a reed. It plays in 5ths already (<code>chord 5th</code>): hold chords of two notes or single notes, and let them breathe.</p>
+<p>The <strong>suona</strong> is the loud double-reed horn of weddings and parades. It cuts through anything: short festive phrases, big scoops (<code>LEGA 08FC</code>), and a heavy vibrato.</p>
+<h2 id="percussion">Percussion</h2>
+<p>Chinese opera and lion-dance drumming is loud and driving. A classic pattern:</p>
+<pre><code class="language-phrase">00 C 3 12 ----
+01 --- -- ----
+02 C 3 13 ----
+03 C 3 13 ----
+04 C 3 12 ----
+05 C 3 10 ----
+06 C 3 13 ----
+07 C 3 14 ----
+</code></pre>
+<ul>
+<li><strong>big gong</strong> (<code>0E</code>): its pitch sinks after the hit. One on the first beat of a section.</li>
+<li><strong>opera gong</strong> (<code>0F</code>): the "jing!" of Peking opera, its pitch jumps up.</li>
+<li><strong>bo cymbal</strong> (<code>14</code>): the trashy clash between gong hits.</li>
+<li><strong>woodblock</strong> / <strong>bangzi</strong>: the steady click that keeps opera time.</li>
+<li><strong>bianzhong</strong> (<code>0D</code>): ancient chime bells, slow and solemn.</li>
+</ul>
+<h2 id="a-song-idea">A song idea</h2>
+<p>A calm-to-epic "wuxia" piece, in <code>Yu</code>:</p>
+<ol>
+<li><strong>Intro</strong>: guqin alone, slow, long notes. A bianzhong every 2 bars.</li>
+<li><strong>Theme</strong>: the erhu plays the melody over guzheng runs (slot <code>02</code>) on the chords.</li>
+<li><strong>Build</strong>: the dagu comes in on every beat, tanggu fills, the pipa lun (<code>04</code>) on long notes.</li>
+<li><strong>Climax</strong>: the dizi doubles the erhu an octave up; big gong on the first beat, bo cymbals.</li>
+<li><strong>End</strong>: back to the guqin, and one last big gong left to ring out.</li>
+</ol>
+<p>Keep the drums on their own tracks, and give the erhu or dizi a whole track so their slides and vibrato are never cut by another sound.</p>
+<div class="pager"><a class="prev" href="Sound-Design.html"><small>Previous</small>Sound Design</a><a class="next" href="Commands.html"><small>Next</small>Commands</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Your Sounds First · LGPT for RG Nano</title>
+<meta name="description" content="LGPT for RG Nano: a pocket tracker with built-in synths. Build Your Sounds First.">
+<link rel="icon" href="images/synth-1-sound.png">
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="side">
+  <div class="brand"><img src="images/demo-song-playing.png" alt=""><span>LGPT for RG Nano<small>pocket tracker guide</small></span>
+    <button class="menu-toggle" aria-label="Menu">Menu</button></div>
+  <div class="links">
+  <h4>Start</h4><ul><li><a href="Install.html">Install</a></li><li><a href="Controls.html">Controls</a></li><li><a href="How-Trackers-Work.html">How Trackers Work</a></li><li><a href="Your-First-Song.html">Your First Song</a></li><li><a href="Build-Your-Sounds-First.html" class="active">Build Your Sounds First</a></li><li><a href="Demo-Songs.html">Demo Songs</a></li></ul><h4>Reference</h4><ul><li><a href="Screens.html">Screens</a></li><li><a href="Synth.html">Synth</a></li><li><a href="Macro-Synth.html">Macro Synth</a></li><li><a href="Sound-Design.html">Sound Design</a></li><li><a href="Chinese-Instruments.html">Chinese Instruments</a></li><li><a href="Commands.html">Commands</a></li><li><a href="Music-Theory-Cheat-Sheet.html">Music Theory Cheat Sheet</a></li><li><a href="Samples.html">Samples</a></li><li><a href="Export.html">Export</a></li><li><a href="FAQ.html">FAQ</a></li></ul><h4>Build</h4><ul><li><a href="Developer-Guide.html">Developer Guide</a></li></ul>
+  <h4>Project</h4><ul><li><a href="https://github.com/Inkmortal/LittleGPTracker-RG-Nano">Source code</a></li></ul>
+  <button class="theme-toggle" type="button">Light / dark</button>
+  </div>
+</nav>
+<main>
+<h1 id="build-your-sounds-first">Build Your Sounds First</h1>
+<p>Some people write notes first and find sounds later. If you'd rather <strong>assemble your instruments first, then compose</strong>, the <strong>Rack</strong> is for you: every sound of the song on one screen, where you play them, browse new ones by ear, shape them, and save your favourites for the next song.</p>
+<h2 id="the-rack">The Rack</h2>
+<p>From the <strong>Song</strong> screen, <strong>RB + Left</strong> opens the Rack.</p>
+<pre><code>Rack your sounds      05/8F
+   kind name
+00 SYN KICK           2
+01 SYN SNARE          2
+05 SYN BASS
+06 SMP rgnano-tone
+in 2 phrases
+[ picture of the sound ]
+note C3 steps in the scale
+[ one octave keyboard ]
+</code></pre>
+<p>Each row is a slot: its number, its kind (<code>SYN</code> synth, <code>MAC</code> macro synth, <code>SMP</code> sample, <code>---</code> empty) and name, and how many phrases use it. The box draws the selected sound, and the keyboard shows the song's scale (set it on the <a href="Screens.html#scale">Scale</a> screen) with a bar under the note you'll hear.</p>
+<table>
+<thead>
+<tr>
+<th>Keys</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Up / Down</strong></td>
+<td>pick a sound (<strong>Left / Right</strong>: a page)</td>
+</tr>
+<tr>
+<td><strong>A</strong> (hold)</td>
+<td>play it; let go of <strong>A</strong> and it stops</td>
+</tr>
+<tr>
+<td><strong>A + Left / Right</strong></td>
+<td>the next note of the scale down / up, and play it (no key set: a semitone)</td>
+</tr>
+<tr>
+<td><strong>A + Up / Down</strong></td>
+<td>an octave up / down, and play it</td>
+</tr>
+<tr>
+<td><strong>Start</strong></td>
+<td>a short riff with it, looping: a drum pattern, a bass line, a held chord or a melody, whichever suits the sound. <strong>Start</strong> again stops</td>
+</tr>
+<tr>
+<td><strong>Select</strong></td>
+<td>the <a href="#the-sound-browser">sound browser</a>: hear sounds as you move, take one</td>
+</tr>
+<tr>
+<td><strong>RB + Right</strong></td>
+<td>edit it on the Instrument screen; <strong>RB + Left</strong> there comes back to the Rack</td>
+</tr>
+<tr>
+<td><strong>RB + Down</strong></td>
+<td><a href="#write-notes-with-it">write notes with it</a></td>
+</tr>
+<tr>
+<td><strong>LB + Start</strong></td>
+<td><a href="#save-and-load">save and load</a> sounds and kits</td>
+</tr>
+<tr>
+<td><strong>LB + A</strong></td>
+<td>copy it to a free slot, to make a variation</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>back to the Song</td>
+</tr>
+</tbody>
+</table>
+<p>The keyboard starts where the sound sounds natural: a synth at C3, a sample at the note it was recorded at (its root).</p>
+<blockquote>
+<p>Picking a sound on the Rack also picks it for your next note: the next note you add on a Phrase screen uses it.</p>
+</blockquote>
+<h2 id="the-sound-browser">The sound browser</h2>
+<p><strong>Select</strong> on the Rack opens every sound you can put in the slot, by kind:</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>What's in it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>My sounds</td>
+<td>the sounds you saved (see <a href="#save-and-load">Save and load</a>)</td>
+</tr>
+<tr>
+<td>Synth presets</td>
+<td>the synth's ready-made sounds, one list per engine (FM4, Hyper, Wav ...)</td>
+</tr>
+<tr>
+<td>Macro synth presets</td>
+<td>the <a href="Macro-Synth.html">Macro Synth</a>'s</td>
+</tr>
+<tr>
+<td>Samples</td>
+<td>the sample packs on the card, by folder</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A</strong> opens a kind (or a folder). Then just move: <strong>every sound plays as you land on it</strong>, at the Rack's keyboard note. A synth sound is put in the slot to be heard; a sample streams from the card. <strong>Start</strong> plays it again.</p>
+<ul>
+<li><strong>A</strong> takes it: it stays in the slot, and you're back on the Rack.</li>
+<li><strong>B</strong> puts the slot back exactly as it was and goes back one step (to the kinds, or up a folder).</li>
+</ul>
+<p>So you can try twenty kicks and still walk away with your old one.</p>
+<h2 id="write-notes-with-it">Write notes with it</h2>
+<p><strong>RB + Down</strong> on the Rack takes you to a Phrase screen with the selected sound ready: the next note you add there uses it. It opens the chain under the Song screen's cursor and that chain's first phrase, and makes them if the song has none yet, so from a brand new song it's one press from a sound to its first note.</p>
+<h2 id="save-and-load">Save and load</h2>
+<p>Your sounds live on the card in <code>Applications/Sounds</code>, outside any song, so they're there in every song. <strong>LB + Start</strong> on the Rack (or on the instrument list, <strong>RB + Up</strong> on the Instrument screen) opens <strong>My sounds</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Save sound 05</td>
+<td>keeps the selected sound under a name; a sample sound takes a copy of its WAV, and its table comes along</td>
+</tr>
+<tr>
+<td>Load a sound into 05</td>
+<td>puts a saved sound in the slot (the browser's <strong>My sounds</strong> does too, with a listen first)</td>
+</tr>
+<tr>
+<td>Save this kit</td>
+<td>keeps all of this song's sounds, each in its slot</td>
+</tr>
+<tr>
+<td>Load a kit</td>
+<td>replaces all of this song's sounds with a saved kit (it asks first)</td>
+</tr>
+<tr>
+<td>New songs: this kit</td>
+<td>every new song starts with this song's sounds instead of the starter kit</td>
+</tr>
+<tr>
+<td>New songs: starter kit</td>
+<td>back to the built-in starter kit</td>
+</tr>
+</tbody>
+</table>
+<p>The name is filled in for you (the sound's name, or the song's for a kit): <strong>A</strong> saves straight away.</p>
+<h2 id="a-kit-in-five-minutes">A kit in five minutes</h2>
+<p>A drum kit and a bass, built before a single note:</p>
+<ol>
+<li>Song <strong>RB + Left</strong>: the Rack, on <code>00 KICK</code>.</li>
+<li><strong>Select</strong>, <strong>A</strong> on <code>Synth presets</code>, then <strong>Down</strong> through the list: each one plays. <strong>A</strong> on the kick you like.</li>
+<li><strong>Down</strong> to <code>01</code>, <strong>Select</strong> again: a snare this time. Try the <code>Samples</code> too.</li>
+<li><strong>Down</strong> to <code>05</code>: the bass. Hold <strong>A</strong> and step through the scale with <strong>A + Right</strong> to hear it across notes, or <strong>Start</strong> for a bass line.</li>
+<li>Too dark? <strong>RB + Right</strong>, open the filter on the FILTER page, <strong>RB + Left</strong> back.</li>
+<li><strong>LB + Start</strong>, <code>Save this kit</code>, <strong>A</strong>. Then <code>New songs: this kit</code> if every song should start with it.</li>
+<li>On the kick, <strong>RB + Down</strong>: a phrase, ready for kick notes.</li>
+</ol>
+<p>Now write the notes: every sound is already where you want it.</p>
+<pre><code class="language-phrase">00 C 3 00 ----
+01 --- -- ----
+02 C 3 05 ----
+03 --- -- ----
+04 C 3 00 ----
+</code></pre>
+<p>The <code>I</code> column (the second one) says which slot plays each note: <code>00</code> the kick, <code>05</code> the bass you built.</p>
+<div class="pager"><a class="prev" href="Your-First-Song.html"><small>Previous</small>Your First Song</a><a class="next" href="Demo-Songs.html"><small>Next</small>Demo Songs</a></div>
+<footer><p>On the device: <strong>RB + Select</strong> opens help on every screen · Screenshots are captured from the real app by <code>tools/capture_wiki_screens.py</code> · Fork of <a href="https://github.com/djdiskmachine/LittleGPTracker">LittleGPTracker</a> by m-.-n and djdiskmachine</p></footer>
+</main>
+</div>
+</body>
+</html>
